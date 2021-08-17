@@ -1,28 +1,51 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import Home from "../views/Home.vue";
 
 Vue.use(VueRouter);
 
+const DEFAULT_TITLE = "FFARS - Facility Financial Accounting & Reporting System";
+
 const routes: Array<RouteConfig> = [
   {
-    path: "/",
-    name: "Home",
-    component: Home,
+    path: "/login",
+    component: () => import("@/components/auth/Login.vue"),
+    meta: { title: "Login" },
   },
   {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
+    path: "/",
+    component: () => import("@/layouts/Home.vue"),
+    meta: { title: "Dashboard" },
+    children: [],
   },
 ];
 
 const router = new VueRouter({
+  mode: "history",
+  base: process.env.BASE_URL,
   routes,
 });
 
+router.beforeEach((to: any, from: any, next: any) => {
+  //const loggedIn = JSON.parse(localStorage.getItem("ffarsUser")) || null;
+
+  const loggedIn = false;
+
+  // Use next tick to handle router history correctly
+  // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
+
+  Vue.nextTick(() => {
+    document.title = `${to.meta.title} - Facility Financial Accounting & Reporting System (FFARS)` ||
+      DEFAULT_TITLE;
+  });
+
+  if (to.matched.some((record: any) => record.meta.requiresAuth)) {
+    if (loggedIn) {
+      next();
+    } else {
+      next("/login");
+    }
+  } else {
+    next();
+  }
+});
 export default router;

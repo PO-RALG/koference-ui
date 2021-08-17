@@ -9,12 +9,22 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { reactive } from "@vue/composition-api";
+
 import Landing from "@/layouts/Landing.vue";
 
 export default Vue.extend({
   components: {
     Landing,
   },
-  data: () => ({ drawer: null }),
+  setup() {
+    const data = reactive({
+      drawer: null,
+    });
+
+    return {
+      data,
+    };
+  },
 });
 </script>
