@@ -1,0 +1,22 @@
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Helvetica", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.87);
+  padding: 15px 0;
+}
+
+.top-header {
+  padding: 10px;
+}
+
+.hierarchy {
+  min-height: 40px;
+  display: block;
+  overflow: hidden;
+  .v-treeview--dense .v-treeview-node__root {
+    min-height: 24px !important;
+  }
+}
