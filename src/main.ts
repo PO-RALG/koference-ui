@@ -6,6 +6,9 @@ import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import VueAxios from "vue-axios";
 
+import "./assets/main.scss";
+import "./components/shared";
+
 import PerfectScrollbar from "vue2-perfect-scrollbar";
 import VueCompositionAPI from "@vue/composition-api";
 

@@ -27,7 +27,7 @@
                   <!-- <v-col cols="12" md="4" sm="12"> -->
                   <v-card-text class>
                     <img :src="data.coat" class="login-logo" />
-                    <h3 class="text-center pa-6">LOGIN</h3>
+                    <h2 class="text-center pa-6 login-header" color="primary">LOGIN to your account</h2>
                     <v-form ref="form" v-model="data.valid">
                       <v-text-field
                         prepend-inner-icon="mdi-account-box"
@@ -155,5 +155,10 @@ export default Vue.extend({
   height: 100px;
   width: 100px;
   border: 4px solid #ccc;
+}
+.login-header {
+  font-weight: bold;
+  font-size: 18px;
+  text-transform: uppercase;
 }
 </style>

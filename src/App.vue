@@ -3,9 +3,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "@vue/composition-api";
 
-export default Vue.extend({
+export default defineComponent({
   setup() {
     console.log("Using Composition API");
   },
@@ -20,4 +20,5 @@ export default Vue.extend({
   color: #2c3e50;
   margin-top: 60px;
 }
-</style>>
+</style>
+>

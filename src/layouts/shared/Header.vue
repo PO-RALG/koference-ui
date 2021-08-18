@@ -1,19 +1,14 @@
 <template>
   <v-app-bar app color="primary">
-    <v-app-bar-nav-icon
-      v-if="!drawer"
-      @click.stop="toggleSidebar"
-      color="white"
-      large
-    />
+    <v-app-bar-nav-icon v-if="!drawer" @click.stop="toggleSidebar" color="white" large />
     <v-toolbar-title class="header-toolbar"></v-toolbar-title>
   </v-app-bar>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "@vue/composition-api";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     logoutFunction: {
       type: Function,
@@ -49,6 +44,6 @@ export default Vue.extend({
 <style lang="scss">
 .header-toolbar {
   color: #fff;
-  background-color: rgb(33,150,243) !important;
+  background-color: rgb(33, 150, 243) !important;
 }
 </style>
