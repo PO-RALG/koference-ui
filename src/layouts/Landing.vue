@@ -6,7 +6,6 @@
       @sidebarToggle="toggleSidebar"
       :drawer="data.drawer"
     />
-
     <v-content>
       <v-container class="fill-height" fluid>
         <v-layout></v-layout>

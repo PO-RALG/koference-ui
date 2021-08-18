@@ -7,19 +7,22 @@
       </v-toolbar-title>
     </template>
     <template>
-      <v-list-item two-line class="user-banner">
-        <v-list-item-avatar class="pl-3">
-          <img class="user-avatar" :src="data.user_logo" />
-        </v-list-item-avatar>
-        <v-list-item-content class="description">
-          <h3 class="name">john doe</h3>
-          <v-list-item-subtitle>
-            <div class="description-title">[SUPER ADMIN]</div>
-            <span class="location">[PORALG]</span>
-            <br />
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
+      <v-toolbar-title color="primary" class="user-banner d-flex flex-row justify-start">
+        <v-row >
+          <v-layout justify-center align-center>
+            <v-col cols="4" class="text-left">
+              <img class="user-avatar" :src="data.user_logo" />
+            </v-col>
+            <v-col cols="8" class="text-left pl-0">
+              <div class="description">
+                <h3 class="name">John Doe</h3>
+                <div class="description-title"><a href="#">[super admin]</a></div>
+                <div class="location"><a href="#">(tanzania)</a></div>
+              </div>
+            </v-col>
+          </v-layout>
+        </v-row>
+      </v-toolbar-title>
     </template>
     <v-list dense class="menu-container">
       <perfect-scrollbar>
@@ -130,7 +133,10 @@ export default Vue.extend({
   background: rgb(21, 101, 192);
   color: #fff;
   text-align: center;
-  padding: 15px 0;
+  padding: 10px 0;
+  height: 128px;
+  min-height: 128px;
+  max-height: 128px;
 }
 .user-info {
   text-transform: uppercase;
@@ -157,12 +163,13 @@ export default Vue.extend({
   height: 70px;
   border: 6px solid rgba(204, 204, 204, 0.42);
 }
+
 .description {
   text-align: left;
   color: #fff;
   .description-title {
     @extend .description;
-    font-size: 11px;
+    font-size: 15px;
     text-transform: uppercase;
     margin: 0 5px 0 0;
     line-height: 15px;
@@ -170,13 +177,23 @@ export default Vue.extend({
   .location {
     @extend .description;
     text-transform: uppercase;
-    font-size: 10px;
+    font-size: 15px;
     line-height: 15px;
   }
   .name {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: normal;
     text-transform: uppercase;
   }
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+}
+.user-avatar {
+  border-radius: 50%;
+  height: 70px;
+  width: 70px;
+  border: 6px solid rgba(204, 204, 204, 0.42)
 }
 </style>
