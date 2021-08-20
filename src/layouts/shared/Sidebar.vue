@@ -72,7 +72,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive } from "@vue/composition-api";
-import { MENU_ITEMS } from "../../config/menu-items";
+import { MENU_ITEMS } from "@/config/menu-items";
 
 export default defineComponent({
   props: {
