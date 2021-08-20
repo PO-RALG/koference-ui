@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="isOpen" persistent :max-width="width">
+    <v-dialog v-model="modal" persistent :max-width="width">
       <v-card>
         <slot name="header"></slot>
         <slot name="body"></slot>
@@ -15,7 +15,7 @@ import { defineComponent } from "@vue/composition-api";
 
 export default defineComponent({
   props: {
-    isOpen: {
+    modal: {
       type: Boolean,
       required: true,
     },
@@ -23,7 +23,7 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 600,
-    }
-  }
+    },
+  },
 });
 </script>

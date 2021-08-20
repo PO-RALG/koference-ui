@@ -12,4 +12,8 @@ const create = async (payload: any) => {
   return await axios.post(`/api/v2/users`, payload);
 };
 
-export { get, find, create };
+const update = async (payload: any) => {
+  return await axios.put(`/api/v2/users`, payload);
+};
+
+export { get, find, create, update };
