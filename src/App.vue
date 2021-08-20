@@ -5,11 +5,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 
-export default defineComponent({
-  setup() {
-    console.log("Using Composition API");
-  },
-});
+export default defineComponent({});
 </script>
 
 <style>
