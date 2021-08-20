@@ -43,7 +43,12 @@
                   <v-text-field v-model="data.formData.name" :counter="10" label="First name" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-text-field v-model="data.formData.email" :counter="10" label="Email Address" required></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.email"
+                    :counter="10"
+                    label="Email Address"
+                    required
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -63,7 +68,7 @@
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 import { USER_DATA } from "../../config/users";
-import { create, update } from "./services/user.service";
+import { get, create, update } from "./services/user.service";
 
 export default defineComponent({
   setup() {
@@ -90,6 +95,10 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      // make api call
+      // get().then((response: any) => {
+        // data.items = response.data;
+      // });
       data.items = USER_DATA;
     });
 
