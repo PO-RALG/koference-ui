@@ -108,4 +108,4 @@ export const MENU_ITEMS = [
     title: "Manage Users",
     state: "/manage-users",
   },
-]
+];
