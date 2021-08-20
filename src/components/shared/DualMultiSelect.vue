@@ -40,7 +40,7 @@
             color="primary"
             small
             class="remove-button"
-            :disabled="selectedItems && selectedItems.length === 0"
+            :disabled="data.selectedItems && data.selectedItems.length === 0"
             @click="removeAll"
           >
             <v-icon>mdi-chevron-double-left</v-icon>

@@ -1,12 +1,16 @@
 <template>
   <ul class="tree">
     <li :style="{ 'margin-left': `${depth * 5}px` }">
-      <span v-if="hasChildren" @click="data.expanded = !data.expanded" class="type">
+      <span
+        v-if="hasChildren"
+        @click="data.expanded = !data.expanded"
+        class="type"
+      >
         <v-icon small>
           {{ data.expanded ? "mdi-folder-open" : "mdi-folder" }}
         </v-icon>
       </span>
-      <span @click="nodeClicked(node)" class="name" :value="node" :class="{ active: data.active === node.id }">
+      <span @click="nodeClicked($event, node)" class="name" :value="node">
         {{ node.name }}
       </span>
       <TreeBrowser
@@ -23,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, computed, PropType, defineComponent } from "@vue/composition-api";
+import { reactive, computed, PropType, defineComponent, ref } from "@vue/composition-api";
 
 import { TreeNode } from "./types";
 
@@ -44,19 +48,20 @@ export default defineComponent({
     },
   },
   setup(props, context) {
+    const activeElement = ref(null);
+    const activeElements = ref(null);
     let data = reactive({
       expanded: false,
-      active: 0,
+      active: "",
     });
 
     const setNodeClicked = (node: TreeNode) => {
-      data.active = node.id;
       context.emit("onClick", node);
       context.emit("input", node);
     };
 
-    const nodeClicked = (node: TreeNode) => {
-      data.active = node.id;
+    const nodeClicked = (event: any, node: TreeNode) => {
+      event.target.classList.toggle("active");
       setNodeClicked(node);
     };
 
@@ -72,6 +77,8 @@ export default defineComponent({
       data,
 
       nodeClicked,
+      activeElement,
+      activeElements,
 
       hasChildren,
       level,
