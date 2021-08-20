@@ -4,14 +4,13 @@
     <Header @logoutFunction="logout" @sidebarToggle="toggleSidebar" :drawer="data.drawer" />
     <v-content>
       <v-container class="fill-height" fluid>
-        <v-layout></v-layout>
+        <v-layout> </v-layout>
       </v-container>
     </v-content>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 
 import Sidebar from "./shared/Sidebar.vue";
@@ -32,12 +31,12 @@ export default defineComponent({
     };
 
     const logout = (logout: boolean) => {
-      console.log("logout", logout);
+      //console.log("logout", logout);
     };
 
     // lifecycle hooks
     onMounted(() => {
-      console.log("drawer on mounted", data.drawer);
+      //console.log("drawer on mounted", data.drawer);
     });
 
     return {
