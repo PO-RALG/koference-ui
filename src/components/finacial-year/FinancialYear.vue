@@ -102,7 +102,11 @@ export default defineComponent({
 
     onMounted(() => {
       // make api call
-      get().then((response: any) => {
+      let params: any = {
+        total: 100,
+        size: 10,
+      };
+      get(params).then((response: any) => {
         console.log("data", response.data.data);
         data.items = response.data.data;
       });
