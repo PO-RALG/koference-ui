@@ -99,7 +99,6 @@ export default defineComponent({
       get(params).then((response: any) => {
         data.items = response.data;
       });
-      // data.items = USER_DATA;
     });
 
     const deleteGfsCode = () => {
