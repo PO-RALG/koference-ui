@@ -3,7 +3,8 @@ import VueRouter, { RouteConfig } from "vue-router";
 
 Vue.use(VueRouter);
 
-const DEFAULT_TITLE = "FFARS - Facility Financial Accounting & Reporting System";
+const DEFAULT_TITLE =
+  "FFARS - Facility Financial Accounting & Reporting System";
 
 const routes: Array<RouteConfig> = [
   {
@@ -15,7 +16,15 @@ const routes: Array<RouteConfig> = [
     path: "/",
     component: () => import("@/layouts/Home.vue"),
     meta: { title: "Dashboard" },
-    children: [],
+    children: [
+      {
+        path: "/financial-years",
+        component: () =>
+          import("@/components/financial-year/FinancialYear.vue"),
+        meta: { title: "FinancialYear" },
+        children: [],
+      },
+    ],
   },
 ];
 
@@ -34,7 +43,8 @@ router.beforeEach((to: any, from: any, next: any) => {
   // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
 
   Vue.nextTick(() => {
-    document.title = `${to.meta.title} - Facility Financial Accounting & Reporting System (FFARS)` ||
+    document.title =
+      `${to.meta.title} - Facility Financial Accounting & Reporting System (FFARS)` ||
       DEFAULT_TITLE;
   });
 
