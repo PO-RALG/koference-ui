@@ -105,7 +105,7 @@ export default defineComponent({
       // get().then((response: any) => {
       // data.items = response.data;
       // });
-      data.items = USER_DATA;
+      // data.items = USER_DATA;
     });
 
     const deleteAcademicYear = () => {

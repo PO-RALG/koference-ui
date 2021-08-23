@@ -1,11 +1,1 @@
-export interface Role {
-  id: number;
-  name: string;
-  description: string;
-  deleted_at: Date;
-  created_at: Date;
-  updated_at: Date;
-  display_name: string;
-  level_id: number;
-  sector_code: string;
-}
+export { default as gfsCodesRoutes } from "./routes/gfs-routes"
