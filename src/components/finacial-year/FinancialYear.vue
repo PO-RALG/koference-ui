@@ -18,13 +18,13 @@
         :items-per-page="data.params.size"
         class="elevation-1"
       >
-        <template v-slot:item.startDate="{ item }">
+        <template v-slot:[`item.startDate`]="{ item }">
           <span>{{ item.startDate }}</span>
         </template>
-        <template v-slot:item.endDate="{ item }">
+        <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)">
             mdi-pencil-box-outline
           </v-icon>

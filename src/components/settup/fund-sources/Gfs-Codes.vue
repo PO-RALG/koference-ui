@@ -77,7 +77,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import { create, update } from "../gfs-codes/service/gfs.service";
+import { get, create, update } from "../gfs-codes/service/gfs.service";
 
 export default defineComponent({
   setup() {
@@ -96,15 +96,19 @@ export default defineComponent({
       formData,
       params: {
         total: 100,
-        size: 10,
+        size: 10
       },
     });
 
     onMounted(() => {
       // make api call
-      // get().then((response: any) => {
-      // data.items = response.data;
-      // });
+      let params: any = {
+        total: 100,
+        size: 10
+      }
+      get(params).then((response: any) => {
+      data.items = response.data;
+      });
       // data.items = USER_DATA;
     });
 

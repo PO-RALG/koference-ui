@@ -1,12 +1,12 @@
 <template>
-  <div class="academic-year">
+  <div class="gfs-code">
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <!-- <v-btn color="primary" @click="openDialog">
         <v-icon>mdi-plus</v-icon>
         Add New
-      </v-btn>
+      </v-btn> -->
     </v-card-actions>
 
     <v-card>
@@ -24,13 +24,13 @@
         <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-        <template v-slot:[`item.actions`]="{ item }">
+        <!-- <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
           <v-icon @click="deleteItem(item.id)">mdi-trash-can-outline</v-icon>
-        </template>
+        </template> -->
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="600">
+    <!-- <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} User`" />
       </template>
@@ -61,7 +61,7 @@
           <v-btn color="blue darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
-    </Modal>
+    </Modal> -->
   </div>
 </template>
 
@@ -79,7 +79,7 @@ export default defineComponent({
       headers: [
         { text: "Code", value: "code" },
         { text: "Name", align: "start", sortable: false, value: "name" },
-        { text: "Actions", value: "actions", sortable: false },
+        // { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       items: dataItems,
@@ -97,7 +97,7 @@ export default defineComponent({
         size: 10,
       };
       get(params).then((response: any) => {
-        data.items = response.data;
+        data.items = response.data.data;
       });
     });
 
@@ -143,12 +143,9 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       deleteGfsCode,
-
       update,
       save,
     };
   },
 });
 </script>
-
-<style scoped></style>
