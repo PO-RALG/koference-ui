@@ -18,13 +18,13 @@
         :items-per-page="data.params.size"
         class="elevation-1"
       >
-        <template v-slot:item.startDate="{ item }">
+        <template v-slot:[`item.startDate`]="{ item }">
           <span>{{ item.startDate }}</span>
         </template>
-        <template v-slot:item.endDate="{ item }">
+        <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
           <v-icon @click="deleteItem(item.id)">mdi-trash-can-outline</v-icon>
         </template>
@@ -67,8 +67,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import { USER_DATA } from "../../config/users";
-import { get, create, update } from "./services/user.service";
+import { get, create, update } from "./service/gfs.service";
 
 export default defineComponent({
   setup() {
@@ -78,11 +77,8 @@ export default defineComponent({
       title: "GFS Codes",
       modalTitle: "",
       headers: [
-        { text: "Check Number", value: "check_number" },
-        { text: "Phone Number", value: "phone_number" },
+        { text: "Code", value: "code" },
         { text: "Name", align: "start", sortable: false, value: "name" },
-        { text: "Email", value: "email" },
-        { text: "Roles", value: "roles" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
@@ -96,14 +92,14 @@ export default defineComponent({
 
     onMounted(() => {
       // make api call
-      // get().then((response: any) => {
-        // data.items = response.data;
-      // });
-      data.items = USER_DATA;
+      get().then((response: any) => {
+        data.items = response.data;
+      });
+      // data.items = USER_DATA;
     });
 
-    const deleteAcademicYear = () => {
-      console.log("delete year");
+    const deleteGfsCode = () => {
+      console.log("delete gfs");
     };
 
     const cancelDialog = () => {
@@ -114,9 +110,9 @@ export default defineComponent({
     const save = () => {
       console.log(data.formData);
       if (data.formData.id) {
-        updateUser(data.formData);
+        update(data.formData);
       } else {
-        createUser(data.formData);
+        create(data.formData);
       }
     };
 
@@ -130,11 +126,11 @@ export default defineComponent({
       data.modal = !data.modal;
     };
 
-    const updateUser = (data: any) => {
+    const update = (data: any) => {
       update(data);
     };
 
-    const createUser = (data: any) => {
+    const create = (data: any) => {
       create(data);
     };
 
@@ -143,9 +139,9 @@ export default defineComponent({
 
       openDialog,
       cancelDialog,
-      deleteAcademicYear,
+      deleteGfsCode,
 
-      updateUser,
+      update,
       save,
     };
   },
