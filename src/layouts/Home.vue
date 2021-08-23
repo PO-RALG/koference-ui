@@ -8,12 +8,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { reactive } from "@vue/composition-api";
+import { reactive, defineComponent } from "@vue/composition-api";
 
 import Landing from "@/layouts/Landing.vue";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Landing,
   },

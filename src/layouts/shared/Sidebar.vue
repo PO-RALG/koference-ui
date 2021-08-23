@@ -8,12 +8,12 @@
     </template>
     <template>
       <v-toolbar-title color="primary" class="user-banner d-flex flex-row justify-start">
-        <v-row >
+        <v-row>
           <v-layout justify-center align-center>
-            <v-col cols="4" class="text-left">
+            <v-col cols="4" class="text-left ml-5">
               <img class="user-avatar" :src="data.user_logo" />
             </v-col>
-            <v-col cols="8" class="text-left pl-0">
+            <v-col cols="8" class="text-left pl-0 mt-n2">
               <div class="description">
                 <h3 class="name">John Doe</h3>
                 <div class="description-title"><a href="#">[super admin]</a></div>
@@ -71,11 +71,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { reactive } from "@vue/composition-api";
-import { MENU_ITEMS } from "../../config/menu-items";
+import { defineComponent, reactive } from "@vue/composition-api";
+import { MENU_ITEMS } from "@/config/menu-items";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     drawer: {
       type: Boolean,
@@ -151,11 +150,12 @@ export default Vue.extend({
 .sidebar-close-icon {
   margin-right: 14px !important;
 }
-.admin-title {
-  font-family: "Helvetica", "Helvetica", "Arial", sans-serif;
+h3.admin-title {
   line-height: 64px;
   margin-left: 10px;
   font-size: 20px !important;
+  color: #fff;
+  padding: 0 !important;
 }
 .v-avatar {
   border-radius: 50%;
@@ -180,10 +180,13 @@ export default Vue.extend({
     font-size: 15px;
     line-height: 15px;
   }
-  .name {
+  h3.name {
     font-size: 13px;
     font-weight: normal;
     text-transform: uppercase;
+    font-weight: normal;
+    color: #fff;
+    padding: 0;
   }
   a {
     color: #fff;
@@ -194,6 +197,6 @@ export default Vue.extend({
   border-radius: 50%;
   height: 70px;
   width: 70px;
-  border: 6px solid rgba(204, 204, 204, 0.42)
+  border: 6px solid rgba(204, 204, 204, 0.42);
 }
 </style>

@@ -1,6 +1,9 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 
+import { userRoutes } from "@/components/user";
+import { FinancialYearRoutes } from "@/components/finacial-year";
+
 Vue.use(VueRouter);
 
 const DEFAULT_TITLE =
@@ -16,15 +19,7 @@ const routes: Array<RouteConfig> = [
     path: "/",
     component: () => import("@/layouts/Home.vue"),
     meta: { title: "Dashboard" },
-    children: [
-      {
-        path: "/financial-years",
-        component: () =>
-          import("@/components/financial-year/FinancialYear.vue"),
-        meta: { title: "FinancialYear" },
-        children: [],
-      },
-    ],
+    children: [...userRoutes, ...FinancialYearRoutes],
   },
 ];
 

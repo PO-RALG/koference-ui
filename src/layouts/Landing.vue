@@ -1,27 +1,22 @@
 <template>
   <div id="inspire">
     <Sidebar :drawer="data.drawer" @toggle="toggleSidebar" />
-    <Header
-      @logoutFunction="logout"
-      @sidebarToggle="toggleSidebar"
-      :drawer="data.drawer"
-    />
+    <Header @logoutFunction="logout" @sidebarToggle="toggleSidebar" :drawer="data.drawer" />
     <v-content>
       <v-container class="fill-height" fluid>
-        <v-layout></v-layout>
+        <v-layout> </v-layout>
       </v-container>
     </v-content>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { reactive, onMounted } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 
 import Sidebar from "./shared/Sidebar.vue";
 import Header from "./shared/Header.vue";
 
-export default Vue.extend({
+export default defineComponent({
   components: { Sidebar, Header },
 
   setup() {
@@ -36,12 +31,12 @@ export default Vue.extend({
     };
 
     const logout = (logout: boolean) => {
-      console.log("logout", logout);
+      //console.log("logout", logout);
     };
 
     // lifecycle hooks
     onMounted(() => {
-      console.log("drawer on mounted", data.drawer);
+      //console.log("drawer on mounted", data.drawer);
     });
 
     return {
