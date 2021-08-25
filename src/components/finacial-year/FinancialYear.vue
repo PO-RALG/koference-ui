@@ -8,7 +8,7 @@
         Add New
       </v-btn>
     </v-card-actions>
-
+    <!-- <Snackbar /> -->
     <v-card>
       <v-data-table
         :headers="data.headers"
@@ -28,13 +28,15 @@
           <v-icon class="mr-2" @click="openDialog(item)">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="deleteItem(item.id)">mdi-trash-can-outline</v-icon>
+          <v-icon @click="deleteFinancialYear(item.id)"
+            >mdi-trash-can-outline</v-icon
+          >
         </template>
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} User`" />
+        <ModalHeader :title="`${data.modalTitle} Financial Year`" />
       </template>
       <template v-slot:body>
         <ModalBody>
@@ -44,16 +46,21 @@
                 <v-col cols="12" md="4">
                   <v-text-field
                     v-model="data.formData.name"
-                    :counter="10"
                     label="First name"
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="data.formData.email"
-                    :counter="10"
-                    label="Email Address"
+                    v-model="data.formData.start_date"
+                    label="Start Date"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.end_date"
+                    label="End Date"
                     required
                   ></v-text-field>
                 </v-col>
@@ -71,13 +78,33 @@
         </ModalFooter>
       </template>
     </Modal>
+
+    <Modal :modal="data.deletemodal" :width="300">
+      <template v-slot:header>
+        <ModalHeader :title="`Delete Financial Year ?`" />
+      </template>
+      <template v-slot:body> </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
+            >Cancel</v-btn
+          >
+          <v-btn color="blue darken-1" text @click="remove">Yes</v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-// import { USER_DATA } from "../../config/users";
-import { get, create, update } from "./services/financialyear.service";
+import store from "@/store";
+import {
+  defineComponent,
+  reactive,
+  watch,
+  onMounted,
+} from "@vue/composition-api";
+import { get, create, update, destroy } from "./services/financialyear.service";
 
 export default defineComponent({
   setup() {
@@ -90,31 +117,46 @@ export default defineComponent({
         { text: "Name", align: "start", sortable: false, value: "name" },
         { text: "Start Date", value: "start_date" },
         { text: "End Date", value: "end_date" },
+        { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
+      deletemodal: false,
       items: dataItems,
       formData,
       params: {
-        total: 100,
+        total: 10,
         size: 10,
       },
+      itemtodelete: "",
     });
 
     onMounted(() => {
       // make api call
       let params: any = {
-        total: 100,
+        total: 10,
         size: 10,
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
         data.items = response.data.data;
       });
-      // data.items = USER_DATA;
     });
 
-    const deleteAcademicYear = () => {
-      console.log("delete year");
+    const reloadData = () => {
+      let params: any = {
+        total: 10,
+        size: 10,
+      };
+      get(params).then((response: any) => {
+        console.log("data", response.data.data);
+        data.items = response.data.data;
+      });
+    };
+
+    const deleteFinancialYear = (deleteId: any) => {
+      data.deletemodal = !data.modal;
+      data.itemtodelete = deleteId;
+      // console.log("delete year", data);
     };
     const getFinancialYear = () => {
       get(data).then((response) => {
@@ -127,10 +169,23 @@ export default defineComponent({
       data.modal = !data.modal;
     };
 
+    const cancelConfirmDialog = () => {
+      data.formData = {};
+      data.deletemodal = false;
+    };
+
+    const remove = () => {
+      console.log("delete data with id", data.itemtodelete);
+      destroy(data.itemtodelete).then(() => {
+        reloadData();
+        data.deletemodal = false;
+      });
+    };
+
     const save = () => {
-      console.log(data.formData);
+      console.log("Form Data", data.formData);
       if (data.formData.id) {
-        updateUser(data.formData);
+        updateFinancialYear(data.formData);
       } else {
         createUser(data.formData);
       }
@@ -146,24 +201,41 @@ export default defineComponent({
       data.modal = !data.modal;
     };
 
-    const updateUser = (data: any) => {
-      update(data);
+    const updateFinancialYear = (data: any) => {
+      update(data).then((response) => {
+        console.log("Updated data", response.data);
+        reloadData();
+        cancelDialog();
+      });
     };
 
     const createUser = (data: any) => {
-      create(data);
+      create(data).then((response) => {
+        console.log("Created data", response.data);
+        reloadData();
+        cancelDialog();
+      });
     };
+    // watching a getter
+
+    watch(
+      () => store.state.snackbar,
+      () => {
+        console.log("datazzzzz", store.getters.getSnackBar);
+      }
+    );
 
     return {
       data,
-
       openDialog,
       cancelDialog,
-      deleteAcademicYear,
+      deleteFinancialYear,
       getFinancialYear,
-
-      updateUser,
+      updateFinancialYear,
       save,
+      reloadData,
+      remove,
+      cancelConfirmDialog,
     };
   },
 });
