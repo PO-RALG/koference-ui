@@ -29,7 +29,7 @@
         <ModalHeader :title="`${data.modalTitle} Level`" />
       </template>
       <template v-slot:body>
-        <ModalBody>
+        <ModalBody v-if="data.formData">
           <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row>
@@ -59,8 +59,8 @@
       </template>
     </Modal>
     <ConfirmDialog
-      :reject-function="closeConfirmDialog"
-      :accept-function="deleteItem"
+      @rejectFunction="closeConfirmDialog"
+      @acceptFunction="deleteItem"
       :message="'Are you sure you want to delete this level?'"
       :data="data.item"
       :isOpen="data.isOpen"
@@ -102,7 +102,7 @@ export default defineComponent({
         total: 100,
         size: 10,
       },
-      nameRules: [(v) => !!v || "Name is required"],
+      nameRules: [(v: any) => !!v || "Name is required"],
     });
 
     onMounted(() => {
@@ -129,6 +129,7 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
+        data.formData = {} as Level;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
@@ -144,7 +145,11 @@ export default defineComponent({
     };
 
     const create = (data: Level) => {
-      createLevel(data);
+      createLevel(data).then((response) => {
+        if (response.status === 200) {
+          cancelDialog();
+        }
+      })
     };
 
     const openConfirmDialog = (item: Level) => {
@@ -157,9 +162,8 @@ export default defineComponent({
       data.isOpen = false;
     };
 
-    const deleteItem = (item) => {
-      const payload = item;
-      deleteLevel(payload).then((response) => {
+    const deleteItem = (item: number | string) => {
+      deleteLevel(item).then((response) => {
         console.log(response);
       });
       data.item = null;

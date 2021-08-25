@@ -17,8 +17,8 @@ const updateLevel = async (payload: any) => {
   return await axios.put(`${API}/${payload.id}`, payload);
 };
 
-const deleteLevel = async (payload: any) => {
-  return await axios.put(`${API}/${payload.id}`, payload);
+const deleteLevel = async (id: any) => {
+  return await axios.delete(`${API}/${id}`);
 };
 
 export { get, find, createLevel, updateLevel, deleteLevel };

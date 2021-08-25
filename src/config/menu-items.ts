@@ -84,8 +84,8 @@ export const MENU_ITEMS = [
     children: [
       {
         icon: "mdi-border-left-variant",
-        title: "Manage Locations",
-        state: "/manage-locations",
+        title: "Manage Admin Areas",
+        state: "/admin-areas",
       },
       {
         icon: "mdi-border-left-variant",
