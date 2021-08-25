@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 
 import { userRoutes } from "@/components/user";
+import { levelRoutes } from "@/components/admin-area/level";
+
 
 Vue.use(VueRouter);
 
@@ -17,7 +19,7 @@ const routes: Array<RouteConfig> = [
     path: "/",
     component: () => import("@/layouts/Home.vue"),
     meta: { title: "Dashboard" },
-    children: [...userRoutes],
+    children: [...userRoutes, ...levelRoutes],
   },
 ];
 

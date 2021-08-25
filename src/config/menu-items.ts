@@ -30,19 +30,23 @@ export const MENU_ITEMS = [
     children: [
       {
         icon: "mdi-book-variant",
-        title: "Fund Sources",
-        state: "/fund-sources",
+        title: "Financial Years",
+        state: "/financial-years",
       },
       {
         icon: "mdi-view-stream-outline",
-        title: "GFS Codes",
-        state: "/gfs-codes",
+        title: "Fund Types",
+        state: "/fund-types",
       },
-
       {
         icon: "mdi-text-subject",
-        title: "Financial Years",
-        state: "/financial-years",
+        title: "Bank Accounts",
+        state: "/bank-acounts",
+      },
+      {
+        icon: "mdi-text-subject",
+        title: "Transaction Types",
+        state: "/transaction-types",
       },
     ],
   },
@@ -55,6 +59,21 @@ export const MENU_ITEMS = [
         icon: "mdi-border-left-variant",
         title: "Sub Budget Class",
         state: "/sub-budgets",
+      },
+      {
+        icon: "mdi-border-left-variant",
+        title: "GFS Codes",
+        state: "/gfs-codes",
+      },
+      {
+        icon: "mdi-border-left-variant",
+        title: "Projects",
+        state: "/projects",
+      },
+      {
+        icon: "mdi-border-left-variant",
+        title: "Funding Sources",
+        state: "/funding-sources",
       },
     ],
   },
@@ -71,7 +90,7 @@ export const MENU_ITEMS = [
       {
         icon: "mdi-border-left-variant",
         title: "Levels",
-        state: "/manage-levels",
+        state: "/admin-area-levels",
       },
     ],
   },
