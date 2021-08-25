@@ -1,0 +1,224 @@
+<template>
+  <div class="academic-year">
+    <v-card-actions class="pa-0">
+      <h2>{{ data.title }}</h2>
+      <v-spacer></v-spacer>
+      <v-btn color="primary" @click="openDialog">
+        <v-icon>mdi-plus</v-icon>
+        Add New
+      </v-btn>
+    </v-card-actions>
+
+    <v-card>
+      <v-data-table
+        :headers="data.headers"
+        :items="data.items"
+        :server-items-length="data.params.total"
+        :options.sync="data.pagination"
+        :items-per-page="data.params.size"
+        class="elevation-1"
+      >
+      <template v-slot:item.actions="{ item }">
+        <v-icon class="mr-2" @click="openDialog(item)">
+          mdi-pencil-box-outline
+        </v-icon>
+        <v-icon @click="openConfirmDialog(item)">
+          mdi-trash-can-outline
+        </v-icon>
+      </template>
+      </v-data-table>
+    </v-card>
+    <Modal :modal="data.modal" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`${data.modalTitle} User`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-form ref="form" v-model="data.valid">
+            <v-container>
+              <v-row>
+                <v-col cols="12" lg="4" md="4" sm="12">
+                  <v-text-field
+                    label="First Name"
+                    v-model="data.formData.first_name"
+                    required>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12">
+                  <v-text-field
+                    label="Midde Name"
+                    v-model="data.formData.middle_name"
+                    required>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12">
+                  <v-text-field
+                    label="Last Name"
+                    v-model="data.formData.last_name"
+                    required>
+                  </v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
+                  <v-text-field
+                    label="Email Address"
+                    v-model="data.formData.email"
+                    required>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
+                  <v-text-field
+                    label="Phone Number"
+                    v-model="data.formData.phone_number"
+                    required>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
+                  <v-text-field
+                    label="Check Number"
+                    v-model="data.formData.check_number"
+                    required>
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter class="mt-n8">
+          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="save">
+            {{ data.modalTitle }}
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+    <ConfirmDialog
+      :reject-function="closeConfirmDialog"
+      :accept-function="deleteItem"
+      :message="'Are you sure you want to delete this user?'"
+      :data="data.item"
+      :isOpen="data.isOpen"
+      :title="'Delete User'"
+    />
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, reactive, onMounted } from "@vue/composition-api";
+import { get, create, update, deleteUser } from "./services/user.service";
+import { User } from "./types/User";
+
+export default defineComponent({
+  setup() {
+    let dataItems: Array<User> = [];
+    let userData!: User;
+    let data = reactive({
+      title: "Manage Users",
+      valid: true,
+      isOpen: false,
+      item: null,
+      modalTitle: "",
+      headers: [
+        { text: "Check Number", value: "check_number" },
+        { text: "Phone Number", value: "phone_number" },
+        { text: "Name", align: "start", sortable: false, value: "last_name" },
+        { text: "Email", value: "email" },
+        { text: "Actions", value: "actions", sortable: false },
+      ],
+      modal: false,
+      items: dataItems,
+      formData: userData,
+      params: {
+        total: 100,
+        size: 10,
+      },
+      nameRules: [
+        (v) => !!v || "Name is required",
+        (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+      ],
+      email: "",
+      emailRules: [(v) => !!v || "E-mail is required", (v) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
+    });
+
+    onMounted(() => {
+      get({}).then((response: any) => {
+        console.log(response);
+        data.items = response.data.data;
+      });
+    });
+
+    const cancelDialog = () => {
+      data.formData = {} as User;
+      data.modal = !data.modal;
+    };
+
+    const save = () => {
+      if (data.formData.id) {
+        updateUser(data.formData);
+      } else {
+        createUser(data.formData);
+      }
+    };
+
+    const openDialog = (formData?: User) => {
+      if (formData && formData.id) {
+        data.formData = formData;
+        data.modalTitle = "Update";
+      } else {
+        data.modalTitle = "Create";
+      }
+      data.modal = !data.modal;
+    };
+
+    const updateUser = (data: User) => {
+      update(data).then((response) => {
+        console.log(response.status);
+        if (response.status === 200) {
+          cancelDialog();
+        }
+      });
+    };
+
+    const createUser = (data: User) => {
+      create(data);
+    };
+
+    const openConfirmDialog = (item: User) => {
+      data.item = item;
+      data.isOpen = true;
+    };
+
+    const closeConfirmDialog = () => {
+      data.item = null;
+      data.isOpen = false;
+    };
+
+    const deleteItem = (item) => {
+      const payload = item;
+      deleteUser(payload).then((response) => {
+        console.log(response);
+      });
+      data.item = null;
+      data.isOpen = false;
+    };
+
+    return {
+      data,
+
+      openDialog,
+      cancelDialog,
+      closeConfirmDialog,
+      openConfirmDialog,
+
+      updateUser,
+      save,
+      deleteItem,
+    };
+  },
+});
+</script>
+
+<style scoped></style>
