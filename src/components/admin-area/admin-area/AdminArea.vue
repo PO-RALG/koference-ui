@@ -13,10 +13,7 @@
       <v-row class="top-header d-flex justify-space-between" cols="12">
         <v-col cols="12" sm="12" md="3" class="hierarchy-container elevation-1">
           <v-label><h5>SELECT LOCATION</h5></v-label>
-          <TreeBrowser v-if="data.node"
-            @onClick="loadLocationChildren"
-            :node="data.node"
-          />
+          <TreeBrowser v-if="data.node" @onClick="loadLocationChildren" :node="data.node" />
         </v-col>
         <v-col cols="12" md="9" ms="12">
           <v-data-table
@@ -26,7 +23,7 @@
             :options.sync="data.pagination"
             :items-per-page="data.params.size"
             class="elevation-1"
-            >
+          >
             <template v-slot:item.actions="{ item }">
               <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
               <v-icon @click="openConfirmDialog(item)"> mdi-trash-can-outline </v-icon>
@@ -40,7 +37,7 @@
         <ModalHeader :title="`${data.modalTitle} Admin Area`" />
       </template>
       <template v-slot:body>
-        <ModalBody v-if="data.formData">
+        <ModalBody>
           <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row>
@@ -59,11 +56,11 @@
               <v-row class="mt-n8">
                 <v-col cols="12" lg="12" md="12" sm="12">
                   <DualMultiSelect
-                    :items="data.levels"
+                    :items="levels"
                     :title="'Select Admin Area Level'"
                     :label="'Filter levels...'"
                     :columnName="'name'"
-                    :filter-function="searchRoles"
+                    @filterFunction="searchLevels"
                     v-model="data.formData.roles"
                   />
                 </v-col>
@@ -93,9 +90,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
 import { get, createArea, updateArea, deleteArea } from "./services/admin-area-services";
-import { get as getLevels  } from "../level/services/level-services";
+import { get as getLevels } from "../level/services/level-services";
 import { Level } from "../level/types/Level";
 import { AdminArea } from "./types/AdminArea";
 import { TREE_NODE } from "@/config/treenode";
@@ -104,7 +101,7 @@ export default defineComponent({
   setup() {
     let dataItems: Array<AdminArea> = [];
     let levelItems: Array<Level> = [];
-    let adminAreaData!: AdminArea;
+    let adminAreaData = {} as AdminArea;
     let data = reactive({
       title: "Manage Admin Areas",
       valid: true,
@@ -132,11 +129,10 @@ export default defineComponent({
     onMounted(() => {
       get({}).then((response: any) => {
         data.items = response.data.data;
-        data.node = TREE_NODE ;
+        data.node = TREE_NODE;
       });
 
       getLevels({}).then((response: any) => {
-        console.log("levels", response);
         data.levels = response.data.data;
       });
     });
@@ -154,12 +150,13 @@ export default defineComponent({
       }
     };
 
+    let levels = computed(() => data.levels);
+
     const openDialog = (formData?: AdminArea) => {
       if (formData && formData.id) {
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as AdminArea;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
@@ -167,7 +164,6 @@ export default defineComponent({
 
     const update = (data: AdminArea) => {
       updateArea(data).then((response) => {
-        console.log(response.status);
         if (response.status === 200) {
           cancelDialog();
         }
@@ -201,14 +197,11 @@ export default defineComponent({
     };
 
     const loadLocationChildren = (data) => {
-      console.log(data)
+      console.log(data);
     };
 
-    const searchRoles = (term) =>  {
-      data.levels.filter((level: Level) => {
-        return level.name.includes(term)
-      });
-      console.log(data.levels);
+    const searchLevels = (term) => {
+      data.levels = data.levels.filter((level) => level.name.includes(term));
     };
 
     return {
@@ -224,7 +217,9 @@ export default defineComponent({
       deleteItem,
 
       loadLocationChildren,
-      searchRoles,
+      searchLevels,
+
+      levels,
     };
   },
 });

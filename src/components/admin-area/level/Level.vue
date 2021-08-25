@@ -29,7 +29,7 @@
         <ModalHeader :title="`${data.modalTitle} Level`" />
       </template>
       <template v-slot:body>
-        <ModalBody v-if="data.formData">
+        <ModalBody>
           <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row>
@@ -71,18 +71,13 @@
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import {
-  get,
-  createLevel,
-  updateLevel,
-  deleteLevel,
-} from "./services/level-services";
+import { get, createLevel, updateLevel, deleteLevel } from "./services/level-services";
 import { Level } from "./types/Level";
 
 export default defineComponent({
   setup() {
     let dataItems: Array<Level> = [];
-    let levelData!: Level;
+    let levelData: Level = {};
     let data = reactive({
       title: "Manage Levels",
       valid: true,
@@ -129,7 +124,6 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as Level;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
@@ -149,7 +143,7 @@ export default defineComponent({
         if (response.status === 200) {
           cancelDialog();
         }
-      })
+      });
     };
 
     const openConfirmDialog = (item: Level) => {
