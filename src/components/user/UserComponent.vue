@@ -18,15 +18,13 @@
         :items-per-page="data.params.size"
         class="elevation-1"
       >
-        <template v-slot:item.startDate="{ item }">
-          <span>{{ item.startDate }}</span>
-        </template>
-        <template v-slot:item.endDate="{ item }">
-          <span>{{ item.endDate }}</span>
-        </template>
         <template v-slot:item.actions="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
-          <v-icon @click="deleteItem(item.id)">mdi-trash-can-outline</v-icon>
+          <v-icon class="mr-2" @click="openDialog(item)">
+            mdi-pencil-box-outline
+          </v-icon>
+          <v-icon @click="openConfirmDialog(item)">
+            mdi-trash-can-outline
+          </v-icon>
         </template>
       </v-data-table>
     </v-card>
@@ -36,19 +34,58 @@
       </template>
       <template v-slot:body>
         <ModalBody>
-          <v-form>
+          <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
-                  <v-text-field v-model="data.formData.name" :counter="10" label="First name" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" lg="4" md="4" sm="12">
                   <v-text-field
-                    v-model="data.formData.email"
-                    :counter="10"
-                    label="Email Address"
+                    label="First Name"
+                    v-model="data.formData.first_name"
                     required
-                  ></v-text-field>
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12">
+                  <v-text-field
+                    label="Midde Name"
+                    v-model="data.formData.middle_name"
+                    required
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12">
+                  <v-text-field
+                    label="Last Name"
+                    v-model="data.formData.last_name"
+                    required
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
+                  <v-text-field
+                    label="Email Address"
+                    v-model="data.formData.email"
+                    required
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
+                  <v-text-field
+                    label="Phone Number"
+                    v-model="data.formData.phone_number"
+                    required
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
+                  <v-text-field
+                    label="Check Number"
+                    v-model="data.formData.check_number"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -56,63 +93,78 @@
         </ModalBody>
       </template>
       <template v-slot:footer>
-        <ModalFooter>
+        <ModalFooter class="mt-n8">
           <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
+          <v-btn color="blue darken-1" text @click="save">
+            {{ data.modalTitle }}
+          </v-btn>
         </ModalFooter>
       </template>
     </Modal>
+    <ConfirmDialog
+      :reject-function="closeConfirmDialog"
+      :accept-function="deleteItem"
+      :message="'Are you sure you want to delete this user?'"
+      :data="data.item"
+      :isOpen="data.isOpen"
+      :title="'Delete User'"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import { USER_DATA } from "../../config/users";
-import { get, create, update } from "./services/user.service";
+import { get, create, update, deleteUser } from "./services/user.service";
+import { User } from "./types/User";
 
 export default defineComponent({
   setup() {
-    let dataItems: Array<any> = [];
-    let formData: any = {};
+    let dataItems: Array<User> = [];
+    let userData!: User;
     let data = reactive({
       title: "Manage Users",
+      valid: true,
+      isOpen: false,
+      item: null,
       modalTitle: "",
       headers: [
         { text: "Check Number", value: "check_number" },
         { text: "Phone Number", value: "phone_number" },
-        { text: "Name", align: "start", sortable: false, value: "name" },
+        { text: "Name", align: "start", sortable: false, value: "last_name" },
         { text: "Email", value: "email" },
-        { text: "Roles", value: "roles" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       items: dataItems,
-      formData,
+      formData: userData,
       params: {
         total: 100,
         size: 10,
       },
+      nameRules: [
+        (v) => !!v || "Name is required",
+        (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+      ],
+      email: "",
+      emailRules: [
+        (v) => !!v || "E-mail is required",
+        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+      ],
     });
 
     onMounted(() => {
-      // make api call
-      // get().then((response: any) => {
-        // data.items = response.data;
-      // });
-      data.items = USER_DATA;
+      get({}).then((response: any) => {
+        console.log(response);
+        data.items = response.data.data;
+      });
     });
 
-    const deleteAcademicYear = () => {
-      console.log("delete year");
-    };
-
     const cancelDialog = () => {
-      data.formData = {};
+      data.formData = {} as User;
       data.modal = !data.modal;
     };
 
     const save = () => {
-      console.log(data.formData);
       if (data.formData.id) {
         updateUser(data.formData);
       } else {
@@ -120,8 +172,8 @@ export default defineComponent({
       }
     };
 
-    const openDialog = (formData?: any) => {
-      if (formData.id) {
+    const openDialog = (formData?: User) => {
+      if (formData && formData.id) {
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
@@ -130,12 +182,36 @@ export default defineComponent({
       data.modal = !data.modal;
     };
 
-    const updateUser = (data: any) => {
-      update(data);
+    const updateUser = (data: User) => {
+      update(data).then((response) => {
+        console.log(response.status);
+        if (response.status === 200) {
+          cancelDialog();
+        }
+      });
     };
 
-    const createUser = (data: any) => {
+    const createUser = (data: User) => {
       create(data);
+    };
+
+    const openConfirmDialog = (item: User) => {
+      data.item = item;
+      data.isOpen = true;
+    };
+
+    const closeConfirmDialog = () => {
+      data.item = null;
+      data.isOpen = false;
+    };
+
+    const deleteItem = (item) => {
+      const payload = item;
+      deleteUser(payload).then((response) => {
+        console.log(response);
+      });
+      data.item = null;
+      data.isOpen = false;
     };
 
     return {
@@ -143,10 +219,12 @@ export default defineComponent({
 
       openDialog,
       cancelDialog,
-      deleteAcademicYear,
+      closeConfirmDialog,
+      openConfirmDialog,
 
       updateUser,
       save,
+      deleteItem,
     };
   },
 });

@@ -8,7 +8,7 @@
         Add New
       </v-btn>
     </v-card-actions>
-    <!-- <Snackbar /> -->
+    <Snackbar />
     <v-card>
       <v-data-table
         :headers="data.headers"
@@ -39,7 +39,7 @@
         <ModalHeader :title="`${data.modalTitle} Financial Year`" />
       </template>
       <template v-slot:body>
-        <ModalBody>
+        <ModalBody v-if="data.formData">
           <v-form>
             <v-container>
               <v-row>
@@ -81,9 +81,11 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Financial Year ?`" />
+        <ModalHeader :title="`Delete Financial Year `" />
       </template>
-      <template v-slot:body> </template>
+      <template v-slot:body>
+        <ModalBody> Are you sure? </ModalBody>
+      </template>
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
@@ -97,6 +99,7 @@
 </template>
 
 <script lang="ts">
+import { FinancialYear } from "./types/FinancialYear";
 import store from "@/store";
 import {
   defineComponent,
@@ -104,12 +107,14 @@ import {
   watch,
   onMounted,
 } from "@vue/composition-api";
+
 import { get, create, update, destroy } from "./services/financialyear.service";
 
 export default defineComponent({
   setup() {
-    let dataItems: Array<any> = [];
-    let formData: any = {};
+    let dataItems: Array<FinancialYear> = [];
+    let financialYearData: FinancialYear;
+
     let data = reactive({
       title: "Manage Finacial Years",
       modalTitle: "",
@@ -122,7 +127,7 @@ export default defineComponent({
       modal: false,
       deletemodal: false,
       items: dataItems,
-      formData,
+      formData: financialYearData,
       params: {
         total: 10,
         size: 10,
@@ -165,12 +170,12 @@ export default defineComponent({
     };
 
     const cancelDialog = () => {
-      data.formData = {};
+      data.formData = {} as FinancialYear;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {};
+      data.formData = {} as FinancialYear;
       data.deletemodal = false;
     };
 
@@ -196,6 +201,7 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
+        data.formData = {} as FinancialYear;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;

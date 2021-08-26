@@ -2,7 +2,9 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 
 import { userRoutes } from "@/components/user";
-import { FinancialYearRoutes } from "@/components/finacial-year";
+import { FinancialYearRoutes } from "@/components/finacialyears/";
+import { adminAreaRoutes } from "@/components/admin-area/admin-area";
+import { levelRoutes } from "@/components/admin-area/level";
 
 Vue.use(VueRouter);
 
@@ -19,7 +21,12 @@ const routes: Array<RouteConfig> = [
     path: "/",
     component: () => import("@/layouts/Home.vue"),
     meta: { title: "Dashboard" },
-    children: [...userRoutes, ...FinancialYearRoutes],
+    children: [
+      ...userRoutes,
+      ...levelRoutes,
+      ...adminAreaRoutes,
+      ...FinancialYearRoutes,
+    ],
   },
 ];
 

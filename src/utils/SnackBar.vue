@@ -1,6 +1,5 @@
 <template>
   <v-snackbar v-model="data.snackbar.show" :bottom="true" :right="true">
-    {{ $store.getters.getSnackBar.message }}
     <v-icon white>{{ data.snackbar.icon }}</v-icon>
     {{ data.snackbar.message }}
     <v-btn text color="white" @click.native="data.snackbar.show = false">
@@ -17,7 +16,7 @@ export default defineComponent({
   setup() {
     let data = reactive({
       snackbar: {
-        show: true,
+        show: false,
         message: "",
         icon: "",
       },
@@ -25,9 +24,10 @@ export default defineComponent({
     watch(
       () => store.state.snackbar,
       () => {
+        // let snackbar = this.$store.getters.getSnackBar;
         if (store.getters.getSnackBar.message !== "") {
-          // data.snackbar = store.getters.getSnackBar;
-          // console.log("datazzzzz 22222", store.getters.getSnackBar);
+          data.snackbar = store.getters.getSnackBar;
+          console.log("datazzzzz 22222", store.getters.getSnackBar);
         }
       }
     );

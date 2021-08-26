@@ -8,3 +8,4 @@ vue_1["default"].component("ModalBody", function () { return Promise.resolve().t
 vue_1["default"].component("ModalHeader", function () { return Promise.resolve().then(function () { return require("./modal/ModalHeader.vue"); }); });
 vue_1["default"].component("ModalFooter", function () { return Promise.resolve().then(function () { return require("./modal/ModalFooter.vue"); }); });
 vue_1["default"].component("Snackbar", function () { return Promise.resolve().then(function () { return require("../../utils/SnackBar.vue"); }); });
+vue_1["default"].component("ConfirmDialog", function () { return Promise.resolve().then(function () { return require("./ConfirmDialog.vue"); }); });
