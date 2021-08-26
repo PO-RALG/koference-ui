@@ -1,8 +1,8 @@
-export interface GfsCodes {
+export interface FundTypes {
   id: number;
   code: string;
-  name: string;
+  description: string;
+  deleted_at: Date;
   created_at: Date;
   updated_at: Date;
-  deleted_at: Date;
 }

@@ -18,8 +18,8 @@
         <template v-slot:[`item.code`]="{ item }">
           <span>{{ item.code }}</span>
         </template>
-        <template v-slot:[`item.name`]="{ item }">
-          <span>{{ item.name }}</span>
+        <template v-slot:[`item.description`]="{ item }">
+          <span>{{ item.description }}</span>
         </template>
       </v-data-table>
     </v-card>
@@ -28,18 +28,18 @@
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import { get, } from "../gfs-codes/service/gfs.service";
+import { get } from "../projects/service/projects.service";
 
 export default defineComponent({
   setup() {
     let dataItems: Array<any> = [];
     let formData: any = {};
     let data = reactive({
-      title: "GFS Codes",
+      title: "Projects",
       modalTitle: "",
       headers: [
         { text: "Code", value: "code" },
-        { text: "Name", align: "start", sortable: false, value: "name" },
+        { text: "Description", align: "start", sortable: false, value: "description" },
       ],
       modal: false,
       items: dataItems,
@@ -57,7 +57,8 @@ export default defineComponent({
         size: 10
       }
       get(params).then((response: any) => {
-      data.items = response.data;
+        // console.log("Peter:", response.data.data);
+      data.items = response.data.data;
       });
     });
 

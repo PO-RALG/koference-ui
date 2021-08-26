@@ -1,0 +1,1 @@
+export { default as gfsCategoriesRoutes } from "./routes/gfs-categories"

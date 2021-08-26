@@ -62,6 +62,11 @@ export const MENU_ITEMS = [
       },
       {
         icon: "mdi-border-left-variant",
+        title: "GFS Categories",
+        state: "/gfs-categories",
+      },
+      {
+        icon: "mdi-border-left-variant",
         title: "GFS Codes",
         state: "/gfs-codes",
       },

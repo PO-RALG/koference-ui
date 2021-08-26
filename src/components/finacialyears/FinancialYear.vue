@@ -142,7 +142,7 @@ export default defineComponent({
         size: 10,
       };
       get(params).then((response: any) => {
-        console.log("data", response.data.data);
+        // console.log("data", response.data.data);
         data.items = response.data.data;
       });
     });

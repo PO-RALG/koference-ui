@@ -67,7 +67,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import { get, create, update } from "./service/gfs.service";
+import { get } from "./service/gfs.service";
 
 export default defineComponent({
   setup() {
