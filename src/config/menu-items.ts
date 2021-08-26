@@ -31,7 +31,7 @@ export const MENU_ITEMS = [
       {
         icon: "mdi-book-variant",
         title: "Financial Years",
-        state: "/financial-years",
+        state: "/manage-finacial-years",
       },
       {
         icon: "mdi-view-stream-outline",
@@ -59,6 +59,11 @@ export const MENU_ITEMS = [
         icon: "mdi-border-left-variant",
         title: "Sub Budget Class",
         state: "/sub-budgets",
+      },
+      {
+        icon: "mdi-border-left-variant",
+        title: "GFS Categories",
+        state: "/gfs-categories",
       },
       {
         icon: "mdi-border-left-variant",
