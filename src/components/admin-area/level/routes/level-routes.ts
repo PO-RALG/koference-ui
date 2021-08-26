@@ -1,7 +1,7 @@
 const levelRoutes = [
   {
     path: "/admin-area-levels",
-    component: () => import("../LevelComponent.vue"),
+    component: () => import("../Level.vue"),
     meta: { requiresAuth: false, title: "Admin Area Levels" },
   },
 ];

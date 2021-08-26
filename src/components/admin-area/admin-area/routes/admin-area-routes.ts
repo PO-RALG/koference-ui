@@ -1,7 +1,7 @@
 const adminAreaRoutes = [
   {
     path: "/admin-areas",
-    component: () => import("../AdminAreaComponent.vue"),
+    component: () => import("../AdminArea.vue"),
     meta: { requiresAuth: false, title: "Admin Area" },
   },
 ];

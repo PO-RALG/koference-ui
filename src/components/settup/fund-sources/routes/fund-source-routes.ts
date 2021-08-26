@@ -1,7 +1,7 @@
 const userRoutes = [
   {
     path: "/manage-users",
-    component: () => import("../User.vue"),
+    component: () => import("../UserComponent.vue"),
     meta: { requiresAuth: false, title: "Manage Users" },
   },
 ];
