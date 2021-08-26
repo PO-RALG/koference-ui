@@ -54,6 +54,14 @@
                   <v-text-field label="Check Number" v-model="data.formData.check_number" required> </v-text-field>
                 </v-col>
               </v-row>
+              <v-row>
+                <v-col cols="12" sm="12" md="12" class="hierarchy-container">
+                  <v-label>
+                    <h5 class="tree-title">SELECT USER LOCATION</h5>
+                  </v-label>
+                  <TreeBrowser v-if="data.node" @onClick="loadLocationChildren" :node="data.node" />
+                </v-col>
+              </v-row>
             </v-container>
           </v-form>
         </ModalBody>
@@ -68,8 +76,8 @@
       </template>
     </Modal>
     <ConfirmDialog
-      :reject-function="closeConfirmDialog"
-      :accept-function="deleteItem"
+      @rejectFunction="closeConfirmDialog"
+      @acceptFunction="deleteItem"
       :message="'Are you sure you want to delete this user?'"
       :data="data.item"
       :isOpen="data.isOpen"
@@ -79,10 +87,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted, set } from "@vue/composition-api";
 import { get, create, update, deleteUser } from "./services/user.service";
+import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { AxiosResponse } from "axios";
 import { User } from "./types/User";
+import { TREE_NODE } from "@/config/treenode";
 
 export default defineComponent({
   setup() {
@@ -92,6 +102,7 @@ export default defineComponent({
       title: "Manage Users",
       valid: true,
       isOpen: false,
+      node: null,
       item: userData,
       modalTitle: "",
       headers: [
@@ -115,13 +126,17 @@ export default defineComponent({
       email: "",
       emailRules: [
         (v: string) => !!v || "E-mail is required",
-        (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
+        (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+      ],
     });
 
     onMounted(() => {
+      data.node = TREE_NODE;
       get({}).then((response: AxiosResponse) => {
-        data.items = response.data.data;
+        console.log("response", response);
+        data.items = response.data.data.data;
       });
+      getNodes();
     });
 
     const cancelDialog = () => {
@@ -179,6 +194,25 @@ export default defineComponent({
       data.isOpen = false;
     };
 
+    const loadLocationChildren = (location: any) => {
+      data.formData.location_id = location.id;
+      if (!location.children) {
+        if (location.id !== data.node.id) {
+          getChildren(location.id).then((response: AxiosResponse) => {
+            if (response.data.data.children.length) {
+              set(location, "children", response.data.data.children);
+            }
+          });
+        }
+      }
+    };
+
+    const getNodes = (id?: number | string) => {
+      getChildren(id).then((response: AxiosResponse) => {
+        data.node = response.data.data;
+      });
+    };
+
     return {
       data,
 
@@ -186,6 +220,9 @@ export default defineComponent({
       cancelDialog,
       closeConfirmDialog,
       openConfirmDialog,
+
+      loadLocationChildren,
+      getNodes,
 
       updateUser,
       save,
@@ -195,4 +232,8 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.tree-title {
+  padding: 0 0 5px 0;
+}
+</style>
