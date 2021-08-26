@@ -1,7 +1,6 @@
 // import Vue from "vue";
 // import store from "../store";
 // import _ from "lodash";
-
 // Vue.mixin({
 //   methods: {
 //     can(action, resource) {

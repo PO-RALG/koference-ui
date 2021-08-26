@@ -18,15 +18,13 @@
         :items-per-page="data.params.size"
         class="elevation-1"
       >
-        <template v-slot:[`item.startDate`]="{ item }">
-          <span>{{ item.startDate }}</span>
-        </template>
-        <template v-slot:[`item.endDate`]="{ item }">
-          <span>{{ item.endDate }}</span>
-        </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
-          <v-icon @click="deleteItem(item.id)">mdi-trash-can-outline</v-icon>
+          <v-icon class="mr-2" @click="openDialog(item)">
+            mdi-pencil-box-outline
+          </v-icon>
+          <v-icon @click="openConfirmDialog(item)">
+            mdi-trash-can-outline
+          </v-icon>
         </template>
       </v-data-table>
     </v-card>
@@ -39,16 +37,52 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
-                  <v-text-field v-model="data.formData.name" :counter="10" label="First name" required></v-text-field>
+                <v-col cols="12" lg="4" md="4" sm="12">
+                  <v-text-field
+                    label="First Name"
+                    v-model="data.formData.first_name"
+                    required
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12">
+                  <v-text-field
+                    label="Midde Name"
+                    v-model="data.formData.middle_name"
+                    required
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12">
+                  <v-text-field
+                    label="Last Name"
+                    v-model="data.formData.last_name"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-text-field
                     v-model="data.formData.email"
-                    :counter="10"
-                    label="Email Address"
                     required
-                  ></v-text-field>
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
+                  <v-text-field
+                    label="Phone Number"
+                    v-model="data.formData.phone_number"
+                    required
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
+                  <v-text-field
+                    label="Check Number"
+                    v-model="data.formData.check_number"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -92,6 +126,15 @@ export default defineComponent({
         total: 100,
         size: 10,
       },
+      nameRules: [
+        (v) => !!v || "Name is required",
+        (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+      ],
+      email: "",
+      emailRules: [
+        (v) => !!v || "E-mail is required",
+        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+      ],
     });
 
     onMounted(() => {

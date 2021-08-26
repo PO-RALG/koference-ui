@@ -2,10 +2,11 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 
 import { userRoutes } from "@/components/user";
-import { FinancialYearRoutes } from "@/components/finacial-year";
 import { gfsCodesRoutes } from "@/components/settup/gfs-codes";
 import { levelRoutes } from "@/components/admin-area/level";
 import { adminAreaRoutes } from "@/components/admin-area/admin-area";
+import { FinancialYearRoutes } from "@/components/finacialyears";
+
 
 Vue.use(VueRouter);
 

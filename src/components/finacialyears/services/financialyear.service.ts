@@ -13,7 +13,11 @@ const create = async (payload: any) => {
 };
 
 const update = async (payload: any) => {
-  return await axios.put(`/api/v1/financial-years`, payload);
+  return await axios.put(`/api/v1/financial-years/` + payload.id, payload);
+};
+const destroy = async (payload: any) => {
+  console.log("payload", payload);
+  return await axios.delete(`/api/v1/financial-years/` + payload);
 };
 
-export { get, find, create, update };
+export { get, find, create, update, destroy };

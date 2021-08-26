@@ -31,7 +31,7 @@ export const MENU_ITEMS = [
       {
         icon: "mdi-book-variant",
         title: "Financial Years",
-        state: "/financial-years",
+        state: "/manage-finacial-years",
       },
       {
         icon: "mdi-view-stream-outline",

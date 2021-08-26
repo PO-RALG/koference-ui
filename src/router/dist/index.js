@@ -10,7 +10,9 @@ exports.__esModule = true;
 var vue_1 = require("vue");
 var vue_router_1 = require("vue-router");
 var user_1 = require("@/components/user");
-var finacial_year_1 = require("@/components/finacial-year");
+var finacialyears_1 = require("@/components/finacialyears/");
+var admin_area_1 = require("@/components/admin-area/admin-area");
+var level_1 = require("@/components/admin-area/level");
 vue_1["default"].use(vue_router_1["default"]);
 var DEFAULT_TITLE = "FFARS - Facility Financial Accounting & Reporting System";
 var routes = [
@@ -23,7 +25,7 @@ var routes = [
         path: "/",
         component: function () { return Promise.resolve().then(function () { return require("@/layouts/Home.vue"); }); },
         meta: { title: "Dashboard" },
-        children: __spreadArrays(user_1.userRoutes, finacial_year_1.FinancialYearRoutes)
+        children: __spreadArrays(user_1.userRoutes, level_1.levelRoutes, admin_area_1.adminAreaRoutes, finacialyears_1.FinancialYearRoutes)
     },
 ];
 var router = new vue_router_1["default"]({

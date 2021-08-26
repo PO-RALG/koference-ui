@@ -5,7 +5,12 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    snackbar: {},
+    snackbar: {
+      show: true,
+      message: "",
+      color: "",
+      icon: "",
+    },
   },
   getters: {
     getSnackBar: (state) => {
@@ -19,7 +24,7 @@ export default new Vuex.Store({
   },
   actions: {
     notify({ commit }, payload) {
-      // console.log("payload dataz", payload);
+      console.log("payload", payload);
       commit("setSnackbar", payload);
     },
   },
