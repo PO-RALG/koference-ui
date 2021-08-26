@@ -33,7 +33,7 @@
         <ModalHeader :title="`${data.modalTitle} Level`" />
       </template>
       <template v-slot:body>
-        <ModalBody v-if="data.formData">
+        <ModalBody>
           <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row>
@@ -97,7 +97,13 @@ import { Level } from "./types/Level";
 export default defineComponent({
   setup() {
     let dataItems: Array<Level> = [];
-    let levelData!: Level;
+    let levelData: Level = {
+      id: null,
+      name: "",
+      slug: "",
+      position: null,
+    };
+
     let data = reactive({
       title: "Manage Levels",
       valid: true,
@@ -144,7 +150,6 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as Level;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;

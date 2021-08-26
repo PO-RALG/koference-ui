@@ -1,5 +1,5 @@
 export interface Level {
-  id: number;
+  id?: number | string;
   name: string;
   slug: string;
   position: string | number;

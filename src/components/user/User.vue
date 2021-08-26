@@ -18,14 +18,10 @@
         :items-per-page="data.params.size"
         class="elevation-1"
       >
-      <template v-slot:item.actions="{ item }">
-        <v-icon class="mr-2" @click="openDialog(item)">
-          mdi-pencil-box-outline
-        </v-icon>
-        <v-icon @click="openConfirmDialog(item)">
-          mdi-trash-can-outline
-        </v-icon>
-      </template>
+        <template v-slot:item.actions="{ item }">
+          <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
+          <v-icon @click="openConfirmDialog(item)"> mdi-trash-can-outline </v-icon>
+        </template>
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
@@ -38,48 +34,32 @@
             <v-container>
               <v-row>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field
-                    label="First Name"
-                    v-model="data.formData.first_name"
-                    required>
-                  </v-text-field>
+                  <v-text-field label="First Name" v-model="data.formData.first_name" required> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field
-                    label="Midde Name"
-                    v-model="data.formData.middle_name"
-                    required>
-                  </v-text-field>
+                  <v-text-field label="Midde Name" v-model="data.formData.middle_name" required> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field
-                    label="Last Name"
-                    v-model="data.formData.last_name"
-                    required>
-                  </v-text-field>
+                  <v-text-field label="Last Name" v-model="data.formData.last_name" required> </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field
-                    label="Email Address"
-                    v-model="data.formData.email"
-                    required>
-                  </v-text-field>
+                  <v-text-field label="Email Address" v-model="data.formData.email" required> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field
-                    label="Phone Number"
-                    v-model="data.formData.phone_number"
-                    required>
-                  </v-text-field>
+                  <v-text-field label="Phone Number" v-model="data.formData.phone_number" required> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field
-                    label="Check Number"
-                    v-model="data.formData.check_number"
-                    required>
-                  </v-text-field>
+                  <v-text-field label="Check Number" v-model="data.formData.check_number" required> </v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" sm="12" md="12" class="hierarchy-container">
+                  <v-label>
+                    <h5 class="tree-title">SELECT USER LOCATION</h5>
+                  </v-label>
+                  <TreeBrowser v-if="data.node" @onClick="loadLocationChildren" :node="data.node" />
                 </v-col>
               </v-row>
             </v-container>
@@ -96,8 +76,8 @@
       </template>
     </Modal>
     <ConfirmDialog
-      :reject-function="closeConfirmDialog"
-      :accept-function="deleteItem"
+      @rejectFunction="closeConfirmDialog"
+      @acceptFunction="deleteItem"
       :message="'Are you sure you want to delete this user?'"
       :data="data.item"
       :isOpen="data.isOpen"
@@ -107,19 +87,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted, set } from "@vue/composition-api";
 import { get, create, update, deleteUser } from "./services/user.service";
+import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
+import { AxiosResponse } from "axios";
 import { User } from "./types/User";
+import { TREE_NODE } from "@/config/treenode";
 
 export default defineComponent({
   setup() {
     let dataItems: Array<User> = [];
-    let userData!: User;
+    let userData = {} as User;
     let data = reactive({
       title: "Manage Users",
       valid: true,
       isOpen: false,
-      item: null,
+      node: null,
+      item: userData,
       modalTitle: "",
       headers: [
         { text: "Check Number", value: "check_number" },
@@ -136,18 +120,23 @@ export default defineComponent({
         size: 10,
       },
       nameRules: [
-        (v) => !!v || "Name is required",
-        (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+        (v: string) => !!v || "Name is required",
+        (v: string) => (v && v.length <= 10) || "Name must be less than 10 characters",
       ],
       email: "",
-      emailRules: [(v) => !!v || "E-mail is required", (v) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
+      emailRules: [
+        (v: string) => !!v || "E-mail is required",
+        (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+      ],
     });
 
     onMounted(() => {
-      get({}).then((response: any) => {
-        console.log(response);
-        data.items = response.data.data;
+      data.node = TREE_NODE;
+      get({}).then((response: AxiosResponse) => {
+        console.log("response", response);
+        data.items = response.data.data.data;
       });
+      getNodes();
     });
 
     const cancelDialog = () => {
@@ -174,7 +163,7 @@ export default defineComponent({
     };
 
     const updateUser = (data: User) => {
-      update(data).then((response) => {
+      update(data).then((response: AxiosResponse) => {
         console.log(response.status);
         if (response.status === 200) {
           cancelDialog();
@@ -192,17 +181,36 @@ export default defineComponent({
     };
 
     const closeConfirmDialog = () => {
-      data.item = null;
+      data.item = {} as User;
       data.isOpen = false;
     };
 
-    const deleteItem = (item) => {
+    const deleteItem = (item: number | string) => {
       const payload = item;
-      deleteUser(payload).then((response) => {
+      deleteUser(payload).then((response: AxiosResponse) => {
         console.log(response);
       });
-      data.item = null;
+      data.item = {} as User;
       data.isOpen = false;
+    };
+
+    const loadLocationChildren = (location: any) => {
+      data.formData.location_id = location.id;
+      if (!location.children) {
+        if (location.id !== data.node.id) {
+          getChildren(location.id).then((response: AxiosResponse) => {
+            if (response.data.data.children.length) {
+              set(location, "children", response.data.data.children);
+            }
+          });
+        }
+      }
+    };
+
+    const getNodes = (id?: number | string) => {
+      getChildren(id).then((response: AxiosResponse) => {
+        data.node = response.data.data;
+      });
     };
 
     return {
@@ -213,6 +221,9 @@ export default defineComponent({
       closeConfirmDialog,
       openConfirmDialog,
 
+      loadLocationChildren,
+      getNodes,
+
       updateUser,
       save,
       deleteItem,
@@ -221,4 +232,8 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.tree-title {
+  padding: 0 0 5px 0;
+}
+</style>

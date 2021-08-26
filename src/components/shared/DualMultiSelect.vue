@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12" lg="12" md="12" sm="12">
-        <v-text-field :label="label" type="text" v-model="data.search" required></v-text-field>
+        <v-text-field :label="label" type="text" v-model="data.search" required @keydown="clearSearch"></v-text-field>
       </v-col>
     </v-row>
     <v-row>
@@ -66,7 +66,15 @@
 </template>
 
 <script lang="ts">
-import { reactive, onMounted, computed, watch, onUnmounted, PropType, defineComponent } from "@vue/composition-api";
+import {
+  reactive,
+  onMounted,
+  computed,
+  watch,
+  onUnmounted,
+  PropType,
+  defineComponent,
+} from "@vue/composition-api";
 
 import { Selectable } from "./types";
 
@@ -95,7 +103,6 @@ export default defineComponent({
   setup(props, context) {
     let data = reactive({
       search: "",
-      search2: null,
       itemsToSelect: [] as any,
       selectedItems: [] as any,
     });
@@ -107,6 +114,10 @@ export default defineComponent({
           props.items.splice(idx, 1);
         }
       });
+    };
+
+    const search = () => {
+      context.emit("filterFunction", data.search);
     };
 
     const highlightItem = (item: any) => {
@@ -215,9 +226,16 @@ export default defineComponent({
       });
     });
 
+    const clearSearch = (e) => {
+      if (e.key === "Backspace" || e.key === "Delete") {
+        data.search = e.target.value;
+        context.emit("filterFunction", data.search);
+      }
+    };
+
     // watchers
-    watch(data, (newValue) => {
-      console.log(newValue);
+    watch(data, (newValue: any) => {
+      context.emit("filterFunction", newValue.search);
     });
 
     return {
@@ -233,6 +251,8 @@ export default defineComponent({
       removeItems,
       removeAll,
       addAll,
+      search,
+      clearSearch,
 
       // computed
       filteredData,

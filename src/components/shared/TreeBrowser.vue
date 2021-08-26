@@ -1,13 +1,9 @@
 <template>
   <ul class="tree">
     <li :style="{ 'margin-left': `${depth * 5}px` }">
-      <span
-        v-if="hasChildren"
-        @click="data.expanded = !data.expanded"
-        class="type"
-      >
+      <span v-if="hasChildren" @click="data.expanded = !data.expanded" class="type">
         <v-icon small>
-          {{ data.expanded ? "mdi-folder-open" : "mdi-folder" }}
+          {{ data.expanded ? "mdi-chevron-down-box" : "mdi-chevron-right-box" }}
         </v-icon>
       </span>
       <span @click="nodeClicked($event, node)" class="name" :value="node">
@@ -95,7 +91,7 @@ ul.tree ul {
   padding: 0;
 }
 ul.tree ul {
-  margin-left: 10px;
+  margin-left: 8px;
 }
 ul.tree li {
   margin: 0;
@@ -117,16 +113,16 @@ ul.tree li:before {
   border-bottom: 1px dotted rgb(100, 100, 100);
   content: "";
   display: inline-block;
-  left: -7px;
+  left: 0;
 }
 ul.tree li:last-child:before {
-  border-left: 1px solid rgb(100, 100, 100);
+  border-left: 1px dotted rgb(100, 100, 100);
 }
 .type {
   cursor: pointer;
 }
 .name {
-  padding: 4px;
+  padding: 0;
   cursor: pointer;
 }
 .active {

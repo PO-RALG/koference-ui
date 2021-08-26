@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 const API = "/api/v1/admin-areas";
 
 const get = async (payload: any) => {
@@ -21,4 +21,12 @@ const deleteArea = async (id: any) => {
   return await axios.delete(`${API}/${id}`);
 };
 
-export { get, find, createArea, updateArea, deleteArea };
+const getChildren = async (id?: number | string): Promise<AxiosResponse> => {
+  if (id) {
+    return await axios.get(`${API}-children/${id}`);
+  } else {
+    return await axios.get(`${API}-children`);
+  }
+};
+
+export { get, find, createArea, updateArea, deleteArea, getChildren };
