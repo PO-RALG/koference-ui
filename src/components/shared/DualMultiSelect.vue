@@ -66,7 +66,15 @@
 </template>
 
 <script lang="ts">
-import { reactive, onMounted, computed, watch, onUnmounted, PropType, defineComponent } from "@vue/composition-api";
+import {
+  reactive,
+  onMounted,
+  computed,
+  watch,
+  onUnmounted,
+  PropType,
+  defineComponent,
+} from "@vue/composition-api";
 
 import { Selectable } from "./types";
 

@@ -71,13 +71,24 @@
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import { get, createLevel, updateLevel, deleteLevel } from "./services/level-services";
+import {
+  get,
+  createLevel,
+  updateLevel,
+  deleteLevel,
+} from "./services/level-services";
 import { Level } from "./types/Level";
 
 export default defineComponent({
   setup() {
     let dataItems: Array<Level> = [];
-    let levelData: Level = {};
+    let levelData: Level = {
+      id: null,
+      name: "",
+      slug: "",
+      position: null,
+    };
+
     let data = reactive({
       title: "Manage Levels",
       valid: true,

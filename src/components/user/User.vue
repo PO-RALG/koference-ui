@@ -81,6 +81,7 @@
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 import { get, create, update, deleteUser } from "./services/user.service";
+import { AxiosResponse } from "axios";
 import { User } from "./types/User";
 
 export default defineComponent({
@@ -91,7 +92,7 @@ export default defineComponent({
       title: "Manage Users",
       valid: true,
       isOpen: false,
-      item: null,
+      item: userData,
       modalTitle: "",
       headers: [
         { text: "Check Number", value: "check_number" },
@@ -108,15 +109,17 @@ export default defineComponent({
         size: 10,
       },
       nameRules: [
-        (v) => !!v || "Name is required",
-        (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+        (v: string) => !!v || "Name is required",
+        (v: string) => (v && v.length <= 10) || "Name must be less than 10 characters",
       ],
       email: "",
-      emailRules: [(v) => !!v || "E-mail is required", (v) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
+      emailRules: [
+        (v: string) => !!v || "E-mail is required",
+        (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
     });
 
     onMounted(() => {
-      get({}).then((response: any) => {
+      get({}).then((response: AxiosResponse) => {
         data.items = response.data.data;
       });
     });
@@ -145,7 +148,7 @@ export default defineComponent({
     };
 
     const updateUser = (data: User) => {
-      update(data).then((response) => {
+      update(data).then((response: AxiosResponse) => {
         console.log(response.status);
         if (response.status === 200) {
           cancelDialog();
@@ -163,16 +166,16 @@ export default defineComponent({
     };
 
     const closeConfirmDialog = () => {
-      data.item = null;
+      data.item = {} as User;
       data.isOpen = false;
     };
 
-    const deleteItem = (item) => {
+    const deleteItem = (item: number | string) => {
       const payload = item;
-      deleteUser(payload).then((response) => {
+      deleteUser(payload).then((response: AxiosResponse) => {
         console.log(response);
       });
-      data.item = null;
+      data.item = {} as User;
       data.isOpen = false;
     };
 
