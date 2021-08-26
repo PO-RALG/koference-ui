@@ -24,13 +24,34 @@
         <template v-slot:item.endDate="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
+        <template v-slot:item.activations="{ item }">
+          <v-switch value>mmm</v-switch>
+        </template>
         <template v-slot:item.actions="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)">
-            mdi-pencil-box-outline
-          </v-icon>
-          <v-icon @click="deleteFinancialYear(item.id)"
-            >mdi-trash-can-outline</v-icon
-          >
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="openDialog(item)"
+              >
+                mdi-pencil-box-outline
+              </v-icon>
+            </template>
+            <span>Edit</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                @click="deleteFinancialYear(item.id)"
+                >mdi-trash-can-outline</v-icon
+              >
+            </template>
+            <span>Delete</span>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-card>
@@ -106,11 +127,13 @@ import {
   reactive,
   watch,
   onMounted,
+  computed,
 } from "@vue/composition-api";
 
 import { get, create, update, destroy } from "./services/financialyear.service";
 
 export default defineComponent({
+  name: "FinancialYear",
   setup() {
     let dataItems: Array<FinancialYear> = [];
     let financialYearData: FinancialYear;
@@ -122,6 +145,7 @@ export default defineComponent({
         { text: "Name", align: "start", sortable: false, value: "name" },
         { text: "Start Date", value: "start_date" },
         { text: "End Date", value: "end_date" },
+        { text: "Actions", value: "activations", sortable: false },
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
@@ -143,8 +167,12 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
-        data.items = response.data.data;
+        data.items = response.data.data.data;
       });
+    });
+
+    computed(() => {
+      return "mnokote";
     });
 
     const reloadData = () => {
@@ -154,7 +182,7 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
-        data.items = response.data.data;
+        data.items = response.data.data.data;
       });
     };
 
