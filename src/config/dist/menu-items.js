@@ -36,6 +36,11 @@ exports.MENU_ITEMS = [
                 state: "/manage-finacial-years"
             },
             {
+                icon: "mdi-book-variant",
+                title: "Document Categories",
+                state: "/manage-document-categories"
+            },
+            {
                 icon: "mdi-view-stream-outline",
                 title: "Fund Types",
                 state: "/fund-types"
@@ -61,6 +66,11 @@ exports.MENU_ITEMS = [
                 icon: "mdi-border-left-variant",
                 title: "Sub Budget Class",
                 state: "/sub-budgets"
+            },
+            {
+                icon: "mdi-border-left-variant",
+                title: "GFS Categories",
+                state: "/gfs-categories"
             },
             {
                 icon: "mdi-border-left-variant",

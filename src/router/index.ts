@@ -9,7 +9,9 @@ import { FinancialYearRoutes } from "@/components/finacialyears";
 import fundTypesRoutes from "@/components/settup/fund-types/routes/fund-types-routes";
 import { gfsCategoriesRoutes } from "@/components/settup/gfs-categories";
 import { projectsRoutes } from "@/components/settup/projects";
-
+import { CustomersRoutes } from "@/components/customers";
+import { DocumentCategoryRoutes } from "@/components/documentcategories";
+import { DocumentRoutes } from "@/components/document";
 
 Vue.use(VueRouter);
 
@@ -26,16 +28,20 @@ const routes: Array<RouteConfig> = [
     path: "/",
     component: () => import("@/layouts/Home.vue"),
     meta: { title: "Dashboard" },
-    children: [...userRoutes, 
-              ...FinancialYearRoutes, 
-              ...gfsCodesRoutes, 
-              ...userRoutes, 
-              ...levelRoutes, 
-              ...adminAreaRoutes,
-              ...fundTypesRoutes,
-              ...gfsCategoriesRoutes,
-              ...projectsRoutes
-            ],
+    children: [
+      ...userRoutes,
+      ...FinancialYearRoutes,
+      ...gfsCodesRoutes,
+      ...userRoutes,
+      ...levelRoutes,
+      ...adminAreaRoutes,
+      ...fundTypesRoutes,
+      ...gfsCategoriesRoutes,
+      ...projectsRoutes,
+      ...CustomersRoutes,
+      ...DocumentCategoryRoutes,
+      ...DocumentRoutes,
+    ],
   },
 ];
 

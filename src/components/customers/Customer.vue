@@ -1,5 +1,5 @@
 <template>
-  <div class="financial-year">
+  <div class="customers">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -42,13 +42,7 @@
         <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-        <template v-slot:item.activations="{ item }">
-          <v-switch
-            :input-value="item.current"
-            @change="setActivation(item)"
-            value
-          ></v-switch>
-        </template>
+
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -79,7 +73,7 @@
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Financial Year`" />
+        <ModalHeader :title="`${data.modalTitle} Customers`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -89,21 +83,28 @@
                 <v-col cols="12" md="4">
                   <v-text-field
                     v-model="data.formData.name"
-                    label="First name"
+                    label="Name"
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="data.formData.start_date"
-                    label="Start Date"
+                    v-model="data.formData.email"
+                    label="Email"
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="data.formData.end_date"
-                    label="End Date"
+                    v-model="data.formData.phone"
+                    label="Phone"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.address"
+                    label="Address"
                     required
                   ></v-text-field>
                 </v-col>
@@ -124,7 +125,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Financial Year `" />
+        <ModalHeader :title="`Delete Customers `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -142,7 +143,7 @@
 </template>
 
 <script lang="ts">
-import { FinancialYear } from "./types/FinancialYear";
+import { Customer } from "./types/Customer";
 import store from "@/store";
 import {
   defineComponent,
@@ -157,31 +158,32 @@ import {
   create,
   update,
   destroy,
-  activation,
   search,
-} from "./services/financialyear.service";
+} from "./services/customer.service";
 
 export default defineComponent({
-  name: "FinancialYear",
+  name: "Customer",
   setup() {
-    let dataItems: Array<FinancialYear> = [];
-    let financialYearData: FinancialYear;
+    let dataItems: Array<Customer> = [];
+    let customerData: Customer;
 
     let data = reactive({
-      title: "Manage Finacial Years",
+      title: "Manage Customers",
       modalTitle: "",
       headers: [
         { text: "Name", align: "start", sortable: false, value: "name" },
-        { text: "Start Date", value: "start_date" },
-        { text: "End Date", value: "end_date" },
-        { text: "Activation", value: "activations", sortable: false },
+        { text: "Email", align: "start", sortable: false, value: "email" },
+
+        { text: "Address", align: "start", sortable: false, value: "address" },
+        { text: "Phone", align: "start", sortable: false, value: "phone" },
+
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: financialYearData,
+      formData: customerData,
       params: {
         total: 10,
         size: 10,
@@ -196,9 +198,9 @@ export default defineComponent({
         size: 10,
       };
       get(params).then((response: any) => {
-        console.log("data", response.data.data);
-        data.items = response.data.data.data;
-        data.itemsToFilter = response.data.data.data;
+        console.log("data to render", response.data.data);
+        data.items = response.data.data;
+        data.itemsToFilter = response.data.data;
       });
     });
 
@@ -211,20 +213,14 @@ export default defineComponent({
 
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
-          console.log("response data", response);
-          data.items = response.data.data.data;
+          console.log("response data", response.data.data);
+          data.items = response.data.data;
         });
       } else {
         reloadData();
       }
     };
 
-    const setActivation = (item) => {
-      activation(item).then((response: any) => {
-        console.log("activated data", response.data);
-        reloadData();
-      });
-    };
     const reloadData = () => {
       let params: any = {
         total: 10,
@@ -232,7 +228,7 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
-        data.items = response.data.data.data;
+        data.items = response.data.data;
       });
     };
 
@@ -248,12 +244,12 @@ export default defineComponent({
     };
 
     const cancelDialog = () => {
-      data.formData = {} as FinancialYear;
+      data.formData = {} as Customer;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as FinancialYear;
+      data.formData = {} as Customer;
       data.deletemodal = false;
     };
 
@@ -279,7 +275,7 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as FinancialYear;
+        data.formData = {} as Customer;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
@@ -320,7 +316,6 @@ export default defineComponent({
       reloadData,
       remove,
       cancelConfirmDialog,
-      setActivation,
       searchCategory,
     };
   },

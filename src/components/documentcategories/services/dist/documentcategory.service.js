@@ -36,21 +36,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.search = exports.activation = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
+exports.documentcategoried = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
 var axios_1 = require("axios");
 var get = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/financial-years", payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/document-categories", payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
 exports.get = get;
+var documentcategoried = function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/document-categories")];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.documentcategoried = documentcategoried;
 var search = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/financial-years/", {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/document-categories/", {
                     params: {
                         search: JSON.stringify(payload)
                     }
@@ -63,7 +72,7 @@ exports.search = search;
 var find = function (id) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/financial-years/" + id)];
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/document-categories/" + id)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -72,25 +81,16 @@ exports.find = find;
 var create = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/financial-years", payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/document-categories", payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
 exports.create = create;
-var activation = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/set-financial-year/" + payload.id, payload)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.activation = activation;
 var update = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].put("/api/v1/financial-years/" + payload.id, payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].put("/api/v1/document-categories/" + payload.id, payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -101,7 +101,7 @@ var destroy = function (payload) { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0:
                 console.log("payload", payload);
-                return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/financial-years/" + payload)];
+                return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/document-categories/" + payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

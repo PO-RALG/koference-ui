@@ -33,6 +33,12 @@ export const MENU_ITEMS = [
         title: "Financial Years",
         state: "/manage-finacial-years",
       },
+
+      {
+        icon: "mdi-book-variant",
+        title: "Document Categories",
+        state: "/manage-document-categories",
+      },
       {
         icon: "mdi-view-stream-outline",
         title: "Fund Types",
