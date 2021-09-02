@@ -1,5 +1,5 @@
 <template>
-  <div class="financial-year">
+  <div class="sub-budget-classes">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -14,18 +14,18 @@
       <v-data-table
         :headers="data.headers"
         :items="data.items"
-        class="elevation-1"
         :single-expand="true"
+        class="elevation-1"
       >
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Name"
+                label="Filter by Code"
                 @change="searchCategory($event)"
                 :items="data.itemsToFilter"
-                :item-text="'name'"
+                :item-text="'code'"
                 :item-divider="true"
                 return-object
                 required
@@ -40,13 +40,7 @@
         <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-        <template v-slot:item.activations="{ item }">
-          <v-switch
-            :input-value="item.current"
-            @change="setActivation(item)"
-            value
-          ></v-switch>
-        </template>
+
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -66,7 +60,7 @@
               <v-icon
                 v-bind="attrs"
                 v-on="on"
-                @click="deleteFinancialYear(item.id)"
+                @click="deleteSubBudgetClass(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -77,33 +71,40 @@
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Financial Year`" />
+        <ModalHeader :title="`${data.modalTitle} SubBudgetClass`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
+          <!-- <img v-show="imageUrl" :src="imageUrl" alt="" /> -->
           <v-form>
             <v-container>
               <v-row>
                 <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="data.formData.name"
-                    label="First name"
+                    v-model="data.formData.code"
+                    label="Code"
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="data.formData.start_date"
-                    label="Start Date"
+                    v-model="data.formData.description"
+                    label="Description"
                     required
                   ></v-text-field>
                 </v-col>
+
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.end_date"
-                    label="End Date"
+                  <v-autocomplete
+                    v-model="data.formData.funding_type_id"
+                    label="Fund type"
+                    :items="data.fundingtypes"
+                    :item-text="'description'"
+                    item-value="id"
+                    :item-divider="true"
                     required
-                  ></v-text-field>
+                    clearable
+                  ></v-autocomplete>
                 </v-col>
               </v-row>
             </v-container>
@@ -122,7 +123,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Financial Year `" />
+        <ModalHeader :title="`Delete Sub Budget Class `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -140,7 +141,7 @@
 </template>
 
 <script lang="ts">
-import { FinancialYear } from "./types/FinancialYear";
+import { SubBudgetClass } from "./types/SubBudgetClass";
 import store from "@/store";
 import {
   defineComponent,
@@ -155,36 +156,47 @@ import {
   create,
   update,
   destroy,
-  activation,
   search,
-} from "./services/financialyear.service";
+} from "./services/sub-budget-classes.service";
+import { fundingtypes } from "../fund-types/service/fund-types.service";
 
 export default defineComponent({
-  name: "FinancialYear",
+  name: "SubBudgetClass",
   setup() {
-    let dataItems: Array<FinancialYear> = [];
-    let financialYearData: FinancialYear;
+    let dataItems: Array<SubBudgetClass> = [];
+    let documentCategoryData: SubBudgetClass;
 
     let data = reactive({
-      title: "Manage Finacial Years",
+      title: "Manage Sub Budget Class",
       modalTitle: "",
       headers: [
-        { text: "Name", align: "start", sortable: false, value: "name" },
-        { text: "Start Date", value: "start_date" },
-        { text: "End Date", value: "end_date" },
-        { text: "Activation", value: "activations", sortable: false },
+        { text: "Code", align: "start", sortable: false, value: "code" },
+        {
+          text: "Description",
+          align: "start",
+          sortable: false,
+          value: "description",
+        },
+        {
+          text: "Fund Type",
+          align: "start",
+          sortable: false,
+          value: "fund_type.name",
+        },
+
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: financialYearData,
+      formData: documentCategoryData,
       params: {
         total: 10,
         size: 10,
       },
       itemtodelete: "",
+      fundingtypes: [],
     });
 
     onMounted(() => {
@@ -194,9 +206,13 @@ export default defineComponent({
         size: 10,
       };
       get(params).then((response: any) => {
-        console.log("data", response.data.data);
-        data.items = response.data.data.data;
-        data.itemsToFilter = response.data.data.data;
+        console.log("data to render", response.data.data);
+        data.items = response.data.data;
+        data.itemsToFilter = response.data.data;
+      });
+      fundingtypes().then((response: any) => {
+        console.log("funding types", response.data.data);
+        data.fundingtypes = response.data.data;
       });
     });
 
@@ -210,19 +226,13 @@ export default defineComponent({
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
           console.log("response data", response);
-          data.items = response.data.data.data;
+          data.items = response.data.data;
         });
       } else {
         reloadData();
       }
     };
 
-    const setActivation = (item) => {
-      activation(item).then((response: any) => {
-        console.log("activated data", response.data);
-        reloadData();
-      });
-    };
     const reloadData = () => {
       let params: any = {
         total: 10,
@@ -230,28 +240,28 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
-        data.items = response.data.data.data;
+        data.items = response.data.data;
       });
     };
 
-    const deleteFinancialYear = (deleteId: any) => {
+    const deleteSubBudgetClass = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getFinancialYear = () => {
+    const getSubBudgetClass = () => {
       get(data).then((response) => {
         console.log("data", response.data);
       });
     };
 
     const cancelDialog = () => {
-      data.formData = {} as FinancialYear;
+      data.formData = {} as SubBudgetClass;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as FinancialYear;
+      data.formData = {} as SubBudgetClass;
       data.deletemodal = false;
     };
 
@@ -277,7 +287,7 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as FinancialYear;
+        data.formData = {} as SubBudgetClass;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
@@ -298,7 +308,6 @@ export default defineComponent({
         cancelDialog();
       });
     };
-    // watching a getter
 
     watch(
       () => store.state.snackbar,
@@ -311,14 +320,13 @@ export default defineComponent({
       data,
       openDialog,
       cancelDialog,
-      deleteFinancialYear,
-      getFinancialYear,
+      deleteSubBudgetClass,
+      getSubBudgetClass,
       updateFinancialYear,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
-      setActivation,
       searchCategory,
     };
   },

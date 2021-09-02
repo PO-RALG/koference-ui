@@ -42,7 +42,7 @@ export const MENU_ITEMS = [
       {
         icon: "mdi-view-stream-outline",
         title: "Fund Types",
-        state: "/fund-types",
+        state: "/manage-fund-types",
       },
       {
         icon: "mdi-text-subject",
@@ -64,7 +64,7 @@ export const MENU_ITEMS = [
       {
         icon: "mdi-border-left-variant",
         title: "Sub Budget Class",
-        state: "/sub-budgets",
+        state: "/manage-sub-budget-classes",
       },
       {
         icon: "mdi-border-left-variant",
@@ -79,12 +79,12 @@ export const MENU_ITEMS = [
       {
         icon: "mdi-border-left-variant",
         title: "Projects",
-        state: "/projects",
+        state: "/manage-project",
       },
       {
         icon: "mdi-border-left-variant",
         title: "Funding Sources",
-        state: "/funding-sources",
+        state: "/manage-funding-sources",
       },
     ],
   },

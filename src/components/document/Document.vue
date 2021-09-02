@@ -59,10 +59,7 @@
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="deleteFinancialYear(item.id)"
+              <v-icon v-bind="attrs" v-on="on" @click="deleteDocument(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -258,12 +255,12 @@ export default defineComponent({
       });
     };
 
-    const deleteFinancialYear = (deleteId: any) => {
+    const deleteDocument = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getFinancialYear = () => {
+    const getDocument = () => {
       get(data).then((response) => {
         console.log("data", response.data);
       });
@@ -290,7 +287,7 @@ export default defineComponent({
     const save = () => {
       console.log("Form Data", data.formData);
       if (data.formData.id) {
-        updateFinancialYear(data.formData);
+        updateDocument(data.formData);
       } else {
         data.formData.created_by = 1;
         createUser(data.formData);
@@ -308,7 +305,7 @@ export default defineComponent({
       data.modal = !data.modal;
     };
 
-    const updateFinancialYear = (data: any) => {
+    const updateDocument = (data: any) => {
       update(data).then((response) => {
         console.log("Updated data", response.data);
         reloadData();
@@ -360,9 +357,9 @@ export default defineComponent({
       data,
       openDialog,
       cancelDialog,
-      deleteFinancialYear,
-      getFinancialYear,
-      updateFinancialYear,
+      deleteDocument,
+      getDocument,
+      updateDocument,
       save,
       reloadData,
       remove,

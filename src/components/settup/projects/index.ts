@@ -1,1 +1,1 @@
-export { default as projectsRoutes } from "./routes/projects"
+export { default as ProjectRoutes } from "./routes/project-routes";

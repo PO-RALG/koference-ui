@@ -1,5 +1,5 @@
 <template>
-  <div class="financial-year">
+  <div class="fund-types">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -15,93 +15,63 @@
         :headers="data.headers"
         :items="data.items"
         class="elevation-1"
+        item-key="id"
         :single-expand="true"
       >
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Name"
-                @change="searchCategory($event)"
-                :items="data.itemsToFilter"
-                :item-text="'name'"
-                :item-divider="true"
-                return-object
-                required
+              <v-text-field
+                @input="searchCategory($event)"
+                class
                 clearable
-              ></v-autocomplete>
+                flat
+                hide-details
+                prepend-icon="mdi-magnify"
+                label="Search by Name"
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
-        <template v-slot:[`item.startDate`]="{ item }">
-          <span>{{ item.startDate }}</span>
-        </template>
-        <template v-slot:[`item.endDate`]="{ item }">
-          <span>{{ item.endDate }}</span>
-        </template>
-        <template v-slot:item.activations="{ item }">
-          <v-switch
-            :input-value="item.current"
-            @change="setActivation(item)"
-            value
-          ></v-switch>
-        </template>
-        <template v-slot:item.actions="{ item }">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openDialog(item)"
-              >
+        <template v-slot:item="{ item }">
+          <tr>
+            <td>{{ item.description }}</td>
+            <td>{{ item.code }}</td>
+
+            <td>
+              <v-icon class="mr-2" @click="openDialog(item)">
                 mdi-pencil-box-outline
               </v-icon>
-            </template>
-            <span>Edit</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="deleteFinancialYear(item.id)"
-                >mdi-trash-can-outline</v-icon
-              >
-            </template>
-            <span>Delete</span>
-          </v-tooltip>
+              <v-icon @click="deleteFundType(item.id)">
+                mdi-trash-can-outline
+              </v-icon>
+            </td>
+          </tr>
         </template>
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Financial Year`" />
+        <ModalHeader :title="`${data.modalTitle} Fund Types`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
+          <!-- <img v-show="imageUrl" :src="imageUrl" alt="" /> -->
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="data.formData.name"
-                    label="First name"
+                    v-model="data.formData.description"
+                    label="Description"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="data.formData.start_date"
-                    label="Start Date"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.end_date"
-                    label="End Date"
+                    v-model="data.formData.code"
+                    label="Code"
                     required
                   ></v-text-field>
                 </v-col>
@@ -122,7 +92,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Financial Year `" />
+        <ModalHeader :title="`Delete Fund Types `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -140,7 +110,7 @@
 </template>
 
 <script lang="ts">
-import { FinancialYear } from "./types/FinancialYear";
+import { FundTypes } from "./types";
 import store from "@/store";
 import {
   defineComponent,
@@ -148,6 +118,7 @@ import {
   watch,
   onMounted,
   computed,
+  ref,
 } from "@vue/composition-api";
 
 import {
@@ -155,36 +126,48 @@ import {
   create,
   update,
   destroy,
-  activation,
   search,
-} from "./services/financialyear.service";
+} from "./service/fund-types.service";
 
 export default defineComponent({
-  name: "FinancialYear",
+  name: "FundTypes",
   setup() {
-    let dataItems: Array<FinancialYear> = [];
-    let financialYearData: FinancialYear;
+    let dataItems: Array<FundTypes> = [];
+    let documentCategoryData: FundTypes;
+    let fileToupload = ref("");
+    let imageUrl: any = ref("");
 
     let data = reactive({
-      title: "Manage Finacial Years",
+      title: "Manage FundTypes",
       modalTitle: "",
       headers: [
-        { text: "Name", align: "start", sortable: false, value: "name" },
-        { text: "Start Date", value: "start_date" },
-        { text: "End Date", value: "end_date" },
-        { text: "Activation", value: "activations", sortable: false },
+        {
+          text: "Desciption",
+          align: "start",
+          sortable: false,
+          value: "name",
+        },
+        {
+          text: "Code",
+          align: "start",
+          sortable: false,
+          value: "code",
+        },
+
         { text: "Actions", value: "actions", sortable: false },
       ],
+
       modal: false,
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: financialYearData,
+      formData: documentCategoryData,
       params: {
         total: 10,
         size: 10,
       },
       itemtodelete: "",
+      documentcategories: [],
     });
 
     onMounted(() => {
@@ -194,9 +177,9 @@ export default defineComponent({
         size: 10,
       };
       get(params).then((response: any) => {
-        console.log("data", response.data.data);
-        data.items = response.data.data.data;
-        data.itemsToFilter = response.data.data.data;
+        console.log("fund types to render", response.data.data);
+        data.items = response.data.data;
+        data.itemsToFilter = response.data.data;
       });
     });
 
@@ -210,19 +193,13 @@ export default defineComponent({
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
           console.log("response data", response);
-          data.items = response.data.data.data;
+          data.items = response.data.data;
         });
       } else {
         reloadData();
       }
     };
 
-    const setActivation = (item) => {
-      activation(item).then((response: any) => {
-        console.log("activated data", response.data);
-        reloadData();
-      });
-    };
     const reloadData = () => {
       let params: any = {
         total: 10,
@@ -230,28 +207,28 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
-        data.items = response.data.data.data;
+        data.items = response.data.data;
       });
     };
 
-    const deleteFinancialYear = (deleteId: any) => {
+    const deleteFundType = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getFinancialYear = () => {
+    const getFundTypes = () => {
       get(data).then((response) => {
         console.log("data", response.data);
       });
     };
 
     const cancelDialog = () => {
-      data.formData = {} as FinancialYear;
+      data.formData = {} as FundTypes;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as FinancialYear;
+      data.formData = {} as FundTypes;
       data.deletemodal = false;
     };
 
@@ -277,7 +254,7 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as FinancialYear;
+        data.formData = {} as FundTypes;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
@@ -300,6 +277,20 @@ export default defineComponent({
     };
     // watching a getter
 
+    watch(fileToupload, (fileToupload: any) => {
+      if (!(fileToupload instanceof File)) {
+        return;
+      }
+      let fileReader = new FileReader();
+
+      fileReader.readAsDataURL(fileToupload);
+
+      fileReader.addEventListener("load", () => {
+        imageUrl.value = fileReader.result;
+        console.log("setup", imageUrl.value);
+      });
+    });
+
     watch(
       () => store.state.snackbar,
       () => {
@@ -311,15 +302,15 @@ export default defineComponent({
       data,
       openDialog,
       cancelDialog,
-      deleteFinancialYear,
-      getFinancialYear,
+      deleteFundType,
+      getFundTypes,
       updateFinancialYear,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
-      setActivation,
       searchCategory,
+      imageUrl,
     };
   },
 });

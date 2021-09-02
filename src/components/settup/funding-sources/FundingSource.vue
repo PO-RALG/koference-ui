@@ -1,5 +1,5 @@
 <template>
-  <div class="financial-year">
+  <div class="funding-source">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -14,8 +14,8 @@
       <v-data-table
         :headers="data.headers"
         :items="data.items"
-        class="elevation-1"
         :single-expand="true"
+        class="elevation-1"
       >
         <template v-slot:top>
           <v-card-title>
@@ -77,31 +77,24 @@
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Financial Year`" />
+        <ModalHeader :title="`${data.modalTitle} Funding Sources`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="data.formData.name"
-                    label="First name"
+                    v-model="data.formData.code"
+                    label="Code"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="data.formData.start_date"
-                    label="Start Date"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.end_date"
-                    label="End Date"
+                    v-model="data.formData.description"
+                    label="Description"
                     required
                   ></v-text-field>
                 </v-col>
@@ -122,7 +115,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Financial Year `" />
+        <ModalHeader :title="`Delete Funding Sources`" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -140,7 +133,7 @@
 </template>
 
 <script lang="ts">
-import { FinancialYear } from "./types/FinancialYear";
+import { FundSources } from "./types";
 import store from "@/store";
 import {
   defineComponent,
@@ -157,22 +150,30 @@ import {
   destroy,
   activation,
   search,
-} from "./services/financialyear.service";
+} from "./services/funding-sources";
 
 export default defineComponent({
-  name: "FinancialYear",
+  name: "Funding Sources",
   setup() {
-    let dataItems: Array<FinancialYear> = [];
-    let financialYearData: FinancialYear;
+    let dataItems: Array<FundSources> = [];
+    let financialYearData: FundSources;
 
     let data = reactive({
-      title: "Manage Finacial Years",
+      title: "Manage Funding Sources",
       modalTitle: "",
       headers: [
-        { text: "Name", align: "start", sortable: false, value: "name" },
-        { text: "Start Date", value: "start_date" },
-        { text: "End Date", value: "end_date" },
-        { text: "Activation", value: "activations", sortable: false },
+        {
+          text: "Funding Sources Code",
+          align: "start",
+          sortable: false,
+          value: "code",
+        },
+        {
+          text: "Description",
+          align: "start",
+          sortable: false,
+          value: "description",
+        },
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
@@ -195,8 +196,8 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
-        data.items = response.data.data.data;
-        data.itemsToFilter = response.data.data.data;
+        data.items = response.data.data;
+        data.itemsToFilter = response.data.data;
       });
     });
 
@@ -210,7 +211,7 @@ export default defineComponent({
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
           console.log("response data", response);
-          data.items = response.data.data.data;
+          data.items = response.data.data;
         });
       } else {
         reloadData();
@@ -229,8 +230,8 @@ export default defineComponent({
         size: 10,
       };
       get(params).then((response: any) => {
-        console.log("data", response.data.data);
-        data.items = response.data.data.data;
+        console.log("data", response.data);
+        data.items = response.data.data;
       });
     };
 
@@ -246,12 +247,12 @@ export default defineComponent({
     };
 
     const cancelDialog = () => {
-      data.formData = {} as FinancialYear;
+      data.formData = {} as FundSources;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as FinancialYear;
+      data.formData = {} as FundSources;
       data.deletemodal = false;
     };
 
@@ -277,7 +278,7 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as FinancialYear;
+        data.formData = {} as FundSources;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;

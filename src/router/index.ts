@@ -6,12 +6,14 @@ import { gfsCodesRoutes } from "@/components/settup/gfs-codes";
 import { levelRoutes } from "@/components/admin-area/level";
 import { adminAreaRoutes } from "@/components/admin-area/admin-area";
 import { FinancialYearRoutes } from "@/components/finacialyears";
-import fundTypesRoutes from "@/components/settup/fund-types/routes/fund-types-routes";
+import { fundTypesRoutes } from "@/components/settup/fund-types";
 import { gfsCategoriesRoutes } from "@/components/settup/gfs-categories";
-import { projectsRoutes } from "@/components/settup/projects";
+import { ProjectRoutes } from "@/components/settup/projects";
 import { CustomersRoutes } from "@/components/customers";
 import { DocumentCategoryRoutes } from "@/components/documentcategories";
 import { DocumentRoutes } from "@/components/document";
+import { FundingSourceRoutes } from "@/components/settup/funding-sources";
+import { SubBudgetClassRoutes } from "@/components/settup/sub-budget-classes";
 
 Vue.use(VueRouter);
 
@@ -37,10 +39,12 @@ const routes: Array<RouteConfig> = [
       ...adminAreaRoutes,
       ...fundTypesRoutes,
       ...gfsCategoriesRoutes,
-      ...projectsRoutes,
+      ...ProjectRoutes,
       ...CustomersRoutes,
       ...DocumentCategoryRoutes,
       ...DocumentRoutes,
+      ...FundingSourceRoutes,
+      ...SubBudgetClassRoutes,
     ],
   },
 ];

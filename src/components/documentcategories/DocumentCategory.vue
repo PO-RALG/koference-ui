@@ -14,9 +14,7 @@
       <v-data-table
         :headers="data.headers"
         :items="data.items"
-        :server-items-length="data.params.total"
-        :options.sync="data.pagination"
-        :items-per-page="data.params.size"
+        :single-expand="true"
         class="elevation-1"
       >
         <template v-slot:top>

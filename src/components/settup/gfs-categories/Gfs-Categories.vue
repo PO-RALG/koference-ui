@@ -1,95 +1,355 @@
-/* eslint-disable prettier/prettier */
 <template>
-
- <div class="academic-year">
+  <div class="meta-data-category">
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
+      <v-btn color="primary" @click="openDialog">
+        <v-icon>mdi-plus</v-icon>
+        Add New
+      </v-btn>
     </v-card-actions>
+    <v-card>
+      <v-data-table
+        :headers="data.headers"
+        :items="data.items"
+        class="elevation-1"
+        item-key="id"
+        :expanded.sync="data.expanded"
+        :single-expand="true"
+      >
+        <template v-slot:top>
+          <v-card-title>
+            <v-spacer></v-spacer>
+            <v-col cols="6" sm="12" md="4" class="pa-0">
+              <v-text-field
+                @input="searchCategory($event)"
+                class
+                clearable
+                flat
+                hide-details
+                prepend-icon="mdi-magnify"
+                label="Filter by Category Name"
+              ></v-text-field>
+            </v-col>
+          </v-card-title>
+        </template>
+        <template v-slot:item="{ item, isExpanded, expand }">
+          <tr>
+            <td>{{ item.description }}</td>
 
-  <v-data-table
-    :headers="data.headers"
-    :items="data.items"
-    :single-expand="data.singleExpand"
-    :expanded.sync="data.expanded"
-    item-key="id"
-    show-expand
-    class="elevation-1"
-  >
-    <template v-slot:top>
-     
-    </template>
-    <template v-slot:expanded-item="{ item }">
+            <td>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                    class="mr-2"
+                    @click="expand(!isExpanded)"
+                  >
+                    mdi-format-list-bulleted
+                  </v-icon>
+                </template>
+                <span>List of Gfs codes</span>
+              </v-tooltip>
+            </td>
+            <td>
+              <v-icon class="mr-2" @click="openDialog(item)">
+                mdi-pencil-box-outline
+              </v-icon>
+              <v-icon @click="openConfirmDialog(item)">
+                mdi-trash-can-outline
+              </v-icon>
+            </td>
+          </tr>
+        </template>
 
-      <td class="pb-5">
-            <b>Code:</b>
-            {{ item.code }}
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length" class="pb-5 pa-3">
+            <b>Category Name:</b>
+            {{ item.description }}
             <br />
-            Name:
+            Category Code:
             <em>
-              <b>{{ item.description }}</b>
+              <b class="pa-3">{{ item.code }}</b>
             </em>
-            <v-card outlined flat max-width="100%">
+            <v-card outlined flat max-width="80%">
               <v-data-table
                 :headers="data.gfsCodes"
                 :items="item.gfs_codes"
+                :items-per-page="
+                  item.metadataOptions ? item.metadataOptions.length : 20
+                "
                 hide-default-footer
                 dense
-              >
+              ></v-data-table>
+            </v-card>
+          </td>
+        </template>
       </v-data-table>
-        </v-card>
-      </td>
-    </template>
-  </v-data-table>
- </div>
+    </v-card>
+    <Modal :modal="data.modal" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`${data.modalTitle} GfsCodes`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody v-if="data.formData">
+          <!-- <img v-show="imageUrl" :src="imageUrl" alt="" /> -->
+          <v-form>
+            <v-container>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="data.formData.description"
+                    label="Description"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="data.formData.code"
+                    label="Code"
+                    required
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="save"
+            >{{ data.modalTitle }}
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+
+    <Modal :modal="data.deletemodal" :width="300">
+      <template v-slot:header>
+        <ModalHeader :title="`Delete GfsCodes `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> Are you sure? </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
+            >Cancel</v-btn
+          >
+          <v-btn color="blue darken-1" text @click="remove">Yes</v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+  </div>
 </template>
- 
+
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import { get } from "../gfs-categories/service/gfs-categories.service";
+import { GfsCategories } from "./types/";
+import store from "@/store";
+import {
+  defineComponent,
+  reactive,
+  watch,
+  onMounted,
+  computed,
+  ref,
+} from "@vue/composition-api";
+
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "./service/gfs-categories.service";
 
 export default defineComponent({
+  name: "GfsCategories",
   setup() {
-    let dataItems: Array<any> = [];
-    let formData: any = {};
+    let dataItems: Array<GfsCategories> = [];
+    let documentCategoryData: GfsCategories;
+    let fileToupload = ref("");
+    let imageUrl: any = ref("");
+
     let data = reactive({
-      expanded: [],
-      singleExpand: false,
-      title: "GFS Categories",
+      title: "Manage Gfs Categories",
       modalTitle: "",
       headers: [
-        { text: "Code", value: "code" },
-        { text: "Description", align: "start", sortable: false, value: "description" },
-      ],
+        {
+          text: "Category Name",
+          align: "start",
+          sortable: false,
+          value: "name",
+        },
+        {
+          text: "Gfs Codes List",
+          align: "start",
+          sortable: false,
+          value: "code",
+        },
 
+        { text: "Actions", value: "actions", sortable: false },
+      ],
       gfsCodes: [
-        { text: "Code", width:1000, value: "code" },
-        { text: "Name", width:500,value: "name" },
+        { text: "Gfs Name", align: "start", sortable: false, value: "name" },
+        { text: "Gfs Code", align: "start", sortable: false, value: "code" },
       ],
-
       modal: false,
+      deletemodal: false,
       items: dataItems,
-      formData,
+      itemsToFilter: [],
+      formData: documentCategoryData,
       params: {
-        total: 100,
-        size: 10
+        total: 10,
+        size: 10,
       },
+      itemtodelete: "",
+      documentcategories: [],
     });
 
     onMounted(() => {
       // make api call
       let params: any = {
-        total: 100,
-        size: 10
-      }
+        total: 10,
+        size: 10,
+      };
       get(params).then((response: any) => {
-        console.log("Peter:", response.data.data.data);
-      data.items = response.data.data.data;
+        console.log("data to render", response.data.data);
+        data.items = response.data.data.data;
+        data.itemsToFilter = response.data.data.data;
       });
     });
 
+    computed(() => {
+      return "test";
+    });
+
+    const searchCategory = (categoryName) => {
+      console.log("argument", categoryName);
+
+      if (categoryName != null) {
+        search({ name: categoryName.name }).then((response: any) => {
+          console.log("response data", response);
+          data.items = response.data.data.data;
+        });
+      } else {
+        reloadData();
+      }
+    };
+
+    const reloadData = () => {
+      let params: any = {
+        total: 10,
+        size: 10,
+      };
+      get(params).then((response: any) => {
+        console.log("data", response.data.data);
+        data.items = response.data.data.data;
+      });
+    };
+
+    const deleteFinancialYear = (deleteId: any) => {
+      data.deletemodal = !data.modal;
+      data.itemtodelete = deleteId;
+      // console.log("delete year", data);
+    };
+    const getFinancialYear = () => {
+      get(data).then((response) => {
+        console.log("data", response.data);
+      });
+    };
+
+    const cancelDialog = () => {
+      data.formData = {} as GfsCategories;
+      data.modal = !data.modal;
+    };
+
+    const cancelConfirmDialog = () => {
+      data.formData = {} as GfsCategories;
+      data.deletemodal = false;
+    };
+
+    const remove = () => {
+      console.log("delete data with id", data.itemtodelete);
+      destroy(data.itemtodelete).then(() => {
+        reloadData();
+        data.deletemodal = false;
+      });
+    };
+
+    const save = () => {
+      console.log("Form Data", data.formData);
+      if (data.formData.id) {
+        updateFinancialYear(data.formData);
+      } else {
+        createUser(data.formData);
+      }
+    };
+
+    const openDialog = (formData?: any) => {
+      if (formData.id) {
+        data.formData = formData;
+        data.modalTitle = "Update";
+      } else {
+        data.formData = {} as GfsCategories;
+        data.modalTitle = "Create";
+      }
+      data.modal = !data.modal;
+    };
+
+    const updateFinancialYear = (data: any) => {
+      update(data).then((response) => {
+        console.log("Updated data", response.data);
+        reloadData();
+        cancelDialog();
+      });
+    };
+
+    const createUser = (data: any) => {
+      create(data).then((response) => {
+        console.log("Created data", response.data);
+        reloadData();
+        cancelDialog();
+      });
+    };
+    // watching a getter
+
+    watch(fileToupload, (fileToupload: any) => {
+      if (!(fileToupload instanceof File)) {
+        return;
+      }
+      let fileReader = new FileReader();
+
+      fileReader.readAsDataURL(fileToupload);
+
+      fileReader.addEventListener("load", () => {
+        imageUrl.value = fileReader.result;
+        console.log("setup", imageUrl.value);
+      });
+    });
+
+    watch(
+      () => store.state.snackbar,
+      () => {
+        console.log("datazzzzz", store.getters.getSnackBar);
+      }
+    );
+
     return {
       data,
+      openDialog,
+      cancelDialog,
+      deleteFinancialYear,
+      getFinancialYear,
+      updateFinancialYear,
+      save,
+      reloadData,
+      remove,
+      cancelConfirmDialog,
+      searchCategory,
+      imageUrl,
     };
   },
 });
