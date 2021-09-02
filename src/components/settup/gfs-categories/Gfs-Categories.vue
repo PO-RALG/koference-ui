@@ -1,7 +1,7 @@
 <template>
   <div class="meta-data-category">
     <v-card-actions class="pa-0">
-      <h2>{{ data.title }}</h2>
+      <h2>Manage GFS Categories</h2>
       <v-spacer></v-spacer>
       <v-btn color="primary" @click="openDialog">
         <v-icon>mdi-plus</v-icon>
