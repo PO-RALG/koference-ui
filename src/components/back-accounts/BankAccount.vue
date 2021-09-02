@@ -1,5 +1,5 @@
 <template>
-  <div class="funding-source">
+  <div class="bank-accounts">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -22,10 +22,10 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Name"
+                label="Filter by Code"
                 @change="searchCategory($event)"
                 :items="data.itemsToFilter"
-                :item-text="'name'"
+                :item-text="'code'"
                 :item-divider="true"
                 return-object
                 required
@@ -40,13 +40,7 @@
         <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-        <template v-slot:item.activations="{ item }">
-          <v-switch
-            :input-value="item.current"
-            @change="setActivation(item)"
-            value
-          ></v-switch>
-        </template>
+
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -66,7 +60,7 @@
               <v-icon
                 v-bind="attrs"
                 v-on="on"
-                @click="deleteFinancialYear(item.id)"
+                @click="deleteSubBudgetClass(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -77,26 +71,54 @@
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Funding Sources`" />
+        <ModalHeader :title="`${data.modalTitle} Bank Accounts`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
+          <!-- <img v-show="imageUrl" :src="imageUrl" alt="" /> -->
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="data.formData.code"
-                    label="Code"
+                    v-model="data.formData.branch"
+                    label="branch"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="data.formData.description"
-                    label="Description"
+                    v-model="data.formData.name"
+                    label="name"
                     required
                   ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.bank"
+                    label="Bank"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.number"
+                    label="Number"
+                    required
+                  ></v-text-field>
+                </v-col>
+
+                <v-col cols="12" md="4">
+                  <v-autocomplete
+                    v-model="data.formData.gfs_code_id"
+                    label="Gfs Codes"
+                    :items="data.gfscodes"
+                    :item-text="'code'"
+                    item-value="id"
+                    :item-divider="true"
+                    required
+                    clearable
+                  ></v-autocomplete>
                 </v-col>
               </v-row>
             </v-container>
@@ -115,7 +137,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Funding Sources`" />
+        <ModalHeader :title="`Delete Bank Accounts`" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -133,7 +155,7 @@
 </template>
 
 <script lang="ts">
-import { FundSources } from "./types";
+import { BackAccount } from "./types/BackAccount";
 import store from "@/store";
 import {
   defineComponent,
@@ -148,44 +170,58 @@ import {
   create,
   update,
   destroy,
-  activation,
   search,
-} from "./services/funding-sources";
+} from "./services/back-accounts.service";
+import { gfscodes } from "../settup/gfs-codes/service/gfs.service";
 
 export default defineComponent({
-  name: "Funding Sources",
+  name: "BackAccount",
   setup() {
-    let dataItems: Array<FundSources> = [];
-    let financialYearData: FundSources;
+    let dataItems: Array<BackAccount> = [];
+    let documentCategoryData: BackAccount;
 
     let data = reactive({
-      title: "Manage Funding Sources",
+      title: "Manage Bank Accounts",
       modalTitle: "",
       headers: [
         {
-          text: "Funding Sources Code",
+          text: "branch",
           align: "start",
           sortable: false,
-          value: "code",
+          value: "branch",
         },
         {
-          text: "Description",
+          text: "Name",
           align: "start",
           sortable: false,
-          value: "description",
+          value: "name",
         },
+        {
+          text: "Number",
+          align: "start",
+          sortable: false,
+          value: "number",
+        },
+        {
+          text: "Gfs Code",
+          align: "start",
+          sortable: false,
+          value: "gfs_code_id",
+        },
+
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: financialYearData,
+      formData: documentCategoryData,
       params: {
         total: 10,
         size: 10,
       },
       itemtodelete: "",
+      gfscodes: [],
     });
 
     onMounted(() => {
@@ -195,9 +231,13 @@ export default defineComponent({
         size: 10,
       };
       get(params).then((response: any) => {
-        console.log("data", response.data.data);
+        console.log("data to render", response.data.data);
         data.items = response.data.data;
         data.itemsToFilter = response.data.data;
+      });
+      gfscodes().then((response: any) => {
+        console.log("gfs codes", response.data.data.data);
+        data.gfscodes = response.data.data.data;
       });
     });
 
@@ -218,41 +258,35 @@ export default defineComponent({
       }
     };
 
-    const setActivation = (item) => {
-      activation(item).then((response: any) => {
-        console.log("activated data", response.data);
-        reloadData();
-      });
-    };
     const reloadData = () => {
       let params: any = {
         total: 10,
         size: 10,
       };
       get(params).then((response: any) => {
-        console.log("data", response.data);
+        console.log("data", response.data.data);
         data.items = response.data.data;
       });
     };
 
-    const deleteFinancialYear = (deleteId: any) => {
+    const deleteSubBudgetClass = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getFinancialYear = () => {
+    const getSubBudgetClass = () => {
       get(data).then((response) => {
         console.log("data", response.data);
       });
     };
 
     const cancelDialog = () => {
-      data.formData = {} as FundSources;
+      data.formData = {} as BackAccount;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as FundSources;
+      data.formData = {} as BackAccount;
       data.deletemodal = false;
     };
 
@@ -278,7 +312,7 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as FundSources;
+        data.formData = {} as BackAccount;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
@@ -299,7 +333,6 @@ export default defineComponent({
         cancelDialog();
       });
     };
-    // watching a getter
 
     watch(
       () => store.state.snackbar,
@@ -312,14 +345,13 @@ export default defineComponent({
       data,
       openDialog,
       cancelDialog,
-      deleteFinancialYear,
-      getFinancialYear,
+      deleteSubBudgetClass,
+      getSubBudgetClass,
       updateFinancialYear,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
-      setActivation,
       searchCategory,
     };
   },

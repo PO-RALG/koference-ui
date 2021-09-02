@@ -48,7 +48,7 @@ exports.MENU_ITEMS = [
             {
                 icon: "mdi-text-subject",
                 title: "Bank Accounts",
-                state: "/bank-acounts"
+                state: "/manage-bank-accounts"
             },
             {
                 icon: "mdi-text-subject",

@@ -2,12 +2,16 @@
   <v-row justify="center">
     <v-dialog v-model="isOpen" persistent max-width="350">
       <v-card>
-        <v-card-title class="headline">{{ title }}</v-card-title>
-        <v-card-text>{{ message }}</v-card-text>
+        <v-card-title class="headline primary white--text">{{
+          title
+        }}</v-card-title>
+        <v-card-text class="pa-4">{{ message }}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="red darken-1" text @click="reject">NO</v-btn>
-          <v-btn color="green darken-1" text @click="accept" :loading="loading">YES</v-btn>
+          <v-btn color="green darken-1" text @click="accept" :loading="loading"
+            >YES</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
