@@ -22,6 +22,7 @@ var documentcategories_1 = require("@/components/documentcategories");
 var document_1 = require("@/components/document");
 var funding_sources_1 = require("@/components/settup/funding-sources");
 var sub_budget_classes_1 = require("@/components/settup/sub-budget-classes");
+var back_accounts_1 = require("@/components/back-accounts");
 vue_1["default"].use(vue_router_1["default"]);
 var DEFAULT_TITLE = "FFARS - Facility Financial Accounting & Reporting System";
 var routes = [
@@ -34,7 +35,7 @@ var routes = [
         path: "/",
         component: function () { return Promise.resolve().then(function () { return require("@/layouts/Home.vue"); }); },
         meta: { title: "Dashboard" },
-        children: __spreadArrays(user_1.userRoutes, finacialyears_1.FinancialYearRoutes, gfs_codes_1.gfsCodesRoutes, user_1.userRoutes, level_1.levelRoutes, admin_area_1.adminAreaRoutes, fund_types_1.fundTypesRoutes, gfs_categories_1.gfsCategoriesRoutes, projects_1.ProjectRoutes, customers_1.CustomersRoutes, documentcategories_1.DocumentCategoryRoutes, document_1.DocumentRoutes, funding_sources_1.FundingSourceRoutes, sub_budget_classes_1.SubBudgetClassRoutes)
+        children: __spreadArrays(user_1.userRoutes, finacialyears_1.FinancialYearRoutes, gfs_codes_1.gfsCodesRoutes, user_1.userRoutes, level_1.levelRoutes, admin_area_1.adminAreaRoutes, fund_types_1.fundTypesRoutes, gfs_categories_1.gfsCategoriesRoutes, projects_1.ProjectRoutes, customers_1.CustomersRoutes, documentcategories_1.DocumentCategoryRoutes, document_1.DocumentRoutes, funding_sources_1.FundingSourceRoutes, sub_budget_classes_1.SubBudgetClassRoutes, back_accounts_1.BankAccountRoutes)
     },
 ];
 var router = new vue_router_1["default"]({

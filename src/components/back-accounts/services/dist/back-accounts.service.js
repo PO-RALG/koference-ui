@@ -36,30 +36,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.gfscodes = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
+exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
 var axios_1 = require("axios");
 var get = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gfs-codes", payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/bank-accounts", payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
 exports.get = get;
-var gfscodes = function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gfs-codes")];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.gfscodes = gfscodes;
 var search = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gfs-codes/", {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/bank-accounts/", {
                     params: {
                         search: JSON.stringify(payload)
                     }
@@ -72,7 +63,7 @@ exports.search = search;
 var find = function (id) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gfs-codes/" + id)];
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/bank-accounts/" + id)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -81,7 +72,7 @@ exports.find = find;
 var create = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/gfs-codes", payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/bank-accounts", payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -90,7 +81,7 @@ exports.create = create;
 var update = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].put("/api/v1/gfs-codes/" + payload.id, payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].put("/api/v1/bank-accounts/" + payload.id, payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -101,7 +92,7 @@ var destroy = function (payload) { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0:
                 console.log("payload", payload);
-                return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/gfs-codes/" + payload)];
+                return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/bank-accounts/" + payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

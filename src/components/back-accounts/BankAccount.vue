@@ -1,7 +1,9 @@
 <template>
-  <div class="meta-data-category">
+  <div class="bank-accounts">
+    <Snackbar />
+
     <v-card-actions class="pa-0">
-      <h2>Manage GFS Categories</h2>
+      <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn color="primary" @click="openDialog">
         <v-icon>mdi-plus</v-icon>
@@ -12,84 +14,64 @@
       <v-data-table
         :headers="data.headers"
         :items="data.items"
-        class="elevation-1"
-        item-key="id"
-        :expanded.sync="data.expanded"
         :single-expand="true"
+        class="elevation-1"
       >
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-text-field
-                @input="searchCategory($event)"
-                class
+              <v-autocomplete
+                label="Filter by Code"
+                @change="searchCategory($event)"
+                :items="data.itemsToFilter"
+                :item-text="'code'"
+                :item-divider="true"
+                return-object
+                required
                 clearable
-                flat
-                hide-details
-                prepend-icon="mdi-magnify"
-                label="Filter by Category Name"
-              ></v-text-field>
+              ></v-autocomplete>
             </v-col>
           </v-card-title>
         </template>
-        <template v-slot:item="{ item, isExpanded, expand }">
-          <tr>
-            <td>{{ item.description }}</td>
-
-            <td>
-              <v-tooltip top>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-icon
-                    v-bind="attrs"
-                    v-on="on"
-                    class="mr-2"
-                    @click="expand(!isExpanded)"
-                  >
-                    mdi-format-list-bulleted
-                  </v-icon>
-                </template>
-                <span>List of Gfs codes</span>
-              </v-tooltip>
-            </td>
-            <td>
-              <v-icon class="mr-2" @click="openDialog(item)">
-                mdi-pencil-box-outline
-              </v-icon>
-              <v-icon @click="deleteGfsCategory(item.id)">
-                mdi-trash-can-outline
-              </v-icon>
-            </td>
-          </tr>
+        <template v-slot:[`item.startDate`]="{ item }">
+          <span>{{ item.startDate }}</span>
+        </template>
+        <template v-slot:[`item.endDate`]="{ item }">
+          <span>{{ item.endDate }}</span>
         </template>
 
-        <template v-slot:expanded-item="{ headers, item }">
-          <td :colspan="headers.length" class="pb-5 pa-3">
-            <b>Category Name:</b>
-            {{ item.description }}
-            <br />
-            Category Code:
-            <em>
-              <b class="pa-3">{{ item.code }}</b>
-            </em>
-            <v-card outlined flat max-width="80%">
-              <v-data-table
-                :headers="data.gfsCodes"
-                :items="item.gfs_codes"
-                :items-per-page="
-                  item.metadataOptions ? item.metadataOptions.length : 20
-                "
-                hide-default-footer
-                dense
-              ></v-data-table>
-            </v-card>
-          </td>
+        <template v-slot:item.actions="{ item }">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="openDialog(item)"
+              >
+                mdi-pencil-box-outline
+              </v-icon>
+            </template>
+            <span>Edit</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                @click="deleteSubBudgetClass(item.id)"
+                >mdi-trash-can-outline</v-icon
+              >
+            </template>
+            <span>Delete</span>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} GfsCodes`" />
+        <ModalHeader :title="`${data.modalTitle} Bank Accounts`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -97,19 +79,46 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="data.formData.description"
-                    label="Description"
+                    v-model="data.formData.branch"
+                    label="branch"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="data.formData.code"
-                    label="Code"
+                    v-model="data.formData.name"
+                    label="name"
                     required
                   ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.bank"
+                    label="Bank"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.number"
+                    label="Number"
+                    required
+                  ></v-text-field>
+                </v-col>
+
+                <v-col cols="12" md="4">
+                  <v-autocomplete
+                    v-model="data.formData.gfs_code_id"
+                    label="Gfs Codes"
+                    :items="data.gfscodes"
+                    :item-text="'code'"
+                    item-value="id"
+                    :item-divider="true"
+                    required
+                    clearable
+                  ></v-autocomplete>
                 </v-col>
               </v-row>
             </v-container>
@@ -128,7 +137,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete GfsCodes `" />
+        <ModalHeader :title="`Delete Bank Accounts`" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -146,7 +155,7 @@
 </template>
 
 <script lang="ts">
-import { GfsCategories } from "./types/";
+import { BackAccount } from "./types/BackAccount";
 import store from "@/store";
 import {
   defineComponent,
@@ -154,7 +163,6 @@ import {
   watch,
   onMounted,
   computed,
-  ref,
 } from "@vue/composition-api";
 
 import {
@@ -163,38 +171,45 @@ import {
   update,
   destroy,
   search,
-} from "./service/gfs-categories.service";
+} from "./services/back-accounts.service";
+import { gfscodes } from "../settup/gfs-codes/service/gfs.service";
 
 export default defineComponent({
-  name: "GfsCategories",
+  name: "BackAccount",
   setup() {
-    let dataItems: Array<GfsCategories> = [];
-    let documentCategoryData: GfsCategories;
-    let fileToupload = ref("");
-    let imageUrl: any = ref("");
+    let dataItems: Array<BackAccount> = [];
+    let documentCategoryData: BackAccount;
 
     let data = reactive({
-      title: "Manage Gfs Categories",
+      title: "Manage Bank Accounts",
       modalTitle: "",
       headers: [
         {
-          text: "Category Name",
+          text: "branch",
+          align: "start",
+          sortable: false,
+          value: "branch",
+        },
+        {
+          text: "Name",
           align: "start",
           sortable: false,
           value: "name",
         },
         {
-          text: "Gfs Codes List",
+          text: "Number",
           align: "start",
           sortable: false,
-          value: "code",
+          value: "number",
+        },
+        {
+          text: "Gfs Code",
+          align: "start",
+          sortable: false,
+          value: "gfs_code_id",
         },
 
         { text: "Actions", value: "actions", sortable: false },
-      ],
-      gfsCodes: [
-        { text: "Gfs Name", align: "start", sortable: false, value: "name" },
-        { text: "Gfs Code", align: "start", sortable: false, value: "code" },
       ],
       modal: false,
       deletemodal: false,
@@ -206,7 +221,7 @@ export default defineComponent({
         size: 10,
       },
       itemtodelete: "",
-      documentcategories: [],
+      gfscodes: [],
     });
 
     onMounted(() => {
@@ -217,8 +232,12 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data to render", response.data.data);
-        data.items = response.data.data.data;
-        data.itemsToFilter = response.data.data.data;
+        data.items = response.data.data;
+        data.itemsToFilter = response.data.data;
+      });
+      gfscodes().then((response: any) => {
+        console.log("gfs codes", response.data.data.data);
+        data.gfscodes = response.data.data.data;
       });
     });
 
@@ -232,7 +251,7 @@ export default defineComponent({
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
           console.log("response data", response);
-          data.items = response.data.data.data;
+          data.items = response.data.data;
         });
       } else {
         reloadData();
@@ -246,28 +265,28 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
-        data.items = response.data.data.data;
+        data.items = response.data.data;
       });
     };
 
-    const deleteGfsCategory = (deleteId: any) => {
+    const deleteSubBudgetClass = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getGfsCategory = () => {
+    const getSubBudgetClass = () => {
       get(data).then((response) => {
         console.log("data", response.data);
       });
     };
 
     const cancelDialog = () => {
-      data.formData = {} as GfsCategories;
+      data.formData = {} as BackAccount;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as GfsCategories;
+      data.formData = {} as BackAccount;
       data.deletemodal = false;
     };
 
@@ -282,7 +301,7 @@ export default defineComponent({
     const save = () => {
       console.log("Form Data", data.formData);
       if (data.formData.id) {
-        updateGfsCategory(data.formData);
+        updateFinancialYear(data.formData);
       } else {
         createUser(data.formData);
       }
@@ -293,13 +312,13 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as GfsCategories;
+        data.formData = {} as BackAccount;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
     };
 
-    const updateGfsCategory = (data: any) => {
+    const updateFinancialYear = (data: any) => {
       update(data).then((response) => {
         console.log("Updated data", response.data);
         reloadData();
@@ -314,21 +333,6 @@ export default defineComponent({
         cancelDialog();
       });
     };
-    // watching a getter
-
-    watch(fileToupload, (fileToupload: any) => {
-      if (!(fileToupload instanceof File)) {
-        return;
-      }
-      let fileReader = new FileReader();
-
-      fileReader.readAsDataURL(fileToupload);
-
-      fileReader.addEventListener("load", () => {
-        imageUrl.value = fileReader.result;
-        console.log("setup", imageUrl.value);
-      });
-    });
 
     watch(
       () => store.state.snackbar,
@@ -341,15 +345,14 @@ export default defineComponent({
       data,
       openDialog,
       cancelDialog,
-      deleteGfsCategory,
-      getGfsCategory,
-      updateGfsCategory,
+      deleteSubBudgetClass,
+      getSubBudgetClass,
+      updateFinancialYear,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
       searchCategory,
-      imageUrl,
     };
   },
 });

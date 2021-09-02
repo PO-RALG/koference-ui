@@ -1,5 +1,5 @@
 <template>
-  <v-card-text>
+  <v-card-text class="pa-4">
     <v-container>
       <slot />
     </v-container>
