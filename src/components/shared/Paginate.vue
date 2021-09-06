@@ -1,17 +1,16 @@
 <template>
   <v-row cols="5" align="center" class="d-flex justify-end align-end">
     <v-col cols="1" lg="1" md="1" sm="1">Rows Per Page</v-col>
-    <v-col cols="1" lg="1" md="1" sm="1">
+    <v-col cols="1" lg="1" md="1" sm="1" class="select-dropdown">
       <v-select
         @input="updateRowsPerPage($event)"
         :items="rows"
-        item-text="item"
-        item-value="item"
         v-model="data.selected"
+        return-object
       >
       </v-select>
     </v-col>
-    <v-col cols="1" lg="1" md="1" sm="1" class="pr-n1"> {{ params.from }}-{{ params.to }} of {{ params.total }} </v-col>
+    <v-col cols="1" lg="1" md="1" sm="1" class="pr-n1 number-list"> {{ params.from }}-{{ params.to }} of {{ params.total }} </v-col>
     <v-col cols="1" lg="1" md="1" sm="1" class="prev-next-buttons">
       <v-row>
         <v-btn :disabled="isPrevBtnDisabled" @click.native="previousPage" icon>
@@ -46,7 +45,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     let data = reactive({
-      selected: 5,
+      selected: props.rows[0],
     });
 
     const isPrevBtnDisabled = computed(() => {
@@ -98,5 +97,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 .prev-next-buttons {
   max-width: 5.3333%;
+}
+.select-dropdown {
+  max-width: 5%;
+}
+.number-list {
+  max-width: 5%;
 }
 </style>
