@@ -71,7 +71,7 @@
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} GfsCodes`" />
+        <ModalHeader :title="`${data.modalTitle} Gfs Codes`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -93,6 +93,18 @@
                     required
                   ></v-text-field>
                 </v-col>
+                <v-col cols="12" md="12">
+                  <v-autocomplete
+                    v-model="data.formData.category_id"
+                    label="Category"
+                    :items="data.gfscategories"
+                    :item-text="'description'"
+                    item-value="id"
+                    :item-divider="true"
+                    required
+                    clearable
+                  ></v-autocomplete>
+                </v-col>
               </v-row>
             </v-container>
           </v-form>
@@ -110,7 +122,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete GfsCodes `" />
+        <ModalHeader :title="`Delete Gfs Codes `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -140,12 +152,13 @@ import {
 } from "@vue/composition-api";
 
 import { get, create, update, destroy, search } from "./service/gfs.service";
+import { gfscategories } from "../gfs-categories/service/gfs-categories.service";
 
 export default defineComponent({
   name: "GfsCodes",
   setup() {
     let dataItems: Array<GfsCodes> = [];
-    let documentCategoryData: GfsCodes;
+    let gfsCategoryData: GfsCodes;
     let fileToupload = ref("");
     let imageUrl: any = ref("");
 
@@ -162,13 +175,14 @@ export default defineComponent({
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: documentCategoryData,
+      formData: gfsCategoryData,
       params: {
         total: 10,
         size: 10,
       },
       itemtodelete: "",
       documentcategories: [],
+      gfscategories: [],
     });
 
     onMounted(() => {
@@ -181,6 +195,10 @@ export default defineComponent({
         console.log("data to render", response.data.data);
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
+      });
+      gfscategories().then((response: any) => {
+        console.log("gfscode categories", response.data.data.data);
+        data.gfscategories = response.data.data.data;
       });
     });
 
