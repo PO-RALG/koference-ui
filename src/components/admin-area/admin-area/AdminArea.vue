@@ -58,7 +58,12 @@
               </v-row>
               <v-col cols="12" sm="12" md="12" class="hierarchy-container">
                 <v-label><h5>SELECT LOCATION PARENT</h5></v-label>
-                <TreeBrowser v-if="data.node" @onClick="loadLocationChildren" :node="data.node" />
+                <TreeBrowser
+                  v-if="data.node"
+                  @onClick="loadLocationChildren"
+                  :node="data.node"
+                  :currentItem="data.currentItem"
+                />
               </v-col>
             </v-container>
           </v-form>
@@ -112,6 +117,7 @@ export default defineComponent({
       isOpen: false,
       node: null,
       item: null,
+      currentItem: null,
       levels: levelItems,
       modalTitle: "",
       headers: [
@@ -194,6 +200,7 @@ export default defineComponent({
     };
 
     const loadLocationChildren = (location: any) => {
+      data.currentItem = location.id;
       data.formData.parent_id = location.id;
       if (!location.children) {
         if (location.id !== data.node.id) {
