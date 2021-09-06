@@ -72,7 +72,7 @@ export default defineComponent({
       emit("onPageChange", params);
     };
 
-    const updateRowsPerPage = (value: number) => {
+    const updateRowsPerPage = (value: any) => {
       let params = { per_page: parseInt(value), page: props.params.current_page };
       emit("onPageChange", params);
     };

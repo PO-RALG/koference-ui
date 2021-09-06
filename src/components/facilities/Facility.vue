@@ -162,7 +162,7 @@ export default defineComponent({
         total: 100,
         size: 10,
       },
-      rows: ["5", "10", "15","50"],
+      rows: ["5", "10", "15"],
       itemtodelete: "",
     });
 

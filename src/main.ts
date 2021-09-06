@@ -15,7 +15,7 @@ import { colors } from "vuetify/lib";
 
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
-axios.defaults.headers.common["Authorization"] = `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC92MVwvbG9naW4iLCJpYXQiOjE2MzA2NjcwMjEsImV4cCI6MTYzMDY3MDYyMSwibmJmIjoxNjMwNjY3MDIxLCJqdGkiOiJla1k0TGxma1Z3SWdaRGR3Iiwic3ViIjoxLCJwcnYiOiJiOTEyNzk5NzhmMTFhYTdiYzU2NzA0ODdmZmYwMWUyMjgyNTNmZTQ4In0.6aWVpGXLvgch6O2CRbhaGMRVTqwG6qah6oJnplNSlXA`;
+axios.defaults.headers.common["Authorization"] = `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC92MVwvbG9naW4iLCJpYXQiOjE2MzA5MzQzMjAsImV4cCI6MTYzMDkzNzkyMCwibmJmIjoxNjMwOTM0MzIwLCJqdGkiOiJ5dmpZV0R0NFhqVDU0VnVhIiwic3ViIjoxLCJwcnYiOiJiOTEyNzk5NzhmMTFhYTdiYzU2NzA0ODdmZmYwMWUyMjgyNTNmZTQ4In0._owlk_Hpla5VWCpR2k2T6N4m8Dh-UNaBM3Z1leFRSmk`;
 axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
 
 const snackbar = {
