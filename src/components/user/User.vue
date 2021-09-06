@@ -10,19 +10,13 @@
     </v-card-actions>
 
     <v-card>
-      <v-data-table
-        :headers="data.headers"
-        :items="data.items"
-        :server-items-length="data.params.total"
-        :options.sync="data.pagination"
-        :items-per-page="data.params.size"
-        class="elevation-1"
-      >
+      <v-data-table :headers="data.headers" :items="data.items" hide-default-footer class="elevation-1">
         <template v-slot:item.actions="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
           <v-icon @click="openConfirmDialog(item)"> mdi-trash-can-outline </v-icon>
         </template>
       </v-data-table>
+      <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
@@ -87,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted, set } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted, set, computed } from "@vue/composition-api";
 import { get, create, update, deleteUser } from "./services/user.service";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { AxiosResponse } from "axios";
@@ -104,6 +98,7 @@ export default defineComponent({
       isOpen: false,
       node: null,
       item: userData,
+      response: {},
       modalTitle: "",
       headers: [
         { text: "Check Number", value: "check_number" },
@@ -115,6 +110,7 @@ export default defineComponent({
       modal: false,
       items: dataItems,
       formData: userData,
+      rows: ["5", "10", "15"],
       params: {
         total: 100,
         size: 10,
@@ -133,8 +129,9 @@ export default defineComponent({
     onMounted(() => {
       data.node = TREE_NODE;
       get({}).then((response: AxiosResponse) => {
-        console.log("response", response);
+        let { from, to, total, current_page, per_page,  last_page } = response.data.data
         data.items = response.data.data.data;
+        data.response = {from, to, total, current_page, per_page, last_page};
       });
       getNodes();
     });
@@ -150,6 +147,14 @@ export default defineComponent({
       } else {
         createUser(data.formData);
       }
+    };
+
+    const getData = (params: any) => {
+      data.response = params;
+      get(params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
+        data.items = response.data.data.data;
+      });
     };
 
     const openDialog = (formData?: User) => {
@@ -223,6 +228,7 @@ export default defineComponent({
 
       loadLocationChildren,
       getNodes,
+      getData,
 
       updateUser,
       save,
