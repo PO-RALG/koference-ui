@@ -1,52 +1,95 @@
 <template>
-  <div class="gfs-code">
+  <div class="customers">
+    <Snackbar />
+
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <!-- <v-btn color="primary" @click="openDialog">
+      <v-btn color="primary" @click="openDialog">
         <v-icon>mdi-plus</v-icon>
         Add New
-      </v-btn> -->
+      </v-btn>
     </v-card-actions>
-
     <v-card>
       <v-data-table
         :headers="data.headers"
         :items="data.items"
-        :server-items-length="data.params.total"
-        :options.sync="data.pagination"
-        :items-per-page="data.params.size"
+        :single-expand="true"
         class="elevation-1"
       >
+        <template v-slot:top>
+          <v-card-title>
+            <v-spacer></v-spacer>
+            <v-col cols="6" sm="12" md="4" class="pa-0">
+              <v-autocomplete
+                label="Filter by Name"
+                @change="searchCategory($event)"
+                :items="data.itemsToFilter"
+                :item-text="'name'"
+                :item-divider="true"
+                return-object
+                required
+                clearable
+              ></v-autocomplete>
+            </v-col>
+          </v-card-title>
+        </template>
         <template v-slot:[`item.startDate`]="{ item }">
           <span>{{ item.startDate }}</span>
         </template>
         <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-        <!-- <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
-          <v-icon @click="deleteItem(item.id)">mdi-trash-can-outline</v-icon>
-        </template> -->
+
+        <template v-slot:item.actions="{ item }">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="openDialog(item)"
+              >
+                mdi-pencil-box-outline
+              </v-icon>
+            </template>
+            <span>Edit</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                @click="deleteFinancialYear(item.id)"
+                >mdi-trash-can-outline</v-icon
+              >
+            </template>
+            <span>Delete</span>
+          </v-tooltip>
+        </template>
       </v-data-table>
     </v-card>
-    <!-- <Modal :modal="data.modal" :width="600">
+    <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} User`" />
+        <ModalHeader :title="`${data.modalTitle} GfsCodes`" />
       </template>
       <template v-slot:body>
-        <ModalBody>
+        <ModalBody v-if="data.formData">
+          <!-- <img v-show="imageUrl" :src="imageUrl" alt="" /> -->
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
-                  <v-text-field v-model="data.formData.name" :counter="10" label="First name" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="data.formData.email"
-                    :counter="10"
-                    label="Email Address"
+                    v-model="data.formData.name"
+                    label="Name"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="data.formData.code"
+                    label="Code"
                     required
                   ></v-text-field>
                 </v-col>
@@ -57,65 +100,153 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
+          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="green darken-1" text @click="save"
+            >{{ data.modalTitle }}
+          </v-btn>
         </ModalFooter>
       </template>
-    </Modal> -->
+    </Modal>
+
+    <Modal :modal="data.deletemodal" :width="300">
+      <template v-slot:header>
+        <ModalHeader :title="`Delete GfsCodes `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> Are you sure? </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
+            >Cancel</v-btn
+          >
+          <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import { get } from "./service/gfs.service";
+import { GfsCodes } from "./types/";
+import store from "@/store";
+import {
+  defineComponent,
+  reactive,
+  watch,
+  onMounted,
+  computed,
+  ref,
+} from "@vue/composition-api";
+
+import { get, create, update, destroy, search } from "./service/gfs.service";
 
 export default defineComponent({
+  name: "GfsCodes",
   setup() {
-    let dataItems: Array<any> = [];
-    let formData: any = {};
+    let dataItems: Array<GfsCodes> = [];
+    let documentCategoryData: GfsCodes;
+    let fileToupload = ref("");
+    let imageUrl: any = ref("");
+
     let data = reactive({
-      title: "GFS Codes",
+      title: "Manage GfsCodes",
       modalTitle: "",
       headers: [
-        { text: "Code", value: "code" },
         { text: "Name", align: "start", sortable: false, value: "name" },
-        // { text: "Actions", value: "actions", sortable: false },
+        { text: "Code", align: "start", sortable: false, value: "code" },
+
+        { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
+      deletemodal: false,
       items: dataItems,
-      formData,
+      itemsToFilter: [],
+      formData: documentCategoryData,
       params: {
-        total: 100,
+        total: 10,
         size: 10,
       },
+      itemtodelete: "",
+      documentcategories: [],
     });
 
     onMounted(() => {
       // make api call
       let params: any = {
-        total: 100,
+        total: 10,
         size: 10,
       };
       get(params).then((response: any) => {
-        data.items = response.data.data;
+        console.log("data to render", response.data.data);
+        data.items = response.data.data.data;
+        data.itemsToFilter = response.data.data.data;
       });
     });
 
-    const deleteGfsCode = () => {
-      console.log("delete gfs");
+    computed(() => {
+      return "test";
+    });
+
+    const searchCategory = (categoryName) => {
+      console.log("argument", categoryName);
+
+      if (categoryName != null) {
+        search({ name: categoryName.name }).then((response: any) => {
+          console.log("response data", response);
+          data.items = response.data.data.data;
+        });
+      } else {
+        reloadData();
+      }
+    };
+
+    const reloadData = () => {
+      let params: any = {
+        total: 10,
+        size: 10,
+      };
+      get(params).then((response: any) => {
+        console.log("data", response.data.data);
+        data.items = response.data.data.data;
+      });
+    };
+
+    const deleteFinancialYear = (deleteId: any) => {
+      data.deletemodal = !data.modal;
+      data.itemtodelete = deleteId;
+      // console.log("delete year", data);
+    };
+    const getFinancialYear = () => {
+      get(data).then((response) => {
+        console.log("data", response.data);
+      });
     };
 
     const cancelDialog = () => {
-      data.formData = {};
+      data.formData = {} as GfsCodes;
       data.modal = !data.modal;
     };
 
+    const cancelConfirmDialog = () => {
+      data.formData = {} as GfsCodes;
+      data.deletemodal = false;
+    };
+
+    const remove = () => {
+      console.log("delete data with id", data.itemtodelete);
+      destroy(data.itemtodelete).then(() => {
+        reloadData();
+        data.deletemodal = false;
+      });
+    };
+
     const save = () => {
-      console.log(data.formData);
+      console.log("Form Data", data.formData);
       if (data.formData.id) {
-        update(data.formData);
+        updateFinancialYear(data.formData);
       } else {
-        create(data.formData);
+        createUser(data.formData);
       }
     };
 
@@ -124,28 +255,66 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
+        data.formData = {} as GfsCodes;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
     };
 
-    const update = (data: any) => {
-      update(data);
+    const updateFinancialYear = (data: any) => {
+      update(data).then((response) => {
+        console.log("Updated data", response.data);
+        reloadData();
+        cancelDialog();
+      });
     };
 
-    const create = (data: any) => {
-      create(data);
+    const createUser = (data: any) => {
+      create(data).then((response) => {
+        console.log("Created data", response.data);
+        reloadData();
+        cancelDialog();
+      });
     };
+    // watching a getter
+
+    watch(fileToupload, (fileToupload: any) => {
+      if (!(fileToupload instanceof File)) {
+        return;
+      }
+      let fileReader = new FileReader();
+
+      fileReader.readAsDataURL(fileToupload);
+
+      fileReader.addEventListener("load", () => {
+        imageUrl.value = fileReader.result;
+        console.log("setup", imageUrl.value);
+      });
+    });
+
+    watch(
+      () => store.state.snackbar,
+      () => {
+        console.log("datazzzzz", store.getters.getSnackBar);
+      }
+    );
 
     return {
       data,
-
       openDialog,
       cancelDialog,
-      deleteGfsCode,
-      update,
+      deleteFinancialYear,
+      getFinancialYear,
+      updateFinancialYear,
       save,
+      reloadData,
+      remove,
+      cancelConfirmDialog,
+      searchCategory,
+      imageUrl,
     };
   },
 });
 </script>
+
+<style scoped></style>

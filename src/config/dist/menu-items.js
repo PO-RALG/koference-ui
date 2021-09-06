@@ -36,14 +36,19 @@ exports.MENU_ITEMS = [
                 state: "/manage-finacial-years"
             },
             {
+                icon: "mdi-book-variant",
+                title: "Document Categories",
+                state: "/manage-document-categories"
+            },
+            {
                 icon: "mdi-view-stream-outline",
                 title: "Fund Types",
-                state: "/fund-types"
+                state: "/manage-fund-types"
             },
             {
                 icon: "mdi-text-subject",
                 title: "Bank Accounts",
-                state: "/bank-acounts"
+                state: "/manage-bank-accounts"
             },
             {
                 icon: "mdi-text-subject",
@@ -60,7 +65,12 @@ exports.MENU_ITEMS = [
             {
                 icon: "mdi-border-left-variant",
                 title: "Sub Budget Class",
-                state: "/sub-budgets"
+                state: "/manage-sub-budget-classes"
+            },
+            {
+                icon: "mdi-border-left-variant",
+                title: "GFS Categories",
+                state: "/gfs-categories"
             },
             {
                 icon: "mdi-border-left-variant",
@@ -70,12 +80,12 @@ exports.MENU_ITEMS = [
             {
                 icon: "mdi-border-left-variant",
                 title: "Projects",
-                state: "/projects"
+                state: "/manage-project"
             },
             {
                 icon: "mdi-border-left-variant",
                 title: "Funding Sources",
-                state: "/funding-sources"
+                state: "/manage-funding-sources"
             },
         ]
     },

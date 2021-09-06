@@ -1,5 +1,7 @@
 <template>
-  <div class="academic-year">
+  <div class="financial-year">
+    <Snackbar />
+
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
@@ -8,29 +10,68 @@
         Add New
       </v-btn>
     </v-card-actions>
-    <Snackbar />
     <v-card>
       <v-data-table
         :headers="data.headers"
         :items="data.items"
-        :server-items-length="data.params.total"
-        :options.sync="data.pagination"
-        :items-per-page="data.params.size"
         class="elevation-1"
+        :single-expand="true"
       >
+        <template v-slot:top>
+          <v-card-title>
+            <v-spacer></v-spacer>
+            <v-col cols="6" sm="12" md="4" class="pa-0">
+              <v-autocomplete
+                label="Filter by Name"
+                @change="searchCategory($event)"
+                :items="data.itemsToFilter"
+                :item-text="'name'"
+                :item-divider="true"
+                return-object
+                required
+                clearable
+              ></v-autocomplete>
+            </v-col>
+          </v-card-title>
+        </template>
         <template v-slot:[`item.startDate`]="{ item }">
           <span>{{ item.startDate }}</span>
         </template>
         <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)">
-            mdi-pencil-box-outline
-          </v-icon>
-          <v-icon @click="deleteFinancialYear(item.id)"
-            >mdi-trash-can-outline</v-icon
-          >
+        <template v-slot:item.activations="{ item }">
+          <v-switch
+            :input-value="item.current"
+            @change="setActivation(item)"
+            value
+          ></v-switch>
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="openDialog(item)"
+              >
+                mdi-pencil-box-outline
+              </v-icon>
+            </template>
+            <span>Edit</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                @click="deleteFinancialYear(item.id)"
+                >mdi-trash-can-outline</v-icon
+              >
+            </template>
+            <span>Delete</span>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-card>
@@ -71,8 +112,8 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save"
+          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="green darken-1" text @click="save"
             >{{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -88,10 +129,10 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
+          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
             >Cancel</v-btn
           >
-          <v-btn color="blue darken-1" text @click="remove">Yes</v-btn>
+          <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -106,11 +147,20 @@ import {
   reactive,
   watch,
   onMounted,
+  computed,
 } from "@vue/composition-api";
 
-import { get, create, update, destroy } from "./services/financialyear.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  activation,
+  search,
+} from "./services/financialyear.service";
 
 export default defineComponent({
+  name: "FinancialYear",
   setup() {
     let dataItems: Array<FinancialYear> = [];
     let financialYearData: FinancialYear;
@@ -122,11 +172,13 @@ export default defineComponent({
         { text: "Name", align: "start", sortable: false, value: "name" },
         { text: "Start Date", value: "start_date" },
         { text: "End Date", value: "end_date" },
+        { text: "Activation", value: "activations", sortable: false },
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       deletemodal: false,
       items: dataItems,
+      itemsToFilter: [],
       formData: financialYearData,
       params: {
         total: 10,
@@ -142,11 +194,35 @@ export default defineComponent({
         size: 10,
       };
       get(params).then((response: any) => {
-        // console.log("data", response.data.data);
-        data.items = response.data.data;
+        console.log("data", response.data.data);
+        data.items = response.data.data.data;
+        data.itemsToFilter = response.data.data.data;
       });
     });
 
+    computed(() => {
+      return "test";
+    });
+
+    const searchCategory = (categoryName) => {
+      console.log("argument", categoryName);
+
+      if (categoryName != null) {
+        search({ name: categoryName.name }).then((response: any) => {
+          console.log("response data", response);
+          data.items = response.data.data.data;
+        });
+      } else {
+        reloadData();
+      }
+    };
+
+    const setActivation = (item) => {
+      activation(item).then((response: any) => {
+        console.log("activated data", response.data);
+        reloadData();
+      });
+    };
     const reloadData = () => {
       let params: any = {
         total: 10,
@@ -154,7 +230,7 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
-        data.items = response.data.data;
+        data.items = response.data.data.data;
       });
     };
 
@@ -242,6 +318,8 @@ export default defineComponent({
       reloadData,
       remove,
       cancelConfirmDialog,
+      setActivation,
+      searchCategory,
     };
   },
 });
