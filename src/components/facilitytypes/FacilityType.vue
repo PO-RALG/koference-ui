@@ -1,5 +1,5 @@
 <template>
-  <div class="sub-budget-classes">
+  <div class="Facility Type">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -22,10 +22,10 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Code"
+                label="Filter by Name"
                 @change="searchCategory($event)"
                 :items="data.itemsToFilter"
-                :item-text="'code'"
+                :item-text="'name'"
                 :item-divider="true"
                 return-object
                 required
@@ -60,7 +60,7 @@
               <v-icon
                 v-bind="attrs"
                 v-on="on"
-                @click="deleteSubBudgetClass(item.id)"
+                @click="deleteFacilityType(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -71,53 +71,33 @@
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} SubBudgetClass`" />
+        <ModalHeader :title="`${data.modalTitle} Facility Type`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
-          <!-- <img v-show="imageUrl" :src="imageUrl" alt="" /> -->
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.name"
+                    label="Name"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
                   <v-text-field
                     v-model="data.formData.code"
                     label="Code"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="data.formData.description"
-                    label="Description"
+                    v-model="data.formData.cost_center"
+                    label="Cost center"
                     required
                   ></v-text-field>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-autocomplete
-                    v-model="data.formData.funding_type_id"
-                    label="Fund type"
-                    :items="data.fundingtypes"
-                    :item-text="'description'"
-                    item-value="id"
-                    :item-divider="true"
-                    required
-                    clearable
-                  ></v-autocomplete>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-autocomplete
-                    v-model="data.formData.carryover_fund_type_id"
-                    label="CarryOver Fund type"
-                    :items="data.fundingtypes"
-                    :item-text="'description'"
-                    item-value="id"
-                    :item-divider="true"
-                    required
-                    clearable
-                  ></v-autocomplete>
                 </v-col>
               </v-row>
             </v-container>
@@ -126,8 +106,8 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
+          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="save"
             >{{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -136,17 +116,17 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Sub Budget Class `" />
+        <ModalHeader :title="`Delete Facility Type `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
+          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
             >Cancel</v-btn
           >
-          <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
+          <v-btn color="blue darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -154,7 +134,7 @@
 </template>
 
 <script lang="ts">
-import { SubBudgetClass } from "./types/SubBudgetClass";
+import { FacilityType } from "./types/FacilityType";
 import store from "@/store";
 import {
   defineComponent,
@@ -170,37 +150,26 @@ import {
   update,
   destroy,
   search,
-} from "./services/sub-budget-classes.service";
-import { fundingtypes } from "../fund-types/service/fund-types.service";
+} from "./services/facility-types.service";
 
 export default defineComponent({
-  name: "SubBudgetClass",
+  name: "FacilityType",
   setup() {
-    let dataItems: Array<SubBudgetClass> = [];
-    let documentCategoryData: SubBudgetClass;
+    let dataItems: Array<FacilityType> = [];
+    let customerData: FacilityType;
 
     let data = reactive({
-      title: "Manage Sub Budget Class",
+      title: "Manage Facility Type",
       modalTitle: "",
       headers: [
+        { text: "Name", align: "start", sortable: false, value: "name" },
         { text: "Code", align: "start", sortable: false, value: "code" },
+
         {
-          text: "Description",
+          text: "Cost Center",
           align: "start",
           sortable: false,
-          value: "description",
-        },
-        {
-          text: "Fund Type",
-          align: "start",
-          sortable: false,
-          value: "fund_type.name",
-        },
-        {
-          text: "CarryOver Fund Type",
-          align: "start",
-          sortable: false,
-          value: "carry_over.name",
+          value: "cost_csnter",
         },
 
         { text: "Actions", value: "actions", sortable: false },
@@ -209,13 +178,12 @@ export default defineComponent({
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: documentCategoryData,
+      formData: customerData,
       params: {
         total: 10,
         size: 10,
       },
       itemtodelete: "",
-      fundingtypes: [],
     });
 
     onMounted(() => {
@@ -229,10 +197,6 @@ export default defineComponent({
         data.items = response.data.data;
         data.itemsToFilter = response.data.data;
       });
-      fundingtypes().then((response: any) => {
-        console.log("funding types", response.data.data);
-        data.fundingtypes = response.data.data;
-      });
     });
 
     computed(() => {
@@ -244,7 +208,7 @@ export default defineComponent({
 
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
-          console.log("response data", response);
+          console.log("response data", response.data.data);
           data.items = response.data.data;
         });
       } else {
@@ -263,24 +227,24 @@ export default defineComponent({
       });
     };
 
-    const deleteSubBudgetClass = (deleteId: any) => {
+    const deleteFacilityType = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getSubBudgetClass = () => {
+    const getFacilityTypes = () => {
       get(data).then((response) => {
         console.log("data", response.data);
       });
     };
 
     const cancelDialog = () => {
-      data.formData = {} as SubBudgetClass;
+      data.formData = {} as FacilityType;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as SubBudgetClass;
+      data.formData = {} as FacilityType;
       data.deletemodal = false;
     };
 
@@ -295,7 +259,7 @@ export default defineComponent({
     const save = () => {
       console.log("Form Data", data.formData);
       if (data.formData.id) {
-        updateFinancialYear(data.formData);
+        updateFacilityType(data.formData);
       } else {
         createUser(data.formData);
       }
@@ -306,13 +270,13 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as SubBudgetClass;
+        data.formData = {} as FacilityType;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
     };
 
-    const updateFinancialYear = (data: any) => {
+    const updateFacilityType = (data: any) => {
       update(data).then((response) => {
         console.log("Updated data", response.data);
         reloadData();
@@ -327,6 +291,7 @@ export default defineComponent({
         cancelDialog();
       });
     };
+    // watching a getter
 
     watch(
       () => store.state.snackbar,
@@ -339,9 +304,9 @@ export default defineComponent({
       data,
       openDialog,
       cancelDialog,
-      deleteSubBudgetClass,
-      getSubBudgetClass,
-      updateFinancialYear,
+      deleteFacilityType,
+      getFacilityTypes,
+      updateFacilityType,
       save,
       reloadData,
       remove,

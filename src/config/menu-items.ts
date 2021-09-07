@@ -54,6 +54,11 @@ export const MENU_ITEMS = [
         title: "Transaction Types",
         state: "/transaction-types",
       },
+      {
+        icon: "mdi-text-subject",
+        title: "Facility Types",
+        state: "/manage-facility-types",
+      },
     ],
   },
   {

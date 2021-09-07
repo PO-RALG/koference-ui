@@ -3,6 +3,9 @@ import axios from "axios";
 const get = async (payload: any) => {
   return await axios.get("/api/v1/gfs-categories", payload);
 };
+const gfscategories = async () => {
+  return await axios.get("/api/v1/gfs-categories");
+};
 const documentcategoried = async () => {
   return await axios.get("/api/v1/gfs-categories");
 };
@@ -30,4 +33,13 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/gfs-categories/` + payload);
 };
 
-export { get, find, create, update, destroy, search, documentcategoried };
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  search,
+  documentcategoried,
+  gfscategories,
+};
