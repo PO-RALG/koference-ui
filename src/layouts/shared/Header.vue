@@ -1,7 +1,14 @@
 <template>
-  <v-app-bar app color="primary">
-    <v-app-bar-nav-icon v-if="!drawer" @click.stop="toggleSidebar" color="white" large />
-    <v-toolbar-title class="header-toolbar"></v-toolbar-title>
+  <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="primary" dark>
+    <v-app-bar-nav-icon @click.stop="toggleSidebar"></v-app-bar-nav-icon>
+    <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
+      <span class="hidden-sm-and-down">FFARS</span>
+    </v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-btn text color="white" value="logout" @click="logout">
+      <span class=" font-weight-bold">LOGOUT</span>
+      <v-icon>mdi-logout</v-icon>
+    </v-btn>
   </v-app-bar>
 </template>
 
@@ -30,7 +37,7 @@ export default defineComponent({
     };
 
     const logout = () => {
-      context.emit("logoutFunction", true);
+      context.emit("logoutFunction");
     };
 
     return {

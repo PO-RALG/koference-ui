@@ -74,6 +74,7 @@ import Vue from "vue";
 import { reactive } from "@vue/composition-api";
 import { authenticate, setUser } from "./services";
 import { AxiosResponse } from "axios";
+import router from '@/router'
 
 export default Vue.extend({
   props: {
@@ -106,13 +107,11 @@ export default Vue.extend({
       };
 
       authenticate(payload).then((response: AxiosResponse) => {
-        console.log("response", response.data.data);
-        console.log("response status", response.status);
         if (response.status === 200) {
           setUser(response.data.data.user);
-          // redirect to dashboard initially
+          router.push("/");
         } else {
-          console.log("could not log in");
+          router.push("/login");
         }
       });
     };

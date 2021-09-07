@@ -1,3 +1,5 @@
+import router from '@/router'
+
 const state = {
   isLoggedIn: false,
   currentUser: JSON.parse(localStorage.getItem("FFARS_USER")),
@@ -19,33 +21,37 @@ const getters = {
 };
 
 const actions = {
-  async logout({ commit }) {
+  async LOGOUT({ commit }) {
     commit("LOG_OUT");
   },
+
+  async LOGIN({ commit }, payload: any) {
+    commit("AUTHENTICATE", payload);
+  }
 };
 
 const mutations = {
   AUTHENTICATE(state, payload) {
-    state.currentUser = payload;
+    state.currentUser = JSON.parse(payload);
     state.isLoggedIn = true;
+    localStorage.setItem("FFARS_USER", payload);
   },
 
   LOG_OUT(state) {
     state.currentUser = {};
     state.isLoggedIn = false;
     localStorage.removeItem("FFARS_USER");
+    router.push("/login");
   },
 
-  loginError(state, error) {
+  SET_LOGIN_ERROR(state, error) {
+    state.isLoggedIn = false;
     state.loginError = error;
   },
-
-  setLoginStatus(state) {
-    state.isLoggedIn = true;
-  }
 };
 
 export default {
+  namespaced: true,
   state,
   getters,
   actions,

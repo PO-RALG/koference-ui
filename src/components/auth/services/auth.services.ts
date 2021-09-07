@@ -7,7 +7,11 @@ const authenticate = async (payload: any) => {
 
 const setUser = async (payload: any) => {
   const user = JSON.stringify(payload);
-  localStorage.setItem("FFARS_USER", user);
+  store.dispatch('Auth/LOGIN', user);
 };
 
-export { authenticate, setUser };
+const setLoginError = async () => {
+  store.dispatch["Auth/AUTHENTICATE"];
+};
+
+export { authenticate, setUser, setLoginError };

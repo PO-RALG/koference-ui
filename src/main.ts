@@ -23,13 +23,9 @@ const snackbar = {
   message: "",
 };
 
-const currentUser = store.getters.getCurrentUser;
+const currentUser = store.getters["Auth/getCurrentUser"];
 
-currentUser
-  ? (axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${currentUser.token}`)
-  : null;
+currentUser ? (axios.defaults.headers.common["Authorization"] = `Bearer ${currentUser.token}`) : null;
 
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
@@ -56,7 +52,6 @@ const successHandler = (response: any) => {
       snackbar.color = "success";
       snackbar.icon = "mdi-checkbox-marked-circle";
       snackbar.message = response.data.message;
-      console.log("mesage", response.data.message);
       // store.dispatch("notify", snackbar);
       store.state.snackbar = snackbar;
   }
@@ -64,7 +59,6 @@ const successHandler = (response: any) => {
 };
 
 const show500ErrorSnackbar = (response: any) => {
-  console.log("500", response);
   snackbar.message = `500: ${response.statusText}`;
   snackbar.show = true;
   snackbar.color = "red";
