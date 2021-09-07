@@ -72,7 +72,8 @@
 <script lang="ts">
 import Vue from "vue";
 import { reactive } from "@vue/composition-api";
-import { authenticate } from "./services";
+import { authenticate, setUser } from "./services";
+import { AxiosResponse } from "axios";
 
 export default Vue.extend({
   props: {
@@ -104,8 +105,15 @@ export default Vue.extend({
         password: data.password,
       };
 
-      authenticate(payload).then((response) => {
-        console.log("response", response);
+      authenticate(payload).then((response: AxiosResponse) => {
+        console.log("response", response.data.data);
+        console.log("response status", response.status);
+        if (response.status === 200) {
+          setUser(response.data.data.user);
+          // redirect to dashboard initially
+        } else {
+          console.log("could not log in");
+        }
       });
     };
 

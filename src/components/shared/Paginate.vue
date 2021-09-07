@@ -1,16 +1,12 @@
 <template>
-  <v-row cols="5" align="center" class="d-flex justify-end align-end">
+  <v-row cols="5" align="center" class="d-flex justify-end align-end pagination-container">
     <v-col cols="1" lg="1" md="1" sm="1">Rows Per Page</v-col>
     <v-col cols="1" lg="1" md="1" sm="1" class="select-dropdown">
-      <v-select
-        @input="updateRowsPerPage($event)"
-        :items="rows"
-        v-model="data.selected"
-        return-object
-      >
-      </v-select>
+      <v-select @input="updateRowsPerPage($event)" :items="rows" v-model="data.selected" return-object> </v-select>
     </v-col>
-    <v-col cols="1" lg="1" md="1" sm="1" class="pr-n1 number-list"> {{ params.from }}-{{ params.to }} of {{ params.total }} </v-col>
+    <v-col cols="1" lg="1" md="1" sm="1" class="pr-n1 number-list">
+      {{ params.from }}-{{ params.to }} of {{ params.total }}
+    </v-col>
     <v-col cols="1" lg="1" md="1" sm="1" class="prev-next-buttons">
       <v-row>
         <v-btn :disabled="isPrevBtnDisabled" @click.native="previousPage" icon>
@@ -72,7 +68,7 @@ export default defineComponent({
       emit("onPageChange", params);
     };
 
-    const updateRowsPerPage = (value: number) => {
+    const updateRowsPerPage = (value: any) => {
       let params = { per_page: parseInt(value), page: props.params.current_page };
       emit("onPageChange", params);
     };
@@ -103,5 +99,8 @@ export default defineComponent({
 }
 .number-list {
   max-width: 5%;
+}
+.pagination-container {
+  height: 74px;
 }
 </style>

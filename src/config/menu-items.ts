@@ -113,7 +113,7 @@ export const MENU_ITEMS = [
       {
         icon: "mdi-account-cog",
         title: "Manage Roles",
-        state: "/roles",
+        state: "/manage-roles",
       },
       {
         icon: "mdi-key",
