@@ -43,7 +43,7 @@
       <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
     </v-card>
     
-    <Modal :modal="data.modal" :width="600">
+    <Modal :modal="data.modal" :width="760">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Facility`" />
       </template>
@@ -67,11 +67,48 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.cost_center"
-                    label="Cost center"
+                  <v-select
+                    v-model="data.formData.facility_type_id"
+                    :items="data.facilityTypes"
+                    item-text="name"
+                    item-value="id"
+                    label="Facility type"
                     required
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-select
+                    v-model="data.formData.location_id"
+                    :items="data.facilityTypes"
+                    item-text="name"
+                    item-value="id"
+                    label="Location"
+                    required
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.phone_number"
+                    label="Phone number"
                   ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.email"
+                    label="Email"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="8">
+                  <v-text-field
+                    v-model="data.formData.postal_address"
+                    label="Postal address"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-checkbox
+                    v-model="data.formData.active"
+                    :label="`Active`"
+                  ></v-checkbox>
                 </v-col>
               </v-row>
             </v-container>
@@ -109,6 +146,7 @@
 
 <script lang="ts">
 import { Facility } from "./types/Facility";
+import { FacilityType } from "../facilitytype/types/FacilityType";
 import store from "@/store";
 import {
   defineComponent,
@@ -125,12 +163,14 @@ import {
   destroy,
   search,
 } from "./services/facility.service";
+import { get as getFT } from "../facilitytype/services/facility-types.service";
 import { AxiosResponse } from "axios";
 
 export default defineComponent({
   name: "Facility",
   setup() {
     let dataItems: Array<Facility> = [];
+    let facilityTypes: Array<FacilityType> = [];
     let facilityData: Facility;
 
     let data = reactive({
@@ -144,18 +184,19 @@ export default defineComponent({
         { text: "Name", align: "start", sortable: false, value: "name" },
         { text: "Code", align: "start", sortable: false, value: "code" },
 
-        {
-          text: "Cost Center",
-          align: "start",
-          sortable: false,
-          value: "cost_center",
-        },
+        {text: "Phone number",align: "start",sortable: false,value: "phone_number"},
+        {text: "Email",align: "start",sortable: false,value: "email"},
+        {text: "Postal address",align: "start",sortable: false,value: "postal_address"},
+        {text: "Facility type",align: "start",sortable: false,value: "facility_type_id"},
+        {text: "Location",align: "start",sortable: false,value: "location_id"},
+        {text: "Active",align: "start",sortable: false,value: "active"},
 
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       deletemodal: false,
       items: dataItems,
+      facilityTypes: facilityTypes,
       itemsToFilter: [],
       formData: facilityData,
       params: {
@@ -173,10 +214,7 @@ export default defineComponent({
         data.itemsToFilter = response.data.data.data;
         data.response = {from, to, total, current_page, per_page, last_page};
       });
-    });
-
-    computed(() => {
-      return "test";
+      getFacilityType();
     });
 
     const searchCategory = (categoryName) => {
@@ -201,9 +239,9 @@ export default defineComponent({
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getFacility = () => {
-      get(data).then((response) => {
-        console.log("data", response.data);
+    const getFacilityType = () => {
+      getFT({per_page:10}).then((response: AxiosResponse) => {
+        data.facilityTypes = response.data.data.data;
       });
     };
 
@@ -227,7 +265,7 @@ export default defineComponent({
       if (data.formData.id) {
         updateFacility(data.formData);
       } else {
-        createUser(data.formData);
+        createFacility(data.formData);
       }
     };
 
@@ -248,7 +286,7 @@ export default defineComponent({
       });
     };
 
-    const createUser = (data: any) => {
+    const createFacility = (data: any) => {
       create(data).then((response) => {
         cancelDialog();
       });
@@ -266,7 +304,7 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       openConfirmDialog,
-      getFacility,
+      getFacilityType,
       updateFacility,
       save,
       remove,

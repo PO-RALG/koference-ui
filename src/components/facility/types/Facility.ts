@@ -1,6 +1,11 @@
 export interface Facility {
   id: number;
-  name: string;
-  cost_center: string;
-  code:string;
+  active: boolean;
+  code: string;
+  email:string;
+  facility_type_id:number;
+  location_id:number;
+  name:string;
+  phone_number:string;
+  postal_address:string;
 }
