@@ -14,7 +14,6 @@ import VueCompositionAPI from "@vue/composition-api";
 
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
-axios.defaults.headers.common["Authorization"] = `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC92MVwvbG9naW4iLCJpYXQiOjE2MzEwMTY1NTYsImV4cCI6MTYzMTAyMDE1NiwibmJmIjoxNjMxMDE2NTU2LCJqdGkiOiJ1MERYY2hWRThCWUtEdDdkIiwic3ViIjoxLCJwcnYiOiJiOTEyNzk5NzhmMTFhYTdiYzU2NzA0ODdmZmYwMWUyMjgyNTNmZTQ4In0.udeS5MFw3BeuSt9fzQlc7MFul5VAFV6LcvgxZh25W3U`;
 axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
 
 const snackbar = {

@@ -67,24 +67,24 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-select
+                  <v-autocomplete
                     v-model="data.formData.facility_type_id"
                     :items="data.facilityTypes"
                     item-text="name"
                     item-value="id"
                     label="Facility type"
                     required
-                  ></v-select>
+                  ></v-autocomplete>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-select
+                  <v-autocomplete
                     v-model="data.formData.location_id"
-                    :items="data.facilityTypes"
+                    :items="data.adminAreas"
                     item-text="name"
                     item-value="id"
                     label="Location"
                     required
-                  ></v-select>
+                  ></v-autocomplete>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-text-field
@@ -147,13 +147,13 @@
 <script lang="ts">
 import { Facility } from "./types/Facility";
 import { FacilityType } from "../facilitytype/types/FacilityType";
+import { AdminArea } from "../admin-area/admin-area/types/AdminArea";
 import store from "@/store";
 import {
   defineComponent,
   reactive,
   watch,
   onMounted,
-  computed,
 } from "@vue/composition-api";
 
 import {
@@ -164,6 +164,7 @@ import {
   search,
 } from "./services/facility.service";
 import { get as getFT } from "../facilitytype/services/facility-types.service";
+import { get as getAdminArea } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { AxiosResponse } from "axios";
 
 export default defineComponent({
@@ -171,6 +172,7 @@ export default defineComponent({
   setup() {
     let dataItems: Array<Facility> = [];
     let facilityTypes: Array<FacilityType> = [];
+    let adminAreas: Array<AdminArea> = [];
     let facilityData: Facility;
 
     let data = reactive({
@@ -187,8 +189,8 @@ export default defineComponent({
         {text: "Phone number",align: "start",sortable: false,value: "phone_number"},
         {text: "Email",align: "start",sortable: false,value: "email"},
         {text: "Postal address",align: "start",sortable: false,value: "postal_address"},
-        {text: "Facility type",align: "start",sortable: false,value: "facility_type_id"},
-        {text: "Location",align: "start",sortable: false,value: "location_id"},
+        {text: "Facility type",align: "start",sortable: false,value: "facility_type.name"},
+        {text: "Location",align: "start",sortable: false,value: "location.name"},
         {text: "Active",align: "start",sortable: false,value: "active"},
 
         { text: "Actions", value: "actions", sortable: false },
@@ -205,6 +207,7 @@ export default defineComponent({
       },
       rows: ["5", "10", "15"],
       itemtodelete: "",
+      adminAreas: adminAreas,
     });
 
     onMounted(() => {
@@ -215,6 +218,7 @@ export default defineComponent({
         data.response = {from, to, total, current_page, per_page, last_page};
       });
       getFacilityType();
+      getAdminstrativeArea();
     });
 
     const searchCategory = (categoryName) => {
@@ -245,6 +249,12 @@ export default defineComponent({
       });
     };
 
+    const getAdminstrativeArea = () => {
+      getAdminArea({per_page:10}).then((response: AxiosResponse) => {
+        data.adminAreas = response.data.data.data;
+      });
+    };
+    
     const cancelDialog = () => {
       data.formData = {} as Facility;
       data.modal = !data.modal;
