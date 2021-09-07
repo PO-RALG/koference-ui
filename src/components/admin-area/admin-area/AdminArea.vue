@@ -10,22 +10,14 @@
     </v-card-actions>
 
     <v-card>
-      <v-row class="top-header d-flex justify-space-between" cols="12">
-        <v-col cols="12" md="12" ms="12">
-          <v-data-table
-            :headers="data.headers"
-            :items="data.items"
-            :server-items-length="data.params.total"
-            :options.sync="data.pagination"
-            :items-per-page="data.params.size"
-          >
-          <template v-slot:item.actions="{ item }">
-              <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
-              <v-icon @click="openConfirmDialog(item)"> mdi-trash-can-outline </v-icon>
-            </template>
-          </v-data-table>
-        </v-col>
-      </v-row>
+      <v-data-table :headers="data.headers" :items="data.items" hide-default-footer class="elevation-1">
+        <template v-slot:item.actions="{ item }">
+          <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
+          <v-icon @click="openConfirmDialog(item)"> mdi-trash-can-outline </v-icon>
+        </template>
+      </v-data-table>
+      <Paginate :params="data.response" @onPageChange="getData" />
+
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
@@ -49,9 +41,11 @@
                   <v-radio-group row v-model="data.formData.level_id" :mandatory="true">
                     <v-radio
                       v-for="row in data.levels"
-                      :key="row.id" :label="row.name"
+                      :key="row.id"
+                      :label="row.name"
                       :value="row.id"
-                      @change="setLevel(row.id)">
+                      @change="setLevel(row.id)"
+                    >
                     </v-radio>
                   </v-radio-group>
                 </v-col>
@@ -90,10 +84,23 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { defineComponent, reactive, onMounted, computed, set } from "@vue/composition-api";
+import {
+  defineComponent,
+  reactive,
+  onMounted,
+  computed,
+  set,
+} from "@vue/composition-api";
+
 import { AxiosResponse } from "axios";
-import { get, createArea, updateArea, deleteArea, getChildren } from "./services/admin-area-services";
+import {
+  get,
+  createArea,
+  updateArea,
+  deleteArea,
+  getChildren,
+} from "./services/admin-area-services";
+
 import { get as getLevels } from "../level/services/level-services";
 import { Level } from "../level/types/Level";
 import { AdminArea } from "./types/AdminArea";
@@ -127,6 +134,7 @@ export default defineComponent({
       ],
       modal: false,
       items: dataItems,
+      response: {},
       formData: adminAreaData,
       params: {
         total: 100,
@@ -153,6 +161,14 @@ export default defineComponent({
     };
 
     let levels = computed(() => data.levels);
+
+    const getData = (params: any) => {
+      data.response = params;
+      get(params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
+        data.items = response.data.data.data;
+      });
+    };
 
     const openDialog = (formData?: AdminArea) => {
       console.log("item", formData);
@@ -204,7 +220,7 @@ export default defineComponent({
       data.formData.parent_id = location.id;
       if (!location.children) {
         if (location.id !== data.node.id) {
-        getChildren(location.id).then((response: AxiosResponse) => {
+          getChildren(location.id).then((response: AxiosResponse) => {
             if (response.data.data.children.length) {
               set(location, "children", response.data.data.children);
             }
@@ -225,11 +241,13 @@ export default defineComponent({
 
     onMounted(() => {
       get({}).then((response: any) => {
-        data.items = response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
       });
 
       getLevels({}).then((response: AxiosResponse) => {
-        data.levels = response.data.data;
+        data.levels = response.data.data.data;
       });
 
       getNodes();
@@ -242,6 +260,7 @@ export default defineComponent({
       cancelDialog,
       closeConfirmDialog,
       openConfirmDialog,
+      getData,
 
       updateArea,
       save,

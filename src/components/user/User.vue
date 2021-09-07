@@ -10,7 +10,7 @@
     </v-card-actions>
 
     <v-card>
-      <v-data-table :headers="data.headers" :items="data.items" hide-default-footer class="elevation-1">
+      <v-data-table :headers="data.headers" :items="users" hide-default-footer class="elevation-1">
         <template v-slot:item.actions="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
           <v-icon @click="openConfirmDialog(item)"> mdi-trash-can-outline </v-icon>
@@ -48,12 +48,28 @@
                   <v-text-field label="Check Number" v-model="data.formData.check_number" required> </v-text-field>
                 </v-col>
               </v-row>
+
+              <v-row>
+                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+                  <DualMultiSelect
+                    :items="data.roles"
+                    :label="'Filter Roles'"
+                    :title="'Add Roles'"
+                    v-model="data.formData.roles"
+                 />
+                </v-col>
+              </v-row>
               <v-row>
                 <v-col cols="12" sm="12" md="12" class="hierarchy-container">
                   <v-label>
                     <h5 class="tree-title">SELECT USER LOCATION</h5>
                   </v-label>
-                  <TreeBrowser v-if="data.node" @onClick="loadLocationChildren" :node="data.node" />
+                  <TreeBrowser
+                    v-if="data.node"
+                    @onClick="loadLocationChildren"
+                    v-model="data.formData.location"
+                    :node="data.node"
+                 />
                 </v-col>
               </v-row>
             </v-container>
@@ -84,13 +100,15 @@
 import { defineComponent, reactive, onMounted, set, computed } from "@vue/composition-api";
 import { get, create, update, deleteUser } from "./services/user.service";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
+import { get as getRoles } from "@/components/role/services/role-services";
 import { AxiosResponse } from "axios";
 import { User } from "./types/User";
-import { TREE_NODE } from "@/config/treenode";
+import { Role } from "@/components/role/types/Role";
 
 export default defineComponent({
   setup() {
     let dataItems: Array<User> = [];
+    let roleItems: Array<Role> = [];
     let userData = {} as User;
     let data = reactive({
       title: "Manage Users",
@@ -99,11 +117,12 @@ export default defineComponent({
       node: null,
       item: userData,
       response: {},
+      roles: roleItems,
       modalTitle: "",
       headers: [
         { text: "Check Number", value: "check_number" },
         { text: "Phone Number", value: "phone_number" },
-        { text: "Name", align: "start", sortable: false, value: "last_name" },
+        { text: "Name", align: "start", sortable: false, value: "fullName" },
         { text: "Email", value: "email" },
         { text: "Actions", value: "actions", sortable: false },
       ],
@@ -127,11 +146,10 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      data.node = TREE_NODE;
-      get({}).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page,  last_page } = response.data.data
+      get({per_page: 2}).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
-        data.response = {from, to, total, current_page, per_page, last_page};
       });
       getNodes();
     });
@@ -142,12 +160,21 @@ export default defineComponent({
     };
 
     const save = () => {
+      let roles = data.formData.roles.map(role => role.id);
+      data.formData["roles"] = roles;
       if (data.formData.id) {
         updateUser(data.formData);
       } else {
         createUser(data.formData);
       }
     };
+
+    const users = computed(() => {
+      return data.items.map((user) => ({
+        ...user,
+        fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
+      }));
+    });
 
     const getData = (params: any) => {
       data.response = params;
@@ -165,6 +192,7 @@ export default defineComponent({
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
+      loadRoles();
     };
 
     const updateUser = (data: User) => {
@@ -177,7 +205,11 @@ export default defineComponent({
     };
 
     const createUser = (data: User) => {
-      create(data);
+      create(data).then((response: AxiosResponse) => {
+        if (response.status === 200) {
+          cancelDialog();
+        }
+      });
     };
 
     const openConfirmDialog = (item: User) => {
@@ -218,6 +250,12 @@ export default defineComponent({
       });
     };
 
+    const loadRoles = () => {
+      getRoles({}).then((response: AxiosResponse) => {
+        data.roles = response.data.data.data;
+      });
+    };
+
     return {
       data,
 
@@ -229,6 +267,7 @@ export default defineComponent({
       loadLocationChildren,
       getNodes,
       getData,
+      users,
 
       updateUser,
       save,

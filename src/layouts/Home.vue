@@ -3,12 +3,13 @@
     <v-content class="mx-4">
       <router-view></router-view>
     </v-content>
-    <Landing />
+    <Landing :user="currentUser" />
   </v-app>
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent } from "@vue/composition-api";
+import { reactive, defineComponent, computed } from "@vue/composition-api";
+import store from "@/store";
 
 import Landing from "@/layouts/Landing.vue";
 
@@ -21,8 +22,13 @@ export default defineComponent({
       drawer: null,
     });
 
+    const currentUser = computed(() => {
+      return store.getters["Auth/getCurrentUser"];
+    });
+
     return {
       data,
+      currentUser,
     };
   },
 });

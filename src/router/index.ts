@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 
 import { userRoutes } from "@/components/user";
+import { roleRoutes } from "@/components/role";
 import { gfsCodesRoutes } from "@/components/settup/gfs-codes";
 import { levelRoutes } from "@/components/admin-area/level";
 import { adminAreaRoutes } from "@/components/admin-area/admin-area";
@@ -20,8 +21,7 @@ import { FacilityRoutes } from "@/components/facility";
 
 Vue.use(VueRouter);
 
-const DEFAULT_TITLE =
-  "FFARS - Facility Financial Accounting & Reporting System";
+const DEFAULT_TITLE = "FFARS - Facility Financial Accounting & Reporting System";
 
 const routes: Array<RouteConfig> = [
   {
@@ -49,6 +49,7 @@ const routes: Array<RouteConfig> = [
       ...FundingSourceRoutes,
       ...SubBudgetClassRoutes,
       ...BankAccountRoutes,
+      ...roleRoutes,
       ...FacilityTypeRoutes,
       ...FacilityRoutes,
     ],
@@ -70,9 +71,7 @@ router.beforeEach((to: any, from: any, next: any) => {
   // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
 
   Vue.nextTick(() => {
-    document.title =
-      `${to.meta.title} - Facility Financial Accounting & Reporting System (FFARS)` ||
-      DEFAULT_TITLE;
+    document.title = `${to.meta.title} - Facility Financial Accounting & Reporting System (FFARS)` || DEFAULT_TITLE;
   });
 
   if (to.matched.some((record: any) => record.meta.requiresAuth)) {
