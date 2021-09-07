@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="drawer" app>
+  <v-navigation-drawer v-model="drawer" app v-if="user">
     <template v-slot:prepend>
       <v-toolbar-title color="primary" class="sidebar-toolbar d-flex flex-row justify-space-between">
         <h3 class="admin-title">FFARS</h3>
@@ -15,9 +15,13 @@
             </v-col>
             <v-col cols="8" class="text-left pl-0 mt-n2">
               <div class="description">
-                <h3 class="name">John Doe</h3>
-                <div class="description-title"><a href="#">[super admin]</a></div>
-                <div class="location"><a href="#">(tanzania)</a></div>
+                <h3 class="name">{{ fullName }}</h3>
+                <div class="description-title">
+                  <a href="#">[{{ roleName }}]</a>
+                </div>
+                <div class="location">
+                  <a href="#">({{ location }})</a>
+                </div>
               </div>
             </v-col>
           </v-layout>
@@ -71,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "@vue/composition-api";
+import { defineComponent, reactive, computed } from "@vue/composition-api";
 import { MENU_ITEMS } from "@/config/menu-items";
 
 export default defineComponent({
@@ -84,6 +88,10 @@ export default defineComponent({
       type: Function,
       required: false,
     },
+    user: {
+      type: Object,
+      required: true,
+    },
   },
 
   setup(props, context) {
@@ -95,8 +103,31 @@ export default defineComponent({
       context.emit("toggle", props.drawer);
     };
 
+    const fullName = computed(() => {
+      return `${props.user.first_name} ${props.user.last_name}`;
+    });
+
+    const roleName = computed(() => {
+      if (props.user.roles) {
+        return props.user.roles[0].name;
+      } else {
+        return "NO ROLE";
+      }
+    });
+
+    const location = computed(() => {
+      if (props.user.location) {
+        return props.user.location.name;
+      } else {
+        ("NO LOCATION");
+      }
+    });
+
     return {
       data,
+      fullName,
+      roleName,
+      location,
       MENU_ITEMS,
 
       toggleSidebar,

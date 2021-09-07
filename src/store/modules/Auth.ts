@@ -1,4 +1,4 @@
-import router from '@/router'
+import router from "@/router";
 
 const state = {
   isLoggedIn: false,
@@ -27,13 +27,13 @@ const actions = {
 
   async LOGIN({ commit }, payload: any) {
     commit("AUTHENTICATE", payload);
-  }
+  },
 };
 
 const mutations = {
   AUTHENTICATE(state, payload) {
-    state.currentUser = JSON.parse(payload);
     state.isLoggedIn = true;
+    state.currentUser = JSON.parse(payload);
     localStorage.setItem("FFARS_USER", payload);
   },
 
