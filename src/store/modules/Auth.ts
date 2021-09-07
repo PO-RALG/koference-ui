@@ -1,4 +1,4 @@
-import router from '@/router'
+import router from "@/router";
 
 const state = {
   isLoggedIn: false,
@@ -27,7 +27,7 @@ const actions = {
 
   async LOGIN({ commit }, payload: any) {
     commit("AUTHENTICATE", payload);
-  }
+  },
 };
 
 const mutations = {
