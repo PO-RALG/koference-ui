@@ -3,6 +3,8 @@ import Vuex from "vuex";
 
 Vue.use(Vuex);
 
+import Auth from "./modules/Auth";
+
 export default new Vuex.Store({
   state: {
     snackbar: {},
@@ -22,5 +24,8 @@ export default new Vuex.Store({
       // console.log("payload dataz", payload);
       commit("setSnackbar", payload);
     },
+  },
+  modules: {
+    Auth,
   },
 });
