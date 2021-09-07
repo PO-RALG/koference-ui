@@ -15,8 +15,10 @@
           <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
           <v-icon @click="openConfirmDialog(item)"> mdi-trash-can-outline </v-icon>
         </template>
+        <template v-slot:footer>
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+        </template>
       </v-data-table>
-      <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
@@ -52,16 +54,19 @@
               <v-row>
                 <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
                   <DualMultiSelect
-                    :items="data.roles"
+                    :items="data.roleItems"
                     :label="'Filter Roles'"
                     :title="'Add Roles'"
                     v-model="data.formData.roles"
-                 />
+                  />
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12" sm="12" md="12" class="hierarchy-container">
-                  <v-label>
+                  <v-label v-if="data.formData.location">
+                    <h5 class="tree-title">SELECTED USER LOCATION ({{ data.formData.location.name }})</h5>
+                  </v-label>
+                  <v-label v-else>
                     <h5 class="tree-title">SELECT USER LOCATION</h5>
                   </v-label>
                   <TreeBrowser
@@ -69,7 +74,7 @@
                     @onClick="loadLocationChildren"
                     v-model="data.formData.location"
                     :node="data.node"
-                 />
+                  />
                 </v-col>
               </v-row>
             </v-container>
@@ -115,6 +120,20 @@ export default defineComponent({
       valid: true,
       isOpen: false,
       node: null,
+      roleItems:[
+        {
+          id: 1,
+          name: "Super Admin",
+        },
+        {
+          id: 2,
+          name: "Poralg Admin",
+        },
+        {
+          id: 3,
+          name: "Facility Admin",
+        },
+      ],
       item: userData,
       response: {},
       roles: roleItems,
@@ -146,7 +165,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      get({per_page: 2}).then((response: AxiosResponse) => {
+      get({ per_page: 2 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
@@ -160,7 +179,7 @@ export default defineComponent({
     };
 
     const save = () => {
-      let roles = data.formData.roles.map(role => role.id);
+      let roles = data.formData.roles.map((role) => role.id);
       data.formData["roles"] = roles;
       if (data.formData.id) {
         updateUser(data.formData);

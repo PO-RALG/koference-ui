@@ -1,13 +1,13 @@
 <template>
-  <v-row cols="5" align="center" class="d-flex justify-end align-end pagination-container">
-    <v-col cols="1" lg="1" md="1" sm="1">Rows Per Page</v-col>
-    <v-col cols="1" lg="1" md="1" sm="1" class="select-dropdown">
+  <v-row cols-lg="4" cols-md="12" cols-sm="12" align="center" class="d-flex justify-end align-center pagination-container">
+    <v-col lg="1" md="3" sm="3">Per Page</v-col>
+    <v-col lg="1" md="3" sm="3" class="select-dropdown">
       <v-select @input="updateRowsPerPage($event)" :items="rows" v-model="data.selected" return-object> </v-select>
     </v-col>
-    <v-col cols="1" lg="1" md="1" sm="1" class="pr-n1 number-list">
+    <v-col lg="1" md="3" sm="3" class="number-list">
       {{ params.from }}-{{ params.to }} of {{ params.total }}
     </v-col>
-    <v-col cols="1" lg="1" md="1" sm="1" class="prev-next-buttons">
+    <v-col lg="1" md="3" sm="3" class="prev-next-buttons">
       <v-row>
         <v-btn :disabled="isPrevBtnDisabled" @click.native="previousPage" icon>
           <v-icon>mdi-chevron-left</v-icon>
@@ -92,15 +92,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .prev-next-buttons {
-  max-width: 5.3333%;
 }
 .select-dropdown {
-  max-width: 5%;
 }
 .number-list {
-  max-width: 5%;
 }
 .pagination-container {
   height: 74px;
+  border-top: 1px solid #e0e0e0;
+  margin: 0 !important;
 }
 </style>
