@@ -24,10 +24,8 @@ export default defineComponent({
     watch(
       () => store.state.snackbar,
       () => {
-        // let snackbar = this.$store.getters.getSnackBar;
         if (store.getters.getSnackBar.message !== "") {
           data.snackbar = store.getters.getSnackBar;
-          console.log("datazzzzz 22222", store.getters.getSnackBar);
         }
       }
     );
