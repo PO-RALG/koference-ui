@@ -12,6 +12,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
+import store from "@/store";
 
 import Sidebar from "./shared/Sidebar.vue";
 import Header from "./shared/Header.vue";
@@ -30,8 +31,8 @@ export default defineComponent({
       data.drawer = !drawer;
     };
 
-    const logout = (logout: boolean) => {
-      //console.log("logout", logout);
+    const logout = () => {
+      store.dispatch("Auth/LOGOUT");
     };
 
     // lifecycle hooks

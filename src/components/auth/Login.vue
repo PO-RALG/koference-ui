@@ -72,7 +72,9 @@
 <script lang="ts">
 import Vue from "vue";
 import { reactive } from "@vue/composition-api";
-import { authenticate } from "./services";
+import { authenticate, setUser } from "./services";
+import { AxiosResponse } from "axios";
+import router from '@/router'
 
 export default Vue.extend({
   props: {
@@ -104,8 +106,13 @@ export default Vue.extend({
         password: data.password,
       };
 
-      authenticate(payload).then((response) => {
-        console.log("response", response);
+      authenticate(payload).then((response: AxiosResponse) => {
+        if (response.status === 200) {
+          setUser(response.data.data.user);
+          router.push("/");
+        } else {
+          router.push("/login");
+        }
       });
     };
 
