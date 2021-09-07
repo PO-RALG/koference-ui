@@ -59,6 +59,11 @@ export const MENU_ITEMS = [
         title: "Facility Types",
         state: "/manage-facility-types",
       },
+      {
+        icon: "mdi-text-subject",
+        title: "Facilities",
+        state: "/manage-facilities",
+      },
     ],
   },
   {

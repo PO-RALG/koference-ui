@@ -1,5 +1,5 @@
 <template>
-  <div class="Facility Type">
+  <div class="Facility">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -45,7 +45,7 @@
     
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Facility Type`" />
+        <ModalHeader :title="`${data.modalTitle} Facility`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -90,7 +90,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Facility Type `" />
+        <ModalHeader :title="`Delete Facility `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -108,7 +108,7 @@
 </template>
 
 <script lang="ts">
-import { FacilityType } from "./types/FacilityType";
+import { Facility } from "./types/Facility";
 import store from "@/store";
 import {
   defineComponent,
@@ -124,17 +124,17 @@ import {
   update,
   destroy,
   search,
-} from "./services/facility-types.service";
+} from "./services/facility.service";
 import { AxiosResponse } from "axios";
 
 export default defineComponent({
-  name: "FacilityType",
+  name: "Facility",
   setup() {
-    let dataItems: Array<FacilityType> = [];
-    let facilityTypeData: FacilityType;
+    let dataItems: Array<Facility> = [];
+    let facilityData: Facility;
 
     let data = reactive({
-      title: "Manage Facility Types",
+      title: "Manage Facilities",
       valid: true,
       isOpen: false,
       node: null,
@@ -157,7 +157,7 @@ export default defineComponent({
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: facilityTypeData,
+      formData: facilityData,
       params: {
         total: 100,
         size: 10,
@@ -167,7 +167,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      get({}).then((response: AxiosResponse) => {
+      get({per_page:10}).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page,  last_page } = response.data.data
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
@@ -201,19 +201,19 @@ export default defineComponent({
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getFacilityTypes = () => {
+    const getFacility = () => {
       get(data).then((response) => {
         console.log("data", response.data);
       });
     };
 
     const cancelDialog = () => {
-      data.formData = {} as FacilityType;
+      data.formData = {} as Facility;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as FacilityType;
+      data.formData = {} as Facility;
       data.deletemodal = false;
     };
 
@@ -225,7 +225,7 @@ export default defineComponent({
 
     const save = () => {
       if (data.formData.id) {
-        updateFacilityType(data.formData);
+        updateFacility(data.formData);
       } else {
         createUser(data.formData);
       }
@@ -236,13 +236,13 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as FacilityType;
+        data.formData = {} as Facility;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
     };
 
-    const updateFacilityType = (data: any) => {
+    const updateFacility = (data: any) => {
       update(data).then((response) => {
         cancelDialog();
       });
@@ -266,8 +266,8 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       openConfirmDialog,
-      getFacilityTypes,
-      updateFacilityType,
+      getFacility,
+      updateFacility,
       save,
       remove,
       cancelConfirmDialog,

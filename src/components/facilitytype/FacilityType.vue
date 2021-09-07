@@ -167,7 +167,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      get({}).then((response: AxiosResponse) => {
+      get({per_page:10}).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page,  last_page } = response.data.data
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
