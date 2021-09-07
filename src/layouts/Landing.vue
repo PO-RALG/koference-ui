@@ -1,6 +1,6 @@
 <template>
   <div id="inspire">
-    <Sidebar :drawer="data.drawer" @toggle="toggleSidebar" />
+    <Sidebar :drawer="data.drawer" @toggle="toggleSidebar" :user="user" />
     <Header @logoutFunction="logout" @sidebarToggle="toggleSidebar" :drawer="data.drawer" />
     <v-content>
       <v-container class="fill-height" fluid>
@@ -18,12 +18,15 @@ import Sidebar from "./shared/Sidebar.vue";
 import Header from "./shared/Header.vue";
 
 export default defineComponent({
+  props: {
+    user: Object,
+  },
   components: { Sidebar, Header },
-
   setup() {
     // state  => formally data
     let data = reactive({
       drawer: true,
+      currentUser: null,
     });
 
     // methods
