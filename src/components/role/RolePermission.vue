@@ -7,7 +7,7 @@
         <v-icon>mdi-arrow-u-left-top</v-icon>
         Back
       </v-btn>
-      <v-btn color="primary" @click="addPermissions">
+      <v-btn color="primary" @click="addPermissions" :disabled="cant('addPermissions', 'AuthRole')">
         <v-icon>mdi-plus</v-icon>
         Save
       </v-btn>
@@ -76,7 +76,6 @@ export default defineComponent({
     });
 
     const addToSelection = (item: any) => {
-      console.log("item", item);
       let idx = data.selected.indexOf(item);
       if (idx > -1) {
         data.selected.splice(idx, 1);
