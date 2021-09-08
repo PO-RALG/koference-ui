@@ -62,9 +62,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to: any, from: any, next: any) => {
-  const loggedIn = store.getters["Auth/isLoggedIn"];
-
-  //console.log("isLoggedIn?", loggedIn);
+  const loggedIn = store.getters["Auth/isLoggedIn"] === "YES"? true : false;
 
   // Use next tick to handle router history correctly
   // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
@@ -83,4 +81,5 @@ router.beforeEach((to: any, from: any, next: any) => {
     next();
   }
 });
+
 export default router;

@@ -54,7 +54,7 @@
               <v-row>
                 <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
                   <DualMultiSelect
-                    :items="data.roleItems"
+                    :items="data.roles"
                     :label="'Filter Roles'"
                     :title="'Add Roles'"
                     v-model="data.formData.roles"
@@ -119,21 +119,8 @@ export default defineComponent({
       title: "Manage Users",
       valid: true,
       isOpen: false,
+      selectedRoles:[],
       node: null,
-      roleItems:[
-        {
-          id: 1,
-          name: "Super Admin",
-        },
-        {
-          id: 2,
-          name: "Poralg Admin",
-        },
-        {
-          id: 3,
-          name: "Facility Admin",
-        },
-      ],
       item: userData,
       response: {},
       roles: roleItems,
@@ -165,7 +152,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      get({ per_page: 2 }).then((response: AxiosResponse) => {
+      get({}).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
