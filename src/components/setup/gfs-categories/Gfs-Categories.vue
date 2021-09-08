@@ -16,6 +16,8 @@
         item-key="id"
         :expanded.sync="data.expanded"
         :single-expand="true"
+        disable-pagination
+        hide-default-footer
       >
         <template v-slot:top>
           <v-card-title>
@@ -85,6 +87,13 @@
             </v-card>
           </td>
         </template>
+        <template v-slot:footer>
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
+        </template>
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
@@ -146,6 +155,7 @@
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from "axios";
 import { GfsCategories } from "./types/";
 import store from "@/store";
 import {
@@ -205,18 +215,24 @@ export default defineComponent({
         total: 10,
         size: 10,
       },
-      itemtodelete: "",
       documentcategories: [],
+      rows: ["10", "20", "50", "100"],
+      itemtodelete: "",
+      response: {},
     });
 
     onMounted(() => {
-      // make api call
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("gfs category to render", response.data.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
@@ -240,12 +256,10 @@ export default defineComponent({
     };
 
     const reloadData = () => {
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data", response.data.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
     };
@@ -316,19 +330,13 @@ export default defineComponent({
     };
     // watching a getter
 
-    watch(fileToupload, (fileToupload: any) => {
-      if (!(fileToupload instanceof File)) {
-        return;
-      }
-      let fileReader = new FileReader();
-
-      fileReader.readAsDataURL(fileToupload);
-
-      fileReader.addEventListener("load", () => {
-        imageUrl.value = fileReader.result;
-        console.log("setup", imageUrl.value);
+    const getData = (params: any) => {
+      data.response = params;
+      get(params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
+        data.items = response.data.data.data;
       });
-    });
+    };
 
     watch(
       () => store.state.snackbar,
@@ -339,6 +347,7 @@ export default defineComponent({
 
     return {
       data,
+      getData,
       openDialog,
       cancelDialog,
       deleteGfsCategory,
