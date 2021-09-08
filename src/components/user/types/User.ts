@@ -8,4 +8,5 @@ export interface User {
   facility_id: number;
   check_number: string;
   phone_number: string;
+  roles: [];
 }

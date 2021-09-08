@@ -1,7 +1,7 @@
 import router from "@/router";
 
 const state = {
-  isLoggedIn: false,
+  isLoggedIn: localStorage.getItem("IS_LOGGED_IN"),
   currentUser: JSON.parse(localStorage.getItem("FFARS_USER")),
   loginError: {},
 };
@@ -32,20 +32,20 @@ const actions = {
 
 const mutations = {
   AUTHENTICATE(state, payload) {
-    state.isLoggedIn = true;
     state.currentUser = JSON.parse(payload);
     localStorage.setItem("FFARS_USER", payload);
+    localStorage.setItem("IS_LOGGED_IN", "YES");
   },
 
   LOG_OUT(state) {
     state.currentUser = {};
-    state.isLoggedIn = false;
     localStorage.removeItem("FFARS_USER");
+    localStorage.setItem("IS_LOGGED_IN", "NO");
     router.push("/login");
   },
 
   SET_LOGIN_ERROR(state, error) {
-    state.isLoggedIn = false;
+    localStorage.setItem("IS_LOGGED_IN", "NO");
     state.loginError = error;
   },
 };
