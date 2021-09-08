@@ -137,7 +137,7 @@ export default defineComponent({
       modal: false,
       items: dataItems,
       formData: userData,
-      rows: ["5", "10", "15"],
+      rows: ["20", "50", "100"],
       params: {
         total: 100,
         size: 10,
