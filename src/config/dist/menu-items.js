@@ -33,7 +33,7 @@ exports.MENU_ITEMS = [
             {
                 icon: "mdi-book-variant",
                 title: "Financial Years",
-                state: "/manage-finacial-years"
+                state: "/manage-financial-years"
             },
             {
                 icon: "mdi-book-variant",
