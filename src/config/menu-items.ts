@@ -45,17 +45,17 @@ export const MENU_ITEMS = [
         state: "/manage-fund-types",
       },
       {
-        icon: "mdi-text-subject",
+        icon: "mdi-view-stream-outline",
         title: "Bank Accounts",
         state: "/manage-bank-accounts",
       },
+      // {
+      //   icon: "mdi-text-subject",
+      //   title: "Transaction Types",
+      //   state: "/transaction-types",
+      // },
       {
-        icon: "mdi-text-subject",
-        title: "Transaction Types",
-        state: "/transaction-types",
-      },
-      {
-        icon: "mdi-text-subject",
+        icon: "mdi-view-stream-outline",
         title: "Facility Types",
         state: "/manage-facility-types",
       },

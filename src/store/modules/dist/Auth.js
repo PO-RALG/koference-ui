@@ -36,45 +36,64 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var vue_1 = require("vue");
-var vuex_1 = require("vuex");
-var axios_1 = require("axios");
-var ENDPOINT = "https://madenimis.tamisemi.go.tz/api/banks-all";
-vue_1["default"].use(vuex_1["default"]);
-exports["default"] = new vuex_1["default"].Store({
-    state: {
-        banks: []
+var router_1 = require("@/router");
+var state = {
+    isLoggedIn: false,
+    currentUser: JSON.parse(localStorage.getItem("FFARS_USER")),
+    loginError: {}
+};
+var getters = {
+    getCurrentUser: function (state) {
+        return state.currentUser;
     },
-    getters: {
-        getBanks: function (state) {
-            return state.banks;
-        }
+    isLoggedIn: function (state) {
+        return state.isLoggedIn;
     },
-    mutations: {
-        setBank: function (state, NewBank) {
-            console.log("NewBank", NewBank.data.data);
-            state.banks = NewBank.data.data;
-        }
-    },
-    actions: {
-        updateName: function (_a) {
-            var commit = _a.commit;
-            return __awaiter(this, void 0, void 0, function () {
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0: return [4 /*yield*/, axios_1["default"]
-                                .get(ENDPOINT)
-                                .then(function (response) {
-                                commit("setBank", response);
-                            })["catch"](function (err) {
-                                commit("setErrorMessage", err);
-                            })];
-                        case 1:
-                            _b.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        }
+    loginError: function (state) {
+        return state.loginError;
     }
-});
+};
+var actions = {
+    LOGOUT: function (_a) {
+        var commit = _a.commit;
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_b) {
+                commit("LOG_OUT");
+                return [2 /*return*/];
+            });
+        });
+    },
+    LOGIN: function (_a, payload) {
+        var commit = _a.commit;
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_b) {
+                commit("AUTHENTICATE", payload);
+                return [2 /*return*/];
+            });
+        });
+    }
+};
+var mutations = {
+    AUTHENTICATE: function (state, payload) {
+        state.currentUser = JSON.parse(payload);
+        state.isLoggedIn = true;
+        localStorage.setItem("FFARS_USER", payload);
+    },
+    LOG_OUT: function (state) {
+        state.currentUser = {};
+        state.isLoggedIn = false;
+        localStorage.removeItem("FFARS_USER");
+        router_1["default"].push("/login");
+    },
+    SET_LOGIN_ERROR: function (state, error) {
+        state.isLoggedIn = false;
+        state.loginError = error;
+    }
+};
+exports["default"] = {
+    namespaced: true,
+    state: state,
+    getters: getters,
+    actions: actions,
+    mutations: mutations
+};
