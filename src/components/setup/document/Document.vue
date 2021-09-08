@@ -99,7 +99,7 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="12">
                   <v-autocomplete
                     v-model="data.formData.document_category_id"
                     label="category"
@@ -121,8 +121,8 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save"
+          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="green darken-1" text @click="save"
             >{{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -138,10 +138,10 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
+          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
             >Cancel</v-btn
           >
-          <v-btn color="blue darken-1" text @click="remove">Yes</v-btn>
+          <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -218,12 +218,12 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data to render", response.data.data);
-        data.items = response.data.data;
-        data.itemsToFilter = response.data.data;
+        data.items = response.data.data.data;
+        data.itemsToFilter = response.data.data.data;
       });
       documentcategoried().then((response: any) => {
         console.log("documentcategories", response.data.data);
-        data.documentcategories = response.data.data;
+        data.documentcategories = response.data.data.data;
       });
     });
 
@@ -237,7 +237,7 @@ export default defineComponent({
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
           console.log("response data", response);
-          data.items = response.data.data;
+          data.items = response.data.data.data;
         });
       } else {
         reloadData();
@@ -251,7 +251,7 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
-        data.items = response.data.data;
+        data.items = response.data.data.data;
       });
     };
 

@@ -26,6 +26,19 @@ exports.MENU_ITEMS = [
         ]
     },
     {
+        "icon-alt": "mdi-notebook-multiple",
+        icon: "mdi-notebook-multiple",
+        state: "/document-management",
+        title: "Management Document",
+        children: [
+            {
+                icon: "mdi-file-document-multiple",
+                title: "Documents",
+                state: "/manage-document"
+            },
+        ]
+    },
+    {
         icon: "mdi-cog",
         "icon-alt": "mdi-cog",
         title: "Settings",
