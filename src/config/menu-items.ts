@@ -120,11 +120,7 @@ export const MENU_ITEMS = [
         title: "Manage Roles",
         state: "/roles",
       },
-      {
-        icon: "mdi-key",
-        title: "Manage Permissions",
-        state: "/manage-permissions",
-      },
+
       {
         icon: "mdi-animation-outline",
         title: "Menu Groups",

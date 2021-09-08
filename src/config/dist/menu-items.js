@@ -122,11 +122,6 @@ exports.MENU_ITEMS = [
                 state: "/roles"
             },
             {
-                icon: "mdi-key",
-                title: "Manage Permissions",
-                state: "/manage-permissions"
-            },
-            {
                 icon: "mdi-animation-outline",
                 title: "Menu Groups",
                 state: "/manage-menu-groups"

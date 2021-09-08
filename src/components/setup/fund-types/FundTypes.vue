@@ -17,6 +17,8 @@
         class="elevation-1"
         item-key="id"
         :single-expand="true"
+        disable-pagination
+        hide-default-footer
       >
         <template v-slot:top>
           <v-card-title>
@@ -48,6 +50,13 @@
               </v-icon>
             </td>
           </tr>
+        </template>
+        <template v-slot:footer>
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -110,6 +119,7 @@
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from "axios";
 import { FundTypes } from "./types";
 import store from "@/store";
 import {
@@ -118,7 +128,6 @@ import {
   watch,
   onMounted,
   computed,
-  ref,
 } from "@vue/composition-api";
 
 import {
@@ -134,8 +143,6 @@ export default defineComponent({
   setup() {
     let dataItems: Array<FundTypes> = [];
     let documentCategoryData: FundTypes;
-    let fileToupload = ref("");
-    let imageUrl: any = ref("");
 
     let data = reactive({
       title: "Manage FundTypes",
@@ -162,22 +169,24 @@ export default defineComponent({
       items: dataItems,
       itemsToFilter: [],
       formData: documentCategoryData,
-      params: {
-        total: 10,
-        size: 10,
-      },
+      rows: ["10", "20", "50", "100"],
       itemtodelete: "",
+      response: {},
       documentcategories: [],
     });
 
     onMounted(() => {
-      // make api call
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("fund types to render", response.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
@@ -201,12 +210,10 @@ export default defineComponent({
     };
 
     const reloadData = () => {
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data", response.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
     };
@@ -275,21 +282,15 @@ export default defineComponent({
         cancelDialog();
       });
     };
-    // watching a getter
 
-    watch(fileToupload, (fileToupload: any) => {
-      if (!(fileToupload instanceof File)) {
-        return;
-      }
-      let fileReader = new FileReader();
-
-      fileReader.readAsDataURL(fileToupload);
-
-      fileReader.addEventListener("load", () => {
-        imageUrl.value = fileReader.result;
-        console.log("setup", imageUrl.value);
+    const getData = (params: any) => {
+      data.response = params;
+      get(params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
+        data.items = response.data.data.data;
       });
-    });
+    };
+    // watching a getter
 
     watch(
       () => store.state.snackbar,
@@ -300,6 +301,7 @@ export default defineComponent({
 
     return {
       data,
+      getData,
       openDialog,
       cancelDialog,
       deleteFundType,
@@ -310,7 +312,6 @@ export default defineComponent({
       remove,
       cancelConfirmDialog,
       searchCategory,
-      imageUrl,
     };
   },
 });

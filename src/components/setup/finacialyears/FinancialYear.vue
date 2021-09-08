@@ -1,7 +1,5 @@
 <template>
   <div class="financial-year">
-    <Snackbar />
-
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
@@ -12,12 +10,12 @@
     </v-card-actions>
     <v-card>
       <v-data-table
-        hide-default-footer
         :headers="data.headers"
         :items="data.items"
         class="elevation-1"
         :single-expand="true"
         disable-pagination
+        hide-default-footer
       >
         <template v-slot:top>
           <v-card-title>
@@ -191,7 +189,6 @@ export default defineComponent({
       itemsToFilter: [],
       formData: financialYearData,
       rows: ["10", "20", "50", "100"],
-
       itemtodelete: "",
       response: {},
     });
