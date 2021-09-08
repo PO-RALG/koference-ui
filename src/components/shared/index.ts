@@ -11,3 +11,4 @@ Vue.component("Snackbar", () => import("../../utils/SnackBar.vue"));
 Vue.component("ConfirmDialog", () => import("./ConfirmDialog.vue"));
 Vue.component("Paginate", () => import("./Paginate.vue"));
 Vue.component("SearchField", () => import("./SearchField.vue"));
+Vue.component("DatePicker", () => import("./DatePicker.vue"));

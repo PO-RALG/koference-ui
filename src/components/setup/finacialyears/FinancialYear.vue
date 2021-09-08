@@ -12,10 +12,12 @@
     </v-card-actions>
     <v-card>
       <v-data-table
+        hide-default-footer
         :headers="data.headers"
         :items="data.items"
         class="elevation-1"
         :single-expand="true"
+        disable-pagination
       >
         <template v-slot:top>
           <v-card-title>
@@ -73,6 +75,13 @@
             <span>Delete</span>
           </v-tooltip>
         </template>
+        <template v-slot:footer>
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
+        </template>
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
@@ -84,26 +93,26 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="12">
                   <v-text-field
                     v-model="data.formData.name"
                     label="First name"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
+              </v-row>
+              <v-row>
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <DatePicker
+                    :label="'Start Date'"
                     v-model="data.formData.start_date"
-                    label="Start Date"
-                    required
-                  ></v-text-field>
+                  />
                 </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <DatePicker
+                    :label="'End Date'"
                     v-model="data.formData.end_date"
-                    label="End Date"
-                    required
-                  ></v-text-field>
+                  />
                 </v-col>
               </v-row>
             </v-container>
@@ -140,6 +149,7 @@
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from "axios";
 import { FinancialYear } from "./types/FinancialYear";
 import store from "@/store";
 import {
@@ -180,21 +190,17 @@ export default defineComponent({
       items: dataItems,
       itemsToFilter: [],
       formData: financialYearData,
-      params: {
-        total: 10,
-        size: 10,
-      },
+      rows: ["10", "20", "50", "100"],
+
       itemtodelete: "",
+      response: {},
     });
 
     onMounted(() => {
-      // make api call
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data", response.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
@@ -224,12 +230,10 @@ export default defineComponent({
       });
     };
     const reloadData = () => {
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data", response.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
     };
@@ -298,6 +302,14 @@ export default defineComponent({
         cancelDialog();
       });
     };
+
+    const getData = (params: any) => {
+      data.response = params;
+      get(params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
+        data.items = response.data.data.data;
+      });
+    };
     // watching a getter
 
     watch(
@@ -309,6 +321,7 @@ export default defineComponent({
 
     return {
       data,
+      getData,
       openDialog,
       cancelDialog,
       deleteFinancialYear,

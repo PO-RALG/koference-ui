@@ -78,14 +78,14 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.description"
                     label="Description"
@@ -185,8 +185,8 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data to render", response.data.data);
-        data.items = response.data.data;
-        data.itemsToFilter = response.data.data;
+        data.items = response.data.data.data;
+        data.itemsToFilter = response.data.data.data;
       });
     });
 
@@ -200,7 +200,7 @@ export default defineComponent({
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
           console.log("response data", response);
-          data.items = response.data.data;
+          data.items = response.data.data.data;
         });
       } else {
         reloadData();
@@ -214,7 +214,7 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
-        data.items = response.data.data;
+        data.items = response.data.data.data;
       });
     };
 
