@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from "vue-router";
 import store from "@/store";
 
 import { userRoutes } from "@/components/user";
+import { roleRoutes } from "@/components/role";
 import { gfsCodesRoutes } from "@/components/setup/gfs-codes";
 import { levelRoutes } from "@/components/admin-area/level";
 import { adminAreaRoutes } from "@/components/admin-area/admin-area";
@@ -49,6 +50,7 @@ const routes: Array<RouteConfig> = [
       ...fundingSourceRoutes,
       ...subBudgetClassRoutes,
       ...bankAccountRoutes,
+      ...roleRoutes,
       ...facilityTypeRoutes,
     ],
   },
@@ -61,7 +63,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to: any, from: any, next: any) => {
-  const loggedIn = store.getters["Auth/isLoggedIn"] === "YES"? true : false;
+  const loggedIn = store.getters["Auth/isLoggedIn"] === "YES" ? true : false;
 
   // Use next tick to handle router history correctly
   // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
