@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
+import store from "@/store";
 
 import { userRoutes } from "@/components/user";
 import { gfsCodesRoutes } from "@/components/setup/gfs-codes";
@@ -60,9 +61,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to: any, from: any, next: any) => {
-  //const loggedIn = JSON.parse(localStorage.getItem("ffarsUser")) || null;
-
-  const loggedIn = false;
+  const loggedIn = store.getters["Auth/isLoggedIn"] === "YES"? true : false;
 
   // Use next tick to handle router history correctly
   // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
@@ -83,4 +82,5 @@ router.beforeEach((to: any, from: any, next: any) => {
     next();
   }
 });
+
 export default router;
