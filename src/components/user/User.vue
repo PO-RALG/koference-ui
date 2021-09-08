@@ -57,7 +57,9 @@
                     :items="data.roles"
                     :label="'Filter Roles'"
                     :title="'Add Roles'"
-                    v-model="data.formData.roles"
+                    :selectedItems="data.selectedRoles"
+                    @filterFunction="filterRoles"
+                    v-model="data.selectedRoles"
                   />
                 </v-col>
               </v-row>
@@ -119,11 +121,11 @@ export default defineComponent({
       title: "Manage Users",
       valid: true,
       isOpen: false,
-      selectedRoles:[],
+      selectedRoles: [],
       node: null,
       item: userData,
       response: {},
-      roles: roleItems,
+      roles: [],
       modalTitle: "",
       headers: [
         { text: "Check Number", value: "check_number" },
@@ -158,6 +160,7 @@ export default defineComponent({
         data.items = response.data.data.data;
       });
       getNodes();
+      loadRoles();
     });
 
     const cancelDialog = () => {
@@ -166,8 +169,8 @@ export default defineComponent({
     };
 
     const save = () => {
-      let roles = data.formData.roles.map((role) => role.id);
-      data.formData["roles"] = roles;
+      let roles = data.formData.roles.map((role: any) => role.id);
+      set(data.formData, "roles", roles);
       if (data.formData.id) {
         updateUser(data.formData);
       } else {
@@ -192,13 +195,14 @@ export default defineComponent({
 
     const openDialog = (formData?: User) => {
       if (formData && formData.id) {
+        data.selectedRoles = formData.roles;
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
+        data.selectedRoles = [];
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
-      loadRoles();
     };
 
     const updateUser = (data: User) => {
@@ -262,6 +266,12 @@ export default defineComponent({
       });
     };
 
+    const filterRoles = (term: string)  => {
+      let result = data.roles.filter(item => item.name.toLowerCase().includes(term.toLowerCase()));
+      data.roles = result;
+      return data.roles;
+    };
+
     return {
       data,
 
@@ -269,6 +279,7 @@ export default defineComponent({
       cancelDialog,
       closeConfirmDialog,
       openConfirmDialog,
+      filterRoles,
 
       loadLocationChildren,
       getNodes,

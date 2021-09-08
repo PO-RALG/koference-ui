@@ -58,7 +58,6 @@ export default defineComponent({
     });
 
     const addToSelection = (item: any) => {
-      console.log("item", item);
       let idx = data.selected.indexOf(item);
       if (idx > -1) {
         data.selected.splice(idx, 1);
