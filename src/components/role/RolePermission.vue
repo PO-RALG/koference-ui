@@ -7,7 +7,7 @@
         <v-icon>mdi-arrow-u-left-top</v-icon>
         Back
       </v-btn>
-      <v-btn color="primary" @click="addPermissions" v-if="can('Add Permissions', 'AuthRole'" )>
+      <v-btn color="primary" @click="addPermissions" :disabled="cant('addPermissions', 'AuthRole')">
         <v-icon>mdi-plus</v-icon>
         Save
       </v-btn>

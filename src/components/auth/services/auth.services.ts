@@ -8,16 +8,16 @@ const authenticate = async (payload: any) => {
 const setUser = async (payload: any) => {
   let permissions = [];
 
-  payload.roles.forEach((role:any) => {
+  payload.roles.forEach((role: any) => {
     permissions = [...permissions, role.permisions];
   });
 
   const flattened = permissions.flat();
-  const newPermissions = [...new Set(flattened)];
-  payload.permissions = newPermissions;
+  //const newPermissions = [...new Set(flattened)];
+  payload.permissions = flattened;
 
   const user = JSON.stringify(payload);
-  store.dispatch('Auth/LOGIN', user);
+  store.dispatch("Auth/LOGIN", user);
 };
 
 const setLoginError = async () => {

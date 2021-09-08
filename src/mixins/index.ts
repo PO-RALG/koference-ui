@@ -1,20 +1,33 @@
+import Vue from "vue";
 import store from "@/store";
 import _ from "lodash";
 
-export const helpers = {
-  can(action: string, resource: string): boolean {
-    resource = resource.match(/[A-Z][a-z]+|[0-9]+/g).join(" ");
-    const user = store.getters["Auth/getCurrentUser"];
-    const permissions = user.permissions;
-    if (user) {
-      return _.find(permissions, {
-        action: action.toUpperCase(),
-        resource: resource,
-      })
-        ? true
-        : false;
-    } else {
-      return false;
-    }
+Vue.mixin({
+  methods: {
+    can(action: string, resource: string): boolean {
+      const user = store.getters["Auth/getCurrentUser"];
+
+      const found = _.find(user.permissions, {
+        action,
+        resource,
+      });
+
+      if (user) {
+        return !!found;
+      }
+    },
+
+    cant(action: string, resource: string): boolean {
+      const user = store.getters["Auth/getCurrentUser"];
+      const found = _.find(user.permissions, {
+        action,
+        resource,
+      });
+
+      if (user) {
+        const result = !!found;
+        return !result;
+      }
+    },
   },
-};
+});
