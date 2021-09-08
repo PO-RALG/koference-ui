@@ -5,6 +5,8 @@ import store from "@/store";
 import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import VueAxios from "vue-axios";
+import { helpers } from "@/mixins";
+Vue.prototype.$mixin = helpers;
 
 import "./assets/main.scss";
 import "./components/shared";

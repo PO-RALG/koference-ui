@@ -7,7 +7,7 @@
         <v-icon>mdi-arrow-u-left-top</v-icon>
         Back
       </v-btn>
-      <v-btn color="primary" @click="addPermissions">
+      <v-btn color="primary" @click="addPermissions" v-if="can('Add Permissions', 'AuthRole'" )>
         <v-icon>mdi-plus</v-icon>
         Save
       </v-btn>
@@ -25,7 +25,7 @@ import { defineComponent, reactive, onMounted, computed } from "@vue/composition
 import { AxiosResponse } from "axios";
 import { find, getPermissions, addPermissions as assignPermissions } from "./services/role-services";
 import PermissionList from "./PermissionList.vue";
-import router from '@/router'
+import router from "@/router";
 
 export default defineComponent({
   components: {
