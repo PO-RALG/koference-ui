@@ -266,8 +266,8 @@ export default defineComponent({
       });
     };
 
-    const filterRoles = (term: string)  => {
-      let result = data.roles.filter(item => item.name.toLowerCase().includes(term.toLowerCase()));
+    const filterRoles = (term: string) => {
+      let result = data.roles.filter((item) => item.name.toLowerCase().includes(term.toLowerCase()));
       data.roles = result;
       return data.roles;
     };
