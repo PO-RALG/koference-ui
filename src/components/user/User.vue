@@ -3,7 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'User')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
