@@ -85,11 +85,20 @@ export const MENU_ITEMS = [
         title: "Facility Types",
         state: "/manage-facility-types",
         code: 1018,
-      },
+      }
+    ],
+  },
+  {
+    "icon-alt": "mdi-office-building",
+    icon: "mdi-office-building",
+    title: "Facilities",
+    code: 1016,
+    children: [
       {
-        icon: "mdi-text-subject",
+        icon: "mdi-office-building",
         title: "Facilities",
         state: "/manage-facilities",
+        code: 1016,
       },
     ],
   },
@@ -184,4 +193,5 @@ export const MENU_ITEMS = [
     state: "/manage-users",
     code: 1016,
   },
+  
 ];
