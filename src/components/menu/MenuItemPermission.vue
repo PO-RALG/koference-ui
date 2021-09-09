@@ -14,18 +14,26 @@
     </v-card-actions>
     <v-card>
       <v-row>
-        <v-col cols="12" lg="6" md="6" sm="12" class="pl-10">
-          <v-select
-            item-text="category"
+        <v-col cols="12" lg="4" md="4" sm="12">
+          <v-autocomplete
             v-model="data.selectedCategory"
-            :items="data.categories"
-            @input="getPermissions"
+            :loading="data.loading"
+            :items="data.categoryOptions"
+            :search-input.sync="data.search"
+            item-text="category"
+            @change="getPermissions"
+            cache-items
+            class="mx-4"
+            flat
+            hide-no-data
+            hide-details
             return-object
-            label="Select Resource Category"
-          >
-          </v-select>
+            color="white"
+            label="Search Resource name"
+            solo-inverted
+          ></v-autocomplete>
         </v-col>
-        <v-col cols="12" lg="6" md="6" sm="12" class="pl-10">
+        <v-col cols="12" lg="8" md="8" sm="12" class="pl-10">
           <PermissionList
             v-if="data.category"
             :item="data.category"
@@ -40,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted, watch, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import PermissionList from "@/components/role/PermissionList.vue";
 import router from "@/router";
@@ -62,16 +70,23 @@ export default defineComponent({
       required: false,
     },
   },
-  setup(props, { attrs }) {
+
+  setup(props, { attrs, emit }) {
     const TYPE = "MENU_ITEM";
     let data = reactive({
       valid: true,
       menu: null,
+      loading: false,
       categories: [],
       category: null,
       selected: [],
-      selectedCategory: null,
-      permissions: [],
+      selectedCategory: "",
+      categoryOptions: [],
+    });
+
+    // watchers
+    watch(data, (newValue: any) => {
+      emit("filterFunction", newValue.search);
     });
 
     onMounted(() => {
@@ -79,11 +94,36 @@ export default defineComponent({
       find(menuID, TYPE).then((response: AxiosResponse) => {
         data.menu = response.data.data;
         data.selected = response.data.data.permisions;
+        response.data.data.permisions.length > 0
+          ? (data.selectedCategory = response.data.data.permisions[0].resource)
+          : (data.selectedCategory = "");
       });
 
       getResourceCategories({ categories: true }).then((response: AxiosResponse) => {
         data.categories = response.data.data;
+        data.categoryOptions = response.data.data.map((entry) => {
+         return entry.category;
+        });
       });
+    });
+
+    let selectedCategory = computed(() => {
+      return data.selectedCategory;
+    });
+
+    let categories = computed(() => {
+      return data.categories;
+    });
+
+    watch([selectedCategory, categories], (newValue) => {
+      let [selected, categories] = newValue;
+      if (categories.length > 0 && !!selected) {
+        let { id, category } = categories.find(c => c.category == selected);
+        data.selectedCategory = category;
+        getPermissionsByResource(id, category).then((response) => {
+          data.category = response.data.data;
+        });
+      }
     });
 
     const addToSelection = (item: any) => {
@@ -113,7 +153,8 @@ export default defineComponent({
     };
 
     const getPermissions = (val) => {
-      let { id, category } = val;
+      let { id, category } = data.categories.find(cat => cat.category === val);
+      data.selectedCategory = category;
       getPermissionsByResource(id, category).then((response) => {
         data.category = response.data.data;
       });
@@ -125,6 +166,8 @@ export default defineComponent({
       addPermissions,
       getPermissions,
       goBack,
+      selectedCategory,
+      categories,
     };
   },
 });
