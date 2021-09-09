@@ -1,9 +1,9 @@
 import router from "@/router";
 
 const state = {
-  isLoggedIn: localStorage.getItem("IS_LOGGED_IN"),
   currentUser: JSON.parse(localStorage.getItem("FFARS_USER")),
   loginError: {},
+  loginStatus: JSON.parse(localStorage.getItem("FFARS_LOGIN_STATUS")),
 };
 
 const getters = {
@@ -11,8 +11,8 @@ const getters = {
     return state.currentUser;
   },
 
-  isLoggedIn: (state) => {
-    return state.isLoggedIn;
+  getLoginStatus: (state) =>{
+    return state.loginStatus;
   },
 
   loginError: (state) => {
@@ -32,20 +32,25 @@ const actions = {
 
 const mutations = {
   AUTHENTICATE(state, payload) {
+    const loginStatus = { isLoggedIn: true };
     state.currentUser = JSON.parse(payload);
+    state.loginStatus = loginStatus;
     localStorage.setItem("FFARS_USER", payload);
-    localStorage.setItem("IS_LOGGED_IN", "YES");
+    localStorage.setItem("FFARS_LOGIN_STATUS", JSON.stringify(loginStatus));
   },
 
   LOG_OUT(state) {
+    const loginStatus = { isLoggedIn: false };
+    state.loginStatus = loginStatus;
     state.currentUser = {};
     localStorage.removeItem("FFARS_USER");
-    localStorage.setItem("IS_LOGGED_IN", "NO");
+    localStorage.removeItem("FFARS_LOGIN_STATUS");
     router.push("/login");
   },
 
   SET_LOGIN_ERROR(state, error) {
-    localStorage.setItem("IS_LOGGED_IN", "NO");
+    localStorage.removeItem("FFARS_LOGIN_STATUS");
+    localStorage.removeItem("FFARS_LOGIN_STATUS");
     state.loginError = error;
   },
 };
