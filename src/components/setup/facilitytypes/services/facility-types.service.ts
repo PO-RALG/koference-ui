@@ -1,12 +1,7 @@
 import axios from "axios";
 
-<<<<<<< HEAD:src/components/facilitytype/services/facility-types.service.ts
-const get = async (params: any) => {
-  return await axios.get("/api/v1/facility-types",  {params});
-=======
 const get = async (payload: any) => {
   return await axios.get("/api/v1/facility-types", { params: payload });
->>>>>>> origin/develop:src/components/setup/facilitytypes/services/facility-types.service.ts
 };
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/facility-types/`, {
