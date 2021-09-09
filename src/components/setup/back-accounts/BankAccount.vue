@@ -232,8 +232,8 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data to render", response.data.data);
-        data.items = response.data.data;
-        data.itemsToFilter = response.data.data;
+        data.items = response.data.data.data;
+        data.itemsToFilter = response.data.data.data;
       });
       gfscodes().then((response: any) => {
         console.log("gfs codes", response.data.data.data);
@@ -251,7 +251,7 @@ export default defineComponent({
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
           console.log("response data", response);
-          data.items = response.data.data;
+          data.items = response.data.data.data;
         });
       } else {
         reloadData();
@@ -265,7 +265,7 @@ export default defineComponent({
       };
       get(params).then((response: any) => {
         console.log("data", response.data.data);
-        data.items = response.data.data;
+        data.items = response.data.data.data;
       });
     };
 

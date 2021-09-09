@@ -1,6 +1,6 @@
 const FinancialYearRoutes = [
   {
-    path: "/manage-finacial-years",
+    path: "/manage-financial-years",
     component: () => import("../FinancialYear.vue"),
     meta: { requiresAuth: false, title: "Manage Financial Years" },
   },

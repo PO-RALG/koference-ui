@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const get = async (payload: any) => {
-  return await axios.get("/api/v1/fund-types", payload);
+  return await axios.get("/api/v1/fund-types", { params: payload });
 };
 const fundingtypes = async () => {
   return await axios.get("/api/v1/fund-types");

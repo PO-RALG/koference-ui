@@ -2,6 +2,7 @@
 exports.__esModule = true;
 var vue_1 = require("vue");
 vue_1["default"].component("TreeBrowser", function () { return Promise.resolve().then(function () { return require("./TreeBrowser.vue"); }); });
+vue_1["default"].component("Tree", function () { return Promise.resolve().then(function () { return require("./Tree.vue"); }); });
 vue_1["default"].component("DualMultiSelect", function () { return Promise.resolve().then(function () { return require("./DualMultiSelect.vue"); }); });
 vue_1["default"].component("Modal", function () { return Promise.resolve().then(function () { return require("./modal/Modal.vue"); }); });
 vue_1["default"].component("ModalBody", function () { return Promise.resolve().then(function () { return require("./modal/ModalBody.vue"); }); });
@@ -9,3 +10,6 @@ vue_1["default"].component("ModalHeader", function () { return Promise.resolve()
 vue_1["default"].component("ModalFooter", function () { return Promise.resolve().then(function () { return require("./modal/ModalFooter.vue"); }); });
 vue_1["default"].component("Snackbar", function () { return Promise.resolve().then(function () { return require("../../utils/SnackBar.vue"); }); });
 vue_1["default"].component("ConfirmDialog", function () { return Promise.resolve().then(function () { return require("./ConfirmDialog.vue"); }); });
+vue_1["default"].component("Paginate", function () { return Promise.resolve().then(function () { return require("./Paginate.vue"); }); });
+vue_1["default"].component("SearchField", function () { return Promise.resolve().then(function () { return require("./SearchField.vue"); }); });
+vue_1["default"].component("DatePicker", function () { return Promise.resolve().then(function () { return require("./DatePicker.vue"); }); });
