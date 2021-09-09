@@ -1,5 +1,10 @@
 <template>
-  <v-snackbar v-model="data.snackbar.show" :bottom="true" :right="true">
+  <v-snackbar
+    :color="data.snackbar.color"
+    v-model="data.snackbar.show"
+    :bottom="true"
+    :right="true"
+  >
     <v-icon white>{{ data.snackbar.icon }}</v-icon>
     {{ data.snackbar.message }}
     <v-btn text color="white" @click.native="data.snackbar.show = false">

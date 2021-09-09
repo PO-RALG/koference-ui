@@ -15,6 +15,7 @@
           <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
           <v-icon @click="openConfirmDialog(item)"> mdi-trash-can-outline </v-icon>
           <v-btn
+            :disabled="cant('addPermissions', 'AuthRole')"
             color="blue darken-1"
             text
             @click="navigateToAddPermissions(item)"
@@ -80,7 +81,7 @@ import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 import { get, create, update, deleteRole } from "./services/role-services";
 import { get as getLevels } from "@/components/admin-area/level/services/level-services";
 import { AxiosResponse } from "axios";
-import router from '@/router'
+import router from "@/router";
 import { Role } from "./types/Role";
 import { Level } from "@/components/admin-area/level/types/Level";
 
@@ -158,7 +159,7 @@ export default defineComponent({
     };
 
     const navigateToAddPermissions = (item: any) => {
-      router.push({ path: `/roles/${item.id}/add-permissions` })
+      router.push({ path: `/roles/${item.id}/add-permissions` });
     };
 
     const createRole = (data: Role) => {

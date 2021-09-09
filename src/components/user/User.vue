@@ -3,20 +3,33 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'User')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
     </v-card-actions>
 
     <v-card>
-      <v-data-table :headers="data.headers" :items="users" hide-default-footer class="elevation-1">
+      <v-data-table
+        :headers="data.headers"
+        :items="users"
+        hide-default-footer
+        class="elevation-1"
+      >
         <template v-slot:item.actions="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
-          <v-icon @click="openConfirmDialog(item)"> mdi-trash-can-outline </v-icon>
+          <v-icon class="mr-2" @click="openDialog(item)">
+            mdi-pencil-box-outline
+          </v-icon>
+          <v-icon @click="openConfirmDialog(item)">
+            mdi-trash-can-outline
+          </v-icon>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -30,41 +43,75 @@
             <v-container>
               <v-row>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="First Name" v-model="data.formData.first_name" required> </v-text-field>
+                  <v-text-field
+                    label="First Name"
+                    v-model="data.formData.first_name"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="Midde Name" v-model="data.formData.middle_name" required> </v-text-field>
+                  <v-text-field
+                    label="Midde Name"
+                    v-model="data.formData.middle_name"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="Last Name" v-model="data.formData.last_name" required> </v-text-field>
+                  <v-text-field
+                    label="Last Name"
+                    v-model="data.formData.last_name"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field label="Email Address" v-model="data.formData.email" required> </v-text-field>
+                  <v-text-field
+                    label="Email Address"
+                    v-model="data.formData.email"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field label="Phone Number" v-model="data.formData.phone_number" required> </v-text-field>
+                  <v-text-field
+                    label="Phone Number"
+                    v-model="data.formData.phone_number"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field label="Check Number" v-model="data.formData.check_number" required> </v-text-field>
+                  <v-text-field
+                    label="Check Number"
+                    v-model="data.formData.check_number"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
 
               <v-row>
                 <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
                   <DualMultiSelect
-                    :items="data.roleItems"
+                    :items="data.roles"
                     :label="'Filter Roles'"
                     :title="'Add Roles'"
-                    v-model="data.formData.roles"
+                    :selectedItems="data.selectedRoles"
+                    @filterFunction="filterRoles"
+                    v-model="data.selectedRoles"
                   />
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12" sm="12" md="12" class="hierarchy-container">
                   <v-label v-if="data.formData.location">
-                    <h5 class="tree-title">SELECTED USER LOCATION ({{ data.formData.location.name }})</h5>
+                    <h5 class="tree-title">
+                      SELECTED USER LOCATION ({{ data.formData.location.name }})
+                    </h5>
                   </v-label>
                   <v-label v-else>
                     <h5 class="tree-title">SELECT USER LOCATION</h5>
@@ -102,7 +149,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted, set, computed } from "@vue/composition-api";
+import {
+  defineComponent,
+  reactive,
+  onMounted,
+  set,
+  computed,
+} from "@vue/composition-api";
 import { get, create, update, deleteUser } from "./services/user.service";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getRoles } from "@/components/role/services/role-services";
@@ -119,24 +172,11 @@ export default defineComponent({
       title: "Manage Users",
       valid: true,
       isOpen: false,
+      selectedRoles: [],
       node: null,
-      roleItems:[
-        {
-          id: 1,
-          name: "Super Admin",
-        },
-        {
-          id: 2,
-          name: "Poralg Admin",
-        },
-        {
-          id: 3,
-          name: "Facility Admin",
-        },
-      ],
       item: userData,
       response: {},
-      roles: roleItems,
+      roles: [],
       modalTitle: "",
       headers: [
         { text: "Check Number", value: "check_number" },
@@ -155,7 +195,8 @@ export default defineComponent({
       },
       nameRules: [
         (v: string) => !!v || "Name is required",
-        (v: string) => (v && v.length <= 10) || "Name must be less than 10 characters",
+        (v: string) =>
+          (v && v.length <= 10) || "Name must be less than 10 characters",
       ],
       email: "",
       emailRules: [
@@ -165,12 +206,14 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      get({ per_page: 2 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } = response.data.data;
+      get({}).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
       getNodes();
+      loadRoles();
     });
 
     const cancelDialog = () => {
@@ -179,8 +222,8 @@ export default defineComponent({
     };
 
     const save = () => {
-      let roles = data.formData.roles.map((role) => role.id);
-      data.formData["roles"] = roles;
+      let roles = data.formData.roles.map((role: any) => role.id);
+      set(data.formData, "roles", roles);
       if (data.formData.id) {
         updateUser(data.formData);
       } else {
@@ -205,13 +248,14 @@ export default defineComponent({
 
     const openDialog = (formData?: User) => {
       if (formData && formData.id) {
+        data.selectedRoles = formData.roles;
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
+        data.selectedRoles = [];
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
-      loadRoles();
     };
 
     const updateUser = (data: User) => {
@@ -275,6 +319,12 @@ export default defineComponent({
       });
     };
 
+    const filterRoles = (term: string) => {
+      let result = data.roles.filter((item) => item.name.toLowerCase().includes(term.toLowerCase()));
+      data.roles = result;
+      return data.roles;
+    };
+
     return {
       data,
 
@@ -282,6 +332,7 @@ export default defineComponent({
       cancelDialog,
       closeConfirmDialog,
       openConfirmDialog,
+      filterRoles,
 
       loadLocationChildren,
       getNodes,

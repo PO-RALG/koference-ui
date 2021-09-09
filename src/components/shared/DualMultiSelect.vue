@@ -90,19 +90,23 @@ export default defineComponent({
       type: Function,
       required: false,
     },
+    selectedItems: {
+      type: Array,
+    },
   },
 
   setup(props, context) {
     let data = reactive({
       search: "",
       itemsToSelect: [] as any,
-      selectedItems: [] as any,
+      selectedItems: props.selectedItems,
     });
 
     const refreshList = () => {
-      data.selectedItems.forEach((item: Selectable) => {
+      data.selectedItems.forEach((item: any) => {
         const idx = props.items.map((i) => i.id).indexOf(item.id);
-        if (idx !== -1) {
+        // let idx = props.items.indexOf(item);
+        if (idx > -1) {
           props.items.splice(idx, 1);
         }
       });
@@ -203,12 +207,13 @@ export default defineComponent({
 
     // lifecycle hooks
     onMounted(() => {
+      data.selectedItems = props.selectedItems;
       refreshList();
     });
 
     onUnmounted(() => {
       refreshList();
-      data.selectedItems = [];
+      data.selectedItems = props.selectedItems;
     });
 
     // computed

@@ -4,21 +4,20 @@ import store from "@/store";
 
 import { userRoutes } from "@/components/user";
 import { roleRoutes } from "@/components/role";
-import { gfsCodesRoutes } from "@/components/settup/gfs-codes";
+import { gfsCodesRoutes } from "@/components/setup/gfs-codes";
 import { levelRoutes } from "@/components/admin-area/level";
 import { adminAreaRoutes } from "@/components/admin-area/admin-area";
-import { FinancialYearRoutes } from "@/components/finacialyears";
-import { fundTypesRoutes } from "@/components/settup/fund-types";
-import { gfsCategoriesRoutes } from "@/components/settup/gfs-categories";
-import { ProjectRoutes } from "@/components/settup/projects";
-import { CustomersRoutes } from "@/components/customers";
-import { DocumentCategoryRoutes } from "@/components/documentcategories";
-import { DocumentRoutes } from "@/components/document";
-import { FundingSourceRoutes } from "@/components/settup/funding-sources";
-import { SubBudgetClassRoutes } from "@/components/settup/sub-budget-classes";
-import { BankAccountRoutes } from "@/components/back-accounts";
-import { FacilityTypeRoutes } from "@/components/facilitytype";
-import { FacilityRoutes } from "@/components/facility";
+import { financialYearRoutes } from "@/components/setup/financialyears";
+import { fundTypesRoutes } from "@/components/setup/fund-types";
+import { gfsCategoriesRoutes } from "@/components/setup/gfs-categories";
+import { ProjectRoutes } from "@/components/setup/projects";
+import { customersRoutes } from "@/components/setup/customers";
+import { documentCategoryRoutes } from "@/components/setup/documentcategories";
+import { documentRoutes } from "@/components/setup/document";
+import { fundingSourceRoutes } from "@/components/setup/funding-sources";
+import { subBudgetClassRoutes } from "@/components/setup/sub-budget-classes";
+import { bankAccountRoutes } from "@/components/setup/back-accounts";
+import { facilityTypeRoutes } from "@/components/setup/facilitytypes";
 
 Vue.use(VueRouter);
 
@@ -36,7 +35,7 @@ const routes: Array<RouteConfig> = [
     meta: { title: "Dashboard" },
     children: [
       ...userRoutes,
-      ...FinancialYearRoutes,
+      ...financialYearRoutes,
       ...gfsCodesRoutes,
       ...userRoutes,
       ...levelRoutes,
@@ -44,15 +43,14 @@ const routes: Array<RouteConfig> = [
       ...fundTypesRoutes,
       ...gfsCategoriesRoutes,
       ...ProjectRoutes,
-      ...CustomersRoutes,
-      ...DocumentCategoryRoutes,
-      ...DocumentRoutes,
-      ...FundingSourceRoutes,
-      ...SubBudgetClassRoutes,
-      ...BankAccountRoutes,
+      ...customersRoutes,
+      ...documentCategoryRoutes,
+      ...documentRoutes,
+      ...fundingSourceRoutes,
+      ...subBudgetClassRoutes,
+      ...bankAccountRoutes,
       ...roleRoutes,
-      ...FacilityTypeRoutes,
-      ...FacilityRoutes,
+      ...facilityTypeRoutes,
     ],
   },
 ];
@@ -64,9 +62,8 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to: any, from: any, next: any) => {
-  const loggedIn = store.getters["Auth/isLoggedIn"];
-
-  //console.log("isLoggedIn?", loggedIn);
+  const loginStatus = store.getters["Auth/getLoginStatus"];
+  const loggedIn = loginStatus? loginStatus.isLoggedIn : false;
 
   // Use next tick to handle router history correctly
   // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
@@ -85,4 +82,5 @@ router.beforeEach((to: any, from: any, next: any) => {
     next();
   }
 });
+
 export default router;
