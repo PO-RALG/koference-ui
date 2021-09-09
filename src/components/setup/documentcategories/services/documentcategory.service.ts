@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const get = async (payload: any) => {
-  return await axios.get("/api/v1/document-categories", payload);
+  return await axios.get("/api/v1/document-categories", { params: payload });
 };
 const documentcategoried = async () => {
   return await axios.get("/api/v1/document-categories");

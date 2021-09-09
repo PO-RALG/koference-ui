@@ -7,7 +7,7 @@ import { roleRoutes } from "@/components/role";
 import { gfsCodesRoutes } from "@/components/setup/gfs-codes";
 import { levelRoutes } from "@/components/admin-area/level";
 import { adminAreaRoutes } from "@/components/admin-area/admin-area";
-import { financialYearRoutes } from "@/components/setup/finacialyears";
+import { financialYearRoutes } from "@/components/setup/financialyears";
 import { fundTypesRoutes } from "@/components/setup/fund-types";
 import { gfsCategoriesRoutes } from "@/components/setup/gfs-categories";
 import { ProjectRoutes } from "@/components/setup/projects";
