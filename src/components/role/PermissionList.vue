@@ -3,7 +3,7 @@
     <h4 class="pl-4 column-header">{{ item.resource }}</h4>
     <v-data-table
       :headers="data.headers"
-      :items="item.entries"
+      :items="item[columnName]"
       hide-default-header
       hide-default-footer
       v-model="data.selectedItems"
@@ -30,6 +30,10 @@ export default defineComponent({
     selected: {
       type: Array,
     },
+    columnName: {
+      type: String,
+      default: "entries"
+    }
   },
   setup(props, { emit }) {
     let data = reactive({
