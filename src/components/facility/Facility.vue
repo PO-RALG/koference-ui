@@ -124,8 +124,8 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save"
+          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="green darken-1" text @click="save"
             >{{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -298,13 +298,13 @@ export default defineComponent({
     };
 
     const updateFacility = (data: any) => {
-      update(data).then((response) => {
+      update(data).then(() => {
         cancelDialog();
       });
     };
 
     const createFacility = (data: any) => {
-      create(data).then((response) => {
+      create(data).then(() => {
         cancelDialog();
       });
     };

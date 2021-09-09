@@ -49,7 +49,6 @@
           />
         </template>
       </v-data-table>
-      <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
     </v-card>
     
     <Modal :modal="data.modal" :width="600">
