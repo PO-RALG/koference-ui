@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const get = async (payload: any) => {
-  return await axios.get("/api/v1/sub-budget-classes", payload);
+  return await axios.get("/api/v1/sub-budget-classes", { params: payload });
 };
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/sub-budget-classes/`, {

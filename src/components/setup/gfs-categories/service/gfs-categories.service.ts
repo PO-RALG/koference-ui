@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const get = async (payload: any) => {
-  return await axios.get("/api/v1/gfs-categories", payload);
+  return await axios.get("/api/v1/gfs-categories", { params: payload });
 };
 const gfscategories = async () => {
   return await axios.get("/api/v1/gfs-categories");

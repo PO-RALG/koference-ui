@@ -168,6 +168,12 @@ export default defineComponent({
       headers: [
         { text: "Name", align: "start", sortable: false, value: "name" },
         { text: "Code", align: "start", sortable: false, value: "code" },
+        {
+          text: "Category code",
+          align: "start",
+          sortable: false,
+          value: "category.description",
+        },
 
         { text: "Actions", value: "actions", sortable: false },
       ],

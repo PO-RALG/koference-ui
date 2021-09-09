@@ -16,6 +16,8 @@
         :items="data.items"
         :single-expand="true"
         class="elevation-1"
+        disable-pagination
+        hide-default-footer
       >
         <template v-slot:top>
           <v-card-title>
@@ -67,6 +69,13 @@
             <span>Delete</span>
           </v-tooltip>
         </template>
+        <template v-slot:footer>
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
+        </template>
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
@@ -99,7 +108,7 @@
                     v-model="data.formData.funding_type_id"
                     label="Fund type"
                     :items="data.fundingtypes"
-                    :item-text="'description'"
+                    :item-text="'code'"
                     item-value="id"
                     :item-divider="true"
                     required
@@ -112,7 +121,7 @@
                     v-model="data.formData.carryover_fund_type_id"
                     label="CarryOver Fund type"
                     :items="data.fundingtypes"
-                    :item-text="'description'"
+                    :item-text="'code'"
                     item-value="id"
                     :item-divider="true"
                     required
@@ -154,6 +163,7 @@
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from "axios";
 import { SubBudgetClass } from "./types/SubBudgetClass";
 import store from "@/store";
 import {
@@ -191,16 +201,16 @@ export default defineComponent({
           value: "description",
         },
         {
-          text: "Fund Type",
+          text: "Fund Type Code",
           align: "start",
           sortable: false,
-          value: "fund_type.name",
+          value: "funding_type.code",
         },
         {
-          text: "CarryOver Fund Type",
+          text: "CarryOver Fund Type Code",
           align: "start",
           sortable: false,
-          value: "carry_over.name",
+          value: "carryover_fund_type.code",
         },
 
         { text: "Actions", value: "actions", sortable: false },
@@ -214,24 +224,30 @@ export default defineComponent({
         total: 10,
         size: 10,
       },
-      itemtodelete: "",
       fundingtypes: [],
+      rows: ["10", "20", "50", "100"],
+      itemtodelete: "",
+      response: {},
     });
 
     onMounted(() => {
-      // make api call
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data to render", response.data.data);
-        data.items = response.data.data;
-        data.itemsToFilter = response.data.data;
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+        data.itemsToFilter = response.data.data.data;
       });
       fundingtypes().then((response: any) => {
-        console.log("funding types", response.data.data);
-        data.fundingtypes = response.data.data;
+        console.log("funding types", response.data.data.data);
+        data.fundingtypes = response.data.data.data;
       });
     });
 
@@ -245,7 +261,7 @@ export default defineComponent({
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
           console.log("response data", response);
-          data.items = response.data.data;
+          data.items = response.data.data.data;
         });
       } else {
         reloadData();
@@ -253,13 +269,11 @@ export default defineComponent({
     };
 
     const reloadData = () => {
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data", response.data.data);
-        data.items = response.data.data;
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
       });
     };
 
@@ -327,7 +341,13 @@ export default defineComponent({
         cancelDialog();
       });
     };
-
+    const getData = (params: any) => {
+      data.response = params;
+      get(params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
+        data.items = response.data.data.data;
+      });
+    };
     watch(
       () => store.state.snackbar,
       () => {
@@ -337,6 +357,7 @@ export default defineComponent({
 
     return {
       data,
+      getData,
       openDialog,
       cancelDialog,
       deleteSubBudgetClass,
