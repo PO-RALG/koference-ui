@@ -18,6 +18,7 @@ import { fundingSourceRoutes } from "@/components/setup/funding-sources";
 import { subBudgetClassRoutes } from "@/components/setup/sub-budget-classes";
 import { bankAccountRoutes } from "@/components/setup/back-accounts";
 import { facilityTypeRoutes } from "@/components/setup/facilitytypes";
+import { facilityRoutes } from "@/components/facility";
 
 Vue.use(VueRouter);
 
@@ -51,6 +52,7 @@ const routes: Array<RouteConfig> = [
       ...bankAccountRoutes,
       ...roleRoutes,
       ...facilityTypeRoutes,
+      ...facilityRoutes,
     ],
   },
 ];

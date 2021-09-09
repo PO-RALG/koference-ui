@@ -1,5 +1,5 @@
 <template>
-  <div class="Facility Type">
+  <div class="Facility">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -17,7 +17,6 @@
         hide-default-footer
         class="elevation-1"
         disable-pagination
-        hide-default-footer
       >
         <template v-slot:top>
           <v-card-title>
@@ -49,12 +48,11 @@
           />
         </template>
       </v-data-table>
-      <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
     </v-card>
     
-    <Modal :modal="data.modal" :width="600">
+    <Modal :modal="data.modal" :width="760">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Facility Type`" />
+        <ModalHeader :title="`${data.modalTitle} Facility`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -76,11 +74,48 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.cost_center"
-                    label="Cost center"
+                  <v-autocomplete
+                    v-model="data.formData.facility_type_id"
+                    :items="data.facilityTypes"
+                    item-text="name"
+                    item-value="id"
+                    label="Facility type"
                     required
+                  ></v-autocomplete>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-autocomplete
+                    v-model="data.formData.location_id"
+                    :items="data.adminAreas"
+                    item-text="name"
+                    item-value="id"
+                    label="Location"
+                    required
+                  ></v-autocomplete>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.phone_number"
+                    label="Phone number"
                   ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.email"
+                    label="Email"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="8">
+                  <v-text-field
+                    v-model="data.formData.postal_address"
+                    label="Postal address"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-checkbox
+                    v-model="data.formData.active"
+                    :label="`Active`"
+                  ></v-checkbox>
                 </v-col>
               </v-row>
             </v-container>
@@ -89,8 +124,8 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
+          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="save"
             >{{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -99,17 +134,17 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Facility Type `" />
+        <ModalHeader :title="`Delete Facility `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog"
+          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
             >Cancel</v-btn
           >
-          <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
+          <v-btn color="blue darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -117,15 +152,15 @@
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from "axios";
-import { FacilityType } from "./types/FacilityType";
+import { Facility } from "./types/Facility";
+import { FacilityType } from "../setup/facilitytypes/types/FacilityType";
+import { AdminArea } from "../admin-area/admin-area/types/AdminArea";
 import store from "@/store";
 import {
   defineComponent,
   reactive,
   watch,
   onMounted,
-  computed,
 } from "@vue/composition-api";
 
 import {
@@ -134,16 +169,21 @@ import {
   update,
   destroy,
   search,
-} from "./services/facility-types.service";
+} from "./services/facility.service";
+import { get as getFT } from "../setup/facilitytypes/services/facility-types.service";
+import { get as getAdminArea } from "@/components/admin-area/admin-area/services/admin-area-services";
+import { AxiosResponse } from "axios";
 
 export default defineComponent({
-  name: "FacilityType",
+  name: "Facility",
   setup() {
-    let dataItems: Array<FacilityType> = [];
-    let facilityTypeData: FacilityType;
+    let dataItems: Array<Facility> = [];
+    let facilityTypes: Array<FacilityType> = [];
+    let adminAreas: Array<AdminArea> = [];
+    let facilityData: Facility;
 
     let data = reactive({
-      title: "Manage Facility Types",
+      title: "Manage Facilities",
       valid: true,
       isOpen: false,
       node: null,
@@ -153,60 +193,54 @@ export default defineComponent({
         { text: "Name", align: "start", sortable: false, value: "name" },
         { text: "Code", align: "start", sortable: false, value: "code" },
 
-        {
-          text: "Cost Center",
-          align: "start",
-          sortable: false,
-          value: "cost_center",
-        },
+        {text: "Phone number",align: "start",sortable: false,value: "phone_number"},
+        {text: "Email",align: "start",sortable: false,value: "email"},
+        {text: "Postal address",align: "start",sortable: false,value: "postal_address"},
+        {text: "Facility type",align: "start",sortable: false,value: "facility_type.name"},
+        {text: "Location",align: "start",sortable: false,value: "location.name"},
+        {text: "Active",align: "start",sortable: false,value: "active"},
 
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       deletemodal: false,
       items: dataItems,
+      facilityTypes: facilityTypes,
       itemsToFilter: [],
-      formData: facilityTypeData,
+      formData: facilityData,
+      params: {
+        total: 100,
+        size: 10,
+      },
       rows: ["10", "20", "50", "100"],
       itemtodelete: "",
+      adminAreas: adminAreas,
     });
 
     onMounted(() => {
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = {
-          from,
-          to,
-          total,
-          current_page,
-          per_page,
-          last_page,
-        };
+      get({per_page:10}).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page,  last_page } = response.data.data
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
+        data.response = {from, to, total, current_page, per_page, last_page};
       });
-    });
-
-    computed(() => {
-      return "test";
+      getFacilityType();
+      getAdminstrativeArea();
     });
 
     const searchCategory = (categoryName) => {
 
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
-          console.log("response data", response.data.data);
           data.items = response.data.data.data;
         });
       }
     };
 
-    const reloadData = () => {
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
+    const getData = (params: any) => {
+      data.response = params;
+      get(params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
         data.items = response.data.data.data;
       });
     };
@@ -216,19 +250,25 @@ export default defineComponent({
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getFacilityTypes = () => {
-      get(data).then((response) => {
-        console.log("data", response.data);
+    const getFacilityType = () => {
+      getFT({per_page:10}).then((response: AxiosResponse) => {
+        data.facilityTypes = response.data.data.data;
       });
     };
 
+    const getAdminstrativeArea = () => {
+      getAdminArea({per_page:10}).then((response: AxiosResponse) => {
+        data.adminAreas = response.data.data.data;
+      });
+    };
+    
     const cancelDialog = () => {
-      data.formData = {} as FacilityType;
+      data.formData = {} as Facility;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as FacilityType;
+      data.formData = {} as Facility;
       data.deletemodal = false;
     };
 
@@ -240,9 +280,9 @@ export default defineComponent({
 
     const save = () => {
       if (data.formData.id) {
-        updateFacilityType(data.formData);
+        updateFacility(data.formData);
       } else {
-        createUser(data.formData);
+        createFacility(data.formData);
       }
     };
 
@@ -251,51 +291,38 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as FacilityType;
+        data.formData = {} as Facility;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
     };
 
-    const updateFacilityType = (data: any) => {
+    const updateFacility = (data: any) => {
       update(data).then((response) => {
         cancelDialog();
       });
     };
 
-    const createUser = (data: any) => {
+    const createFacility = (data: any) => {
       create(data).then((response) => {
         cancelDialog();
       });
     };
-
-    const getData = (params: any) => {
-      data.response = params;
-      get(params).then((response: AxiosResponse) => {
-        data.response = response.data.data;
-        data.items = response.data.data.data;
-      });
-    };
     // watching a getter
 
-    watch(
-      () => store.state.snackbar,
-      () => {
-      }
-    );
-
+    
     return {
       data,
       openDialog,
-      getData,
       cancelDialog,
       openConfirmDialog,
-      getFacilityTypes,
-      updateFacilityType,
+      getFacilityType,
+      updateFacility,
       save,
       remove,
       cancelConfirmDialog,
       searchCategory,
+      getData,
     };
   },
 });
