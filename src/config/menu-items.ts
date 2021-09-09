@@ -25,6 +25,29 @@ export const MENU_ITEMS = [
       },
     ],
   },
+  {
+    "icon-alt": "mdi-notebook-multiple",
+    icon: "mdi-notebook-multiple",
+    title: "Documents",
+    children: [
+      {
+        icon: "mdi-file-account",
+        title: "Manage Documents",
+        state: "/manage-document",
+      },
+    ],
+  },
+  {
+    "icon-alt": "mdi-briefcase-account",
+    title: "Customers",
+    children: [
+      {
+        icon: "mdi-notebook-multiple",
+        title: "Manage Customers",
+        state: "/manage-customers",
+      },
+    ],
+  },
 
   {
     icon: "mdi-cog",
