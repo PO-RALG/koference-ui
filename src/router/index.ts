@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import store from "@/store";
+import axios from "axios";
 
 import { userRoutes } from "@/components/user";
 import { roleRoutes } from "@/components/role";
@@ -68,6 +69,12 @@ const router = new VueRouter({
 router.beforeEach((to: any, from: any, next: any) => {
   const loginStatus = store.getters["Auth/getLoginStatus"];
   const loggedIn = loginStatus ? loginStatus.isLoggedIn : false;
+
+  const currentUser = store.getters["Auth/getCurrentUser"];
+  currentUser ? (axios.defaults.headers.common["Authorization"] = `Bearer ${currentUser.token}`) : null;
+
+  axios.defaults.headers.common["Accept"] = `application/json`;
+  axios.defaults.headers.common["Content-Type"] = `application/json`;
 
   // Use next tick to handle router history correctly
   // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609

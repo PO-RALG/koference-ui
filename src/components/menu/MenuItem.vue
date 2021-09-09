@@ -24,13 +24,7 @@
           <v-icon @click="openConfirmDialog(item)" :disabled="can('delete', 'AuthMenuItem')">
             mdi-trash-can-outline
           </v-icon>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="navigateToAddPermissions(item)"
-          >
-            ADD PERMISSIONS
-          </v-btn>
+          <v-btn color="blue darken-1" text @click="openPermissionDialog(item)"> ADD PERMISSIONS </v-btn>
         </template>
         <template v-slot:footer>
           <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
@@ -96,17 +90,81 @@
       :isOpen="data.isOpen"
       :title="'Delete Menu Item'"
     />
+
+    <Modal :modal="data.permissionDialog" :width="650">
+      <template v-slot:header>
+        <ModalHeader  :title="`Add Permissions to Menu Item`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-card-actions class="pa-0">
+            <h2 class="mr-7 ml-3" v-if="data.menu">{{ data.menu.name }} Menu Item</h2>
+          </v-card-actions>
+            <v-row>
+              <v-col cols="12" lg="12" md="12" sm="12">
+                <v-autocomplete
+                  v-model="data.selectedCategory"
+                  :loading="data.loading"
+                  :items="data.categoryOptions"
+                  :search-input.sync="data.search"
+                  item-text="category"
+                  @change="getPermissions"
+                  cache-items
+                  class="mr-7 ml-2"
+                  flat
+                  hide-no-data
+                  hide-details
+                  return-object
+                  color="white"
+                  label="Search Resource name"
+                  solo-inverted
+                ></v-autocomplete>
+              </v-col>
+              <v-col cols="12" lg="12" md="12" sm="12">
+                <PermissionList
+                  v-if="data.category"
+                  :item="data.category"
+                  :columnName="'permissions'"
+                  :selected="data.selected"
+                  @itemSelected="addToSelection"
+                />
+              </v-col>
+            </v-row>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="blue darken-1" text @click="cancelPermissionDialog">Cancel</v-btn>
+          <v-btn color="primary darken-1" text @click="addPermissions">
+            Save
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted, watch, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import router from "@/router";
-import { get, create, update, deleteEntry } from "./services/menu.service";
+import {
+  get,
+  create,
+  update,
+  deleteEntry,
+  find,
+  getResourceCategories,
+  getPermissionsByResource,
+  addPermissions as assignPermissions,
+} from "./services/menu.service";
+import PermissionList from "@/components/role/PermissionList.vue";
 import { MenuItem } from "./types/MenuItem";
 
 export default defineComponent({
+  components: {
+    PermissionList,
+  },
   setup() {
     const TYPE = "MENU_ITEM";
     let dataItems: Array<MenuItem> = [];
@@ -115,6 +173,7 @@ export default defineComponent({
       title: "Manage Menu Items",
       valid: true,
       isOpen: false,
+      permissionDialog: false,
       item: menuItemData,
       menuGroups: [],
       response: {},
@@ -130,6 +189,14 @@ export default defineComponent({
       items: dataItems,
       formData: menuItemData,
       rows: ["10", "20", "30", "40", "50", "100"],
+      // properties for permission dialog
+      menu: null,
+      loading: false,
+      categories: [],
+      category: null,
+      selected: [],
+      selectedCategory: "",
+      categoryOptions: [],
     });
 
     onMounted(() => {
@@ -209,8 +276,79 @@ export default defineComponent({
       data.isOpen = false;
     };
 
-    const navigateToAddPermissions = (item: any) => {
-      router.push({ path: `/menu-items/${item.id}/add-permissions` });
+    const addPermissions = () => {
+      let payload = {
+        menu_id: data.menu.id,
+        permissions: data.selected.map((val) => val.id),
+      };
+
+      assignPermissions(payload).then((response: AxiosResponse) => {
+        if (response.status == 200) {
+          data.permissionDialog = false;
+        }
+      });
+    };
+
+    const openPermissionDialog = (item) => {
+      data.menu = item;
+      data.permissionDialog = true;
+
+      const menuID: any = item.id;
+      find(menuID, TYPE).then((response: AxiosResponse) => {
+        data.menu = response.data.data;
+        data.selected = response.data.data.permisions;
+        response.data.data.permisions.length > 0
+          ? (data.selectedCategory = response.data.data.permisions[0].resource)
+          : (data.selectedCategory = "");
+      });
+
+      getResourceCategories({ categories: true }).then((response: AxiosResponse) => {
+        data.categories = response.data.data;
+        data.categoryOptions = response.data.data.map((entry) => {
+          return entry.category;
+        });
+      });
+    }
+
+    const getPermissions = (val) => {
+      let { id, category } = data.categories.find((cat) => cat.category === val);
+      data.selectedCategory = category;
+      getPermissionsByResource(id, category).then((response) => {
+        data.category = response.data.data;
+      });
+    };
+
+    const addToSelection = (item: any) => {
+      let idx = data.selected.indexOf(item);
+      if (idx > -1) {
+        data.selected.splice(idx, 1);
+      } else {
+        data.selected.push(item);
+      }
+    };
+
+    let selectedCategory = computed(() => {
+      return data.selectedCategory;
+    });
+
+    let categories = computed(() => {
+      return data.categories;
+    });
+
+    watch([selectedCategory, categories], (newValue) => {
+      let [selected, categories] = newValue;
+      if (categories.length > 0 && !!selected) {
+        let { id, category } = categories.find((c) => c.category == selected);
+        data.selectedCategory = category;
+        getPermissionsByResource(id, category).then((response) => {
+          data.category = response.data.data;
+        });
+      }
+    });
+
+    const cancelPermissionDialog = () => {
+      data.menu = null;
+      data.permissionDialog= !data.permissionDialog;
     };
 
     return {
@@ -220,13 +358,18 @@ export default defineComponent({
       cancelDialog,
       closeConfirmDialog,
       openConfirmDialog,
+      openPermissionDialog,
 
       getData,
 
       updateMenuItem,
       save,
       deleteItem,
-      navigateToAddPermissions,
+
+      addPermissions,
+      getPermissions,
+      addToSelection,
+      cancelPermissionDialog,
     };
   },
 });

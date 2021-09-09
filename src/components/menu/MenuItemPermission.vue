@@ -14,7 +14,7 @@
     </v-card-actions>
     <v-card>
       <v-row>
-        <v-col cols="12" lg="4" md="4" sm="12">
+        <v-col cols="6" lg="2" md="2" sm="12">
           <v-autocomplete
             v-model="data.selectedCategory"
             :loading="data.loading"
@@ -33,7 +33,7 @@
             solo-inverted
           ></v-autocomplete>
         </v-col>
-        <v-col cols="12" lg="8" md="8" sm="12" class="pl-10">
+        <v-col cols="6" lg="4" md="4" sm="12" class="pl-10">
           <PermissionList
             v-if="data.category"
             :item="data.category"
@@ -102,7 +102,7 @@ export default defineComponent({
       getResourceCategories({ categories: true }).then((response: AxiosResponse) => {
         data.categories = response.data.data;
         data.categoryOptions = response.data.data.map((entry) => {
-         return entry.category;
+          return entry.category;
         });
       });
     });
@@ -118,7 +118,7 @@ export default defineComponent({
     watch([selectedCategory, categories], (newValue) => {
       let [selected, categories] = newValue;
       if (categories.length > 0 && !!selected) {
-        let { id, category } = categories.find(c => c.category == selected);
+        let { id, category } = categories.find((c) => c.category == selected);
         data.selectedCategory = category;
         getPermissionsByResource(id, category).then((response) => {
           data.category = response.data.data;
@@ -153,7 +153,7 @@ export default defineComponent({
     };
 
     const getPermissions = (val) => {
-      let { id, category } = data.categories.find(cat => cat.category === val);
+      let { id, category } = data.categories.find((cat) => cat.category === val);
       data.selectedCategory = category;
       getPermissionsByResource(id, category).then((response) => {
         data.category = response.data.data;
