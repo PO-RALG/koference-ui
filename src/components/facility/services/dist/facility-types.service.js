@@ -41,7 +41,7 @@ var axios_1 = require("axios");
 var get = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/customers", { params: payload })];
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/facility-types", { params: payload })];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -50,7 +50,7 @@ exports.get = get;
 var search = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/customers/", {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/facility-types/", {
                     params: {
                         search: JSON.stringify(payload)
                     }
@@ -63,7 +63,7 @@ exports.search = search;
 var find = function (id) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/customers/" + id)];
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/facility-types/" + id)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -72,7 +72,7 @@ exports.find = find;
 var create = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/customers", payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/facility-types", payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -81,7 +81,7 @@ exports.create = create;
 var update = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].put("/api/v1/customers/" + payload.id, payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].put("/api/v1/facility-types/" + payload.id, payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -92,7 +92,7 @@ var destroy = function (payload) { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0:
                 console.log("payload", payload);
-                return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/customers/" + payload)];
+                return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/facility-types/" + payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

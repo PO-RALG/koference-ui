@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const get = async (payload: any) => {
-  return await axios.get("/api/v1/documents", { params: payload });
+const get = async (params: any) => {
+  return await axios.get("/api/v1/facilities",  {params});
 };
 const search = async (payload: any) => {
-  return await axios.get(`/api/v1/documents/`, {
+  return await axios.get(`/api/v1/facilities/`, {
     params: {
       search: JSON.stringify(payload),
     },
@@ -12,19 +12,19 @@ const search = async (payload: any) => {
 };
 
 const find = async (id: string | number) => {
-  return await axios.get(`/api/v1/documents/${id}`);
+  return await axios.get(`/api/v1/facilities/${id}`);
 };
 
 const create = async (payload: any) => {
-  return await axios.post(`/api/v1/documents`, payload);
+  return await axios.post(`/api/v1/facilities`, payload);
 };
 
 const update = async (payload: any) => {
-  return await axios.put(`/api/v1/documents/` + payload.id, payload);
+  return await axios.put(`/api/v1/facilities/` + payload.id, payload);
 };
 const destroy = async (payload: any) => {
   console.log("payload", payload);
-  return await axios.delete(`/api/v1/documents/` + payload);
+  return await axios.delete(`/api/v1/facilities/` + payload);
 };
 
 export { get, find, create, update, destroy, search };

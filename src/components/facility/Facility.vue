@@ -1,5 +1,5 @@
 <template>
-  <div class="customers">
+  <div class="Facility">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -14,10 +14,9 @@
       <v-data-table
         :headers="data.headers"
         :items="data.items"
-        :single-expand="true"
+        hide-default-footer
         class="elevation-1"
         disable-pagination
-        hide-default-footer
       >
         <template v-slot:top>
           <v-card-title>
@@ -36,35 +35,10 @@
             </v-col>
           </v-card-title>
         </template>
-        <template v-slot:[`item.startDate`]="{ item }">
-          <span>{{ item.startDate }}</span>
-        </template>
-        <template v-slot:[`item.endDate`]="{ item }">
-          <span>{{ item.endDate }}</span>
-        </template>
 
         <template v-slot:item.actions="{ item }">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openDialog(item)"
-              >
-                mdi-pencil-box-outline
-              </v-icon>
-            </template>
-            <span>Edit</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" @click="deleteCustomer(item.id)"
-                >mdi-trash-can-outline</v-icon
-              >
-            </template>
-            <span>Delete</span>
-          </v-tooltip>
+          <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
+          <v-icon @click="openConfirmDialog(item.id)"> mdi-trash-can-outline </v-icon>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -75,9 +49,10 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="600">
+    
+    <Modal :modal="data.modal" :width="760">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Customers`" />
+        <ModalHeader :title="`${data.modalTitle} Facility`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -93,24 +68,54 @@
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-text-field
+                    v-model="data.formData.code"
+                    label="Code"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-autocomplete
+                    v-model="data.formData.facility_type_id"
+                    :items="data.facilityTypes"
+                    item-text="name"
+                    item-value="id"
+                    label="Facility type"
+                    required
+                  ></v-autocomplete>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-autocomplete
+                    v-model="data.formData.location_id"
+                    :items="data.adminAreas"
+                    item-text="name"
+                    item-value="id"
+                    label="Location"
+                    required
+                  ></v-autocomplete>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
+                    v-model="data.formData.phone_number"
+                    label="Phone number"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field
                     v-model="data.formData.email"
                     label="Email"
-                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="8">
+                  <v-text-field
+                    v-model="data.formData.postal_address"
+                    label="Postal address"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.phone"
-                    label="Phone"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.address"
-                    label="Address"
-                    required
-                  ></v-text-field>
+                  <v-checkbox
+                    v-model="data.formData.active"
+                    :label="`Active`"
+                  ></v-checkbox>
                 </v-col>
               </v-row>
             </v-container>
@@ -129,7 +134,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Customers `" />
+        <ModalHeader :title="`Delete Facility `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -147,15 +152,15 @@
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from "axios";
-import { Customer } from "./types/Customer";
+import { Facility } from "./types/Facility";
+import { FacilityType } from "../setup/facilitytypes/types/FacilityType";
+import { AdminArea } from "../admin-area/admin-area/types/AdminArea";
 import store from "@/store";
 import {
   defineComponent,
   reactive,
   watch,
   onMounted,
-  computed,
 } from "@vue/composition-api";
 
 import {
@@ -164,135 +169,72 @@ import {
   update,
   destroy,
   search,
-} from "./services/customer.service";
+} from "./services/facility.service";
+import { get as getFT } from "../setup/facilitytypes/services/facility-types.service";
+import { get as getAdminArea } from "@/components/admin-area/admin-area/services/admin-area-services";
+import { AxiosResponse } from "axios";
 
 export default defineComponent({
-  name: "Customer",
+  name: "Facility",
   setup() {
-    let dataItems: Array<Customer> = [];
-    let customerData: Customer;
+    let dataItems: Array<Facility> = [];
+    let facilityTypes: Array<FacilityType> = [];
+    let adminAreas: Array<AdminArea> = [];
+    let facilityData: Facility;
 
     let data = reactive({
-      title: "Manage Customers",
+      title: "Manage Facilities",
+      valid: true,
+      isOpen: false,
+      node: null,
+      response: {},
       modalTitle: "",
       headers: [
         { text: "Name", align: "start", sortable: false, value: "name" },
-        { text: "Email", align: "start", sortable: false, value: "email" },
+        { text: "Code", align: "start", sortable: false, value: "code" },
 
-        { text: "Address", align: "start", sortable: false, value: "address" },
-        { text: "Phone", align: "start", sortable: false, value: "phone" },
+        {text: "Phone number",align: "start",sortable: false,value: "phone_number"},
+        {text: "Email",align: "start",sortable: false,value: "email"},
+        {text: "Postal address",align: "start",sortable: false,value: "postal_address"},
+        {text: "Facility type",align: "start",sortable: false,value: "facility_type.name"},
+        {text: "Location",align: "start",sortable: false,value: "location.name"},
+        {text: "Active",align: "start",sortable: false,value: "active"},
 
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       deletemodal: false,
       items: dataItems,
+      facilityTypes: facilityTypes,
       itemsToFilter: [],
-      formData: customerData,
+      formData: facilityData,
+      params: {
+        total: 100,
+        size: 10,
+      },
       rows: ["10", "20", "50", "100"],
       itemtodelete: "",
-      response: {},
+      adminAreas: adminAreas,
     });
 
     onMounted(() => {
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
+      get({per_page:10}).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page,  last_page } = response.data.data
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
+        data.response = {from, to, total, current_page, per_page, last_page};
       });
-    });
-
-    computed(() => {
-      return "test";
+      getFacilityType();
+      getAdminstrativeArea();
     });
 
     const searchCategory = (categoryName) => {
-      console.log("argument", categoryName);
 
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
-          console.log("response data", response.data.data);
-          data.items = response.data.data;
+          data.items = response.data.data.data;
         });
-      } else {
-        reloadData();
       }
-    };
-
-    const reloadData = () => {
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data;
-      });
-    };
-
-    const deleteCustomer = (deleteId: any) => {
-      data.deletemodal = !data.modal;
-      data.itemtodelete = deleteId;
-      // console.log("delete year", data);
-    };
-    const getCustomer = () => {
-      get(data).then((response) => {
-        console.log("data", response.data);
-      });
-    };
-
-    const cancelDialog = () => {
-      data.formData = {} as Customer;
-      data.modal = !data.modal;
-    };
-
-    const cancelConfirmDialog = () => {
-      data.formData = {} as Customer;
-      data.deletemodal = false;
-    };
-
-    const remove = () => {
-      console.log("delete data with id", data.itemtodelete);
-      destroy(data.itemtodelete).then(() => {
-        reloadData();
-        data.deletemodal = false;
-      });
-    };
-
-    const save = () => {
-      console.log("Form Data", data.formData);
-      if (data.formData.id) {
-        updatecustomer(data.formData);
-      } else {
-        createCustomer(data.formData);
-      }
-    };
-
-    const openDialog = (formData?: any) => {
-      if (formData.id) {
-        data.formData = formData;
-        data.modalTitle = "Update";
-      } else {
-        data.formData = {} as Customer;
-        data.modalTitle = "Create";
-      }
-      data.modal = !data.modal;
-    };
-
-    const updatecustomer = (data: any) => {
-      update(data).then((response) => {
-        console.log("Updated data", response.data);
-        reloadData();
-        cancelDialog();
-      });
-    };
-
-    const createCustomer = (data: any) => {
-      create(data).then((response) => {
-        console.log("Created data", response.data);
-        reloadData();
-        cancelDialog();
-      });
     };
 
     const getData = (params: any) => {
@@ -302,28 +244,85 @@ export default defineComponent({
         data.items = response.data.data.data;
       });
     };
+
+    const openConfirmDialog = (deleteId: any) => {
+      data.deletemodal = !data.modal;
+      data.itemtodelete = deleteId;
+      // console.log("delete year", data);
+    };
+    const getFacilityType = () => {
+      getFT({per_page:10}).then((response: AxiosResponse) => {
+        data.facilityTypes = response.data.data.data;
+      });
+    };
+
+    const getAdminstrativeArea = () => {
+      getAdminArea({per_page:10}).then((response: AxiosResponse) => {
+        data.adminAreas = response.data.data.data;
+      });
+    };
+    
+    const cancelDialog = () => {
+      data.formData = {} as Facility;
+      data.modal = !data.modal;
+    };
+
+    const cancelConfirmDialog = () => {
+      data.formData = {} as Facility;
+      data.deletemodal = false;
+    };
+
+    const remove = () => {
+      destroy(data.itemtodelete).then(() => {
+        data.deletemodal = false;
+      });
+    };
+
+    const save = () => {
+      if (data.formData.id) {
+        updateFacility(data.formData);
+      } else {
+        createFacility(data.formData);
+      }
+    };
+
+    const openDialog = (formData?: any) => {
+      if (formData.id) {
+        data.formData = formData;
+        data.modalTitle = "Update";
+      } else {
+        data.formData = {} as Facility;
+        data.modalTitle = "Create";
+      }
+      data.modal = !data.modal;
+    };
+
+    const updateFacility = (data: any) => {
+      update(data).then((response) => {
+        cancelDialog();
+      });
+    };
+
+    const createFacility = (data: any) => {
+      create(data).then((response) => {
+        cancelDialog();
+      });
+    };
     // watching a getter
 
-    watch(
-      () => store.state.snackbar,
-      () => {
-        console.log("datazzzzz", store.getters.getSnackBar);
-      }
-    );
-
+    
     return {
       data,
-      getData,
       openDialog,
       cancelDialog,
-      deleteCustomer,
-      getCustomer,
-      updatecustomer,
+      openConfirmDialog,
+      getFacilityType,
+      updateFacility,
       save,
-      reloadData,
       remove,
       cancelConfirmDialog,
       searchCategory,
+      getData,
     };
   },
 });

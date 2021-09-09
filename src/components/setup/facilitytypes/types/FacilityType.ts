@@ -1,5 +1,6 @@
 export interface FacilityType {
   id: number;
   name: string;
-  description: string;
+  cost_center: string;
+  code:string;
 }

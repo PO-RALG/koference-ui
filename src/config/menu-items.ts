@@ -25,6 +25,29 @@ export const MENU_ITEMS = [
       },
     ],
   },
+  {
+    "icon-alt": "mdi-notebook-multiple",
+    icon: "mdi-notebook-multiple",
+    title: "Documents",
+    children: [
+      {
+        icon: "mdi-file-account",
+        title: "Manage Documents",
+        state: "/manage-document",
+      },
+    ],
+  },
+  {
+    "icon-alt": "mdi-briefcase-account",
+    title: "Customers",
+    children: [
+      {
+        icon: "mdi-notebook-multiple",
+        title: "Manage Customers",
+        state: "/manage-customers",
+      },
+    ],
+  },
 
   {
     icon: "mdi-cog",
@@ -85,6 +108,20 @@ export const MENU_ITEMS = [
         title: "Facility Types",
         state: "/manage-facility-types",
         code: 1018,
+      }
+    ],
+  },
+  {
+    "icon-alt": "mdi-office-building",
+    icon: "mdi-office-building",
+    title: "Facilities",
+    code: 1016,
+    children: [
+      {
+        icon: "mdi-office-building",
+        title: "Facilities",
+        state: "/manage-facilities",
+        code: 1016,
       },
     ],
   },
@@ -179,4 +216,5 @@ export const MENU_ITEMS = [
     state: "/manage-users",
     code: 1016,
   },
+  
 ];
