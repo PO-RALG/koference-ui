@@ -3,28 +3,32 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="can('create', 'AuthMenuGroup')">
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'AuthMenuGroup')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
     </v-card-actions>
 
     <v-card>
-      <v-data-table :headers="data.headers" :items="data.items" hide-default-footer class="elevation-1">
+      <v-data-table
+        :headers="data.headers"
+        :items="data.items"
+        disable-pagination
+        hide-default-footer
+        class="elevation-1">
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="can('edit', 'AuthMenuGroup')">
+          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'AuthMenuGroup')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item)" :disabled="can('delete', 'AuthMenuGroup')">
+          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'AuthMenuGroup')">
             mdi-trash-can-outline
           </v-icon>
         </template>
-        <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
-        </template>
-
         <template v-slot:[`item.icon`]="{ item }">
           <v-icon class="mr-2">{{ item.icon }}</v-icon>
+        </template>
+        <template v-slot:footer>
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -54,7 +58,7 @@
                     item-text="name"
                     :items="data.items"
                     label="Select Group Parent"
-                    >
+                  >
                   </v-select>
                 </v-col>
               </v-row>

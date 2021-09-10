@@ -3,7 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="can('create', 'AuthMenuItem')">
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'AuthMenuItem')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -18,13 +18,20 @@
         class="elevation-1"
       >
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="can('edit', 'AuthMenuItem')">
+          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'AuthMenuItem')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item)" :disabled="can('delete', 'AuthMenuItem')">
+          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'AuthMenuItem')">
             mdi-trash-can-outline
           </v-icon>
-          <v-btn color="blue darken-1" text @click="openPermissionDialog(item)"> ADD PERMISSIONS </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="openPermissionDialog(item)"
+            :disabled="cant('addPermissions', 'AuthMenuItem')"
+          >
+            ADD PERMISSIONS
+          </v-btn>
         </template>
         <template v-slot:footer>
           <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
@@ -93,51 +100,49 @@
 
     <Modal :modal="data.permissionDialog" :width="650">
       <template v-slot:header>
-        <ModalHeader  :title="`Add Permissions to Menu Item`" />
+        <ModalHeader :title="`Add Permissions to Menu Item`" />
       </template>
       <template v-slot:body>
         <ModalBody>
           <v-card-actions class="pa-0">
             <h2 class="mr-7 ml-3" v-if="data.menu">{{ data.menu.name }} Menu Item</h2>
           </v-card-actions>
-            <v-row>
-              <v-col cols="12" lg="12" md="12" sm="12">
-                <v-autocomplete
-                  v-model="data.selectedCategory"
-                  :loading="data.loading"
-                  :items="data.categoryOptions"
-                  :search-input.sync="data.search"
-                  item-text="category"
-                  @change="getPermissions"
-                  cache-items
-                  class="mr-7 ml-2"
-                  flat
-                  hide-no-data
-                  hide-details
-                  return-object
-                  color="white"
-                  label="Search Resource name"
-                  solo-inverted
-                ></v-autocomplete>
-              </v-col>
-              <v-col cols="12" lg="12" md="12" sm="12">
-                <PermissionList
-                  v-if="data.category"
-                  :item="data.category"
-                  :columnName="'permissions'"
-                  :selected="data.selected"
-                  @itemSelected="addToSelection"
-                />
-              </v-col>
-            </v-row>
+          <v-row>
+            <v-col cols="12" lg="12" md="12" sm="12">
+              <v-autocomplete
+                v-model="data.selectedCategory"
+                :loading="data.loading"
+                :items="data.categoryOptions"
+                :search-input.sync="data.search"
+                item-text="category"
+                @change="getPermissions"
+                cache-items
+                class="mr-7 ml-2"
+                flat
+                hide-no-data
+                hide-details
+                return-object
+                color="white"
+                label="Search Resource name"
+                solo-inverted
+              ></v-autocomplete>
+            </v-col>
+            <v-col cols="12" lg="12" md="12" sm="12">
+              <PermissionList
+                v-if="data.category"
+                :item="data.category"
+                :columnName="'permissions'"
+                :selected="data.selected"
+                @itemSelected="addToSelection"
+              />
+            </v-col>
+          </v-row>
         </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="blue darken-1" text @click="cancelPermissionDialog">Cancel</v-btn>
-          <v-btn color="primary darken-1" text @click="addPermissions">
-            Save
-          </v-btn>
+          <v-btn color="primary darken-1" text @click="addPermissions"> Save </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -308,7 +313,7 @@ export default defineComponent({
           return entry.category;
         });
       });
-    }
+    };
 
     const getPermissions = (val) => {
       let { id, category } = data.categories.find((cat) => cat.category === val);
@@ -348,7 +353,7 @@ export default defineComponent({
 
     const cancelPermissionDialog = () => {
       data.menu = null;
-      data.permissionDialog= !data.permissionDialog;
+      data.permissionDialog = !data.permissionDialog;
     };
 
     return {

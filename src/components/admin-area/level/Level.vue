@@ -3,7 +3,10 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('create', 'Level')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -13,18 +16,22 @@
       <v-data-table
         :headers="data.headers"
         :items="data.items"
-        :server-items-length="data.params.total"
-        :options.sync="data.pagination"
-        :items-per-page="data.params.size"
+        hide-default-footer
+        disable-pagination
         class="elevation-1"
       >
-        <template v-slot:item.actions="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)">
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon class="mr-2" @click="openDialog(item)"
+            :disabled="cant('edit', 'Level')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item)">
+          <v-icon @click="openConfirmDialog(item)"
+            :disabled="cant('delete', 'Level')">
             mdi-trash-can-outline
           </v-icon>
+        </template>
+        <template v-slot:footer>
+          <Paginate :params="data.response" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -109,6 +116,7 @@ export default defineComponent({
       valid: true,
       isOpen: false,
       item: null,
+      response: {},
       modalTitle: "",
       headers: [
         { text: "Name", value: "name" },
@@ -128,7 +136,9 @@ export default defineComponent({
 
     onMounted(() => {
       get({}).then((response: any) => {
-        data.items = response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
       });
     });
 
