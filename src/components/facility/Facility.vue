@@ -5,7 +5,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('create', 'Facility')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -37,8 +41,19 @@
         </template>
 
         <template v-slot:item.actions="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
-          <v-icon @click="openConfirmDialog(item.id)"> mdi-trash-can-outline </v-icon>
+          <v-icon
+            class="mr-2"
+            @click="openDialog(item)"
+            :disabled="cant('edit', 'Facility')"
+          >
+            mdi-pencil-box-outline
+          </v-icon>
+          <v-icon
+            @click="openConfirmDialog(item.id)"
+            :disabled="cant('delete', 'Facility')"
+          >
+            mdi-trash-can-outline
+          </v-icon>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -49,7 +64,7 @@
         </template>
       </v-data-table>
     </v-card>
-    
+
     <Modal :modal="data.modal" :width="760">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Facility`" />
@@ -84,16 +99,6 @@
                   ></v-autocomplete>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-autocomplete
-                    v-model="data.formData.location_id"
-                    :items="data.adminAreas"
-                    item-text="name"
-                    item-value="id"
-                    label="Location"
-                    required
-                  ></v-autocomplete>
-                </v-col>
-                <v-col cols="12" md="4">
                   <v-text-field
                     v-model="data.formData.phone_number"
                     label="Phone number"
@@ -105,17 +110,33 @@
                     label="Email"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="8">
-                  <v-text-field
-                    v-model="data.formData.postal_address"
-                    label="Postal address"
-                  ></v-text-field>
-                </v-col>
                 <v-col cols="12" md="4">
                   <v-checkbox
                     v-model="data.formData.active"
                     :label="`Active`"
                   ></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="12">
+                  <v-text-field
+                    v-model="data.formData.postal_address"
+                    label="Postal address"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="12" md="12" class="hierarchy-container">
+                  <v-label v-if="data.formData.location">
+                    <h5 class="tree-title">
+                      SELECTED USER LOCATION ({{ data.formData.location.name }})
+                    </h5>
+                  </v-label>
+                  <v-label v-else>
+                    <h5 class="tree-title">SELECT USER LOCATION</h5>
+                  </v-label>
+                  <TreeBrowser
+                    v-if="data.node"
+                    @onClick="loadLocationChildren"
+                    v-model="data.formData.location"
+                    :node="data.node"
+                  />
                 </v-col>
               </v-row>
             </v-container>
@@ -155,11 +176,10 @@
 import { Facility } from "./types/Facility";
 import { FacilityType } from "../setup/facilitytypes/types/FacilityType";
 import { AdminArea } from "../admin-area/admin-area/types/AdminArea";
-import store from "@/store";
 import {
   defineComponent,
   reactive,
-  watch,
+  set,
   onMounted,
 } from "@vue/composition-api";
 
@@ -171,7 +191,7 @@ import {
   search,
 } from "./services/facility.service";
 import { get as getFT } from "../setup/facilitytypes/services/facility-types.service";
-import { get as getAdminArea } from "@/components/admin-area/admin-area/services/admin-area-services";
+import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { AxiosResponse } from "axios";
 
 export default defineComponent({
@@ -190,17 +210,59 @@ export default defineComponent({
       response: {},
       modalTitle: "",
       headers: [
-        { text: "Name", align: "start", sortable: false, value: "name" },
-        { text: "Code", align: "start", sortable: false, value: "code" },
-
-        {text: "Phone number",align: "start",sortable: false,value: "phone_number"},
-        {text: "Email",align: "start",sortable: false,value: "email"},
-        {text: "Postal address",align: "start",sortable: false,value: "postal_address"},
-        {text: "Facility type",align: "start",sortable: false,value: "facility_type.name"},
-        {text: "Location",align: "start",sortable: false,value: "location.name"},
-        {text: "Active",align: "start",sortable: false,value: "active"},
-
-        { text: "Actions", value: "actions", sortable: false },
+        {
+          text: "Name",
+          align: "start",
+          sortable: false,
+          value: "name",
+        },
+        {
+          text: "Code",
+          align: "start",
+          sortable: false,
+          value: "code",
+        },
+        {
+          text: "Phone number",
+          align: "start",
+          sortable: false,
+          value: "phone_number",
+        },
+        {
+          text: "Email",
+          align: "start",
+          sortable: false,
+          value: "email",
+        },
+        {
+          text: "Postal address",
+          align: "start",
+          sortable: false,
+          value: "postal_address",
+        },
+        {
+          text: "Facility type",
+          align: "start",
+          sortable: false,
+          value: "facility_type.name",
+        },
+        {
+          text: "Location",
+          align: "start",
+          sortable: false,
+          value: "location.name",
+        },
+        {
+          text: "Active",
+          align: "start",
+          sortable: false,
+          value: "active",
+        },
+        {
+          text: "Actions",
+          value: "actions",
+          sortable: false,
+        },
       ],
       modal: false,
       deletemodal: false,
@@ -218,18 +280,18 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      get({per_page:10}).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page,  last_page } = response.data.data
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
-        data.response = {from, to, total, current_page, per_page, last_page};
+        data.response = { from, to, total, current_page, per_page, last_page };
       });
+      getNodes();
       getFacilityType();
-      getAdminstrativeArea();
     });
 
     const searchCategory = (categoryName) => {
-
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
           data.items = response.data.data.data;
@@ -248,20 +310,14 @@ export default defineComponent({
     const openConfirmDialog = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
-      // console.log("delete year", data);
     };
+
     const getFacilityType = () => {
-      getFT({per_page:10}).then((response: AxiosResponse) => {
+      getFT({ per_page: 20 }).then((response: AxiosResponse) => {
         data.facilityTypes = response.data.data.data;
       });
     };
 
-    const getAdminstrativeArea = () => {
-      getAdminArea({per_page:10}).then((response: AxiosResponse) => {
-        data.adminAreas = response.data.data.data;
-      });
-    };
-    
     const cancelDialog = () => {
       data.formData = {} as Facility;
       data.modal = !data.modal;
@@ -308,9 +364,26 @@ export default defineComponent({
         cancelDialog();
       });
     };
-    // watching a getter
 
-    
+    const loadLocationChildren = (location: any) => {
+      data.formData.location_id = location.id;
+      if (!location.children) {
+        if (location.id !== data.node.id) {
+          getChildren(location.id).then((response: AxiosResponse) => {
+            if (response.data.data.children.length) {
+              set(location, "children", response.data.data.children);
+            }
+          });
+        }
+      }
+    };
+
+    const getNodes = (id?: number | string) => {
+      getChildren(id).then((response: AxiosResponse) => {
+        data.node = response.data.data;
+      });
+    };
+
     return {
       data,
       openDialog,
@@ -323,9 +396,15 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       getData,
+      loadLocationChildren,
+      getNodes,
     };
   },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.tree-title {
+  padding: 0 0 5px 0;
+}
+</style>
