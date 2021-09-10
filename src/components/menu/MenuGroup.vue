@@ -15,7 +15,8 @@
         :items="data.items"
         disable-pagination
         hide-default-footer
-        class="elevation-1">
+        class="elevation-1"
+      >
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'AuthMenuGroup')">
             mdi-pencil-box-outline
@@ -41,8 +42,11 @@
           <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row>
-                <v-col cols="12" lg="6" md="6" sm="12">
+                <v-col cols="12" lg="3" md="3" sm="12">
                   <v-text-field label="Icon" v-model="data.formData.icon" required> </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="3" md="3" sm="12">
+                  <v-text-field label="Menu Order" v-model="data.formData.position" required> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
                   <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
@@ -106,6 +110,7 @@ export default defineComponent({
       modalTitle: "",
       headers: [
         { text: "Icon", value: "icon" },
+        { text: "Position", value: "position" },
         { text: "Name", value: "name" },
         { text: "Actions", value: "actions", sortable: false },
       ],
