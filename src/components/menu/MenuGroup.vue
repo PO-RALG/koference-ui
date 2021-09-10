@@ -3,10 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        color="primary"
-        @click="openDialog"
-        :disabled="cant('create', 'Level')">
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'AuthMenuGroup')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -16,55 +13,53 @@
       <v-data-table
         :headers="data.headers"
         :items="data.items"
-        hide-default-footer
         disable-pagination
-        class="elevation-1"
-      >
+        hide-default-footer
+        class="elevation-1">
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)"
-            :disabled="cant('edit', 'Level')">
+          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'AuthMenuGroup')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item)"
-            :disabled="cant('delete', 'Level')">
+          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'AuthMenuGroup')">
             mdi-trash-can-outline
           </v-icon>
         </template>
+        <template v-slot:[`item.icon`]="{ item }">
+          <v-icon class="mr-2">{{ item.icon }}</v-icon>
+        </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" @onPageChange="getData" />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Level`" />
+        <ModalHeader :title="`${data.modalTitle} Menu Group`" />
       </template>
       <template v-slot:body>
         <ModalBody>
           <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row>
-                <v-col cols="12" lg="12" md="12" sm="12">
-                  <v-text-field
-                    label="Name"
-                    v-model="data.formData.name"
-                    required
-                  >
-                  </v-text-field>
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <v-text-field label="Icon" v-model="data.formData.icon" required> </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-                  <v-text-field label="Slug" v-model="data.formData.slug">
-                  </v-text-field>
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <v-text-field label="URL" v-model="data.formData.link" required> </v-text-field>
                 </v-col>
-                <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-                  <v-text-field
-                    label="Position"
-                    v-model="data.formData.position"
-                    required
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <v-select
+                    v-model="data.formData.parent_id"
+                    item-text="name"
+                    :items="data.items"
+                    label="Select Group Parent"
                   >
-                  </v-text-field>
+                  </v-select>
                 </v-col>
               </v-row>
             </v-container>
@@ -83,79 +78,73 @@
     <ConfirmDialog
       @rejectFunction="closeConfirmDialog"
       @acceptFunction="deleteItem"
-      :message="'Are you sure you want to delete this level?'"
+      :message="'Are you sure you want to delete this menu group?'"
       :data="data.item"
       :isOpen="data.isOpen"
-      :title="'Delete Level'"
+      :title="'Delete Menu Group'"
     />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import {
-  get,
-  createLevel,
-  updateLevel,
-  deleteLevel,
-} from "./services/level-services";
-import { Level } from "./types/Level";
+import { AxiosResponse } from "axios";
+import { get, create, update, deleteEntry } from "./services/menu.service";
+import { MenuGroup } from "./types/MenuGroup";
 
 export default defineComponent({
   setup() {
-    let dataItems: Array<Level> = [];
-    let levelData: Level = {
-      id: null,
-      name: "",
-      slug: "",
-      position: null,
-    };
-
+    const TYPE = "MENU_GROUP";
+    let dataItems: Array<MenuGroup> = [];
+    let menuGroupData = {} as MenuGroup;
     let data = reactive({
-      title: "Manage Levels",
+      title: "Manage Menu Groups",
       valid: true,
       isOpen: false,
-      item: null,
+      item: menuGroupData,
       response: {},
       modalTitle: "",
       headers: [
+        { text: "Icon", value: "icon" },
         { text: "Name", value: "name" },
-        { text: "Slug", value: "slug" },
-        { text: "Position", align: "start", sortable: true, value: "position" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       items: dataItems,
-      formData: levelData,
-      params: {
-        total: 100,
-        size: 10,
-      },
-      nameRules: [(v: any) => !!v || "Name is required"],
+      formData: menuGroupData,
+      rows: ["5", "10", "15"],
     });
 
     onMounted(() => {
-      get({}).then((response: any) => {
+      get(TYPE, {}).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
       });
     });
 
     const cancelDialog = () => {
-      data.formData = {} as Level;
+      data.formData = {} as MenuGroup;
       data.modal = !data.modal;
     };
 
     const save = () => {
       if (data.formData.id) {
-        update(data.formData);
+        updateMenuGroup(data.formData);
       } else {
-        create(data.formData);
+        createMenuGroup(data.formData);
       }
     };
 
-    const openDialog = (formData?: Level) => {
+    const getData = (params: any) => {
+      data.response = params;
+      get(TYPE, params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
+        data.items = response.data.data.data;
+      });
+    };
+
+    const openDialog = (formData?: MenuGroup) => {
       if (formData && formData.id) {
         data.formData = formData;
         data.modalTitle = "Update";
@@ -165,38 +154,38 @@ export default defineComponent({
       data.modal = !data.modal;
     };
 
-    const update = (data: Level) => {
-      updateLevel(data).then((response) => {
-        console.log(response.status);
+    const updateMenuGroup = (data: any) => {
+      update(TYPE, data).then((response: AxiosResponse) => {
         if (response.status === 200) {
           cancelDialog();
         }
       });
     };
 
-    const create = (data: Level) => {
-      createLevel(data).then((response) => {
+    const createMenuGroup = (data: MenuGroup) => {
+      create(TYPE, data).then((response: AxiosResponse) => {
         if (response.status === 200) {
           cancelDialog();
         }
       });
     };
 
-    const openConfirmDialog = (item: Level) => {
+    const openConfirmDialog = (item: MenuGroup) => {
       data.item = item;
       data.isOpen = true;
     };
 
     const closeConfirmDialog = () => {
-      data.item = null;
+      data.item = {} as MenuGroup;
       data.isOpen = false;
     };
 
     const deleteItem = (item: number | string) => {
-      deleteLevel(item).then((response) => {
+      const payload = item;
+      deleteEntry(TYPE, payload).then((response: AxiosResponse) => {
         console.log(response);
       });
-      data.item = null;
+      data.item = {} as MenuGroup;
       data.isOpen = false;
     };
 
@@ -208,13 +197,12 @@ export default defineComponent({
       closeConfirmDialog,
       openConfirmDialog,
 
-      updateLevel,
+      getData,
+
+      updateMenuGroup,
       save,
       deleteItem,
     };
   },
 });
 </script>
-
-<style scoped></style>
-<style scoped></style>

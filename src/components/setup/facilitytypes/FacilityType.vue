@@ -17,7 +17,6 @@
         hide-default-footer
         class="elevation-1"
         disable-pagination
-        hide-default-footer
       >
         <template v-slot:top>
           <v-card-title>
@@ -37,20 +36,16 @@
           </v-card-title>
         </template>
 
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
           <v-icon @click="openConfirmDialog(item.id)"> mdi-trash-can-outline </v-icon>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
-    
+
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Facility Type`" />
@@ -61,25 +56,13 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.name"
-                    label="Name"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.name" label="Name" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.code"
-                    label="Code"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.cost_center"
-                    label="Cost center"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.cost_center" label="Cost center" required></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -89,9 +72,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -105,9 +86,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog"
-            >Cancel</v-btn
-          >
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">Cancel</v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -119,21 +98,9 @@
 import { AxiosResponse } from "axios";
 import { FacilityType } from "./types/FacilityType";
 import store from "@/store";
-import {
-  defineComponent,
-  reactive,
-  watch,
-  onMounted,
-  computed,
-} from "@vue/composition-api";
+import { defineComponent, reactive, watch, onMounted, computed } from "@vue/composition-api";
 
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-} from "./services/facility-types.service";
+import { get, create, update, destroy, search } from "./services/facility-types.service";
 
 export default defineComponent({
   name: "FacilityType",
@@ -172,8 +139,7 @@ export default defineComponent({
 
     onMounted(() => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = {
           from,
           to,
@@ -192,7 +158,6 @@ export default defineComponent({
     });
 
     const searchCategory = (categoryName) => {
-
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
           console.log("response data", response.data.data);
@@ -203,8 +168,7 @@ export default defineComponent({
 
     const reloadData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
@@ -275,13 +239,6 @@ export default defineComponent({
         data.items = response.data.data.data;
       });
     };
-    // watching a getter
-
-    watch(
-      () => store.state.snackbar,
-      () => {
-      }
-    );
 
     return {
       data,

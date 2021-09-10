@@ -3,17 +3,38 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('create', 'AuthRole')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
     </v-card-actions>
 
     <v-card>
-      <v-data-table :headers="data.headers" :items="data.items" hide-default-footer class="elevation-1">
-        <template v-slot:item.actions="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
-          <v-icon @click="openConfirmDialog(item)"> mdi-trash-can-outline </v-icon>
+      <v-data-table
+        :headers="data.headers"
+        :items="data.items"
+        hide-default-footer
+        disable-pagination
+        class="elevation-1"
+      >
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon
+            class="mr-2"
+            @click="openDialog(item)"
+            :disabled="cant('edit', 'AuthRole')"
+          >
+            mdi-pencil-box-outline
+          </v-icon>
+          <v-icon
+            @click="openConfirmDialog(item)"
+            :disabled="cant('delete', 'AuthRole')"
+          >
+            mdi-trash-can-outline
+          </v-icon>
           <v-btn
             :disabled="cant('addPermissions', 'AuthRole')"
             color="blue darken-1"
@@ -24,7 +45,11 @@
           </v-btn>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+          :params="data.response"
+          :rows="data.rows"
+          @onPageChange="getData"
+        />
         </template>
       </v-data-table>
     </v-card>
@@ -38,17 +63,33 @@
             <v-container>
               <v-row>
                 <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
+                  <v-text-field
+                    label="Name"
+                    v-model="data.formData.name"
+                    required>
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field label="Description" v-model="data.formData.description" required> </v-text-field>
+                  <v-text-field
+                    label="Description"
+                    v-model="data.formData.description"
+                    required>
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row class="mt-n8">
                 <v-col cols="12" lg="12" md="12" sm="12">
                   <v-label><h5>SELECT ROLE LEVEL</h5></v-label>
-                  <v-radio-group row v-model="data.formData.level_id" :mandatory="true">
-                    <v-radio v-for="row in data.levels" :key="row.id" :label="row.name" :value="row.id"> </v-radio>
+                  <v-radio-group
+                    row
+                    v-model="data.formData.level_id"
+                    :mandatory="true">
+                    <v-radio
+                      v-for="row in data.levels"
+                      :key="row.id"
+                      :label="row.name"
+                      :value="row.id">
+                    </v-radio>
                   </v-radio-group>
                 </v-col>
               </v-row>

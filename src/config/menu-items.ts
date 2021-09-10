@@ -198,7 +198,7 @@ export const MENU_ITEMS = [
       {
         icon: "mdi-animation-outline",
         title: "Menu Groups",
-        state: "/manage-menu-groups",
+        state: "/menu-groups",
         code: 1021,
       },
       {
