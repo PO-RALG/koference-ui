@@ -2,7 +2,7 @@ const facilityRoutes = [
   {
     path: "/manage-facilities",
     component: () => import("../Facility.vue"),
-    meta: { requiresAuth: false, title: "Manage Facility " },
+    meta: { requiresAuth: false, title: "Manage Facilities " },
   },
 ];
 

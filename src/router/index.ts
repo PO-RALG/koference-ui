@@ -21,6 +21,7 @@ import { bankAccountRoutes } from "@/components/setup/back-accounts";
 import { facilityTypeRoutes } from "@/components/setup/facilitytypes";
 import { menuRoutes } from "@/components/menu";
 import { facilityRoutes } from "@/components/facility";
+import { activityRoutes } from "@/components/planningandbudgeting/activity";
 
 Vue.use(VueRouter);
 
@@ -56,6 +57,7 @@ const routes: Array<RouteConfig> = [
       ...facilityTypeRoutes,
       ...menuRoutes,
       ...facilityRoutes,
+      ...activityRoutes,
     ],
   },
 ];

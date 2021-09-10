@@ -1,5 +1,5 @@
 <template>
-  <div class="Facility">
+  <div class="Activity">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -8,7 +8,7 @@
       <v-btn
         color="primary"
         @click="openDialog"
-        :disabled="cant('create', 'Facility')"
+        :disabled="cant('create', 'Activity')"
       >
         <v-icon>mdi-plus</v-icon>
         Add New
@@ -44,13 +44,13 @@
           <v-icon
             class="mr-2"
             @click="openDialog(item)"
-            :disabled="cant('edit', 'Facility')"
+            :disabled="cant('edit', 'Activity')"
           >
             mdi-pencil-box-outline
           </v-icon>
           <v-icon
             @click="openConfirmDialog(item.id)"
-            :disabled="cant('delete', 'Facility')"
+            :disabled="cant('delete', 'Activity')"
           >
             mdi-trash-can-outline
           </v-icon>
@@ -65,9 +65,9 @@
       </v-data-table>
     </v-card>
 
-    <Modal :modal="data.modal" :width="760">
+    <Modal :modal="data.modal" :width="960">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Facility`" />
+        <ModalHeader :title="`${data.modalTitle} Activity`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -76,67 +76,38 @@
               <v-row>
                 <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="data.formData.name"
-                    label="Name"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
                     v-model="data.formData.code"
                     label="Code"
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-autocomplete
-                    v-model="data.formData.facility_type_id"
-                    :items="data.facilityTypes"
-                    item-text="name"
+                  <v-select
+                    v-model="data.formData.project_id"
+                    :items="data.projects"
+                    item-text="description"
                     item-value="id"
-                    label="Facility type"
+                    label="Project"
+                    required
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-autocomplete
+                    v-model="data.formData.sub_budget_class_id"
+                    :items="data.subBudgetClasses"
+                    item-text="description"
+                    item-value="id"
+                    label="Sub budget class"
                     required
                   ></v-autocomplete>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="12" sm="12">
                   <v-text-field
-                    v-model="data.formData.phone_number"
-                    label="Phone number"
+                    v-model="data.formData.description"
+                    label="Description"
+                    required
                   ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.email"
-                    label="Email"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-checkbox
-                    v-model="data.formData.active"
-                    :label="`Active`"
-                  ></v-checkbox>
-                </v-col>
-                <v-col cols="12" md="12">
-                  <v-text-field
-                    v-model="data.formData.postal_address"
-                    label="Postal address"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="12" md="12" class="hierarchy-container">
-                  <v-label v-if="data.formData.location">
-                    <h5 class="tree-title">
-                      SELECTED USER LOCATION ({{ data.formData.location.name }})
-                    </h5>
-                  </v-label>
-                  <v-label v-else>
-                    <h5 class="tree-title">SELECT USER LOCATION</h5>
-                  </v-label>
-                  <TreeBrowser
-                    v-if="data.node"
-                    @onClick="loadLocationChildren"
-                    v-model="data.formData.location"
-                    :node="data.node"
-                  />
                 </v-col>
               </v-row>
             </v-container>
@@ -155,7 +126,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Facility `" />
+        <ModalHeader :title="`Delete Activity `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -173,13 +144,11 @@
 </template>
 
 <script lang="ts">
-import { Facility } from "./types/Facility";
-import { FacilityType } from "../setup/facilitytypes/types/FacilityType";
-import { AdminArea } from "../admin-area/admin-area/types/AdminArea";
+import { Activity } from "./types/Activity";
+import { Project } from "@/components/setup/projects/types/Project";
 import {
   defineComponent,
   reactive,
-  set,
   onMounted,
 } from "@vue/composition-api";
 
@@ -189,21 +158,21 @@ import {
   update,
   destroy,
   search,
-} from "./services/facility.service";
-import { get as getFacilityType } from "../setup/facilitytypes/services/facility-types.service";
-import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
+} from "./services/activity.service";
+import { get as getProject } from "@/components/setup/projects/services/project.service";
+import { get as getSubBudgetClass } from "@/components/setup/sub-budget-classes/services/sub-budget-classes.service";
 import { AxiosResponse } from "axios";
 
 export default defineComponent({
   name: "Facility",
   setup() {
-    let dataItems: Array<Facility> = [];
-    let facilityTypes: Array<FacilityType> = [];
-    let adminAreas: Array<AdminArea> = [];
-    let facilityData: Facility;
+    let dataItems: Array<Activity> = [];
+    let projects: Array<Project> = [];
+    let facilityData: Activity;
+    let subBudgetClasses: [];
 
     let data = reactive({
-      title: "Manage Facilities",
+      title: "Manage Activities",
       valid: true,
       isOpen: false,
       node: null,
@@ -211,52 +180,28 @@ export default defineComponent({
       modalTitle: "",
       headers: [
         {
-          text: "Name",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-        {
           text: "Code",
           align: "start",
           sortable: false,
           value: "code",
         },
         {
-          text: "Phone number",
+          text: "Description",
           align: "start",
           sortable: false,
-          value: "phone_number",
+          value: "description",
         },
         {
-          text: "Email",
+          text: "Project",
           align: "start",
           sortable: false,
-          value: "email",
+          value: "project.name",
         },
         {
-          text: "Postal address",
+          text: "Sub budget class",
           align: "start",
           sortable: false,
-          value: "postal_address",
-        },
-        {
-          text: "Facility type",
-          align: "start",
-          sortable: false,
-          value: "facility_type.name",
-        },
-        {
-          text: "Location",
-          align: "start",
-          sortable: false,
-          value: "location.name",
-        },
-        {
-          text: "Active",
-          align: "start",
-          sortable: false,
-          value: "active",
+          value: "sub_budget_class.name",
         },
         {
           text: "Actions",
@@ -267,7 +212,6 @@ export default defineComponent({
       modal: false,
       deletemodal: false,
       items: dataItems,
-      facilityTypes: facilityTypes,
       itemsToFilter: [],
       formData: facilityData,
       params: {
@@ -276,7 +220,8 @@ export default defineComponent({
       },
       rows: ["10", "20", "50", "100"],
       itemtodelete: "",
-      adminAreas: adminAreas,
+      projects: projects,
+      subBudgetClasses: subBudgetClasses,
     });
 
     onMounted(() => {
@@ -287,8 +232,8 @@ export default defineComponent({
         data.itemsToFilter = response.data.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
       });
-      getNodes();
-      getFacilityTypeData();
+      getProjectData();
+      getSubBudgetClassData();
     });
 
     const searchCategory = (categoryName) => {
@@ -312,19 +257,25 @@ export default defineComponent({
       data.itemtodelete = deleteId;
     };
 
-    const getFacilityTypeData = () => {
-      getFacilityType({ per_page: 20 }).then((response: AxiosResponse) => {
-        data.facilityTypes = response.data.data.data;
+    const getProjectData = () => {
+      getProject({ per_page: 20 }).then((response: AxiosResponse) => {
+        data.projects = response.data.data.data;
       });
     };
 
+    const getSubBudgetClassData = () => {
+      getSubBudgetClass({ per_page: 20 }).then((response: AxiosResponse) => {
+        data.subBudgetClasses = response.data.data.data;
+      });
+    }
+
     const cancelDialog = () => {
-      data.formData = {} as Facility;
+      data.formData = {} as Activity;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as Facility;
+      data.formData = {} as Activity;
       data.deletemodal = false;
     };
 
@@ -336,9 +287,9 @@ export default defineComponent({
 
     const save = () => {
       if (data.formData.id) {
-        updateFacility(data.formData);
+        updateActivity(data.formData);
       } else {
-        createFacility(data.formData);
+        createActivity(data.formData);
       }
     };
 
@@ -347,40 +298,21 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as Facility;
+        data.formData = {} as Activity;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
     };
 
-    const updateFacility = (data: any) => {
+    const updateActivity = (data: any) => {
       update(data).then(() => {
         cancelDialog();
       });
     };
 
-    const createFacility = (data: any) => {
+    const createActivity = (data: any) => {
       create(data).then(() => {
         cancelDialog();
-      });
-    };
-
-    const loadLocationChildren = (location: any) => {
-      data.formData.location_id = location.id;
-      if (!location.children) {
-        if (location.id !== data.node.id) {
-          getChildren(location.id).then((response: AxiosResponse) => {
-            if (response.data.data.children.length) {
-              set(location, "children", response.data.data.children);
-            }
-          });
-        }
-      }
-    };
-
-    const getNodes = (id?: number | string) => {
-      getChildren(id).then((response: AxiosResponse) => {
-        data.node = response.data.data;
       });
     };
 
@@ -389,22 +321,17 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       openConfirmDialog,
-      getFacilityTypeData,
-      updateFacility,
+      getProjectData,
+      updateActivity,
       save,
       remove,
       cancelConfirmDialog,
       searchCategory,
       getData,
-      loadLocationChildren,
-      getNodes,
+      getSubBudgetClassData
     };
   },
 });
 </script>
 
-<style scoped>
-.tree-title {
-  padding: 0 0 5px 0;
-}
-</style>
+<style scoped></style>
