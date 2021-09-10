@@ -57,6 +57,14 @@
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
+              <v-icon v-bind="attrs" v-on="on" @click="addSubAccount(item.id)"
+                >mdi-plus</v-icon
+              >
+            </template>
+            <span>Add GL</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
               <v-icon
                 v-bind="attrs"
                 v-on="on"
@@ -66,18 +74,10 @@
             </template>
             <span>Delete</span>
           </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" @click="addSubAccount(item.id)"
-                >mdi-plus</v-icon
-              >
-            </template>
-            <span>Add GL</span>
-          </v-tooltip>
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="600">
+    <Modal :modal="data.modal" :width="620">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Bank Accounts`" />
       </template>
@@ -87,28 +87,28 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="3">
                   <v-text-field
                     v-model="data.formData.branch"
                     label="Branch"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="3">
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="3">
                   <v-text-field
                     v-model="data.formData.bank"
                     label="Bank"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="3">
                   <v-text-field
                     v-model="data.formData.number"
                     label="Number"
@@ -116,7 +116,7 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="12">
                   <v-autocomplete
                     v-model="data.formData.gfs_code_id"
                     label="Gfs Codes"
@@ -164,13 +164,16 @@
 
     <Modal :modal="data.filterdialog" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`Select GFS`" />
+        <ModalHeader :title="`Select Gfscode to be mapped`" />
       </template>
       <template v-slot:body>
         <ModalBody>
-          <v-radio-group v-model="data.formData.gfs_code_id">
+          <v-radio-group
+            v-if="data.formData"
+            v-model="data.formData.gfs_code_id"
+          >
             <v-radio
-              v-for="n in data.gfscodes"
+              v-for="n in newGfsCodes"
               :key="n.code"
               :label="n.name"
               :value="n.id"
@@ -187,6 +190,33 @@
           <v-btn color="green darken-1" text @click="resumeDialog"
             >Select</v-btn
           >
+        </ModalFooter>
+      </template>
+    </Modal>
+    <Modal :modal="data.addGl" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Select SBC`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-row class="pt-12">
+            <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+              <DualMultiSelect
+                :label="'Filter SBC'"
+                :items="data.subbudgetclasses"
+                :title="'Select SBC'"
+                :selectedItems="data.selectedSbc"
+                @filterFunction="filterSbc"
+                v-model="data.selectedSbc"
+              />
+            </v-col>
+          </v-row>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="canceladdGl">Cancel</v-btn>
+          <v-btn color="green darken-1" text @click="saveGl">Add</v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -212,6 +242,7 @@ import {
   search,
 } from "./services/back-accounts.service";
 import { gfscodes } from "../../setup/gfs-codes/service/gfs.service";
+import { subbudgetclasses } from "../../setup/sub-budget-classes/services/sub-budget-classes.service";
 
 export default defineComponent({
   name: "BackAccount",
@@ -262,6 +293,9 @@ export default defineComponent({
       itemtodelete: "",
       gfscodes: [],
       filterdialog: false,
+      addGl: false,
+      selectedSbc: [],
+      subbudgetclasses: [],
     });
 
     onMounted(() => {
@@ -283,7 +317,18 @@ export default defineComponent({
     const newGfsCodes = computed(() => {
       return data.gfscodes.map((data) => ({
         ...data,
-        name: data.name,
+        name: data.bank_account.length
+          ? data.name +
+            " " +
+            "[" +
+            " This Gfscode already maped to" +
+            " " +
+            data.bank_account[0].bank +
+            " Account Number" +
+            " " +
+            data.bank_account[0].number +
+            " ]"
+          : data.name,
       }));
     });
 
@@ -396,8 +441,24 @@ export default defineComponent({
     };
 
     const addSubAccount = () => {
-      console.log("addDialog");
+      subbudgetclasses({ per_page: 2000 }).then((response) => {
+        data.addGl = true;
+        data.subbudgetclasses = response.data.data.data;
+      });
     };
+
+    const canceladdGl = () => {
+      data.addGl = false;
+    };
+    const filterSbc = (term: string) => {
+      let result = data.subbudgetclasses.filter((item) =>
+        item.code.toLowerCase().includes(term.toLowerCase())
+      );
+      data.subbudgetclasses = result;
+      return data.subbudgetclasses;
+    };
+
+    const saveGl = () => {};
 
     watch(
       () => store.state.snackbar,
@@ -407,6 +468,7 @@ export default defineComponent({
     );
 
     return {
+      filterSbc,
       data,
       addSubAccount,
       openDialog,
@@ -423,6 +485,8 @@ export default defineComponent({
       openFilterDialog,
       cancelFilterDialog,
       resumeDialog,
+      canceladdGl,
+      saveGl,
     };
   },
 });
