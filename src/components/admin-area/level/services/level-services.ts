@@ -2,7 +2,7 @@ import axios from "axios";
 const API = "/api/v1/admin-area-levels";
 
 const get = async (payload: any) => {
-  return await axios.get(`${API}`, payload);
+  return await axios.get(`${API}`, { params: payload });
 };
 
 const find = async (id: string | number) => {

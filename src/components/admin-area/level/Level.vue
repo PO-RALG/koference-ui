@@ -3,10 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        color="primary"
-        @click="openDialog"
-        :disabled="cant('create', 'Level')">
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Level')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -21,14 +18,10 @@
         class="elevation-1"
       >
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)"
-            :disabled="cant('edit', 'Level')">
+          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Level')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item)"
-            :disabled="cant('delete', 'Level')">
-            mdi-trash-can-outline
-          </v-icon>
+          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'Level')"> mdi-trash-can-outline </v-icon>
         </template>
         <template v-slot:footer>
           <Paginate :params="data.response" @onPageChange="getData" />
@@ -45,26 +38,15 @@
             <v-container>
               <v-row>
                 <v-col cols="12" lg="12" md="12" sm="12">
-                  <v-text-field
-                    label="Name"
-                    v-model="data.formData.name"
-                    required
-                  >
-                  </v-text-field>
+                  <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-                  <v-text-field label="Slug" v-model="data.formData.slug">
-                  </v-text-field>
+                  <v-text-field label="Slug" v-model="data.formData.slug"> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-                  <v-text-field
-                    label="Position"
-                    v-model="data.formData.position"
-                    required
-                  >
-                  </v-text-field>
+                  <v-text-field label="Position" v-model="data.formData.position" required> </v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -93,12 +75,8 @@
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import {
-  get,
-  createLevel,
-  updateLevel,
-  deleteLevel,
-} from "./services/level-services";
+import { AxiosResponse } from "axios";
+import { get, createLevel, updateLevel, deleteLevel } from "./services/level-services";
 import { Level } from "./types/Level";
 
 export default defineComponent({
@@ -200,6 +178,14 @@ export default defineComponent({
       data.isOpen = false;
     };
 
+    const getData = (params: any) => {
+      data.response = params;
+      get(params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
+        data.items = response.data.data.data;
+      });
+    };
+
     return {
       data,
 
@@ -211,10 +197,10 @@ export default defineComponent({
       updateLevel,
       save,
       deleteItem,
+      getData,
     };
   },
 });
 </script>
 
-<style scoped></style>
 <style scoped></style>
