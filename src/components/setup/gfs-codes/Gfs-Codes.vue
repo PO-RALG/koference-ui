@@ -16,6 +16,8 @@
         :items="data.items"
         :single-expand="true"
         class="elevation-1"
+        disable-pagination
+        hide-default-footer
       >
         <template v-slot:top>
           <v-card-title>
@@ -66,6 +68,13 @@
             </template>
             <span>Delete</span>
           </v-tooltip>
+        </template>
+        <template v-slot:footer>
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -140,6 +149,7 @@
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from "axios";
 import { GfsCodes } from "./types/";
 import store from "@/store";
 import {
@@ -182,27 +192,22 @@ export default defineComponent({
       items: dataItems,
       itemsToFilter: [],
       formData: gfsCategoryData,
-      params: {
-        total: 10,
-        size: 10,
-      },
-      itemtodelete: "",
       documentcategories: [],
       gfscategories: [],
+      rows: ["10", "20", "50", "100"],
+      itemtodelete: "",
+      response: {},
     });
 
     onMounted(() => {
-      // make api call
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data to render", response.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
-      gfscategories().then((response: any) => {
+      gfscategories({ per_page: 2000 }).then((response: any) => {
         console.log("gfscode categories", response.data.data.data);
         data.gfscategories = response.data.data.data;
       });
@@ -226,12 +231,10 @@ export default defineComponent({
     };
 
     const reloadData = () => {
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data", response.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
     };
@@ -316,6 +319,13 @@ export default defineComponent({
       });
     });
 
+    const getData = (params: any) => {
+      data.response = params;
+      get(params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
+        data.items = response.data.data.data;
+      });
+    };
     watch(
       () => store.state.snackbar,
       () => {
@@ -336,6 +346,7 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       imageUrl,
+      getData,
     };
   },
 });

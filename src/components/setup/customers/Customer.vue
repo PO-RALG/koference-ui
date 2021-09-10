@@ -84,28 +84,28 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.email"
                     label="Email"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.phone"
                     label="Phone"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.address"
                     label="Address"
@@ -119,7 +119,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
           <v-btn color="blue darken-1" text @click="save"
             >{{ data.modalTitle }}
           </v-btn>
@@ -139,7 +139,7 @@
           <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
             >Cancel</v-btn
           >
-          <v-btn color="blue darken-1" text @click="remove">Yes</v-btn>
+          <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
     </Modal>

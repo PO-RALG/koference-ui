@@ -47,10 +47,10 @@ var get = function (payload) { return __awaiter(void 0, void 0, void 0, function
     });
 }); };
 exports.get = get;
-var gfscategories = function () { return __awaiter(void 0, void 0, void 0, function () {
+var gfscategories = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gfs-categories")];
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gfs-categories", { params: payload })];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

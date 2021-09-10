@@ -66,6 +66,14 @@
             </template>
             <span>Delete</span>
           </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon v-bind="attrs" v-on="on" @click="addSubAccount(item.id)"
+                >mdi-plus</v-icon
+              >
+            </template>
+            <span>Add GL</span>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-card>
@@ -82,14 +90,14 @@
                 <v-col cols="12" md="4">
                   <v-text-field
                     v-model="data.formData.branch"
-                    label="branch"
+                    label="Branch"
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-text-field
                     v-model="data.formData.name"
-                    label="name"
+                    label="Name"
                     required
                   ></v-text-field>
                 </v-col>
@@ -100,7 +108,7 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.number"
                     label="Number"
@@ -108,16 +116,18 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-autocomplete
                     v-model="data.formData.gfs_code_id"
                     label="Gfs Codes"
-                    :items="data.gfscodes"
-                    :item-text="'code'"
+                    :items="newGfsCodes"
+                    readonly
+                    :item-text="'name'"
                     item-value="id"
                     :item-divider="true"
                     required
                     clearable
+                    @click="openFilterDialog"
                   ></v-autocomplete>
                 </v-col>
               </v-row>
@@ -148,6 +158,35 @@
             >Cancel</v-btn
           >
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+
+    <Modal :modal="data.filterdialog" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Select GFS`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-radio-group v-model="data.formData.gfs_code_id">
+            <v-radio
+              v-for="n in data.gfscodes"
+              :key="n.code"
+              :label="n.name"
+              :value="n.id"
+              :disabled="n.bank_account.length != 0"
+            ></v-radio>
+          </v-radio-group>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelFilterDialog"
+            >Cancel</v-btn
+          >
+          <v-btn color="green darken-1" text @click="resumeDialog"
+            >Select</v-btn
+          >
         </ModalFooter>
       </template>
     </Modal>
@@ -206,7 +245,7 @@ export default defineComponent({
           text: "Gfs Code",
           align: "start",
           sortable: false,
-          value: "gfs_code_id",
+          value: "gfs_code.name",
         },
 
         { text: "Actions", value: "actions", sortable: false },
@@ -222,6 +261,7 @@ export default defineComponent({
       },
       itemtodelete: "",
       gfscodes: [],
+      filterdialog: false,
     });
 
     onMounted(() => {
@@ -237,12 +277,14 @@ export default defineComponent({
       });
       gfscodes().then((response: any) => {
         console.log("gfs codes", response.data.data.data);
-        data.gfscodes = response.data.data.data;
+        data.gfscodes = response.data.data;
       });
     });
-
-    computed(() => {
-      return "test";
+    const newGfsCodes = computed(() => {
+      return data.gfscodes.map((data) => ({
+        ...data,
+        name: data.name,
+      }));
     });
 
     const searchCategory = (categoryName) => {
@@ -267,6 +309,10 @@ export default defineComponent({
         console.log("data", response.data.data);
         data.items = response.data.data.data;
       });
+      gfscodes().then((response: any) => {
+        console.log("gfs codes", response.data.data.data);
+        data.gfscodes = response.data.data;
+      });
     };
 
     const deleteSubBudgetClass = (deleteId: any) => {
@@ -288,6 +334,11 @@ export default defineComponent({
     const cancelConfirmDialog = () => {
       data.formData = {} as BackAccount;
       data.deletemodal = false;
+      reloadData();
+    };
+    const cancelFilterDialog = () => {
+      data.filterdialog = false;
+      reloadData();
     };
 
     const remove = () => {
@@ -334,6 +385,20 @@ export default defineComponent({
       });
     };
 
+    const openFilterDialog = () => {
+      data.filterdialog = true;
+      data.modal = false;
+    };
+
+    const resumeDialog = () => {
+      data.modal = true;
+      data.filterdialog = false;
+    };
+
+    const addSubAccount = () => {
+      console.log("addDialog");
+    };
+
     watch(
       () => store.state.snackbar,
       () => {
@@ -343,6 +408,7 @@ export default defineComponent({
 
     return {
       data,
+      addSubAccount,
       openDialog,
       cancelDialog,
       deleteSubBudgetClass,
@@ -353,6 +419,10 @@ export default defineComponent({
       remove,
       cancelConfirmDialog,
       searchCategory,
+      newGfsCodes,
+      openFilterDialog,
+      cancelFilterDialog,
+      resumeDialog,
     };
   },
 });
