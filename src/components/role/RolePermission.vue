@@ -13,35 +13,17 @@
       </v-btn>
     </v-card-actions>
     <v-layout row wrap v-if="permissions">
-      <v-flex
-        xs2
-        v-for="permission in permissions"
-        :key="permission.id"
-        class="mb-5"
-      >
-        <PermissionList
-          :item="permission"
-          :selected="data.selected"
-          @itemSelected="addToSelection"
-        />
+      <v-flex xs2 v-for="permission in permissions" :key="permission.id" class="mb-5">
+        <PermissionList :item="permission" :selected="data.selected" @itemSelected="addToSelection" />
       </v-flex>
     </v-layout>
   </div>
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  onMounted,
-  computed,
-} from "@vue/composition-api";
+import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import {
-  find,
-  getPermissions,
-  addPermissions as assignPermissions,
-} from "./services/role-services";
+import { find, getPermissions, addPermissions as assignPermissions } from "./services/role-services";
 import PermissionList from "./PermissionList.vue";
 import router from "@/router";
 
@@ -90,7 +72,9 @@ export default defineComponent({
         permissions: data.selected.map((val) => val.id),
       };
       assignPermissions(payload).then((response) => {
-        console.log(response);
+        if (response.status === 200) {
+          router.push({ path: `/roles` });
+        }
       });
     };
 

@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import store from "@/store";
+import axios from "axios";
 
 import { userRoutes } from "@/components/user";
 import { roleRoutes } from "@/components/role";
@@ -18,6 +19,7 @@ import { fundingSourceRoutes } from "@/components/setup/funding-sources";
 import { subBudgetClassRoutes } from "@/components/setup/sub-budget-classes";
 import { bankAccountRoutes } from "@/components/setup/back-accounts";
 import { facilityTypeRoutes } from "@/components/setup/facilitytypes";
+import { menuRoutes } from "@/components/menu";
 import { facilityRoutes } from "@/components/facility";
 
 Vue.use(VueRouter);
@@ -52,6 +54,7 @@ const routes: Array<RouteConfig> = [
       ...bankAccountRoutes,
       ...roleRoutes,
       ...facilityTypeRoutes,
+      ...menuRoutes,
       ...facilityRoutes,
     ],
   },
@@ -65,7 +68,13 @@ const router = new VueRouter({
 
 router.beforeEach((to: any, from: any, next: any) => {
   const loginStatus = store.getters["Auth/getLoginStatus"];
-  const loggedIn = loginStatus? loginStatus.isLoggedIn : false;
+  const loggedIn = loginStatus ? loginStatus.isLoggedIn : false;
+
+  const currentUser = store.getters["Auth/getCurrentUser"];
+  currentUser ? (axios.defaults.headers.common["Authorization"] = `Bearer ${currentUser.token}`) : null;
+
+  axios.defaults.headers.common["Accept"] = `application/json`;
+  axios.defaults.headers.common["Content-Type"] = `application/json`;
 
   // Use next tick to handle router history correctly
   // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609

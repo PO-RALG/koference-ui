@@ -1,21 +1,20 @@
 import axios from "axios";
 import store from "@/store";
+import _ from "lodash";
 
 const authenticate = async (payload: any) => {
   return axios.post("/api/v1/login", payload);
 };
 
 const setUser = async (payload: any) => {
-  let permissions = [];
+  // rename menu to menu_groups and menu's menu to children
+  const data = payload.menu.map(({ menu, ...item }) => ({ ...item, children: menu }));
 
-  payload.roles.forEach((role: any) => {
-    permissions = [...permissions, role.permisions];
-  });
+  const sorted = _.sortBy(data, "position");
 
-  const flattened = permissions.flat();
-  //const newPermissions = [...new Set(flattened)];
-  payload.permissions = flattened;
-
+  payload.menu_groups = data;
+  // delete menu
+  delete payload.menu;
   const user = JSON.stringify(payload);
   store.dispatch("Auth/LOGIN", user);
 };

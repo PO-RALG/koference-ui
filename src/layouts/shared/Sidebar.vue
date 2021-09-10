@@ -30,24 +30,24 @@
     </template>
     <v-list dense class="menu-container">
       <perfect-scrollbar>
-        <template v-for="menu in MENU_ITEMS">
+        <template v-for="menu in user.menu_groups">
           <v-row v-if="menu.heading" :key="menu.heading" align="center">
             <v-col cols="6">
               <v-subheader v-if="!menu.children">
-                {{ menu.heading }}
+                {{ menu.name }}
               </v-subheader>
             </v-col>
           </v-row>
           <v-list-group
             v-else-if="menu.children"
-            :key="menu.title"
+            :key="menu.name"
             v-model="menu.model"
-            :prepend-icon="menu.model ? menu.icon : menu['icon-alt']"
+            :prepend-icon="(menu.icon && menu.children) ? menu.icon : menu['icon-alt']"
             :append-icon="'mdi mdi-chevron-down'"
           >
             <template v-slot:activator>
               <v-list-item-content>
-                <v-list-item-title>{{ menu.title }}</v-list-item-title>
+                <v-list-item-title>{{ menu.name }}</v-list-item-title>
               </v-list-item-content>
             </template>
             <v-list-item class="pl-8" v-for="(child, i) in menu.children" :key="i" link router-link :to="child.state">
@@ -55,7 +55,7 @@
                 <v-icon small medium>{{ child.icon }}</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>{{ child.title }}</v-list-item-title>
+                <v-list-item-title>{{ child.name }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list-group>
@@ -64,7 +64,7 @@
               <v-icon>{{ menu.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title>{{ menu.title }}</v-list-item-title>
+              <v-list-item-title>{{ menu.name }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </template>

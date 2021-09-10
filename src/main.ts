@@ -24,13 +24,6 @@ const snackbar = {
   message: "",
 };
 
-const currentUser = store.getters["Auth/getCurrentUser"];
-
-currentUser ? (axios.defaults.headers.common["Authorization"] = `Bearer ${currentUser.token}`) : null;
-
-axios.defaults.headers.common["Accept"] = `application/json`;
-axios.defaults.headers.common["Content-Type"] = `application/json`;
-
 const requestHandler = (request: any) => {
   return request;
 };

@@ -3,21 +3,32 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'AdminArea')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
     </v-card-actions>
 
     <v-card>
-      <v-data-table :headers="data.headers" :items="data.items" hide-default-footer class="elevation-1">
-        <template v-slot:item.actions="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
-          <v-icon @click="openConfirmDialog(item)"> mdi-trash-can-outline </v-icon>
+      <v-data-table
+        :headers="data.headers"
+        :items="data.items"
+        hide-default-footer
+        disable-pagination
+        class="elevation-1"
+      >
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'AdminArea')">
+            mdi-pencil-box-outline
+          </v-icon>
+          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'AdminArea')">
+            mdi-trash-can-outline
+          </v-icon>
+        </template>
+        <template v-slot:footer>
+          <Paginate :params="data.response" @onPageChange="getData" />
         </template>
       </v-data-table>
-      <Paginate :params="data.response" @onPageChange="getData" />
-
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
@@ -84,22 +95,10 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  onMounted,
-  computed,
-  set,
-} from "@vue/composition-api";
+import { defineComponent, reactive, onMounted, computed, set } from "@vue/composition-api";
 
 import { AxiosResponse } from "axios";
-import {
-  get,
-  createArea,
-  updateArea,
-  deleteArea,
-  getChildren,
-} from "./services/admin-area-services";
+import { get, createArea, updateArea, deleteArea, getChildren } from "./services/admin-area-services";
 
 import { get as getLevels } from "../level/services/level-services";
 import { Level } from "../level/types/Level";
