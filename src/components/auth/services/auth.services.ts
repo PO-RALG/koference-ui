@@ -6,6 +6,11 @@ const authenticate = async (payload: any) => {
 };
 
 const setUser = async (payload: any) => {
+  // rename menu to menu_groups and menu's menu to children
+  const data = payload.menu.map(({menu, ...item}) => ({...item, children: menu}));
+  payload.menu_groups = data;
+  // delete menu
+  delete(payload.menu);
   const user = JSON.stringify(payload);
   store.dispatch("Auth/LOGIN", user);
 };
