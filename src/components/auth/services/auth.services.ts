@@ -12,7 +12,7 @@ const setUser = async (payload: any) => {
 
   const sorted = _.sortBy(data, "position");
 
-  payload.menu_groups = data;
+  payload.menu_groups = sorted;
   // delete menu
   delete payload.menu;
   const user = JSON.stringify(payload);

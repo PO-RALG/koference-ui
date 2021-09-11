@@ -73,13 +73,13 @@ export default defineComponent({
       };
       assignPermissions(payload).then((response) => {
         if (response.status === 200) {
-          router.push({ path: `/roles` });
+          router.push({ path: `/manage-roles` });
         }
       });
     };
 
     const goBack = () => {
-      router.push({ path: `/roles` });
+      router.push({ path: `/manage-roles` });
     };
 
     let permissions = computed(() => {

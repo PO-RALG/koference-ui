@@ -59,6 +59,7 @@
                     :items="data.roles"
                     :label="'Filter Roles'"
                     :title="'Add Roles'"
+                    :column-name="data.columnName"
                     :selectedItems="data.selectedRoles"
                     @filterFunction="filterRoles"
                     v-model="data.selectedRoles"
@@ -126,6 +127,7 @@ export default defineComponent({
       selectedRoles: [],
       node: null,
       item: userData,
+      columnName: "name",
       response: {},
       roles: [],
       modalTitle: "",

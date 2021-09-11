@@ -10,13 +10,7 @@
     </v-card-actions>
 
     <v-card>
-      <v-data-table
-        :headers="data.headers"
-        :items="data.items"
-        disable-pagination
-        hide-default-footer
-        class="elevation-1"
-      >
+      <v-data-table :headers="data.headers" :items="items" disable-pagination hide-default-footer class="elevation-1">
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'AuthMenuItem')">
             mdi-pencil-box-outline
@@ -188,6 +182,7 @@ export default defineComponent({
         { text: "Name", value: "name" },
         { text: "Code", value: "code" },
         { text: "State", value: "state" },
+        { text: "Menu Group", value: "group" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
@@ -340,10 +335,17 @@ export default defineComponent({
       return data.categories;
     });
 
-    watch([selectedCategory, categories], (newValue) => {
-      let [selected, categories] = newValue;
-      if (categories.length > 0 && !!selected) {
-        let { id, category } = categories.find((c) => c.category == selected);
+    const items = computed(() => {
+      return data.items.map((item: any) => ({
+        ...item,
+        group: item.group ? `[ ${item.group.name} ]` : ["NO GROUP"],
+      }));
+    });
+
+    watch([selectedCategory, data.categories], (newValue) => {
+      let [selected] = newValue;
+      if (data.categories.length > 0 && !!selected) {
+        let { id, category } = data.categories.find((c) => c.category == selected);
         data.selectedCategory = category;
         getPermissionsByResource(id, category).then((response) => {
           data.category = response.data.data;
@@ -358,6 +360,7 @@ export default defineComponent({
 
     return {
       data,
+      items,
 
       openDialog,
       cancelDialog,

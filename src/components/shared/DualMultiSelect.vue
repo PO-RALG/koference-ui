@@ -93,6 +93,11 @@ export default defineComponent({
     selectedItems: {
       type: Array,
     },
+    itemName: {
+      type: String,
+      required: false,
+      default: "name",
+    },
   },
 
   setup(props, context) {

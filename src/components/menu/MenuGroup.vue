@@ -17,13 +17,26 @@
         hide-default-footer
         class="elevation-1"
       >
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'AuthMenuGroup')">
-            mdi-pencil-box-outline
-          </v-icon>
-          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'AuthMenuGroup')">
-            mdi-trash-can-outline
-          </v-icon>
+        <template v-slot:body="props">
+          <draggable :list="props.items" tag="tbody" @change="updatePosition">
+            <tr v-for="(group, index) in props.items" :key="index">
+              <td>
+                <v-icon small class="page__grab-icon">mdi-arrow-all</v-icon>
+              </td>
+              <td>{{ index + 1 }}</td>
+              <td><v-icon small>{{ group.icon }}</v-icon></td>
+              <td>{{ group.position }}</td>
+              <td>{{ group.name }}</td>
+            <td>
+              <v-icon class="mr-2" @click="openDialog(group)" :disabled="cant('edit', 'AuthMenuGroup')">
+                mdi-pencil-box-outline
+              </v-icon>
+              <v-icon @click="openConfirmDialog(group)" :disabled="cant('delete', 'AuthMenuGroup')">
+                mdi-trash-can-outline
+              </v-icon>
+            </td>
+            </tr>
+          </draggable>
         </template>
         <template v-slot:[`item.icon`]="{ item }">
           <v-icon class="mr-2">{{ item.icon }}</v-icon>
@@ -93,10 +106,14 @@
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
+import draggable from "vuedraggable";
 import { get, create, update, deleteEntry } from "./services/menu.service";
 import { MenuGroup } from "./types/MenuGroup";
 
 export default defineComponent({
+  components: {
+    draggable,
+  },
   setup() {
     const TYPE = "MENU_GROUP";
     let dataItems: Array<MenuGroup> = [];
@@ -109,6 +126,8 @@ export default defineComponent({
       response: {},
       modalTitle: "",
       headers: [
+        { text: "", sortable: false },
+        { text: "#", sortable: false },
         { text: "Icon", value: "icon" },
         { text: "Position", value: "position" },
         { text: "Name", value: "name" },
@@ -117,7 +136,7 @@ export default defineComponent({
       modal: false,
       items: dataItems,
       formData: menuGroupData,
-      rows: ["5", "10", "15"],
+      rows: ["10", "20", "30", "40", "50", "100"],
     });
 
     onMounted(() => {
@@ -194,6 +213,12 @@ export default defineComponent({
       data.isOpen = false;
     };
 
+    const updatePosition = (item: any) => {
+      let { newIndex, element } = item.moved;
+      element.position = newIndex + 1;
+      update(TYPE, element);
+    };
+
     return {
       data,
 
@@ -207,7 +232,14 @@ export default defineComponent({
       updateMenuGroup,
       save,
       deleteItem,
+      updatePosition,
     };
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.page__grab-icon {
+  cursor: move;
+}
+</style>
