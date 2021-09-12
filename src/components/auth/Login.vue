@@ -27,6 +27,16 @@
                   <!-- <v-col cols="12" md="4" sm="12"> -->
                   <v-card-text class>
                     <img :src="data.coat" class="login-logo" />
+                    <v-alert
+                      v-if="$route.query.redirect"
+                      color="warning"
+                      border="left"
+                      elevation="2"
+                      colored-border
+                      icon="mdi-alert-outline"
+                    >
+                      You must be logged in to access {{ $route.query.redirect }}
+                    </v-alert>
                     <h2 class="text-center pa-6 login-header" color="primary">LOGIN to your account</h2>
                     <v-form ref="form" v-model="data.valid">
                       <v-text-field
@@ -74,14 +84,12 @@ import Vue from "vue";
 import { reactive } from "@vue/composition-api";
 import { authenticate, setUser } from "./services";
 import { AxiosResponse } from "axios";
-import router from '@/router'
+import router from "@/router";
 
 export default Vue.extend({
-  props: {
-    source: String,
-  },
-
-  setup() {
+  props: ["source", "query"],
+  setup(props) {
+    const query = props.query;
     let data = reactive({
       model: 0,
       valid: true,
@@ -107,9 +115,10 @@ export default Vue.extend({
       };
 
       authenticate(payload).then((response: AxiosResponse) => {
+        let redirectUrl = query["redirect"] || "/";
         if (response.status === 200) {
           setUser(response.data.data.user);
-          router.push("/");
+          router.push(redirectUrl);
         } else {
           router.push("/login");
         }
@@ -124,7 +133,7 @@ export default Vue.extend({
 });
 </script>
 
-<style>
+<style scoped>
 .coat {
   width: 100px;
   height: 100px;
@@ -167,5 +176,8 @@ export default Vue.extend({
   font-weight: bold;
   font-size: 18px;
   text-transform: uppercase;
+}
+.v-sheet {
+  padding: 10px;
 }
 </style>

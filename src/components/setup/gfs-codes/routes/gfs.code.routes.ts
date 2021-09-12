@@ -1,15 +1,15 @@
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
-const facilityRoutes = [
+const gfsCodesRoutes = [
   {
-    path: "/manage-facilities",
-    component: () => import("../Facility.vue"),
+    path: "/gfs-codes",
+    component: () => import(/* webpackChunkName: "GfsCode" */ "../GfsCode.vue"),
     meta: {
       requiresAuth: true,
-      title: "Manage Facilities",
+      title: "Manage GFS Codes",
       middleware: [setTitle, validateToken, setHeaders, auth],
     },
   },
 ];
 
-export default facilityRoutes;
+export default gfsCodesRoutes;
