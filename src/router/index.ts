@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
+import VueRouteMiddleware from "vue-route-middleware";
 import store from "@/store";
-import axios from "axios";
 
 import { userRoutes } from "@/components/user";
 import { roleRoutes } from "@/components/role";
@@ -11,7 +11,7 @@ import { adminAreaRoutes } from "@/components/admin-area/admin-area";
 import { financialYearRoutes } from "@/components/setup/financialyears";
 import { fundTypesRoutes } from "@/components/setup/fund-types";
 import { gfsCategoriesRoutes } from "@/components/setup/gfs-categories";
-import { ProjectRoutes } from "@/components/setup/projects";
+import { projectRoutes } from "@/components/setup/projects";
 import { customersRoutes } from "@/components/setup/customers";
 import { documentCategoryRoutes } from "@/components/setup/documentcategories";
 import { documentRoutes } from "@/components/setup/document";
@@ -22,20 +22,22 @@ import { facilityTypeRoutes } from "@/components/setup/facilitytypes";
 import { menuRoutes } from "@/components/menu";
 import { facilityRoutes } from "@/components/facility";
 
-Vue.use(VueRouter);
+// import route middlewares
+import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
-const DEFAULT_TITLE = "FFARS - Facility Financial Accounting & Reporting System";
+Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
     path: "/login",
     component: () => import("@/components/auth/Login.vue"),
-    meta: { title: "Login" },
+    meta: { title: "Login", middleware: [setTitle] },
+    props: (route) => ({ query: route.query }),
   },
   {
     path: "/",
     component: () => import("@/layouts/Home.vue"),
-    meta: { title: "Dashboard" },
+    meta: { title: "Dashboard", middleware: [setTitle] },
     children: [
       ...userRoutes,
       ...financialYearRoutes,
@@ -45,7 +47,7 @@ const routes: Array<RouteConfig> = [
       ...adminAreaRoutes,
       ...fundTypesRoutes,
       ...gfsCategoriesRoutes,
-      ...ProjectRoutes,
+      ...projectRoutes,
       ...customersRoutes,
       ...documentCategoryRoutes,
       ...documentRoutes,
@@ -66,32 +68,24 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to: any, from: any, next: any) => {
+// middlewares
+const isLoggedIn = (to, _, next) => {
   const loginStatus = store.getters["Auth/getLoginStatus"];
   const loggedIn = loginStatus ? loginStatus.isLoggedIn : false;
-
   const currentUser = store.getters["Auth/getCurrentUser"];
-  currentUser ? (axios.defaults.headers.common["Authorization"] = `Bearer ${currentUser.token}`) : null;
-
-  axios.defaults.headers.common["Accept"] = `application/json`;
-  axios.defaults.headers.common["Content-Type"] = `application/json`;
-
-  // Use next tick to handle router history correctly
-  // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
-
-  Vue.nextTick(() => {
-    document.title = `${to.meta.title} - Facility Financial Accounting & Reporting System (FFARS)` || DEFAULT_TITLE;
-  });
 
   if (to.matched.some((record: any) => record.meta.requiresAuth)) {
-    if (loggedIn) {
+    if (loggedIn && currentUser) {
+      console.log("user is logged in");
       next();
     } else {
-      next("/login");
+      console.log("redirect to login page");
     }
   } else {
     next();
   }
-});
+};
+
+router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
 
 export default router;
