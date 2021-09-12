@@ -33,6 +33,9 @@ const errorHandler = (error: any) => {
     case 500:
       show500ErrorSnackbar(error.response);
       break;
+    default:
+      showOtheErrorSnackbar(error.response);
+      break;
   }
   return Promise.reject({ ...error });
 };
@@ -53,7 +56,17 @@ const successHandler = (response: any) => {
 };
 
 const show500ErrorSnackbar = (response: any) => {
-  snackbar.message = `500: ${response.statusText}`;
+  const _tokenExpiredMessage = "Token has expired";
+  snackbar.message = `${response.data.message}`;
+  console.log("response text", snackbar.message);
+  snackbar.show = true;
+  snackbar.color = "red";
+  snackbar.icon = " mdi-alert";
+};
+
+const showOtheErrorSnackbar = (response: any) => {
+  snackbar.message = `${response.data.message}`;
+  console.log("response text", snackbar.message);
   snackbar.show = true;
   snackbar.color = "red";
   snackbar.icon = " mdi-alert";
