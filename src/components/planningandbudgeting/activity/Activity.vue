@@ -27,10 +27,10 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Name"
+                label="Filter by Code"
                 @change="searchCategory($event)"
                 :items="data.itemsToFilter"
-                :item-text="'name'"
+                :item-text="'code'"
                 :item-divider="true"
                 return-object
                 required
@@ -74,33 +74,68 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="2">
                   <v-text-field
                     v-model="data.formData.code"
                     label="Code"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="5">
                   <v-select
                     v-model="data.formData.project_id"
                     :items="data.projects"
-                    item-text="description"
                     item-value="id"
                     label="Project"
                     required
                   >
+                  <template v-slot:selection="{ item }">
+                    {{ item.code }} - {{ item.description }}
+                  </template>
+                  <template v-slot:item="{ item }">
+                    {{ item.code }} - {{ item.description }}
+                  </template>
+                  <template v-slot:prepend-item>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-text-field
+                          v-model="data.searchTerm"
+                          placeholder="Search"
+                          @input="searchProjects"
+                        ></v-text-field>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-divider></v-divider>
+                  </template>
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="4">
-                  <v-autocomplete
+                <v-col cols="12" md="5">
+                  <v-select
                     v-model="data.formData.sub_budget_class_id"
                     :items="data.subBudgetClasses"
-                    item-text="description"
                     item-value="id"
                     label="Sub budget class"
                     required
-                  ></v-autocomplete>
+                  >
+                    <template v-slot:selection="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
+                    <template v-slot:prepend-item>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-text-field
+                            v-model="data.searchTerm"
+                            placeholder="Search"
+                            @input="searchSubBudgetClasses"
+                          ></v-text-field>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-divider></v-divider>
+                    </template>
+                  </v-select>
                 </v-col>
                 <v-col cols="12" md="12" sm="12">
                   <v-text-field
@@ -133,10 +168,10 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog"
             >Cancel</v-btn
           >
-          <v-btn color="blue darken-1" text @click="remove">Yes</v-btn>
+          <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -146,11 +181,7 @@
 <script lang="ts">
 import { Activity } from "./types/Activity";
 import { Project } from "@/components/setup/projects/types/Project";
-import {
-  defineComponent,
-  reactive,
-  onMounted,
-} from "@vue/composition-api";
+import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 
 import {
   get,
@@ -195,13 +226,13 @@ export default defineComponent({
           text: "Project",
           align: "start",
           sortable: false,
-          value: "project.name",
+          value: "project.code",
         },
         {
           text: "Sub budget class",
           align: "start",
           sortable: false,
-          value: "sub_budget_class.name",
+          value: "sub_budget_class.code",
         },
         {
           text: "Actions",
@@ -222,9 +253,14 @@ export default defineComponent({
       itemtodelete: "",
       projects: projects,
       subBudgetClasses: subBudgetClasses,
+      searchTerm: "",
     });
 
     onMounted(() => {
+      getTableData();
+    });
+
+    const getTableData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } =
           response.data.data;
@@ -232,9 +268,7 @@ export default defineComponent({
         data.itemsToFilter = response.data.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
       });
-      getProjectData();
-      getSubBudgetClassData();
-    });
+    };
 
     const searchCategory = (categoryName) => {
       if (categoryName != null) {
@@ -258,16 +292,16 @@ export default defineComponent({
     };
 
     const getProjectData = () => {
-      getProject({ per_page: 20 }).then((response: AxiosResponse) => {
+      getProject({ per_page: 10 }).then((response: AxiosResponse) => {
         data.projects = response.data.data.data;
       });
     };
 
     const getSubBudgetClassData = () => {
-      getSubBudgetClass({ per_page: 20 }).then((response: AxiosResponse) => {
+      getSubBudgetClass({ per_page: 10 }).then((response: AxiosResponse) => {
         data.subBudgetClasses = response.data.data.data;
       });
-    }
+    };
 
     const cancelDialog = () => {
       data.formData = {} as Activity;
@@ -282,6 +316,7 @@ export default defineComponent({
     const remove = () => {
       destroy(data.itemtodelete).then(() => {
         data.deletemodal = false;
+        getTableData();
       });
     };
 
@@ -297,9 +332,15 @@ export default defineComponent({
       if (formData.id) {
         data.formData = formData;
         data.modalTitle = "Update";
+        data.searchTerm = "";
+        searchProjects(formData.project.code);
+        searchSubBudgetClasses(formData.sub_budget_class.code);
       } else {
         data.formData = {} as Activity;
         data.modalTitle = "Create";
+        data.searchTerm = "";
+        getProjectData();
+        getSubBudgetClassData();
       }
       data.modal = !data.modal;
     };
@@ -307,13 +348,33 @@ export default defineComponent({
     const updateActivity = (data: any) => {
       update(data).then(() => {
         cancelDialog();
+        getTableData();
       });
     };
 
     const createActivity = (data: any) => {
       create(data).then(() => {
         cancelDialog();
+        getTableData();
       });
+    };
+
+    const searchProjects = (item) => {
+      let regSearchTerm = item ? item : data.searchTerm;
+      getProject({ per_page: 10, regSearch: regSearchTerm }).then(
+        (response: AxiosResponse) => {
+          data.projects = response.data.data.data;
+        }
+      );
+    };
+
+    const searchSubBudgetClasses = (item) => {
+      let regSearchTerm = item ? item : data.searchTerm;
+      getSubBudgetClass({ per_page: 10, regSearch: regSearchTerm }).then(
+        (response: AxiosResponse) => {
+          data.subBudgetClasses = response.data.data.data;
+        }
+      );
     };
 
     return {
@@ -328,7 +389,9 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       getData,
-      getSubBudgetClassData
+      getSubBudgetClassData,
+      searchProjects,
+      searchSubBudgetClasses,
     };
   },
 });

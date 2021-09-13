@@ -89,14 +89,32 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-autocomplete
+                  <v-select
                     v-model="data.formData.facility_type_id"
                     :items="data.facilityTypes"
-                    item-text="name"
                     item-value="id"
                     label="Facility type"
                     required
-                  ></v-autocomplete>
+                  >
+                    <template v-slot:selection="{ item }">
+                      {{ item.code }} - {{ item.name }}
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.code }} - {{ item.name }}
+                    </template>
+                    <template v-slot:prepend-item>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-text-field
+                            v-model="data.searchTerm"
+                            placeholder="Search"
+                            @input="searchFacilityTypes"
+                          ></v-text-field>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-divider></v-divider>
+                    </template>
+                  </v-select>
                 </v-col>
                 <v-col cols="12" md="4">
                   <v-text-field
@@ -162,10 +180,10 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog"
             >Cancel</v-btn
           >
-          <v-btn color="blue darken-1" text @click="remove">Yes</v-btn>
+          <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -277,9 +295,15 @@ export default defineComponent({
       rows: ["10", "20", "50", "100"],
       itemtodelete: "",
       adminAreas: adminAreas,
+      searchTerm: "",
     });
 
     onMounted(() => {
+      getTableData();
+      getNodes();
+    });
+
+    const getTableData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } =
           response.data.data;
@@ -287,9 +311,7 @@ export default defineComponent({
         data.itemsToFilter = response.data.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
       });
-      getNodes();
-      getFacilityTypeData();
-    });
+    };
 
     const searchCategory = (categoryName) => {
       if (categoryName != null) {
@@ -313,7 +335,7 @@ export default defineComponent({
     };
 
     const getFacilityTypeData = () => {
-      getFacilityType({ per_page: 20 }).then((response: AxiosResponse) => {
+      getFacilityType({ per_page: 10 }).then((response: AxiosResponse) => {
         data.facilityTypes = response.data.data.data;
       });
     };
@@ -331,6 +353,7 @@ export default defineComponent({
     const remove = () => {
       destroy(data.itemtodelete).then(() => {
         data.deletemodal = false;
+        getTableData();
       });
     };
 
@@ -346,9 +369,13 @@ export default defineComponent({
       if (formData.id) {
         data.formData = formData;
         data.modalTitle = "Update";
+        data.searchTerm = "";
+        searchFacilityTypes(formData.facility_type.code);
       } else {
         data.formData = {} as Facility;
         data.modalTitle = "Create";
+        data.searchTerm = "";
+        getFacilityTypeData();
       }
       data.modal = !data.modal;
     };
@@ -356,12 +383,14 @@ export default defineComponent({
     const updateFacility = (data: any) => {
       update(data).then(() => {
         cancelDialog();
+        getTableData();
       });
     };
 
     const createFacility = (data: any) => {
       create(data).then(() => {
         cancelDialog();
+        getTableData();
       });
     };
 
@@ -384,6 +413,15 @@ export default defineComponent({
       });
     };
 
+    const searchFacilityTypes = (item) => {
+      let regSearchTerm = item ? item : data.searchTerm;
+      getFacilityType({ per_page: 10, regSearch: regSearchTerm }).then(
+        (response: AxiosResponse) => {
+          data.facilityTypes = response.data.data.data;
+        }
+      );
+    };
+
     return {
       data,
       openDialog,
@@ -398,6 +436,7 @@ export default defineComponent({
       getData,
       loadLocationChildren,
       getNodes,
+      searchFacilityTypes,
     };
   },
 });
