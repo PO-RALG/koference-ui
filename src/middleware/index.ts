@@ -24,22 +24,23 @@ const setTitle = async (to, _, next) => {
 
 const validateToken = async (to, _, next) => {
   const currentUser = await getCurrentUser();
-  const token = currentUser.token ? currentUser.token : null;
+  const token = currentUser ? currentUser.token : null;
   try {
     const { exp } = VueJwtDecode.decode(token);
     if (Date.now() >= exp * 1000) {
-      console.log("token has expired");
+      //console.log("token has expired");
       const message = "Token has expired";
       // show login pop up
-      store.dispatch("Snackbar/SET_SNACKBAR", message);
+      store.dispatch("Snackbar/setSnackBar", message);
       next();
     } else {
-      console.log("token is still valid");
+      //console.log("token is still valid");
+      store.getters["Snackbar/getSnackBar"];
       next();
     }
   } catch (error) {
     // return error in production env
-    console.log(error, "error from decoding token");
+    //console.log(error, "error from decoding token");
     return false;
   }
 };
@@ -90,4 +91,4 @@ const auth = async (to, _, next) => {
   }
 };
 
-export { setTitle, validateToken, setHeaders, auth };
+export { setTitle, validateToken, setHeaders, auth, getCurrentUser, getLoginStatus };

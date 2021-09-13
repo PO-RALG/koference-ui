@@ -2,7 +2,7 @@ import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
 const gfsCodesRoutes = [
   {
-    path: "/gfs-codes",
+    path: "/manage-gfs-codes",
     component: () => import(/* webpackChunkName: "GfsCode" */ "../GfsCode.vue"),
     meta: {
       requiresAuth: true,

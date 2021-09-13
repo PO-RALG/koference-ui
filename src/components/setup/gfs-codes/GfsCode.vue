@@ -11,12 +11,7 @@
       </v-btn>
     </v-card-actions>
     <v-card>
-      <v-data-table
-        :headers="data.headers"
-        :items="data.items"
-        :single-expand="true"
-        class="elevation-1"
-      >
+      <v-data-table :headers="data.headers" :items="data.items" :single-expand="true" class="elevation-1">
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
@@ -44,25 +39,13 @@
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openDialog(item)"
-              >
-                mdi-pencil-box-outline
-              </v-icon>
+              <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
             </template>
             <span>Edit</span>
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="deleteFinancialYear(item.id)"
-                >mdi-trash-can-outline</v-icon
-              >
+              <v-icon v-bind="attrs" v-on="on" @click="deleteFinancialYear(item.id)">mdi-trash-can-outline</v-icon>
             </template>
             <span>Delete</span>
           </v-tooltip>
@@ -80,18 +63,10 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.name"
-                    label="Name"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.name" label="Name" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.code"
-                    label="Code"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12">
                   <v-autocomplete
@@ -113,9 +88,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -129,9 +102,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
-            >Cancel</v-btn
-          >
+          <v-btn color="green darken-1" text @click="cancelConfirmDialog">Cancel</v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -142,14 +113,7 @@
 <script lang="ts">
 import { GfsCodes } from "./types/";
 import store from "@/store";
-import {
-  defineComponent,
-  reactive,
-  watch,
-  onMounted,
-  computed,
-  ref,
-} from "@vue/composition-api";
+import { defineComponent, reactive, watch, onMounted, computed, ref } from "@vue/composition-api";
 
 import { get, create, update, destroy, search } from "./service/gfs.service";
 import { gfscategories } from "../gfs-categories/service/gfs-categories.service";
@@ -198,12 +162,10 @@ export default defineComponent({
         size: 10,
       };
       get(params).then((response: any) => {
-        console.log("data to render", response.data.data);
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
       gfscategories().then((response: any) => {
-        console.log("gfscode categories", response.data.data.data);
         data.gfscategories = response.data.data.data;
       });
     });
@@ -213,11 +175,8 @@ export default defineComponent({
     });
 
     const searchCategory = (categoryName) => {
-      console.log("argument", categoryName);
-
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
-          console.log("response data", response);
           data.items = response.data.data.data;
         });
       } else {
@@ -231,7 +190,6 @@ export default defineComponent({
         size: 10,
       };
       get(params).then((response: any) => {
-        console.log("data", response.data.data);
         data.items = response.data.data.data;
       });
     };
@@ -243,7 +201,7 @@ export default defineComponent({
     };
     const getFinancialYear = () => {
       get(data).then((response) => {
-        console.log("data", response.data);
+        // console.log("data", response.data);
       });
     };
 
@@ -258,7 +216,6 @@ export default defineComponent({
     };
 
     const remove = () => {
-      console.log("delete data with id", data.itemtodelete);
       destroy(data.itemtodelete).then(() => {
         reloadData();
         data.deletemodal = false;
@@ -266,7 +223,6 @@ export default defineComponent({
     };
 
     const save = () => {
-      console.log("Form Data", data.formData);
       if (data.formData.id) {
         updateFinancialYear(data.formData);
       } else {
@@ -287,7 +243,6 @@ export default defineComponent({
 
     const updateFinancialYear = (data: any) => {
       update(data).then((response) => {
-        console.log("Updated data", response.data);
         reloadData();
         cancelDialog();
       });
@@ -295,7 +250,6 @@ export default defineComponent({
 
     const createUser = (data: any) => {
       create(data).then((response) => {
-        console.log("Created data", response.data);
         reloadData();
         cancelDialog();
       });
@@ -312,14 +266,13 @@ export default defineComponent({
 
       fileReader.addEventListener("load", () => {
         imageUrl.value = fileReader.result;
-        console.log("setup", imageUrl.value);
       });
     });
 
     watch(
       () => store.state.snackbar,
       () => {
-        console.log("datazzzzz", store.getters.getSnackBar);
+        // console.log("datazzzzz", store.getters.getSnackBar);
       }
     );
 

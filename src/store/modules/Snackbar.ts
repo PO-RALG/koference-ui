@@ -9,7 +9,7 @@ const getters = {
 };
 
 const actions = {
-  setSnackbar({ commit }, snackbar) {
+  setSnackBar({ commit }, snackbar) {
     snackbar.showing = true;
     snackbar.color = snackbar.color || "success";
     commit("SET_SNACKBAR", snackbar);
@@ -28,4 +28,4 @@ export default {
   getters,
   actions,
   mutations,
-}
+};
