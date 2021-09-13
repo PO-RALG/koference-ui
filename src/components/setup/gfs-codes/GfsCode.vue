@@ -152,7 +152,14 @@
 import { AxiosResponse } from "axios";
 import { GfsCodes } from "./types/";
 import store from "@/store";
-import { defineComponent, reactive, watch, onMounted, computed, ref } from "@vue/composition-api";
+import {
+  defineComponent,
+  reactive,
+  watch,
+  onMounted,
+  computed,
+  ref,
+} from "@vue/composition-api";
 
 import { get, create, update, destroy, search } from "./service/gfs.service";
 import { gfscategories } from "../gfs-categories/service/gfs-categories.service";
@@ -221,18 +228,10 @@ export default defineComponent({
     };
 
     const reloadData = () => {
-<<<<<<< HEAD:src/components/setup/gfs-codes/Gfs-Codes.vue
       get({ per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } =
           response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
-=======
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
->>>>>>> origin/develop:src/components/setup/gfs-codes/GfsCode.vue
         data.items = response.data.data.data;
       });
     };
