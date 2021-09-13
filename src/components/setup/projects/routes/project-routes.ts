@@ -2,7 +2,7 @@ import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
 const projectRoutes = [
   {
-    path: "/manage-project",
+    path: "/manage-projects",
     component: () => import(/* webpackChunkName: "Project" */ "../Project.vue"),
     meta: {
       requiresAuth: true,
