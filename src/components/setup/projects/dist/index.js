@@ -8,4 +8,4 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
 }));
 exports.__esModule = true;
 var project_routes_1 = require("./routes/project-routes");
-__createBinding(exports, project_routes_1, "default", "ProjectRoutes");
+__createBinding(exports, project_routes_1, "default", "projectRoutes");

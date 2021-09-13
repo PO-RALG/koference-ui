@@ -9,6 +9,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 exports.__esModule = true;
 var vue_1 = require("vue");
 var vue_router_1 = require("vue-router");
+var vue_route_middleware_1 = require("vue-route-middleware");
 var store_1 = require("@/store");
 var user_1 = require("@/components/user");
 var role_1 = require("@/components/role");
@@ -26,19 +27,23 @@ var funding_sources_1 = require("@/components/setup/funding-sources");
 var sub_budget_classes_1 = require("@/components/setup/sub-budget-classes");
 var back_accounts_1 = require("@/components/setup/back-accounts");
 var facilitytypes_1 = require("@/components/setup/facilitytypes");
+var menu_1 = require("@/components/menu");
+var facility_1 = require("@/components/facility");
+// import route middlewares
+var middleware_1 = require("@/middleware");
 vue_1["default"].use(vue_router_1["default"]);
-var DEFAULT_TITLE = "FFARS - Facility Financial Accounting & Reporting System";
 var routes = [
     {
         path: "/login",
         component: function () { return Promise.resolve().then(function () { return require("@/components/auth/Login.vue"); }); },
-        meta: { title: "Login" }
+        meta: { title: "Login", middleware: [middleware_1.setTitle] },
+        props: function (route) { return ({ query: route.query }); }
     },
     {
         path: "/",
         component: function () { return Promise.resolve().then(function () { return require("@/layouts/Home.vue"); }); },
-        meta: { title: "Dashboard" },
-        children: __spreadArrays(user_1.userRoutes, financialyears_1.financialYearRoutes, gfs_codes_1.gfsCodesRoutes, user_1.userRoutes, level_1.levelRoutes, admin_area_1.adminAreaRoutes, fund_types_1.fundTypesRoutes, gfs_categories_1.gfsCategoriesRoutes, projects_1.ProjectRoutes, customers_1.customersRoutes, documentcategories_1.documentCategoryRoutes, document_1.documentRoutes, funding_sources_1.fundingSourceRoutes, sub_budget_classes_1.subBudgetClassRoutes, back_accounts_1.bankAccountRoutes, role_1.roleRoutes, facilitytypes_1.facilityTypeRoutes)
+        meta: { title: "Dashboard", middleware: [middleware_1.setTitle] },
+        children: __spreadArrays(user_1.userRoutes, financialyears_1.financialYearRoutes, gfs_codes_1.gfsCodesRoutes, user_1.userRoutes, level_1.levelRoutes, admin_area_1.adminAreaRoutes, fund_types_1.fundTypesRoutes, gfs_categories_1.gfsCategoriesRoutes, projects_1.projectRoutes, customers_1.customersRoutes, documentcategories_1.documentCategoryRoutes, document_1.documentRoutes, funding_sources_1.fundingSourceRoutes, sub_budget_classes_1.subBudgetClassRoutes, back_accounts_1.bankAccountRoutes, role_1.roleRoutes, facilitytypes_1.facilityTypeRoutes, menu_1.menuRoutes, facility_1.facilityRoutes)
     },
 ];
 var router = new vue_router_1["default"]({
@@ -46,25 +51,23 @@ var router = new vue_router_1["default"]({
     base: process.env.BASE_URL,
     routes: routes
 });
-router.beforeEach(function (to, from, next) {
-    var loggedIn = store_1["default"].getters["Auth/isLoggedIn"] === "YES" ? true : false;
-    // Use next tick to handle router history correctly
-    // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
-    vue_1["default"].nextTick(function () {
-        document.title =
-            to.meta.title + " - Facility Financial Accounting & Reporting System (FFARS)" ||
-                DEFAULT_TITLE;
-    });
+// middlewares
+var isLoggedIn = function (to, _, next) {
+    var loginStatus = store_1["default"].getters["Auth/getLoginStatus"];
+    var loggedIn = loginStatus ? loginStatus.isLoggedIn : false;
+    var currentUser = store_1["default"].getters["Auth/getCurrentUser"];
     if (to.matched.some(function (record) { return record.meta.requiresAuth; })) {
-        if (loggedIn) {
+        if (loggedIn && currentUser) {
+            console.log("user is logged in");
             next();
         }
         else {
-            next("/login");
+            console.log("redirect to login page");
         }
     }
     else {
         next();
     }
-});
+};
+router.beforeEach(vue_route_middleware_1["default"]({ setTitle: middleware_1.setTitle, validateToken: middleware_1.validateToken, setHeaders: middleware_1.setHeaders, auth: middleware_1.auth }));
 exports["default"] = router;
