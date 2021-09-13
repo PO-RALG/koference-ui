@@ -1,9 +1,15 @@
-const DocumentCategoryRoutes = [
+import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+
+const documentCategoryRoutes = [
   {
-    path: "/manage-document-categories",
-    component: () => import("../DocumentCategory.vue"),
-    meta: { requiresAuth: false, title: "Manage Document Categories" },
+    path: "/document-categories",
+    component: () => import(/* webpackChunkName: "DocumentCategory" */ "../DocumentCategory.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "Manage Document Categories",
+      middleware: [setTitle, validateToken, setHeaders, auth],
+    },
   },
 ];
 
-export default DocumentCategoryRoutes;
+export default documentCategoryRoutes;

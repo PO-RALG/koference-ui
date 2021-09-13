@@ -1,19 +1,33 @@
+import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+
 const menuRoutes = [
   {
-    path: "/menu-items",
-    component: () => import("../MenuItem.vue"),
-    meta: { requiresAuth: true, title: "Manage Menu Items" },
+    path: "/manage-menu-items",
+    component: () => import(/* webpackChunkName: "MenuItem" */ "../MenuItem.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "Manage Menu Items",
+      middleware: [setTitle, validateToken, setHeaders, auth],
+    },
   },
   {
-    path: "/menu-groups",
-    component: () => import("../MenuGroup.vue"),
-    meta: { requiresAuth: true, title: "Manage Menu Groups" },
+    path: "/manage-menu-groups",
+    component: () => import(/* webpackChunkName: "MenuGroup" */ "../MenuGroup.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "Manage Menu Groups",
+      middleware: [setTitle, validateToken, setHeaders, auth],
+    },
   },
   {
-    path: "/menu-items/:id/add-permissions",
+    path: "/manage-menu-items/:id/add-permissions",
     name: "/roles/:id/add-permissions",
-    component: () => import("../MenuItemPermission.vue"),
-    meta: { requiresAuth: true, title: "Add Menu Item Permissions" },
+    //component: () => import("../MenuItemPermission.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "Add Menu Item Permissions",
+      middleware: [setTitle, validateToken, setHeaders, auth],
+    },
     props: true,
   },
 ];

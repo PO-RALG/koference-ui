@@ -1,1 +1,1 @@
-export { default as subBudgetClassRoutes } from "./routes/sub-budget-classes-routes";
+export { default as subBudgetClassRoutes } from "./routes/sub.budgetclass.routes";

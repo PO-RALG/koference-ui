@@ -4,6 +4,7 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 import Auth from "./modules/Auth";
+import Snackbar from "./modules/Snackbar";
 
 export default new Vuex.Store({
   state: {
@@ -27,5 +28,6 @@ export default new Vuex.Store({
   },
   modules: {
     Auth,
+    Snackbar,
   },
 });

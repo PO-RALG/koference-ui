@@ -115,10 +115,10 @@ export default defineComponent({
       return data.categories;
     });
 
-    watch([selectedCategory, categories], (newValue) => {
-      let [selected, categories] = newValue;
-      if (categories.length > 0 && !!selected) {
-        let { id, category } = categories.find((c) => c.category == selected);
+    watch([selectedCategory], (newValue) => {
+      let [selected] = newValue;
+      if (data.categories.length > 0 && !!selected) {
+        let { id, category } = data.categories.find((c) => c.category == selected);
         data.selectedCategory = category;
         getPermissionsByResource(id, category).then((response) => {
           data.category = response.data.data;
@@ -143,13 +143,13 @@ export default defineComponent({
 
       assignPermissions(payload).then((response: AxiosResponse) => {
         if (response.status == 200) {
-          router.push({ path: `/menu-items` });
+          router.push({ path: `/manage-menu-items` });
         }
       });
     };
 
     const goBack = () => {
-      router.push({ path: `/menu-items` });
+      router.push({ path: `/manage-menu-items` });
     };
 
     const getPermissions = (val) => {
