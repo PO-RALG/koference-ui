@@ -1,7 +1,7 @@
 const loginRoutes = [
   {
     path: "/login",
-    component:() => import("../Login.vue"),
+    component: () => import(/* webpackChunkName: "Login" */ "../Login.vue"),
     meta: { requiresAuth: false, title: "Login" },
   },
 ];

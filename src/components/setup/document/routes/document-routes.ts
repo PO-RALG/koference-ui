@@ -1,8 +1,14 @@
+import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+
 const DocumentRoutes = [
   {
-    path: "/manage-document",
-    component: () => import("../Document.vue"),
-    meta: { requiresAuth: false, title: "Manage Document" },
+    path: "/manage-documents",
+    component: () => import(/* webpackChunkName: "Document" */ "../Document.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "Manage Documents",
+      middleware: [setTitle, validateToken, setHeaders, auth],
+    },
   },
 ];
 

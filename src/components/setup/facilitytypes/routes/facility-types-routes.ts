@@ -1,9 +1,15 @@
-const FacilityTypeRoutes = [
+import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+
+const facilityTypeRoutes = [
   {
     path: "/manage-facility-types",
-    component: () => import("../FacilityType.vue"),
-    meta: { requiresAuth: false, title: "Manage Facility Type" },
+    component: () => import(/* webpackChunkName: "FacilityType" */ "../FacilityType.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "Manage Facility Types",
+      middleware: [setTitle, validateToken, setHeaders, auth],
+    },
   },
 ];
 
-export default FacilityTypeRoutes;
+export default facilityTypeRoutes;

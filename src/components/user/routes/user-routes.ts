@@ -1,8 +1,14 @@
+import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+
 const userRoutes = [
   {
     path: "/manage-users",
-    component: () => import("../User.vue"),
-    meta: { requiresAuth: false, title: "Manage Users" },
+    component: () => import(/* webpackChunkName: "User" */ "../User.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "Manage Users",
+      middleware: [setTitle, validateToken, setHeaders, auth],
+    },
   },
 ];
 

@@ -1,21 +1,25 @@
 import Vue from "vue";
+import axios from "axios";
+import VueJwtDecode from "vue-jwt-decode";
+import VueAxios from "vue-axios";
+import PerfectScrollbar from "vue2-perfect-scrollbar";
+import VueCompositionAPI from "@vue/composition-api";
+
 import App from "./App.vue";
 import router from "./router";
 import store from "@/store";
 import vuetify from "./plugins/vuetify";
-import axios from "axios";
-import VueAxios from "vue-axios";
+
 import "@/mixins";
 
 import "./assets/main.scss";
 import "./components/shared";
 
-import PerfectScrollbar from "vue2-perfect-scrollbar";
-import VueCompositionAPI from "@vue/composition-api";
-
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
+
+let cancelSource = axios.CancelToken.source();
 
 const snackbar = {
   show: false,
@@ -25,6 +29,7 @@ const snackbar = {
 };
 
 const requestHandler = (request: any) => {
+  request.cancelToken = cancelSource.token;
   return request;
 };
 
@@ -32,6 +37,9 @@ const errorHandler = (error: any) => {
   switch (error.response.status) {
     case 500:
       show500ErrorSnackbar(error.response);
+      break;
+    default:
+      showOtheErrorSnackbar(error.response);
       break;
   }
   return Promise.reject({ ...error });
@@ -53,14 +61,46 @@ const successHandler = (response: any) => {
 };
 
 const show500ErrorSnackbar = (response: any) => {
-  snackbar.message = `500: ${response.statusText}`;
+  const _tokenExpiredMessage = "Token has expired";
+  snackbar.message = `${response.data.message}`;
+  console.log("response text", snackbar.message);
+  snackbar.show = true;
+  snackbar.color = "red";
+  snackbar.icon = " mdi-alert";
+};
+
+const showOtheErrorSnackbar = (response: any) => {
+  snackbar.message = `${response.data.message}`;
+  console.log("response text", snackbar.message);
   snackbar.show = true;
   snackbar.color = "red";
   snackbar.icon = " mdi-alert";
 };
 
 //  Add interceptors
-axios.interceptors.request.use((request) => requestHandler(request));
+axios.interceptors.request.use((request) => {
+  if (request.url === "/api/v1/login") {
+    return request;
+  } else {
+    const currentUser = store.getters["Auth/getCurrentUser"];
+    const token = currentUser.token ? currentUser.token : null;
+    try {
+      const { exp } = token ? VueJwtDecode.decode(token) : null;
+      const tokenHasExpired = Date.now() >= exp * 1000;
+      if (tokenHasExpired) {
+        //console.log("in main: token has expired?", tokenHasExpired);
+        cancelSource.cancel("in main: token has expired?");
+        //console.log("the request", request);
+        return false;
+      } else {
+        //console.log("in main: token has expired?", tokenHasExpired);
+        return requestHandler(request);
+      }
+    } catch (error) {
+      return Promise.reject({ ...error });
+    }
+  }
+});
 
 axios.interceptors.response.use(
   (response) => successHandler(response),

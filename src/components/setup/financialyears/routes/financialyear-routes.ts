@@ -1,9 +1,15 @@
-const FinancialYearRoutes = [
+import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+
+const financialYearRoutes = [
   {
     path: "/manage-financial-years",
-    component: () => import("../FinancialYear.vue"),
-    meta: { requiresAuth: false, title: "Manage Financial Years" },
+    component: () => import(/* webpackChunkName: "FinancialYear" */ "../FinancialYear.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "Manage Financial Years",
+      middleware: [setTitle, validateToken, setHeaders, auth],
+    },
   },
 ];
 
-export default FinancialYearRoutes;
+export default financialYearRoutes;

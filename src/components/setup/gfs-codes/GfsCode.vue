@@ -152,14 +152,7 @@
 import { AxiosResponse } from "axios";
 import { GfsCodes } from "./types/";
 import store from "@/store";
-import {
-  defineComponent,
-  reactive,
-  watch,
-  onMounted,
-  computed,
-  ref,
-} from "@vue/composition-api";
+import { defineComponent, reactive, watch, onMounted, computed, ref } from "@vue/composition-api";
 
 import { get, create, update, destroy, search } from "./service/gfs.service";
 import { gfscategories } from "../gfs-categories/service/gfs-categories.service";
@@ -218,11 +211,8 @@ export default defineComponent({
     });
 
     const searchCategory = (categoryName) => {
-      console.log("argument", categoryName);
-
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
-          console.log("response data", response);
           data.items = response.data.data.data;
         });
       } else {
@@ -231,10 +221,18 @@ export default defineComponent({
     };
 
     const reloadData = () => {
+<<<<<<< HEAD:src/components/setup/gfs-codes/Gfs-Codes.vue
       get({ per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } =
           response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
+=======
+      let params: any = {
+        total: 10,
+        size: 10,
+      };
+      get(params).then((response: any) => {
+>>>>>>> origin/develop:src/components/setup/gfs-codes/GfsCode.vue
         data.items = response.data.data.data;
       });
     };
@@ -246,7 +244,7 @@ export default defineComponent({
     };
     const getFinancialYear = () => {
       get(data).then((response) => {
-        console.log("data", response.data);
+        // console.log("data", response.data);
       });
     };
 
@@ -261,7 +259,6 @@ export default defineComponent({
     };
 
     const remove = () => {
-      console.log("delete data with id", data.itemtodelete);
       destroy(data.itemtodelete).then(() => {
         reloadData();
         data.deletemodal = false;
@@ -269,7 +266,6 @@ export default defineComponent({
     };
 
     const save = () => {
-      console.log("Form Data", data.formData);
       if (data.formData.id) {
         updateFinancialYear(data.formData);
       } else {
@@ -290,7 +286,6 @@ export default defineComponent({
 
     const updateFinancialYear = (data: any) => {
       update(data).then((response) => {
-        console.log("Updated data", response.data);
         reloadData();
         cancelDialog();
       });
@@ -298,7 +293,6 @@ export default defineComponent({
 
     const createUser = (data: any) => {
       create(data).then((response) => {
-        console.log("Created data", response.data);
         reloadData();
         cancelDialog();
       });
@@ -315,7 +309,6 @@ export default defineComponent({
 
       fileReader.addEventListener("load", () => {
         imageUrl.value = fileReader.result;
-        console.log("setup", imageUrl.value);
       });
     });
 
@@ -329,7 +322,7 @@ export default defineComponent({
     watch(
       () => store.state.snackbar,
       () => {
-        console.log("datazzzzz", store.getters.getSnackBar);
+        // console.log("datazzzzz", store.getters.getSnackBar);
       }
     );
 
