@@ -9,7 +9,7 @@
       <v-col cols="12" lg="5" md="4" sm="12">
         <select class="dual-multselect" multiple>
           <option
-            v-for="item in items"
+            v-for="item in entries"
             @click="highlightItem(item)"
             @dblclick="addItem(item)"
             :value="item"
@@ -222,9 +222,14 @@ export default defineComponent({
     });
 
     // computed
-    const filteredData = computed(() => {
+    const entries = computed(() => {
       return props.items.map((item) => {
-        //item["itemName"] = item[props.columnName];
+        if ("name" in item) {
+          return item;
+        } else {
+          item["name"] = item[props.itemName];
+        }
+        return item;
       });
     });
 
@@ -257,7 +262,7 @@ export default defineComponent({
       clearSearch,
 
       // computed
-      filteredData,
+      entries,
 
       //lifecycle hooks
       onMounted,
