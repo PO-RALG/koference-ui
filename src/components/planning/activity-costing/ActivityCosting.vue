@@ -1,14 +1,11 @@
 <template>
-  <div class="Activity">
+  <div class="Activity Costing">
     <Snackbar />
 
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Activity')">
-        <v-icon>mdi-plus</v-icon>
-        Add New
-      </v-btn>
+      
     </v-card-actions>
     <v-card>
       <v-data-table
@@ -35,15 +32,6 @@
             </v-col>
           </v-card-title>
         </template>
-
-        <template v-slot:item.actions="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Activity')">
-            mdi-pencil-box-outline
-          </v-icon>
-          <v-icon @click="openConfirmDialog(item.id)" :disabled="cant('delete', 'Activity')">
-            mdi-trash-can-outline
-          </v-icon>
-        </template>
         <template v-slot:footer>
           <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
@@ -52,7 +40,7 @@
 
     <Modal :modal="data.modal" :width="960">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Activity`" />
+        <ModalHeader :title="`${data.modalTitle} Activity Costing`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -144,25 +132,19 @@
 </template>
 
 <script lang="ts">
-import { Activity } from "./types/Activity";
-import { Project } from "@/components/setup/project/types/Project";
+import { ActivityCosting } from "./types/ActivityCosting";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-
-import { get, create, update, destroy, search } from "./services/activity.service";
-import { get as getProject } from "@/components/setup/project/services/project.service";
-import { get as getSubBudgetClass } from "@/components/setup/sub-budget-class/services/sub-budget-classes.service";
+import { get, create, update, destroy, search } from "./services/activity-costing.service";
 import { AxiosResponse } from "axios";
 
 export default defineComponent({
-  name: "Activity",
+  name: "Activity Costing",
   setup() {
-    let dataItems: Array<Activity> = [];
-    let projects: Array<Project> = [];
-    let activityData: Activity;
-    let subBudgetClasses: [];
+    let dataItems: Array<ActivityCosting> = [];
+    let activityCostingData: ActivityCosting;
 
     let data = reactive({
-      title: "Manage Activities",
+      title: "Activity Costings",
       valid: true,
       isOpen: false,
       node: null,
@@ -170,49 +152,47 @@ export default defineComponent({
       modalTitle: "",
       headers: [
         {
-          text: "Code",
+          text: "Activity",
           align: "start",
           sortable: false,
-          value: "code",
+          value: "activity.description",
         },
         {
-          text: "Description",
+          text: "Activity code",
           align: "start",
           sortable: false,
-          value: "description",
+          value: "activity.code",
         },
         {
-          text: "Project",
+          text: "GFS code",
           align: "start",
           sortable: false,
-          value: "project.code",
+          value: "account.code",
         },
         {
-          text: "Sub budget class",
+          text: "Funding Source",
           align: "start",
           sortable: false,
-          value: "sub_budget_class.code",
+          value: "planrep_batch_no",
         },
         {
-          text: "Actions",
-          value: "actions",
+          text: "Amount",
+          align: "start",
           sortable: false,
+          value: "amount",
         },
       ],
       modal: false,
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: activityData,
+      formData: activityCostingData,
       params: {
         total: 100,
         size: 10,
       },
       rows: ["10", "20", "50", "100"],
       itemtodelete: "",
-      projects: projects,
-      subBudgetClasses: subBudgetClasses,
-      searchTerm: "",
     });
 
     onMounted(() => {
@@ -248,26 +228,14 @@ export default defineComponent({
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
     };
-
-    const getProjectData = () => {
-      getProject({ per_page: 10 }).then((response: AxiosResponse) => {
-        data.projects = response.data.data.data;
-      });
-    };
-
-    const getSubBudgetClassData = () => {
-      getSubBudgetClass({ per_page: 10 }).then((response: AxiosResponse) => {
-        data.subBudgetClasses = response.data.data.data;
-      });
-    };
-
+    
     const cancelDialog = () => {
-      data.formData = {} as Activity;
+      data.formData = {} as ActivityCosting;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as Activity;
+      data.formData = {} as ActivityCosting;
       data.deletemodal = false;
     };
 
@@ -280,9 +248,9 @@ export default defineComponent({
 
     const save = () => {
       if (data.formData.id) {
-        updateActivity(data.formData);
+        updateActivityCosting(data.formData);
       } else {
-        createActivity(data.formData);
+        createActivityCosting(data.formData);
       }
     };
 
@@ -290,44 +258,24 @@ export default defineComponent({
       if (formData.id) {
         data.formData = formData;
         data.modalTitle = "Update";
-        data.searchTerm = "";
-        searchProjects(formData.project.code);
-        searchSubBudgetClasses(formData.sub_budget_class.code);
       } else {
-        data.formData = {} as Activity;
+        data.formData = {} as ActivityCosting;
         data.modalTitle = "Create";
-        data.searchTerm = "";
-        getProjectData();
-        getSubBudgetClassData();
       }
       data.modal = !data.modal;
     };
 
-    const updateActivity = (data: any) => {
+    const updateActivityCosting = (data: any) => {
       update(data).then(() => {
         cancelDialog();
         getTableData();
       });
     };
 
-    const createActivity = (data: any) => {
+    const createActivityCosting = (data: any) => {
       create(data).then(() => {
         cancelDialog();
         getTableData();
-      });
-    };
-
-    const searchProjects = (item) => {
-      let regSearchTerm = item ? item : data.searchTerm;
-      getProject({ per_page: 10, regSearch: regSearchTerm }).then((response: AxiosResponse) => {
-        data.projects = response.data.data.data;
-      });
-    };
-
-    const searchSubBudgetClasses = (item) => {
-      let regSearchTerm = item ? item : data.searchTerm;
-      getSubBudgetClass({ per_page: 10, regSearch: regSearchTerm }).then((response: AxiosResponse) => {
-        data.subBudgetClasses = response.data.data.data;
       });
     };
 
@@ -336,16 +284,12 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       openConfirmDialog,
-      getProjectData,
-      updateActivity,
+      updateActivityCosting,
       save,
       remove,
       cancelConfirmDialog,
       searchCategory,
       getData,
-      getSubBudgetClassData,
-      searchProjects,
-      searchSubBudgetClasses,
     };
   },
 });

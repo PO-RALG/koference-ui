@@ -22,6 +22,7 @@ import { facilityTypeRoutes } from "@/components/facility-type";
 import { menuRoutes } from "@/components/menu";
 import { facilityRoutes } from "@/components/facility";
 import { activityRoutes } from "@/components/planning/activity";
+import { activityCostingRoutes } from "@/components/planning/activity-costing";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -60,6 +61,7 @@ const routes: Array<RouteConfig> = [
       ...menuRoutes,
       ...facilityRoutes,
       ...activityRoutes,
+      ...activityCostingRoutes,
     ],
   },
 ];

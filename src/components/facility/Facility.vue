@@ -35,7 +35,6 @@
             </v-col>
           </v-card-title>
         </template>
-
         <template v-slot[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Facility')">
             mdi-pencil-box-outline
