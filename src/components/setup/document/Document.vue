@@ -45,32 +45,19 @@
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openDialog(item)"
-              >
-                mdi-pencil-box-outline
-              </v-icon>
+              <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
             </template>
             <span>Edit</span>
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" @click="deleteDocument(item.id)"
-                >mdi-trash-can-outline</v-icon
-              >
+              <v-icon v-bind="attrs" v-on="on" @click="deleteDocument(item.id)">mdi-trash-can-outline</v-icon>
             </template>
             <span>Delete</span>
           </v-tooltip>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -85,25 +72,13 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.name"
-                    label="Name"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.name" label="Name" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.description"
-                    label="Description"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.description" label="Description" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.link"
-                    label="Link"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.link" label="Link" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12">
                   <v-autocomplete
@@ -118,13 +93,7 @@
                   ></v-autocomplete>
                 </v-col>
                 <v-col cols="12" md="4">
-                  <input
-                    class="form-control-sm"
-                    type="file"
-                    id="file"
-                    ref="file"
-                    @change="handleSelectedFiles"
-                  />
+                  <input class="form-control-sm" type="file" id="file" ref="file" @change="handleSelectedFiles" />
                 </v-col>
               </v-row>
             </v-container>
@@ -134,9 +103,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -150,9 +117,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
-            >Cancel</v-btn
-          >
+          <v-btn color="green darken-1" text @click="cancelConfirmDialog">Cancel</v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -164,23 +129,10 @@
 import { AxiosResponse } from "axios";
 import { Document } from "./types/Document";
 import store from "@/store";
-import {
-  defineComponent,
-  reactive,
-  watch,
-  onMounted,
-  computed,
-  ref,
-} from "@vue/composition-api";
+import { defineComponent, reactive, watch, onMounted, computed, ref } from "@vue/composition-api";
 
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-} from "./services/document.service";
-import { documentcategoried } from "../documentcategories/services/documentcategory.service";
+import { get, create, update, destroy, search } from "./services/document.service";
+import { documentcategoried } from "../document-category/services/documentcategory.service";
 
 export default defineComponent({
   name: "Document",
@@ -223,8 +175,7 @@ export default defineComponent({
 
     onMounted(() => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
@@ -254,8 +205,7 @@ export default defineComponent({
     };
     const reloadData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });

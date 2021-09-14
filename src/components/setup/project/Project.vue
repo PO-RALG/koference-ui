@@ -1,5 +1,5 @@
 <template>
-  <div class="customers">
+  <div class="financial-year">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -24,10 +24,10 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Name"
+                label="Filter by code"
                 @change="searchCategory($event)"
                 :items="data.itemsToFilter"
-                :item-text="'name'"
+                :item-text="'code'"
                 :item-divider="true"
                 return-object
                 required
@@ -42,77 +42,42 @@
         <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-
+        <template v-slot:item.activations="{ item }">
+          <v-switch :input-value="item.current" @change="setActivation(item)" value></v-switch>
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openDialog(item)"
-              >
-                mdi-pencil-box-outline
-              </v-icon>
+              <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
             </template>
             <span>Edit</span>
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="deleteFinancialYear(item.id)"
-                >mdi-trash-can-outline</v-icon
-              >
+              <v-icon v-bind="attrs" v-on="on" @click="deleteFinancialYear(item.id)">mdi-trash-can-outline</v-icon>
             </template>
             <span>Delete</span>
           </v-tooltip>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Gfs Codes`" />
+        <ModalHeader :title="`${data.modalTitle} Project`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
-          <!-- <img v-show="imageUrl" :src="imageUrl" alt="" /> -->
           <v-form>
             <v-container>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.name"
-                    label="Name"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.code"
-                    label="Code"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="12">
-                  <v-autocomplete
-                    v-model="data.formData.category_id"
-                    label="Category"
-                    :items="data.gfscategories"
-                    :item-text="'description'"
-                    item-value="id"
-                    :item-divider="true"
-                    required
-                    clearable
-                  ></v-autocomplete>
+                  <v-text-field v-model="data.formData.description" label="Description" required></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -122,25 +87,21 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Gfs Codes `" />
+        <ModalHeader :title="`Delete Project`" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
-            >Cancel</v-btn
-          >
+          <v-btn color="green darken-1" text @click="cancelConfirmDialog">Cancel</v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -150,50 +111,41 @@
 
 <script lang="ts">
 import { AxiosResponse } from "axios";
-import { GfsCodes } from "./types/";
+import { Project } from "./types/Project";
 import store from "@/store";
-import {
-  defineComponent,
-  reactive,
-  watch,
-  onMounted,
-  computed,
-  ref,
-} from "@vue/composition-api";
+import { defineComponent, reactive, watch, onMounted, computed } from "@vue/composition-api";
 
-import { get, create, update, destroy, search } from "./service/gfs.service";
-import { gfscategories } from "../gfs-categories/service/gfs-categories.service";
+import { get, create, update, destroy, activation, search } from "./services/project.service";
 
 export default defineComponent({
-  name: "GfsCodes",
+  name: "Project",
   setup() {
-    let dataItems: Array<GfsCodes> = [];
-    let gfsCategoryData: GfsCodes;
-    let fileToupload = ref("");
-    let imageUrl: any = ref("");
+    let dataItems: Array<Project> = [];
+    let financialYearData: Project;
 
     let data = reactive({
-      title: "Manage GfsCodes",
+      title: "Manage projects",
       modalTitle: "",
       headers: [
-        { text: "Name", align: "start", sortable: false, value: "name" },
-        { text: "Code", align: "start", sortable: false, value: "code" },
         {
-          text: "Category code",
+          text: "Project Code",
           align: "start",
           sortable: false,
-          value: "category.description",
+          value: "code",
         },
-
+        {
+          text: "Description",
+          align: "start",
+          sortable: false,
+          value: "description",
+        },
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: gfsCategoryData,
-      documentcategories: [],
-      gfscategories: [],
+      formData: financialYearData,
       rows: ["10", "20", "50", "100"],
       itemtodelete: "",
       response: {},
@@ -201,15 +153,17 @@ export default defineComponent({
 
     onMounted(() => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
-      });
-      gfscategories({ per_page: 2000 }).then((response: any) => {
-        console.log("gfscode categories", response.data.data.data);
-        data.gfscategories = response.data.data.data;
       });
     });
 
@@ -218,8 +172,11 @@ export default defineComponent({
     });
 
     const searchCategory = (categoryName) => {
+      console.log("argument", categoryName);
+
       if (categoryName != null) {
-        search({ name: categoryName.name }).then((response: any) => {
+        search({ code: categoryName.code }).then((response: any) => {
+          console.log("response data", response);
           data.items = response.data.data.data;
         });
       } else {
@@ -227,10 +184,15 @@ export default defineComponent({
       }
     };
 
+    const setActivation = (item) => {
+      activation(item).then((response: any) => {
+        console.log("activated data", response.data);
+        reloadData();
+      });
+    };
     const reloadData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
@@ -243,17 +205,17 @@ export default defineComponent({
     };
     const getFinancialYear = () => {
       get(data).then((response) => {
-        // console.log("data", response.data);
+        console.log("data", response.data);
       });
     };
 
     const cancelDialog = () => {
-      data.formData = {} as GfsCodes;
+      data.formData = {} as Project;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as GfsCodes;
+      data.formData = {} as Project;
       data.deletemodal = false;
     };
 
@@ -277,7 +239,7 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as GfsCodes;
+        data.formData = {} as Project;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
@@ -296,20 +258,6 @@ export default defineComponent({
         cancelDialog();
       });
     };
-    // watching a getter
-
-    watch(fileToupload, (fileToupload: any) => {
-      if (!(fileToupload instanceof File)) {
-        return;
-      }
-      let fileReader = new FileReader();
-
-      fileReader.readAsDataURL(fileToupload);
-
-      fileReader.addEventListener("load", () => {
-        imageUrl.value = fileReader.result;
-      });
-    });
 
     const getData = (params: any) => {
       data.response = params;
@@ -318,15 +266,18 @@ export default defineComponent({
         data.items = response.data.data.data;
       });
     };
+    // watching a getter
+
     watch(
       () => store.state.snackbar,
       () => {
-        // console.log("datazzzzz", store.getters.getSnackBar);
+        console.log("datazzzzz", store.getters.getSnackBar);
       }
     );
 
     return {
       data,
+      getData,
       openDialog,
       cancelDialog,
       deleteFinancialYear,
@@ -336,9 +287,8 @@ export default defineComponent({
       reloadData,
       remove,
       cancelConfirmDialog,
+      setActivation,
       searchCategory,
-      imageUrl,
-      getData,
     };
   },
 });

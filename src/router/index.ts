@@ -5,23 +5,23 @@ import store from "@/store";
 
 import { userRoutes } from "@/components/user";
 import { roleRoutes } from "@/components/role";
-import { gfsCodesRoutes } from "@/components/setup/gfs-codes";
+import { gfsCodesRoutes } from "@/components/setup/gfs-code";
 import { levelRoutes } from "@/components/admin-area/level";
 import { adminAreaRoutes } from "@/components/admin-area/admin-area";
-import { financialYearRoutes } from "@/components/setup/financialyears";
-import { fundTypesRoutes } from "@/components/setup/fund-types";
-import { gfsCategoriesRoutes } from "@/components/setup/gfs-categories";
-import { projectRoutes } from "@/components/setup/projects";
-import { customersRoutes } from "@/components/setup/customers";
-import { documentCategoryRoutes } from "@/components/setup/documentcategories";
+import { financialYearRoutes } from "@/components/setup/financial-year";
+import { fundTypesRoutes } from "@/components/setup/fund-type";
+import { gfsCategoriesRoutes } from "@/components/setup/gfs-category";
+import { projectRoutes } from "@/components/setup/project";
+import { customersRoutes } from "@/components/setup/customer";
+import { documentCategoryRoutes } from "@/components/setup/document-category";
 import { documentRoutes } from "@/components/setup/document";
-import { fundingSourceRoutes } from "@/components/setup/funding-sources";
-import { subBudgetClassRoutes } from "@/components/setup/sub-budget-classes";
-import { bankAccountRoutes } from "@/components/setup/back-accounts";
-import { facilityTypeRoutes } from "@/components/setup/facilitytypes";
+import { fundingSourceRoutes } from "@/components/setup/funding-source";
+import { subBudgetClassRoutes } from "@/components/setup/sub-budget-class";
+import { bankAccountRoutes } from "@/components/setup/bank-account";
+import { facilityTypeRoutes } from "@/components/facility-type";
 import { menuRoutes } from "@/components/menu";
 import { facilityRoutes } from "@/components/facility";
-import { activityRoutes } from "@/components/planningandbudgeting/activity";
+import { activityRoutes } from "@/components/planning/activity";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -88,8 +88,6 @@ const isLoggedIn = (to, _, next) => {
   }
 };
 
-router.beforeEach(
-  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
-);
+router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
 
 export default router;

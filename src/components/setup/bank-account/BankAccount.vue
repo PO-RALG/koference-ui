@@ -1,7 +1,6 @@
 <template>
   <div class="bank-accounts">
     <Snackbar />
-
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
@@ -11,12 +10,7 @@
       </v-btn>
     </v-card-actions>
     <v-card>
-      <v-data-table
-        :headers="data.headers"
-        :items="data.items"
-        :single-expand="true"
-        class="elevation-1"
-      >
+      <v-data-table :headers="data.headers" :items="data.items" :single-expand="true" class="elevation-1">
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
@@ -44,33 +38,19 @@
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openDialog(item)"
-              >
-                mdi-pencil-box-outline
-              </v-icon>
+              <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
             </template>
             <span>Edit</span>
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" @click="addSubAccount(item.id)"
-                >mdi-plus</v-icon
-              >
+              <v-icon v-bind="attrs" v-on="on" @click="addSubAccount(item.id)">mdi-plus</v-icon>
             </template>
             <span>Add GL</span>
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="deleteSubBudgetClass(item.id)"
-                >mdi-trash-can-outline</v-icon
-              >
+              <v-icon v-bind="attrs" v-on="on" @click="deleteSubBudgetClass(item.id)">mdi-trash-can-outline</v-icon>
             </template>
             <span>Delete</span>
           </v-tooltip>
@@ -88,32 +68,16 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="3">
-                  <v-text-field
-                    v-model="data.formData.branch"
-                    label="Branch"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.branch" label="Branch" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="3">
-                  <v-text-field
-                    v-model="data.formData.name"
-                    label="Name"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.name" label="Name" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="3">
-                  <v-text-field
-                    v-model="data.formData.bank"
-                    label="Bank"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.bank" label="Bank" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="3">
-                  <v-text-field
-                    v-model="data.formData.number"
-                    label="Number"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.number" label="Number" required></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="12">
@@ -138,9 +102,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -154,9 +116,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
-            >Cancel</v-btn
-          >
+          <v-btn color="green darken-1" text @click="cancelConfirmDialog">Cancel</v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -168,10 +128,7 @@
       </template>
       <template v-slot:body>
         <ModalBody>
-          <v-radio-group
-            v-if="data.formData"
-            v-model="data.formData.gfs_code_id"
-          >
+          <v-radio-group v-if="data.formData" v-model="data.formData.gfs_code_id">
             <v-radio
               v-for="n in newGfsCodes"
               :key="n.code"
@@ -184,12 +141,8 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelFilterDialog"
-            >Cancel</v-btn
-          >
-          <v-btn color="green darken-1" text @click="resumeDialog"
-            >Select</v-btn
-          >
+          <v-btn color="red darken-1" text @click="cancelFilterDialog">Cancel</v-btn>
+          <v-btn color="green darken-1" text @click="resumeDialog">Select</v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -226,23 +179,11 @@
 <script lang="ts">
 import { BackAccount } from "./types/BackAccount";
 import store from "@/store";
-import {
-  defineComponent,
-  reactive,
-  watch,
-  onMounted,
-  computed,
-} from "@vue/composition-api";
+import { defineComponent, reactive, watch, onMounted, computed } from "@vue/composition-api";
 
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-} from "./services/back-accounts.service";
-import { gfscodes } from "../../setup/gfs-codes/service/gfs.service";
-import { subbudgetclasses } from "../../setup/sub-budget-classes/services/sub-budget-classes.service";
+import { get, create, update, destroy, search } from "./services/back-accounts.service";
+import { gfscodes } from "@/components/setup/gfs-code/service/gfs.service";
+import { subbudgetclasses } from "@/components/setup/sub-budget-class/services/sub-budget-classes.service";
 
 export default defineComponent({
   name: "BackAccount",
@@ -451,9 +392,7 @@ export default defineComponent({
       data.addGl = false;
     };
     const filterSbc = (term: string) => {
-      let result = data.subbudgetclasses.filter((item) =>
-        item.code.toLowerCase().includes(term.toLowerCase())
-      );
+      let result = data.subbudgetclasses.filter((item) => item.code.toLowerCase().includes(term.toLowerCase()));
       data.subbudgetclasses = result;
       return data.subbudgetclasses;
     };

@@ -141,7 +141,7 @@ import store from "@/store";
 import { defineComponent, reactive, watch, onMounted, computed } from "@vue/composition-api";
 
 import { get, create, update, destroy, search } from "./services/sub-budget-classes.service";
-import { fundingtypes } from "../fund-types/service/fund-types.service";
+import { fundingtypes } from "../fund-type/service/fund-types.service";
 
 export default defineComponent({
   name: "SubBudgetClass",

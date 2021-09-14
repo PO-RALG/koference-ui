@@ -3,7 +3,7 @@ import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 const activityRoutes = [
   {
     path: "/manage-activities",
-    component: () => import("../Activity.vue"),
+    component: () => import(/* webpackChunkName: "Activity" */ "../Activity.vue"),
     meta: {
       requiresAuth: true,
       title: "Manage Activities",
