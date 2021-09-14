@@ -21,6 +21,7 @@ import { bankAccountRoutes } from "@/components/setup/back-accounts";
 import { facilityTypeRoutes } from "@/components/setup/facilitytypes";
 import { menuRoutes } from "@/components/menu";
 import { facilityRoutes } from "@/components/facility";
+import { activityRoutes } from "@/components/planningandbudgeting/activity";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -58,6 +59,7 @@ const routes: Array<RouteConfig> = [
       ...facilityTypeRoutes,
       ...menuRoutes,
       ...facilityRoutes,
+      ...activityRoutes,
     ],
   },
 ];
@@ -86,6 +88,8 @@ const isLoggedIn = (to, _, next) => {
   }
 };
 
-router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
+router.beforeEach(
+  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
+);
 
 export default router;

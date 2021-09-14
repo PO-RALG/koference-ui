@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const get = async (payload: any) => {
-  return await axios.get("/api/v1/gfs-codes", payload);
+  return await axios.get("/api/v1/gfs-codes", { params: payload });
 };
 const gfscodes = async () => {
-  return await axios.get("/api/v1/gfs-codes");
+  return await axios.get("/api/v1/gfs-codes/CASH/view");
 };
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/gfs-codes/`, {

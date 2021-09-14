@@ -7,5 +7,5 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     o[k2] = m[k];
 }));
 exports.__esModule = true;
-var project_routes_1 = require("./routes/project-routes");
-__createBinding(exports, project_routes_1, "default", "projectRoutes");
+var facility_types_routes_1 = require("./routes/facility-types-routes");
+__createBinding(exports, facility_types_routes_1, "default", "facilityTypeRoutes");

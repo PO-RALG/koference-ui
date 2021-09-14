@@ -3,8 +3,8 @@ import axios from "axios";
 const get = async (payload: any) => {
   return await axios.get("/api/v1/gfs-categories", { params: payload });
 };
-const gfscategories = async () => {
-  return await axios.get("/api/v1/gfs-categories");
+const gfscategories = async (payload: any) => {
+  return await axios.get("/api/v1/gfs-categories", { params: payload });
 };
 const documentcategoried = async () => {
   return await axios.get("/api/v1/gfs-categories");
