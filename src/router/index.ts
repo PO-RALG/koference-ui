@@ -23,9 +23,11 @@ import { menuRoutes } from "@/components/menu";
 import { facilityRoutes } from "@/components/facility";
 import { activityRoutes } from "@/components/planning/activity";
 import { activityCostingRoutes } from "@/components/planning/activity-costing";
+import { revenueProjectionRoutes } from "@/components/planning/revenue-projection";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+
 
 Vue.use(VueRouter);
 
@@ -62,6 +64,7 @@ const routes: Array<RouteConfig> = [
       ...facilityRoutes,
       ...activityRoutes,
       ...activityCostingRoutes,
+      ...revenueProjectionRoutes,
     ],
   },
 ];

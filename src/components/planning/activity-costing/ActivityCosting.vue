@@ -21,9 +21,9 @@
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
                 label="Filter by Code"
-                @change="searchCategory($event)"
+                @change="searchItem($event)"
                 :items="data.itemsToFilter"
-                :item-text="'code'"
+                :item-text="'activity.code'"
                 :item-divider="true"
                 return-object
                 required
@@ -138,7 +138,7 @@ import { get, create, update, destroy, search } from "./services/activity-costin
 import { AxiosResponse } from "axios";
 
 export default defineComponent({
-  name: "Activity Costing",
+  name: "ActivityCosting",
   setup() {
     let dataItems: Array<ActivityCosting> = [];
     let activityCostingData: ActivityCosting;
@@ -208,9 +208,9 @@ export default defineComponent({
       });
     };
 
-    const searchCategory = (categoryName) => {
+    const searchItem = (categoryName) => {
       if (categoryName != null) {
-        search({ name: categoryName.name }).then((response: any) => {
+        search({ code: categoryName.activity.code }).then((response: any) => {
           data.items = response.data.data.data;
         });
       }
@@ -288,7 +288,7 @@ export default defineComponent({
       save,
       remove,
       cancelConfirmDialog,
-      searchCategory,
+      searchItem,
       getData,
     };
   },

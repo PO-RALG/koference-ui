@@ -24,7 +24,7 @@
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
                 label="Filter by Name"
-                @change="searchCategory($event)"
+                @change="searchItem($event)"
                 :items="data.itemsToFilter"
                 :item-text="'name'"
                 :item-divider="true"
@@ -255,7 +255,7 @@ export default defineComponent({
       });
     };
 
-    const searchCategory = (categoryName) => {
+    const searchItem = (categoryName) => {
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
           data.items = response.data.data.data;
@@ -372,7 +372,7 @@ export default defineComponent({
       save,
       remove,
       cancelConfirmDialog,
-      searchCategory,
+      searchItem,
       getData,
       loadLocationChildren,
       getNodes,
