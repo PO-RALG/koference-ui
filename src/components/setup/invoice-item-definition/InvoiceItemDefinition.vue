@@ -1,5 +1,5 @@
 <template>
-  <div class="bank-accounts">
+  <div class="Invoice Item Definition">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -16,16 +16,18 @@
         :items="data.items"
         :single-expand="true"
         class="elevation-1"
+        disable-pagination
+        hide-default-footer
       >
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Code"
+                label="Filter by Name"
                 @change="searchCategory($event)"
                 :items="data.itemsToFilter"
-                :item-text="'code'"
+                :item-text="'name'"
                 :item-divider="true"
                 return-object
                 required
@@ -40,7 +42,13 @@
         <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-
+        <template v-slot:item.activations="{ item }">
+          <v-switch
+            :input-value="item.active"
+            @change="setActivation(item)"
+            value
+          ></v-switch>
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -55,66 +63,80 @@
             </template>
             <span>Edit</span>
           </v-tooltip>
-
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="deleteSubBudgetClass(item.id)"
+              <v-icon v-bind="attrs" v-on="on" @click="deleteCustomer(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
             <span>Delete</span>
           </v-tooltip>
         </template>
+        <template v-slot:footer>
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
+        </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="620">
+    <Modal :modal="data.modal" :width="760">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Bank Accounts`" />
+        <ModalHeader :title="`${data.modalTitle} Invoice Item Definition`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
-          <!-- <img v-show="imageUrl" :src="imageUrl" alt="" /> -->
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="3">
-                  <v-text-field
-                    v-model="data.formData.branch"
-                    label="Branch"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="data.formData.bank"
-                    label="Bank"
+                    v-model="data.formData.code"
+                    label="Code"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="data.formData.number"
-                    label="Number"
+                    v-model="data.formData.description"
+                    label="Description"
                     required
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="data.formData.unit_of_measure"
+                    label="Unit of measures"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6">
                   <v-autocomplete
-                    v-model="data.formData.bank_account_type_id"
-                    label="Bank Account Type"
-                    :items="data.accounttypes"
-                    :item-text="'name'"
+                    v-model="data.formData.gfs_code_id"
+                    label="Gfs Codes"
+                    :items="data.gfscodes"
+                    :item-text="'code'"
+                    item-value="id"
+                    :item-divider="true"
+                    required
+                    clearable
+                  ></v-autocomplete>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-autocomplete
+                    v-model="data.formData.funding_source_id"
+                    label="Funding Sources"
+                    :items="data.fundingsources"
+                    :item-text="'description'"
                     item-value="id"
                     :item-divider="true"
                     required
@@ -129,7 +151,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
+          <v-btn color="blue darken-1" text @click="save"
             >{{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -138,14 +160,14 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Bank Accounts`" />
+        <ModalHeader :title="`Delete Invoice Item Definition `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
+          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
             >Cancel</v-btn
           >
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
@@ -156,13 +178,15 @@
 </template>
 
 <script lang="ts">
-import { BackAccount } from "./types/BackAccount";
+import { AxiosResponse } from "axios";
+import { ManageInvoiceItemDefinition } from "./types/";
 import store from "@/store";
 import {
   defineComponent,
   reactive,
   watch,
   onMounted,
+  computed,
 } from "@vue/composition-api";
 
 import {
@@ -171,78 +195,78 @@ import {
   update,
   destroy,
   search,
-} from "./services/back-accounts.service";
-import { bankaccounttypes } from "../../setup/bank-account-type/services/banck-account-types.service";
+  activation,
+} from "./services/invoice-item-definition";
+import { allgfscodes } from "../../setup/gfs-codes/service/gfs.service";
+import { fundingsources } from "../../setup/funding-sources/services/funding-sources";
 
 export default defineComponent({
-  name: "BackAccount",
+  name: "ManageInvoiceItemDefinition",
   setup() {
-    let dataItems: Array<BackAccount> = [];
-    let documentCategoryData: BackAccount;
+    let dataItems: Array<ManageInvoiceItemDefinition> = [];
+    let customerData: ManageInvoiceItemDefinition;
 
     let data = reactive({
-      title: "Manage Bank Accounts",
+      title: "Manage Invoice Item Definition",
       modalTitle: "",
       headers: [
+        { text: "Name", align: "start", sortable: false, value: "name" },
         {
-          text: "branch",
+          text: "Unit of Measure",
           align: "start",
           sortable: false,
-          value: "branch",
+          value: "unit_of_measure",
         },
-        {
-          text: "Name",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-        {
-          text: "Number",
-          align: "start",
-          sortable: false,
-          value: "number",
-        },
-        {
-          text: "Gfs Code",
-          align: "start",
-          sortable: false,
-          value: "gfs_code.name",
-        },
+        { text: "Code", align: "start", sortable: false, value: "code" },
 
+        {
+          text: "Description",
+          align: "start",
+          sortable: false,
+          value: "description",
+        },
+        { text: "Fund Source", value: "fund_source.code", sortable: true },
+        { text: "Gfs Code", value: "gfs_code.code", sortable: true },
+        { text: "Activation", value: "activations", sortable: false },
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: documentCategoryData,
-      params: {
-        total: 10,
-        size: 10,
-      },
+      formData: customerData,
+      rows: ["10", "20", "50", "100"],
       itemtodelete: "",
-      accounttypes: [],
-      filterdialog: false,
-
-      selectedSbc: [],
-      subbudgetclasses: [],
+      response: {},
+      gfscodes: [],
+      fundingsources: [],
     });
 
     onMounted(() => {
-      // make api call
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data to render", response.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
-      bankaccounttypes().then((response: any) => {
-        console.log("gfs codes", response.data.data.data);
-        data.accounttypes = response.data.data.data;
+      allgfscodes({ per_page: 2000 }).then((response: any) => {
+        console.log("gfs codes", response.data);
+        data.gfscodes = response.data.data.data;
       });
+      fundingsources({ per_page: 2000 }).then((response: any) => {
+        console.log("gfs codes", response.data);
+        data.fundingsources = response.data.data.data;
+      });
+    });
+    const setActivation = (item) => {
+      activation(item).then((response: any) => {
+        console.log("activated data", response.data);
+        reloadData();
+      });
+    };
+    computed(() => {
+      return "test";
     });
 
     const searchCategory = (categoryName) => {
@@ -250,8 +274,8 @@ export default defineComponent({
 
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
-          console.log("response data", response);
-          data.items = response.data.data.data;
+          console.log("response data", response.data.data);
+          data.items = response.data.data;
         });
       } else {
         reloadData();
@@ -259,40 +283,33 @@ export default defineComponent({
     };
 
     const reloadData = () => {
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data", response.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
     };
 
-    const deleteSubBudgetClass = (deleteId: any) => {
+    const deleteCustomer = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getSubBudgetClass = () => {
+    const getCustomer = () => {
       get(data).then((response) => {
         console.log("data", response.data);
       });
     };
 
     const cancelDialog = () => {
-      data.formData = {} as BackAccount;
+      data.formData = {} as ManageInvoiceItemDefinition;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as BackAccount;
+      data.formData = {} as ManageInvoiceItemDefinition;
       data.deletemodal = false;
-      reloadData();
-    };
-    const cancelFilterDialog = () => {
-      data.filterdialog = false;
-      reloadData();
     };
 
     const remove = () => {
@@ -306,9 +323,9 @@ export default defineComponent({
     const save = () => {
       console.log("Form Data", data.formData);
       if (data.formData.id) {
-        updateFinancialYear(data.formData);
+        updatecustomer(data.formData);
       } else {
-        createUser(data.formData);
+        createCustomer(data.formData);
       }
     };
 
@@ -317,13 +334,13 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as BackAccount;
+        data.formData = {} as ManageInvoiceItemDefinition;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
     };
 
-    const updateFinancialYear = (data: any) => {
+    const updatecustomer = (data: any) => {
       update(data).then((response) => {
         console.log("Updated data", response.data);
         reloadData();
@@ -331,7 +348,7 @@ export default defineComponent({
       });
     };
 
-    const createUser = (data: any) => {
+    const createCustomer = (data: any) => {
       create(data).then((response) => {
         console.log("Created data", response.data);
         reloadData();
@@ -339,23 +356,14 @@ export default defineComponent({
       });
     };
 
-    const openFilterDialog = () => {
-      data.filterdialog = true;
-      data.modal = false;
+    const getData = (params: any) => {
+      data.response = params;
+      get(params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
+        data.items = response.data.data.data;
+      });
     };
-
-    const resumeDialog = () => {
-      data.modal = true;
-      data.filterdialog = false;
-    };
-
-    const filterSbc = (term: string) => {
-      let result = data.subbudgetclasses.filter((item) =>
-        item.code.toLowerCase().includes(term.toLowerCase())
-      );
-      data.subbudgetclasses = result;
-      return data.subbudgetclasses;
-    };
+    // watching a getter
 
     watch(
       () => store.state.snackbar,
@@ -365,21 +373,19 @@ export default defineComponent({
     );
 
     return {
-      filterSbc,
       data,
+      getData,
       openDialog,
       cancelDialog,
-      deleteSubBudgetClass,
-      getSubBudgetClass,
-      updateFinancialYear,
+      deleteCustomer,
+      getCustomer,
+      updatecustomer,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
       searchCategory,
-      openFilterDialog,
-      cancelFilterDialog,
-      resumeDialog,
+      setActivation,
     };
   },
 });

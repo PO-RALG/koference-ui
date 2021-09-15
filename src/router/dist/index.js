@@ -29,6 +29,8 @@ var back_accounts_1 = require("@/components/setup/back-accounts");
 var facilitytypes_1 = require("@/components/setup/facilitytypes");
 var menu_1 = require("@/components/menu");
 var facility_1 = require("@/components/facility");
+var bank_account_type_1 = require("@/components/setup/bank-account-type");
+var invoice_item_definition_1 = require("@/components/setup/invoice-item-definition");
 // import route middlewares
 var middleware_1 = require("@/middleware");
 vue_1["default"].use(vue_router_1["default"]);
@@ -43,7 +45,7 @@ var routes = [
         path: "/",
         component: function () { return Promise.resolve().then(function () { return require("@/layouts/Home.vue"); }); },
         meta: { title: "Dashboard", middleware: [middleware_1.setTitle] },
-        children: __spreadArrays(user_1.userRoutes, financialyears_1.financialYearRoutes, gfs_codes_1.gfsCodesRoutes, user_1.userRoutes, level_1.levelRoutes, admin_area_1.adminAreaRoutes, fund_types_1.fundTypesRoutes, gfs_categories_1.gfsCategoriesRoutes, projects_1.projectRoutes, customers_1.customersRoutes, documentcategories_1.documentCategoryRoutes, document_1.documentRoutes, funding_sources_1.fundingSourceRoutes, sub_budget_classes_1.subBudgetClassRoutes, back_accounts_1.bankAccountRoutes, role_1.roleRoutes, facilitytypes_1.facilityTypeRoutes, menu_1.menuRoutes, facility_1.facilityRoutes)
+        children: __spreadArrays(user_1.userRoutes, financialyears_1.financialYearRoutes, gfs_codes_1.gfsCodesRoutes, user_1.userRoutes, level_1.levelRoutes, admin_area_1.adminAreaRoutes, fund_types_1.fundTypesRoutes, gfs_categories_1.gfsCategoriesRoutes, projects_1.projectRoutes, customers_1.customersRoutes, documentcategories_1.documentCategoryRoutes, document_1.documentRoutes, funding_sources_1.fundingSourceRoutes, sub_budget_classes_1.subBudgetClassRoutes, back_accounts_1.bankAccountRoutes, role_1.roleRoutes, facilitytypes_1.facilityTypeRoutes, menu_1.menuRoutes, facility_1.facilityRoutes, bank_account_type_1.bankAccountTypesRoutes, invoice_item_definition_1.invoiceItemDefinitionRoutes)
     },
 ];
 var router = new vue_router_1["default"]({

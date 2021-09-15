@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.gfscodes = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
+exports.allgfscodes = exports.gfscodes = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
 var axios_1 = require("axios");
 var get = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -56,6 +56,15 @@ var gfscodes = function () { return __awaiter(void 0, void 0, void 0, function (
     });
 }); };
 exports.gfscodes = gfscodes;
+var allgfscodes = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gfs-codes", { params: payload })];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.allgfscodes = allgfscodes;
 var search = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {

@@ -3,6 +3,9 @@ import axios from "axios";
 const get = async (payload: any) => {
   return await axios.get("/api/v1/funding-sources", { params: payload });
 };
+const fundingsources = async (payload: any) => {
+  return await axios.get("/api/v1/funding-sources", { params: payload });
+};
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/funding-sources/`, {
     params: {
@@ -30,4 +33,13 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/funding-sources/` + payload);
 };
 
-export { get, find, create, update, destroy, activation, search };
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  activation,
+  fundingsources,
+  search,
+};
