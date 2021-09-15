@@ -156,7 +156,7 @@ import {
   destroy,
   search,
 } from "./services/banck-account-types.service";
-import { gfscodes } from "../../setup/gfs-codes/service/gfs.service";
+import { gfscodes } from "../../setup/gfs-code/service/gfs.service";
 
 export default defineComponent({
   name: "BanckAccountType",

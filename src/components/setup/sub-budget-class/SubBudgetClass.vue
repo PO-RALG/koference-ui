@@ -1,5 +1,5 @@
 <template>
-  <div class="bank-accounts">
+  <div class="sub-budget-classes">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -16,6 +16,8 @@
         :items="data.items"
         :single-expand="true"
         class="elevation-1"
+        disable-pagination
+        hide-default-footer
       >
         <template v-slot:top>
           <v-card-title>
@@ -44,35 +46,25 @@
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openDialog(item)"
-              >
-                mdi-pencil-box-outline
-              </v-icon>
+              <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
             </template>
             <span>Edit</span>
           </v-tooltip>
-
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="deleteSubBudgetClass(item.id)"
-                >mdi-trash-can-outline</v-icon
-              >
+              <v-icon v-bind="attrs" v-on="on" @click="deleteSubBudgetClass(item.id)">mdi-trash-can-outline</v-icon>
             </template>
             <span>Delete</span>
           </v-tooltip>
         </template>
+        <template v-slot:footer>
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+        </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="620">
+    <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Bank Accounts`" />
+        <ModalHeader :title="`${data.modalTitle} SubBudgetClass`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -80,41 +72,32 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="3">
-                  <v-text-field
-                    v-model="data.formData.branch"
-                    label="Branch"
-                    required
-                  ></v-text-field>
+                <v-col cols="12" md="6">
+                  <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
                 </v-col>
-                <v-col cols="12" md="3">
-                  <v-text-field
-                    v-model="data.formData.name"
-                    label="Name"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="3">
-                  <v-text-field
-                    v-model="data.formData.bank"
-                    label="Bank"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="3">
-                  <v-text-field
-                    v-model="data.formData.number"
-                    label="Number"
-                    required
-                  ></v-text-field>
+                <v-col cols="12" md="6">
+                  <v-text-field v-model="data.formData.description" label="Description" required></v-text-field>
                 </v-col>
 
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="6">
                   <v-autocomplete
-                    v-model="data.formData.bank_account_type_id"
-                    label="Bank Account Type"
-                    :items="data.accounttypes"
-                    :item-text="'name'"
+                    v-model="data.formData.funding_type_id"
+                    label="Fund type"
+                    :items="data.fundingtypes"
+                    :item-text="'code'"
+                    item-value="id"
+                    :item-divider="true"
+                    required
+                    clearable
+                  ></v-autocomplete>
+                </v-col>
+
+                <v-col cols="12" md="6">
+                  <v-autocomplete
+                    v-model="data.formData.carryover_fund_type_id"
+                    label="CarryOver Fund type"
+                    :items="data.fundingtypes"
+                    :item-text="'code'"
                     item-value="id"
                     :item-divider="true"
                     required
@@ -129,25 +112,21 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Bank Accounts`" />
+        <ModalHeader :title="`Delete Sub Budget Class `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
-            >Cancel</v-btn
-          >
+          <v-btn color="green darken-1" text @click="cancelConfirmDialog">Cancel</v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -156,57 +135,42 @@
 </template>
 
 <script lang="ts">
-import { BackAccount } from "./types/BackAccount";
+import { AxiosResponse } from "axios";
+import { SubBudgetClass } from "./types/SubBudgetClass";
 import store from "@/store";
-import {
-  defineComponent,
-  reactive,
-  watch,
-  onMounted,
-} from "@vue/composition-api";
+import { defineComponent, reactive, watch, onMounted, computed } from "@vue/composition-api";
 
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-} from "./services/back-accounts.service";
-import { bankaccounttypes } from "../../setup/bank-account-type/services/banck-account-types.service";
+import { get, create, update, destroy, search } from "./services/sub-budget-classes.service";
+import { fundingtypes } from "../fund-type/service/fund-types.service";
 
 export default defineComponent({
-  name: "BackAccount",
+  name: "SubBudgetClass",
   setup() {
-    let dataItems: Array<BackAccount> = [];
-    let documentCategoryData: BackAccount;
+    let dataItems: Array<SubBudgetClass> = [];
+    let documentCategoryData: SubBudgetClass;
 
     let data = reactive({
-      title: "Manage Bank Accounts",
+      title: "Manage Sub Budget Class",
       modalTitle: "",
       headers: [
+        { text: "Code", align: "start", sortable: false, value: "code" },
         {
-          text: "branch",
+          text: "Description",
           align: "start",
           sortable: false,
-          value: "branch",
+          value: "description",
         },
         {
-          text: "Name",
+          text: "Fund Type Code",
           align: "start",
           sortable: false,
-          value: "name",
+          value: "funding_type.code",
         },
         {
-          text: "Number",
+          text: "CarryOver Fund Type Code",
           align: "start",
           sortable: false,
-          value: "number",
-        },
-        {
-          text: "Gfs Code",
-          align: "start",
-          sortable: false,
-          value: "gfs_code.name",
+          value: "carryover_fund_type.code",
         },
 
         { text: "Actions", value: "actions", sortable: false },
@@ -220,37 +184,38 @@ export default defineComponent({
         total: 10,
         size: 10,
       },
+      fundingtypes: [],
+      rows: ["10", "20", "50", "100"],
       itemtodelete: "",
-      accounttypes: [],
-      filterdialog: false,
-
-      selectedSbc: [],
-      subbudgetclasses: [],
+      response: {},
     });
 
     onMounted(() => {
-      // make api call
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data to render", response.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
-      bankaccounttypes().then((response: any) => {
-        console.log("gfs codes", response.data.data.data);
-        data.accounttypes = response.data.data.data;
+      fundingtypes().then((response: any) => {
+        data.fundingtypes = response.data.data.data;
       });
     });
 
-    const searchCategory = (categoryName) => {
-      console.log("argument", categoryName);
+    computed(() => {
+      return "test";
+    });
 
+    const searchCategory = (categoryName) => {
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
-          console.log("response data", response);
           data.items = response.data.data.data;
         });
       } else {
@@ -259,12 +224,9 @@ export default defineComponent({
     };
 
     const reloadData = () => {
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data", response.data.data);
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
     };
@@ -276,23 +238,18 @@ export default defineComponent({
     };
     const getSubBudgetClass = () => {
       get(data).then((response) => {
-        console.log("data", response.data);
+        //console.log("data", response.data);
       });
     };
 
     const cancelDialog = () => {
-      data.formData = {} as BackAccount;
+      data.formData = {} as SubBudgetClass;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as BackAccount;
+      data.formData = {} as SubBudgetClass;
       data.deletemodal = false;
-      reloadData();
-    };
-    const cancelFilterDialog = () => {
-      data.filterdialog = false;
-      reloadData();
     };
 
     const remove = () => {
@@ -317,7 +274,7 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as BackAccount;
+        data.formData = {} as SubBudgetClass;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
@@ -338,25 +295,13 @@ export default defineComponent({
         cancelDialog();
       });
     };
-
-    const openFilterDialog = () => {
-      data.filterdialog = true;
-      data.modal = false;
+    const getData = (params: any) => {
+      data.response = params;
+      get(params).then((response: AxiosResponse) => {
+        data.response = response.data.data;
+        data.items = response.data.data.data;
+      });
     };
-
-    const resumeDialog = () => {
-      data.modal = true;
-      data.filterdialog = false;
-    };
-
-    const filterSbc = (term: string) => {
-      let result = data.subbudgetclasses.filter((item) =>
-        item.code.toLowerCase().includes(term.toLowerCase())
-      );
-      data.subbudgetclasses = result;
-      return data.subbudgetclasses;
-    };
-
     watch(
       () => store.state.snackbar,
       () => {
@@ -365,8 +310,8 @@ export default defineComponent({
     );
 
     return {
-      filterSbc,
       data,
+      getData,
       openDialog,
       cancelDialog,
       deleteSubBudgetClass,
@@ -377,9 +322,6 @@ export default defineComponent({
       remove,
       cancelConfirmDialog,
       searchCategory,
-      openFilterDialog,
-      cancelFilterDialog,
-      resumeDialog,
     };
   },
 });

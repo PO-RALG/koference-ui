@@ -197,8 +197,8 @@ import {
   search,
   activation,
 } from "./services/invoice-item-definition";
-import { allgfscodes } from "../../setup/gfs-codes/service/gfs.service";
-import { fundingsources } from "../../setup/funding-sources/services/funding-sources";
+import { allgfscodes } from "../../setup/gfs-code/service/gfs.service";
+import { fundingsources } from "../../setup/funding-source/services/funding-sources";
 
 export default defineComponent({
   name: "ManageInvoiceItemDefinition",

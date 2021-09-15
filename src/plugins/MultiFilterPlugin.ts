@@ -52,7 +52,7 @@ class MultiFilters {
     let filteredItems = self.items;
 
     Object.entries(this.filterCallbacks).forEach(([entity, cb]) => {
-      filteredItems = cb.call(self, self.filters[entity], filteredItems);
+      //filteredItems = cb.call(self, self.filters[entity], filteredItems);
     });
 
     return filteredItems;
@@ -64,7 +64,7 @@ const MultiFiltersPlugin = {
   install(Vue, options) {
     Vue.mixin({
       created() {
-        console.debug("created");
+        console.dir("created");
       },
     });
   },
