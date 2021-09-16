@@ -42,7 +42,13 @@
         <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-
+        <template v-slot:item.activations="{ item }">
+          <v-switch
+            :input-value="item.active"
+            @change="setActivation(item)"
+            value
+          ></v-switch>
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -164,6 +170,7 @@ import {
   update,
   destroy,
   search,
+  activation,
 } from "./services/customer.service";
 
 export default defineComponent({
@@ -181,7 +188,7 @@ export default defineComponent({
 
         { text: "Address", align: "start", sortable: false, value: "address" },
         { text: "Phone", align: "start", sortable: false, value: "phone" },
-
+        { text: "Activation", value: "activations", sortable: false },
         { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
@@ -203,7 +210,12 @@ export default defineComponent({
         data.itemsToFilter = response.data.data.data;
       });
     });
-
+    const setActivation = (item) => {
+      activation(item).then((response: any) => {
+        console.log("activated data", response.data);
+        reloadData();
+      });
+    };
     computed(() => {
       return "test";
     });
@@ -324,6 +336,7 @@ export default defineComponent({
       remove,
       cancelConfirmDialog,
       searchCategory,
+      setActivation,
     };
   },
 });

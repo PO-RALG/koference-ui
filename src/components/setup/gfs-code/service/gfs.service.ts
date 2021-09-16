@@ -6,6 +6,9 @@ const get = async (payload: any) => {
 const gfscodes = async () => {
   return await axios.get("/api/v1/gfs-codes/CASH/view");
 };
+const allgfscodes = async (payload: any) => {
+  return await axios.get("/api/v1/gfs-codes", { params: payload });
+};
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/gfs-codes/`, {
     params: {
@@ -30,4 +33,4 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/gfs-codes/` + payload);
 };
 
-export { get, find, create, update, destroy, search, gfscodes };
+export { get, find, create, update, destroy, search, gfscodes, allgfscodes };

@@ -523,7 +523,7 @@ export const MENU_ITEMS = [
       {
         id: 243,
         name: "Bank Accounts",
-        state: "bank-accountslist",
+        state: "manage-bank-accounts",
         url: "/#!/bank-accountslist",
         icon: "mdi-book-outline",
         auth_menu_group_id: 212,
@@ -559,19 +559,7 @@ export const MENU_ITEMS = [
         updated_at: "2021-09-10T09:09:23.000000Z",
         deleted_at: null,
       },
-      {
-        id: 238,
-        name: "Facilities",
-        state: "facilities",
-        url: "/#!/facilities",
-        icon: "mdi-store",
-        auth_menu_group_id: 212,
-        code: "1019",
-        created_by: null,
-        created_at: "2021-09-09T08:05:30.000000Z",
-        updated_at: "2021-09-10T09:09:00.000000Z",
-        deleted_at: null,
-      },
+
       {
         id: 232,
         name: "Fund Sources",
