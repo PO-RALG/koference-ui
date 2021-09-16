@@ -130,11 +130,6 @@ export default defineComponent({
       itemName: "name",
       response: {},
       roles: [],
-      entries: [
-        {label: "Label 1", id: 1 },
-        {label: "Label 2", id: 2 },
-        {label: "Label 3", id: 3 },
-      ],
       modalTitle: "",
       headers: [
         { text: "Check Number", value: "check_number" },
