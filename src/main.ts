@@ -36,7 +36,6 @@ const requestHandler = (request: any) => {
 
 const errorHandler = (error: any) => {
   const errorResponse = error.data;
-  console.log("error Handler", error);
   switch (errorResponse.message) {
     case "Token has expired":
       showLoginDialog(errorResponse);
