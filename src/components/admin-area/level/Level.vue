@@ -37,13 +37,8 @@
           <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row>
-                <v-col cols="12" lg="12" md="12" sm="12">
-                  <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
                 <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-                  <v-text-field label="Slug" v-model="data.formData.slug"> </v-text-field>
+                  <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
                   <v-text-field label="Position" v-model="data.formData.position" required> </v-text-field>
@@ -85,7 +80,6 @@ export default defineComponent({
     let levelData: Level = {
       id: null,
       name: "",
-      slug: "",
       position: null,
     };
 
@@ -98,7 +92,7 @@ export default defineComponent({
       modalTitle: "",
       headers: [
         { text: "Name", value: "name" },
-        { text: "Slug", value: "slug" },
+        { text: "Code", value: "code" },
         { text: "Position", align: "start", sortable: true, value: "position" },
         { text: "Actions", value: "actions", sortable: false },
       ],

@@ -4,7 +4,8 @@
     <Header @logoutFunction="logout" @sidebarToggle="toggleSidebar" :drawer="data.drawer" />
     <v-content>
       <v-container class="fill-height" fluid>
-        <v-layout> </v-layout>
+        <v-layout>
+        </v-layout>
       </v-container>
     </v-content>
   </div>
@@ -18,10 +19,13 @@ import Sidebar from "./shared/Sidebar.vue";
 import Header from "./shared/Header.vue";
 
 export default defineComponent({
+  components: {
+    Sidebar,
+    Header,
+  },
   props: {
     user: Object,
   },
-  components: { Sidebar, Header },
   setup() {
     // state  => formally data
     let data = reactive({
