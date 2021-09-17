@@ -13,3 +13,4 @@ Vue.component("Paginate", () => import("./Paginate.vue"));
 Vue.component("SearchField", () => import("./SearchField.vue"));
 Vue.component("DatePicker", () => import("./DatePicker.vue"));
 Vue.component("BaseErrorMessage", () => import("./form/BaseErrorMessage.vue"));
+Vue.component("Loader", () => import("./Loader.vue"));
