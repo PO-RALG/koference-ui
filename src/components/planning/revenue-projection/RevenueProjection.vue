@@ -1,18 +1,10 @@
 <template>
-  <div class="Activity">
+  <div class="Revenue Projection">
     <Snackbar />
 
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        color="primary"
-        @click="openDialog"
-        :disabled="cant('create', 'Activity')"
-      >
-        <v-icon>mdi-plus</v-icon>
-        Add New
-      </v-btn>
     </v-card-actions>
     <v-card>
       <v-data-table
@@ -24,36 +16,33 @@
       >
         <template v-slot:top>
           <v-card-title>
-            <v-spacer></v-spacer>
-            <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Code"
-                @change="searchItem($event)"
-                :items="data.itemsToFilter"
-                :item-text="'code'"
-                :item-divider="true"
-                return-object
-                required
-                clearable
-              ></v-autocomplete>
-            </v-col>
+            <v-row justify="space-between">
+              <v-col cols="4" sm="12" md="2" class="pl-4">
+                <v-autocomplete
+                  label="Select Financial year"
+                  @change="selectFinancialYear($event)"
+                  :items="data.financialYearData"
+                  :item-text="'name'"
+                  :item-divider="true"
+                  return-object
+                  required
+                  clearable
+                ></v-autocomplete>
+              </v-col>
+              <v-col cols="6" sm="12" md="4" class="pr-4">
+                <v-autocomplete
+                  label="Filter by Funding Source Code"
+                  @change="searchItem($event)"
+                  :items="data.itemsToFilter"
+                  :item-text="'funding_source_code'"
+                  :item-divider="true"
+                  return-object
+                  required
+                  clearable
+                ></v-autocomplete>
+              </v-col>
+            </v-row>
           </v-card-title>
-        </template>
-
-        <template v-slot:item.actions="{ item }">
-          <v-icon
-            class="mr-2"
-            @click="openDialog(item)"
-            :disabled="cant('edit', 'Activity')"
-          >
-            mdi-pencil-box-outline
-          </v-icon>
-          <v-icon
-            @click="openConfirmDialog(item.id)"
-            :disabled="cant('delete', 'Activity')"
-          >
-            mdi-trash-can-outline
-          </v-icon>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -67,7 +56,7 @@
 
     <Modal :modal="data.modal" :width="960">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Activity`" />
+        <ModalHeader :title="`${data.modalTitle} Revenue Projection`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -161,7 +150,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Activity `" />
+        <ModalHeader :title="`Delete Revenue Projection `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -179,8 +168,7 @@
 </template>
 
 <script lang="ts">
-import { Activity } from "./types/Activity";
-import { Project } from "@/components/setup/project/types/Project";
+import { RevenueProjection } from "./types/RevenueProjection";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 import {
   get,
@@ -188,21 +176,19 @@ import {
   update,
   destroy,
   search,
-} from "./services/activity.service";
-import { get as getProject } from "@/components/setup/project/services/project.service";
-import { get as getSubBudgetClass } from "@/components/setup/sub-budget-class/services/sub-budget-classes.service";
+} from "./services/revenue-projection.service";
 import { AxiosResponse } from "axios";
+import { get as getFinancialYear } from "@/components/setup/financial-year/services/financialyear.service";
 
 export default defineComponent({
-  name: "Activity",
+  name: "RevenueProjection",
   setup() {
-    let dataItems: Array<Activity> = [];
-    let projects: Array<Project> = [];
-    let activityData = {} as Activity;
-    let subBudgetClasses: [];
+    let dataItems: Array<RevenueProjection> = [];
+    let revenueProjectionData = {} as RevenueProjection;
+    let financialYearData: [];
 
     let data = reactive({
-      title: "Manage Activities",
+      title: "Revenue Projections",
       valid: true,
       isOpen: false,
       node: null,
@@ -210,49 +196,36 @@ export default defineComponent({
       modalTitle: "",
       headers: [
         {
-          text: "Code",
+          text: "GFS code",
           align: "start",
           sortable: false,
-          value: "code",
+          value: "account.code",
         },
         {
-          text: "Description",
+          text: "Funding Source",
           align: "start",
           sortable: false,
-          value: "description",
+          value: "funding_source_code",
         },
         {
-          text: "Project",
+          text: "Amount",
           align: "start",
           sortable: false,
-          value: "project.code",
-        },
-        {
-          text: "Sub budget class",
-          align: "start",
-          sortable: false,
-          value: "sub_budget_class.code",
-        },
-        {
-          text: "Actions",
-          value: "actions",
-          sortable: false,
+          value: "amount",
         },
       ],
       modal: false,
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: activityData,
+      formData: revenueProjectionData,
       params: {
         total: 100,
         size: 10,
       },
       rows: ["10", "20", "50", "100"],
       itemtodelete: "",
-      projects: projects,
-      subBudgetClasses: subBudgetClasses,
-      searchTerm: "",
+      financialYearData: financialYearData,
     });
 
     onMounted(() => {
@@ -267,13 +240,41 @@ export default defineComponent({
         data.itemsToFilter = response.data.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
       });
+
+      getFinancialYear({ per_page: 10, asc: "id" }).then(
+        (response: AxiosResponse) => {
+          data.financialYearData = response.data.data.data;
+        }
+      );
     };
 
     const searchItem = (itemName) => {
       if (itemName != null) {
-        search({ code: itemName.code }).then((response: AxiosResponse) => {
-          data.items = response.data.data.data;
-        });
+        search({ funding_source_code: itemName.funding_source_code }).then(
+          (response: AxiosResponse) => {
+            data.items = response.data.data.data;
+          }
+        );
+      }
+    };
+
+    const selectFinancialYear = (year) => {
+      if (year != null) {
+        search({ financial_year_id: year.id }).then(
+          (response: AxiosResponse) => {
+            let { from, to, total, current_page, per_page, last_page } =
+              response.data.data;
+            data.items = response.data.data.data;
+            data.response = {
+              from,
+              to,
+              total,
+              current_page,
+              per_page,
+              last_page,
+            };
+          }
+        );
       }
     };
 
@@ -290,25 +291,13 @@ export default defineComponent({
       data.itemtodelete = deleteId;
     };
 
-    const getProjectData = () => {
-      getProject({ per_page: 10 }).then((response: AxiosResponse) => {
-        data.projects = response.data.data.data;
-      });
-    };
-
-    const getSubBudgetClassData = () => {
-      getSubBudgetClass({ per_page: 10 }).then((response: AxiosResponse) => {
-        data.subBudgetClasses = response.data.data.data;
-      });
-    };
-
     const cancelDialog = () => {
-      data.formData = {} as Activity;
+      data.formData = {} as RevenueProjection;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as Activity;
+      data.formData = {} as RevenueProjection;
       data.deletemodal = false;
     };
 
@@ -321,59 +310,35 @@ export default defineComponent({
 
     const save = () => {
       if (data.formData.id) {
-        updateActivity(data.formData);
+        updateRevenueProjection(data.formData);
       } else {
-        createActivity(data.formData);
+        createRevenueProjection(data.formData);
       }
     };
 
-    const openDialog = (formData?: any) => {
+    const openDialog = (formData?: RevenueProjection) => {
       if (formData.id) {
         data.formData = formData;
         data.modalTitle = "Update";
-        data.searchTerm = "";
-        searchProjects(formData.project.code);
-        searchSubBudgetClasses(formData.sub_budget_class.code);
       } else {
-        data.formData = {} as Activity;
+        data.formData = {} as RevenueProjection;
         data.modalTitle = "Create";
-        data.searchTerm = "";
-        getProjectData();
-        getSubBudgetClassData();
       }
       data.modal = !data.modal;
     };
 
-    const updateActivity = (data: Activity) => {
+    const updateRevenueProjection = (data: RevenueProjection) => {
       update(data).then(() => {
         cancelDialog();
         getTableData();
       });
     };
 
-    const createActivity = (data: Activity) => {
+    const createRevenueProjection = (data: RevenueProjection) => {
       create(data).then(() => {
         cancelDialog();
         getTableData();
       });
-    };
-
-    const searchProjects = (item) => {
-      let regSearchTerm = item ? item : data.searchTerm;
-      getProject({ per_page: 10, regSearch: regSearchTerm }).then(
-        (response: AxiosResponse) => {
-          data.projects = response.data.data.data;
-        }
-      );
-    };
-
-    const searchSubBudgetClasses = (item) => {
-      let regSearchTerm = item ? item : data.searchTerm;
-      getSubBudgetClass({ per_page: 10, regSearch: regSearchTerm }).then(
-        (response: AxiosResponse) => {
-          data.subBudgetClasses = response.data.data.data;
-        }
-      );
     };
 
     return {
@@ -381,16 +346,13 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       openConfirmDialog,
-      getProjectData,
-      updateActivity,
+      updateRevenueProjection,
       save,
       remove,
       cancelConfirmDialog,
       searchItem,
       getData,
-      getSubBudgetClassData,
-      searchProjects,
-      searchSubBudgetClasses,
+      selectFinancialYear,
     };
   },
 });
