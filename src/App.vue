@@ -20,6 +20,6 @@ export default defineComponent({});
   margin-top: 60px;
 }
 .v-main__wrap {
-  margin-left: 20px;
+  margin-left: 5px;
 }
 </style>
