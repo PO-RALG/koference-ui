@@ -5,6 +5,11 @@ const get = async (payload: any) => {
     params: payload,
   });
 };
+const itemdefinitions = async (payload: any) => {
+  return await axios.get("/api/v1/invoice-item-definitions", {
+    params: payload,
+  });
+};
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/invoice-item-definitions/`, {
     params: {
@@ -39,4 +44,13 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/invoice-item-definitions/` + payload);
 };
 
-export { get, find, create, update, destroy, search, activation };
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  search,
+  activation,
+  itemdefinitions,
+};

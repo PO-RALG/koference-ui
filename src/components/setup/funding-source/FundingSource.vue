@@ -250,7 +250,7 @@ export default defineComponent({
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getFinancialYear = () => {
+    const getFunfingSources = () => {
       get(data).then((response) => {
         console.log("data", response.data);
       });
@@ -277,7 +277,7 @@ export default defineComponent({
     const save = () => {
       console.log("Form Data", data.formData);
       if (data.formData.id) {
-        updateFinancialYear(data.formData);
+        updateFunfingSources(data.formData);
       } else {
         createUser(data.formData);
       }
@@ -294,7 +294,7 @@ export default defineComponent({
       data.modal = !data.modal;
     };
 
-    const updateFinancialYear = (data: any) => {
+    const updateFunfingSources = (data: any) => {
       update(data).then((response) => {
         console.log("Updated data", response.data);
         reloadData();
@@ -332,8 +332,8 @@ export default defineComponent({
       getData,
       cancelDialog,
       deleteFinancialYear,
-      getFinancialYear,
-      updateFinancialYear,
+      getFunfingSources,
+      updateFunfingSources,
       save,
       reloadData,
       remove,

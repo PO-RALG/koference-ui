@@ -25,6 +25,7 @@ import { bankAccountTypesRoutes } from "@/components/setup/bank-account-type";
 import { invoiceItemDefinitionRoutes } from "@/components/setup/invoice-item-definition";
 import { activityRoutes } from "@/components/planning/activity";
 import { activityCostingRoutes } from "@/components/planning/activity-costing";
+import { invoiceRoutes } from "@/components/setup/invoice";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -66,6 +67,7 @@ const routes: Array<RouteConfig> = [
       ...invoiceItemDefinitionRoutes,
       ...activityRoutes,
       ...activityCostingRoutes,
+      ...invoiceRoutes,
     ],
   },
 ];
