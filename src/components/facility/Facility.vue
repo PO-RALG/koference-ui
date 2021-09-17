@@ -147,10 +147,12 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, reactive, set, onMounted } from "@vue/composition-api";
+import { AxiosResponse } from "axios";
+
 import { Facility } from "./types/Facility";
 import { FacilityType } from "@/components/facility-type/types/FacilityType";
 import { AdminArea } from "../admin-area/admin-area/types/AdminArea";
-import { defineComponent, reactive, set, onMounted } from "@vue/composition-api";
 import { get, create, update, destroy, search } from "./services/facility.service";
 import { get as getFacilityType } from "@/components/facility-type/services/facility-types.service";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
