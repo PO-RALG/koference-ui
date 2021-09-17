@@ -19,4 +19,7 @@ export default defineComponent({});
   color: #2c3e50;
   margin-top: 60px;
 }
+.v-main__wrap {
+  margin-left: 5px;
+}
 </style>

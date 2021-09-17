@@ -326,7 +326,7 @@ export default defineComponent({
     const loadFacilities = () => {
       let isFacilityUser = !!data.isFacilityUser;
       data.isFacilityUser = isFacilityUser;
-      getFacilities({search: {location_id: data.location["id"]}}).then((response: AxiosResponse) => {
+      getFacilities({regsearch: {location_id: data.location["id"]}}).then((response: AxiosResponse) => {
         data.facilities = response.data.data.data;
       });
     };

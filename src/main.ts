@@ -18,6 +18,7 @@ import "./components/shared";
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
+axios.defaults["isLoading"] = true;
 
 const cancelSource = axios.CancelToken.source();
 
@@ -34,15 +35,16 @@ const requestHandler = (request: any) => {
 };
 
 const errorHandler = (error: any) => {
-  switch (error.response.status) {
-    case 500:
-      show500ErrorSnackbar(error.response);
+  const errorResponse = error.data;
+  switch (errorResponse.message) {
+    case "Token has expired":
+      showLoginDialog(errorResponse);
       break;
     default:
-      showOtheErrorSnackbar(error.response);
+      showOtheErrorSnackbar(errorResponse);
       break;
   }
-  return Promise.reject({ ...error });
+  return Promise.reject({ ...errorResponse });
 };
 
 const successHandler = (response: any) => {
@@ -60,37 +62,30 @@ const successHandler = (response: any) => {
   return response;
 };
 
-const show500ErrorSnackbar = (response: any) => {
-  const _tokenExpiredMessage = "Token has expired";
-  snackbar.message = `${response.data.message}`;
-  console.log("response text", snackbar.message);
-  snackbar.show = true;
-  snackbar.color = "red";
-  snackbar.icon = " mdi-alert";
+const showLoginDialog = (response: any) => {
+  const resp = { message: response.message };
+  store.dispatch("LoginDialog/SHOW", resp);
 };
 
 const showOtheErrorSnackbar = (response: any) => {
-  snackbar.message = `${response.data.message}`;
-  console.log("response text", snackbar.message);
+  snackbar.message = `${response.message}`;
   snackbar.show = true;
   snackbar.color = "red";
   snackbar.icon = " mdi-alert";
 };
-
-axios.defaults["isLoading"] = true;
 
 axios.interceptors.request.use(
   (config) => {
     if (config["isLoading"]) {
       store.dispatch("Loader/PENDING");
     }
-    return config;
+    return requestHandler(config);
   },
   (error) => {
     if (error.config["isLoading"]) {
       store.dispatch("Loader/DONE");
     }
-    return Promise.reject(error);
+    return errorHandler(error);
   }
 );
 
@@ -99,7 +94,7 @@ axios.interceptors.response.use(
     if (response.config["isLoading"]) {
       store.dispatch("Loader/DONE");
     }
-    return response;
+    return successHandler(response);
   },
   (error) => {
     const response = error.response;
@@ -107,11 +102,12 @@ axios.interceptors.response.use(
     if (response.config["isLoading"]) {
       store.dispatch("Loader/DONE");
     }
-    return Promise.reject(error);
+    return errorHandler(response);
   }
 );
 
 Vue.use(VueCompositionAPI);
+Vue.use(VueJwtDecode);
 Vue.use(PerfectScrollbar);
 Vue.use(VueAxios, axios);
 
