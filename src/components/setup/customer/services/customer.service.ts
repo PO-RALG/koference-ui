@@ -3,6 +3,9 @@ import axios from "axios";
 const get = async (payload: any) => {
   return await axios.get("/api/v1/customers", { params: payload });
 };
+const customers = async (payload: any) => {
+  return await axios.get("/api/v1/customers", { params: payload });
+};
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/customers/`, {
     params: {
@@ -34,4 +37,4 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/customers/` + payload);
 };
 
-export { get, find, create, update, destroy, search, activation };
+export { get, find, create, update, destroy, search, activation, customers };

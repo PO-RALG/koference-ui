@@ -183,6 +183,19 @@ export default defineComponent({
       modalTitle: "",
       headers: [
         {
+          text: "GL Account",
+          align: "start",
+          sortable: false,
+          value: "gl_account",
+          width: 600,
+        },
+        {
+          text: "Bank",
+          align: "start",
+          sortable: false,
+          value: "bank",
+        },
+        {
           text: "branch",
           align: "start",
           sortable: false,
@@ -194,6 +207,7 @@ export default defineComponent({
           sortable: false,
           value: "name",
         },
+
         {
           text: "Number",
           align: "start",

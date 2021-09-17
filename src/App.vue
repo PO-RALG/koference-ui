@@ -1,5 +1,8 @@
 <template>
-  <router-view></router-view>
+  <div>
+    <Loader />
+    <router-view></router-view>
+  </div>
 </template>
 
 <script lang="ts">
@@ -17,4 +20,3 @@ export default defineComponent({});
   margin-top: 60px;
 }
 </style>
->

@@ -250,7 +250,7 @@ export default defineComponent({
     const save = () => {
       console.log("Form Data", data.formData);
       if (data.formData.id) {
-        updateFinancialYear(data.formData);
+        updateFundType(data.formData);
       } else {
         createUser(data.formData);
       }
@@ -267,7 +267,7 @@ export default defineComponent({
       data.modal = !data.modal;
     };
 
-    const updateFinancialYear = (data: any) => {
+    const updateFundType = (data: any) => {
       update(data).then((response) => {
         console.log("Updated data", response.data);
         reloadData();
@@ -306,7 +306,7 @@ export default defineComponent({
       cancelDialog,
       deleteFundType,
       getFundTypes,
-      updateFinancialYear,
+      updateFundType,
       save,
       reloadData,
       remove,

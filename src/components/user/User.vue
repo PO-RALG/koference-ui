@@ -67,7 +67,7 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="12" sm="12" md="12" class="hierarchy-container">
+                <v-col cols="12" sm="12" md="6">
                   <v-label v-if="data.formData.location">
                     <h5 class="tree-title">SELECTED USER LOCATION ({{ data.formData.location.name }})</h5>
                   </v-label>
@@ -81,13 +81,34 @@
                     :node="data.node"
                   />
                 </v-col>
+                <v-col cols="12" sm="12" md="6">
+                  <v-row v-if="data.showFacility" class="mt-n8">
+                    <v-col cols="12" sm="12" md="12">
+                      <v-checkbox
+                        v-model="data.isFacilityUser"
+                        label="Is Facility User?"
+                        @change="loadFacilities"
+                      ></v-checkbox>
+                    </v-col>
+                    <v-col cols="12" sm="12" md="12" class="mt-n8" v-if="data.facilities && data.isFacilityUser">
+                      <v-select
+                        v-model="data.formData.facility_id"
+                        :items="facilities"
+                        item-value="id"
+                        item-text="label"
+                        outlined
+                        label="Select Facility"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                </v-col>
               </v-row>
             </v-container>
           </v-form>
         </ModalBody>
       </template>
       <template v-slot:footer>
-        <ModalFooter class="mt-n8">
+        <ModalFooter>
           <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
           <v-btn color="blue darken-1" text @click="save">
             {{ data.modalTitle }}
@@ -108,10 +129,12 @@
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted, set, computed } from "@vue/composition-api";
+import { AxiosResponse } from "axios";
 import { get, create, update, deleteUser } from "./services/user.service";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getRoles } from "@/components/role/services/role-services";
-import { AxiosResponse } from "axios";
+import { get as getLevels } from "@/components/admin-area/level/services/level-services";
+import { get as getFacilities } from "@/components/facility/services/facility.service";
 import { User } from "./types/User";
 import { Role } from "@/components/role/types/Role";
 
@@ -125,16 +148,16 @@ export default defineComponent({
       valid: true,
       isOpen: false,
       selectedRoles: [],
+      levels: [],
+      facilities: [],
+      showFacility: false,
+      isFacilityUser: false,
       node: null,
       item: userData,
       itemName: "name",
+      location: {},
       response: {},
       roles: [],
-      entries: [
-        {label: "Label 1", id: 1 },
-        {label: "Label 2", id: 2 },
-        {label: "Label 3", id: 3 },
-      ],
       modalTitle: "",
       headers: [
         { text: "Check Number", value: "check_number" },
@@ -168,6 +191,7 @@ export default defineComponent({
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
+      loadLevels();
       getNodes();
       loadRoles();
     });
@@ -191,6 +215,13 @@ export default defineComponent({
       return data.items.map((user) => ({
         ...user,
         fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
+      }));
+    });
+
+    const facilities = computed(() => {
+      return data.facilities.map((facility) => ({
+        ...facility,
+        label: `${facility.name} - (${facility.facility_type.name})`,
       }));
     });
 
@@ -251,6 +282,8 @@ export default defineComponent({
     };
 
     const loadLocationChildren = (location: any) => {
+      data.location = location;
+      toggleFacilitylOption(location);
       data.formData.location_id = location.id;
       if (!location.children) {
         if (location.id !== data.node.id) {
@@ -275,6 +308,29 @@ export default defineComponent({
       });
     };
 
+    const loadLevels = () => {
+      getLevels({}).then((response: AxiosResponse) => {
+        data.levels = response.data.data.data;
+      });
+    };
+
+    const toggleFacilitylOption = (location) => {
+      const level = data.levels.find((level) => level.id === location.level_id);
+      if (level.code === "WARD" || level.code === "VILLAGE_MTAA") {
+        data.showFacility = true;
+      } else {
+        data.showFacility = false;
+      }
+    };
+
+    const loadFacilities = () => {
+      let isFacilityUser = !!data.isFacilityUser;
+      data.isFacilityUser = isFacilityUser;
+      getFacilities({search: {location_id: data.location["id"]}}).then((response: AxiosResponse) => {
+        data.facilities = response.data.data.data;
+      });
+    };
+
     const filterRoles = (term: string) => {
       let result = data.roles.filter((item) => item.name.toLowerCase().includes(term.toLowerCase()));
       data.roles = result;
@@ -291,9 +347,11 @@ export default defineComponent({
       filterRoles,
 
       loadLocationChildren,
+      loadFacilities,
       getNodes,
       getData,
       users,
+      facilities,
 
       updateUser,
       save,

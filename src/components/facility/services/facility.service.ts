@@ -1,8 +1,9 @@
 import axios from "axios";
 
 const get = async (params: any) => {
-  return await axios.get("/api/v1/facilities",  {params});
+  return await axios.get("/api/v1/facilities", { params });
 };
+
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/facilities/`, {
     params: {
@@ -22,6 +23,7 @@ const create = async (payload: any) => {
 const update = async (payload: any) => {
   return await axios.put(`/api/v1/facilities/` + payload.id, payload);
 };
+
 const destroy = async (payload: any) => {
   console.log("payload", payload);
   return await axios.delete(`/api/v1/facilities/` + payload);

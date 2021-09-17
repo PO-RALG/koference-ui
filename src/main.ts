@@ -77,34 +77,38 @@ const showOtheErrorSnackbar = (response: any) => {
   snackbar.icon = " mdi-alert";
 };
 
-//  Add interceptors
-axios.interceptors.request.use((request) => {
-  if (request.url === "/api/v1/login") {
-    return request;
-  } else {
-    const currentUser = store.getters["Auth/getCurrentUser"];
-    const token = currentUser.token ? currentUser.token : null;
-    try {
-      const { exp } = token ? VueJwtDecode.decode(token) : null;
-      const tokenHasExpired = Date.now() >= exp * 1000;
-      if (tokenHasExpired) {
-        //console.log("in main: token has expired?", tokenHasExpired);
-        cancelSource.cancel("in main: token has expired?");
-        //console.log("the request", request);
-        return false;
-      } else {
-        //console.log("in main: token has expired?", tokenHasExpired);
-        return requestHandler(request);
-      }
-    } catch (error) {
-      return Promise.reject({ ...error });
+axios.defaults["isLoading"] = true;
+
+axios.interceptors.request.use(
+  (config) => {
+    if (config["isLoading"]) {
+      store.dispatch("Loader/PENDING");
     }
+    return config;
+  },
+  (error) => {
+    if (error.config["isLoading"]) {
+      store.dispatch("Loader/DONE");
+    }
+    return Promise.reject(error);
   }
-});
+);
 
 axios.interceptors.response.use(
-  (response) => successHandler(response),
-  (error) => errorHandler(error)
+  (response) => {
+    if (response.config["isLoading"]) {
+      store.dispatch("Loader/DONE");
+    }
+    return response;
+  },
+  (error) => {
+    const response = error.response;
+
+    if (response.config["isLoading"]) {
+      store.dispatch("Loader/DONE");
+    }
+    return Promise.reject(error);
+  }
 );
 
 Vue.use(VueCompositionAPI);
