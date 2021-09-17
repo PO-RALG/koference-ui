@@ -63,7 +63,7 @@ const successHandler = (response: any) => {
 };
 
 const showLoginDialog = (response: any) => {
-  const resp = { path: router.history.current.path, message: response.message };
+  const resp = { message: response.message };
   store.dispatch("LoginDialog/SHOW", resp);
 };
 

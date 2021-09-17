@@ -1,53 +1,47 @@
 <template>
   <!-- login form start -->
   <Modal :modal="show" :width="600">
-  <template v-slot:header>
-    <ModalHeader :title="message" />
-  </template>
-  <template v-slot:body>
-    <v-flex>
-      <!-- <v-col cols="12" md="4" sm="12"> -->
-      <v-card-text class>
-        <v-alert
-          color="warning"
-          border="left"
-          elevation="2"
-          colored-border
-          icon="mdi-alert-outline"
-          >
-          Please type in your password & email to login again
-        </v-alert>
-        <v-form ref="form" v-model="data.valid">
-          <v-text-field
-            prepend-inner-icon="mdi-account-box"
-            label="Email"
-            v-model="data.email"
-            v-bind:rules="data.emailRules"
-            required
-            class="mr-3 ml-3"
+    <template v-slot:header>
+      <ModalHeader :title="message" />
+    </template>
+    <template v-slot:body>
+      <v-flex>
+        <!-- <v-col cols="12" md="4" sm="12"> -->
+        <v-card-text class>
+          <v-alert color="warning" border="left" elevation="2" colored-border icon="mdi-alert-outline">
+            Please type in your password & email to login again
+          </v-alert>
+          <v-form ref="form" v-model="data.valid">
+            <v-text-field
+              prepend-inner-icon="mdi-account-box"
+              label="Email"
+              v-model="data.email"
+              v-bind:rules="data.emailRules"
+              required
+              class="mr-3 ml-3"
             ></v-text-field>
-          <v-text-field
-            prepend-inner-icon="mdi-key-variant"
-            label="Password"
-            v-model="data.password"
-            v-bind:rules="data.passwordRules"
-            v-bind:type="'password'"
-            required
-            class="mr-3 ml-3"
+            <v-text-field
+              prepend-inner-icon="mdi-key-variant"
+              label="Password"
+              v-model="data.password"
+              v-bind:rules="data.passwordRules"
+              v-bind:type="'password'"
+              required
+              class="mr-3 ml-3"
             ></v-text-field>
-        </v-form>
-      </v-card-text>
-    </v-flex>
-  </template>
-  <!-- login form end -->
-  <template v-slot:footer>
-    <ModalFooter>
-    <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-    <v-btn color="primary" class="white--text" @click="login" :loading="data.loading">
-      <v-icon left>mdi-login</v-icon>LOGIN
-    </v-btn>
-    </ModalFooter>
-  </template>
+          </v-form>
+        </v-card-text>
+      </v-flex>
+    </template>
+    <!-- login form end -->
+    <template v-slot:footer>
+      <ModalFooter>
+        <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+        <v-btn color="primary" class="white--text" @click="login" :loading="data.loading">
+          <v-icon left>mdi-login</v-icon>LOGIN
+        </v-btn>
+      </ModalFooter>
+    </template>
   </Modal>
 </template>
 
@@ -66,9 +60,8 @@ export default Vue.extend({
     const query = props.query;
     let data = reactive({
       valid: true,
-      show:true,
+      show: true,
       errorMessage: "",
-      redirectUrl: "",
       loginMessage: "",
       loading: false,
       email: "",
@@ -85,7 +78,6 @@ export default Vue.extend({
     onMounted(() => {
       const { message, path } = store.getters["LoginDialog/getStatus"];
       data.loginMessage = message;
-      data.redirectUrl = path;
     });
 
     const message = computed(() => {
