@@ -6,6 +6,7 @@ Vue.use(Vuex);
 import Auth from "./modules/Auth";
 import Snackbar from "./modules/Snackbar";
 import Loader from "./modules/Loader";
+import LoginDialog from "./modules/LoginDialog";
 
 export default new Vuex.Store({
   state: {
@@ -31,5 +32,6 @@ export default new Vuex.Store({
     Auth,
     Snackbar,
     Loader,
+    LoginDialog,
   },
 });

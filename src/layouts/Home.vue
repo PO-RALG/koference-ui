@@ -5,6 +5,7 @@
     </v-main>
     <Landing :user="currentUser" />
     <SnackBar />
+    <LoginDialog />
   </v-app>
 </template>
 
@@ -15,11 +16,13 @@ import axios from "axios";
 
 import Landing from "@/layouts/Landing.vue";
 import SnackBar from "@/utils/SnackBar.vue";
+import LoginDialog from "@/components/auth/LoginDialog.vue";
 
 export default defineComponent({
   components: {
     Landing,
     SnackBar,
+    LoginDialog,
   },
   setup() {
     const data = reactive({
@@ -34,29 +37,33 @@ export default defineComponent({
 
     onMounted(() => {
       enableInterceptor();
-    })
+    });
 
     const enableInterceptor = () => {
-      data.axiosInterceptor = axios.interceptors.request.use((config) => {
+      data.axiosInterceptor = axios.interceptors.request.use(
+        (config) => {
           data.isLoading = true;
           return config;
-        }, (error) => {
+        },
+        (error) => {
           data.isLoading = false;
           return Promise.reject(error);
         }
       );
 
-      axios.interceptors.response.use((response) => {
+      axios.interceptors.response.use(
+        (response) => {
           data.isLoading = false;
           return response;
-        }, (error) => {
+        },
+        (error) => {
           data.isLoading = false;
           return Promise.reject(error);
         }
       );
     };
 
-    const disableInterceptor = () =>  {
+    const disableInterceptor = () => {
       axios.interceptors.request.eject(data.axiosInterceptor);
     };
 
