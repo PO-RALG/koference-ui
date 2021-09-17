@@ -155,7 +155,7 @@
 </template>
 
 <script lang="ts">
-import { ActivityCosting } from "./types/ActivityCosting";
+import { AxiosResponse } from "axios";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 import {
   get,
@@ -164,7 +164,7 @@ import {
   destroy,
   search,
 } from "./services/activity-costing.service";
-import { AxiosResponse } from "axios";
+import { ActivityCosting } from "./types/ActivityCosting";
 
 export default defineComponent({
   name: "ActivityCosting",
@@ -238,7 +238,7 @@ export default defineComponent({
       });
     };
 
-    const searchItem = (itemName: any) => {
+    const searchItem = (itemName: ActivityCosting) => {
       if (itemName != null) {
         search({ code: itemName.activity.code }).then(
           (response: AxiosResponse) => {
@@ -248,7 +248,7 @@ export default defineComponent({
       }
     };
 
-    const getData = (params: any) => {
+    const getData = (params: ActivityCosting) => {
       data.response = params;
       get(params).then((response: AxiosResponse) => {
         data.response = response.data.data;

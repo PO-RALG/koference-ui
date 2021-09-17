@@ -40,7 +40,7 @@
           </v-card-title>
         </template>
 
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-icon
             class="mr-2"
             @click="openDialog(item)"
@@ -168,7 +168,7 @@ export default defineComponent({
   setup() {
     let dataItems: Array<Supplier> = [];
     let activityData = {} as Supplier;
-    
+
     let data = reactive({
       title: "Suppliers",
       valid: true,
@@ -253,7 +253,7 @@ export default defineComponent({
       });
     };
 
-    const searchItem = (itemName) => {
+    const searchItem = (itemName: Supplier) => {
       if (itemName != null) {
         search({ name: itemName.name }).then((response: AxiosResponse) => {
           data.items = response.data.data.data;
@@ -261,7 +261,7 @@ export default defineComponent({
       }
     };
 
-    const getData = (params: any) => {
+    const getData = (params: Supplier) => {
       data.response = params;
       get(params).then((response: AxiosResponse) => {
         data.response = response.data.data;
@@ -299,7 +299,7 @@ export default defineComponent({
       }
     };
 
-    const openDialog = (formData?: any) => {
+    const openDialog = (formData?: Supplier) => {
       if (formData.id) {
         data.formData = formData;
         data.modalTitle = "Update";

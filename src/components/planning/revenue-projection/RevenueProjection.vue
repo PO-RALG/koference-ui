@@ -179,6 +179,7 @@ import {
 } from "./services/revenue-projection.service";
 import { AxiosResponse } from "axios";
 import { get as getFinancialYear } from "@/components/setup/financial-year/services/financialyear.service";
+import { FinancialYear } from "@/components/setup/financial-year/types/FinancialYear";
 
 export default defineComponent({
   name: "RevenueProjection",
@@ -248,7 +249,7 @@ export default defineComponent({
       );
     };
 
-    const searchItem = (itemName) => {
+    const searchItem = (itemName: RevenueProjection) => {
       if (itemName != null) {
         search({ funding_source_code: itemName.funding_source_code }).then(
           (response: AxiosResponse) => {
@@ -258,7 +259,7 @@ export default defineComponent({
       }
     };
 
-    const selectFinancialYear = (year) => {
+    const selectFinancialYear = (year: FinancialYear) => {
       if (year != null) {
         search({ financial_year_id: year.id }).then(
           (response: AxiosResponse) => {
@@ -278,7 +279,7 @@ export default defineComponent({
       }
     };
 
-    const getData = (params: any) => {
+    const getData = (params: RevenueProjection) => {
       data.response = params;
       get(params).then((response: AxiosResponse) => {
         data.response = response.data.data;

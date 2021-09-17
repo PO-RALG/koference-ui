@@ -147,6 +147,7 @@
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from "axios";
 import { Facility } from "./types/Facility";
 import { FacilityType } from "@/components/facility-type/types/FacilityType";
 import { AdminArea } from "../admin-area/admin-area/types/AdminArea";

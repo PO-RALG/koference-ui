@@ -40,7 +40,7 @@
           </v-card-title>
         </template>
 
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-icon
             class="mr-2"
             @click="openDialog(item)"
@@ -179,6 +179,7 @@
 </template>
 
 <script lang="ts">
+import { AxiosResponse } from "axios";
 import { Activity } from "./types/Activity";
 import { Project } from "@/components/setup/project/types/Project";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
@@ -191,7 +192,6 @@ import {
 } from "./services/activity.service";
 import { get as getProject } from "@/components/setup/project/services/project.service";
 import { get as getSubBudgetClass } from "@/components/setup/sub-budget-class/services/sub-budget-classes.service";
-import { AxiosResponse } from "axios";
 
 export default defineComponent({
   name: "Activity",
@@ -269,7 +269,7 @@ export default defineComponent({
       });
     };
 
-    const searchItem = (itemName) => {
+    const searchItem = (itemName: Activity) => {
       if (itemName != null) {
         search({ code: itemName.code }).then((response: AxiosResponse) => {
           data.items = response.data.data.data;
@@ -277,7 +277,7 @@ export default defineComponent({
       }
     };
 
-    const getData = (params: any) => {
+    const getData = (params: Activity) => {
       data.response = params;
       get(params).then((response: AxiosResponse) => {
         data.response = response.data.data;
@@ -327,7 +327,7 @@ export default defineComponent({
       }
     };
 
-    const openDialog = (formData?: any) => {
+    const openDialog = (formData?: Activity) => {
       if (formData.id) {
         data.formData = formData;
         data.modalTitle = "Update";
@@ -358,7 +358,7 @@ export default defineComponent({
       });
     };
 
-    const searchProjects = (item) => {
+    const searchProjects = (item: string) => {
       let regSearchTerm = item ? item : data.searchTerm;
       getProject({ per_page: 10, regSearch: regSearchTerm }).then(
         (response: AxiosResponse) => {
@@ -367,7 +367,7 @@ export default defineComponent({
       );
     };
 
-    const searchSubBudgetClasses = (item) => {
+    const searchSubBudgetClasses = (item: string) => {
       let regSearchTerm = item ? item : data.searchTerm;
       getSubBudgetClass({ per_page: 10, regSearch: regSearchTerm }).then(
         (response: AxiosResponse) => {
