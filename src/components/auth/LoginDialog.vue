@@ -81,8 +81,7 @@ export default Vue.extend({
     });
 
     const message = computed(() => {
-      let info = data.loginMessage ? `Your ${data.loginMessage}` : `Your token has expired`;
-      return info.toUpperCase();
+      return data.loginMessage ? `Your ${data.loginMessage}` : `Your token has expired`;
     });
 
     const login = () => {

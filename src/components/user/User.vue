@@ -60,7 +60,7 @@
                     :label="'Filter Roles'"
                     :title="'Add Roles'"
                     :item-name="data.itemName"
-                    :selectedItems="data.selectedRoles"
+                    :selectedItems="selectedRoles"
                     @filterFunction="filterRoles"
                     v-model="data.selectedRoles"
                   />
@@ -219,6 +219,10 @@ export default defineComponent({
       }));
     });
 
+    const selectedRoles = computed(() => {
+      return data.selectedRoles;
+    });
+
     const facilities = computed(() => {
       return data.facilities.map((facility) => ({
         ...facility,
@@ -236,6 +240,7 @@ export default defineComponent({
 
     const openDialog = (formData?: User) => {
       if (formData && formData.id) {
+        // console.log("roles", formData.roles);
         data.selectedRoles = formData.roles;
         data.formData = formData;
         if (formData.facility_id) {
@@ -350,6 +355,7 @@ export default defineComponent({
       closeConfirmDialog,
       openConfirmDialog,
       filterRoles,
+      selectedRoles,
 
       loadLocationChildren,
       loadFacilities,
