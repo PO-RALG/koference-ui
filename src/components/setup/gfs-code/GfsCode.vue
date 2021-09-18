@@ -279,12 +279,6 @@ export default defineComponent({
         data.items = response.data.data.data;
       });
     };
-    watch(
-      () => store.state.snackbar,
-      () => {
-        // console.log("datazzzzz", store.getters.getSnackBar);
-      }
-    );
 
     return {
       data,

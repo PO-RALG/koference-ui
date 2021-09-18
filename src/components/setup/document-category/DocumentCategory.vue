@@ -109,7 +109,7 @@
 import { AxiosResponse } from "axios";
 import { DocumentCategory } from "./types/DocumentCategory";
 import store from "@/store";
-import { defineComponent, reactive, watch, onMounted, computed } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
 
 import { get, create, update, destroy, search } from "./services/documentcategory.service";
 
@@ -253,14 +253,6 @@ export default defineComponent({
         data.items = response.data.data.data;
       });
     };
-    // watching a getter
-
-    watch(
-      () => store.state.snackbar,
-      () => {
-        console.log("datazzzzz", store.getters.getSnackBar);
-      }
-    );
 
     return {
       data,

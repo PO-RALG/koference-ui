@@ -148,7 +148,7 @@
 import { AxiosResponse } from "axios";
 import { ManageInvoiceItemDefinition } from "./types/";
 import store from "@/store";
-import { defineComponent, reactive, watch, onMounted, computed } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
 
 import { get, create, update, destroy, search, activation } from "./services/invoice-item-definition";
 import { allgfscodes } from "../../setup/gfs-code/service/gfs.service";
@@ -315,14 +315,6 @@ export default defineComponent({
         data.items = response.data.data.data;
       });
     };
-    // watching a getter
-
-    watch(
-      () => store.state.snackbar,
-      () => {
-        console.log("datazzzzz", store.getters.getSnackBar);
-      }
-    );
 
     return {
       data,

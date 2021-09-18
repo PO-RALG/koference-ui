@@ -301,11 +301,6 @@ export default defineComponent({
       });
     });
 
-    watch(
-      () => store.state.snackbar,
-      () => {}
-    );
-
     return {
       data,
       openDialog,

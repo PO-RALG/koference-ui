@@ -118,7 +118,7 @@
 <script lang="ts">
 import { BackAccount } from "./types/BackAccount";
 import store from "@/store";
-import { defineComponent, reactive, watch, onMounted } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 
 import { get, create, update, destroy, search } from "./services/back-accounts.service";
 import { bankaccounttypes } from "../../setup/bank-account-type/services/banck-account-types.service";
@@ -317,13 +317,6 @@ export default defineComponent({
       data.subbudgetclasses = result;
       return data.subbudgetclasses;
     };
-
-    watch(
-      () => store.state.snackbar,
-      () => {
-        console.log("datazzzzz", store.getters.getSnackBar);
-      }
-    );
 
     return {
       filterSbc,

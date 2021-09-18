@@ -136,7 +136,7 @@
 import { AxiosResponse } from "axios";
 import { SubBudgetClass } from "./types/SubBudgetClass";
 import store from "@/store";
-import { defineComponent, reactive, watch, onMounted, computed } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
 
 import { get, create, update, destroy, search } from "./services/sub-budget-classes.service";
 import { fundingtypes } from "../fund-type/service/fund-types.service";
@@ -300,12 +300,6 @@ export default defineComponent({
         data.items = response.data.data.data;
       });
     };
-    watch(
-      () => store.state.snackbar,
-      () => {
-        console.log("datazzzzz", store.getters.getSnackBar);
-      }
-    );
 
     return {
       data,
