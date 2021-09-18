@@ -182,7 +182,6 @@ export default defineComponent({
       });
 
       documentcategoried().then((response: any) => {
-        console.log("documentcategories", response.data.data);
         data.documentcategories = response.data.data.data;
       });
     });
@@ -192,11 +191,8 @@ export default defineComponent({
     });
 
     const searchCategory = (categoryName) => {
-      console.log("argument", categoryName);
-
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
-          console.log("response data", response);
           data.items = response.data.data.data;
         });
       } else {
@@ -233,7 +229,6 @@ export default defineComponent({
     };
 
     const remove = () => {
-      console.log("delete data with id", data.itemtodelete);
       destroy(data.itemtodelete).then(() => {
         reloadData();
         data.deletemodal = false;
@@ -241,7 +236,6 @@ export default defineComponent({
     };
 
     const save = () => {
-      console.log("Form Data", data.formData);
       if (data.formData.id) {
         updateDocument(data.formData);
       } else {
@@ -263,7 +257,6 @@ export default defineComponent({
 
     const updateDocument = (data: any) => {
       update(data).then((response) => {
-        console.log("Updated data", response.data);
         reloadData();
         cancelDialog();
       });
@@ -281,9 +274,10 @@ export default defineComponent({
 
     const createUser = (data: any) => {
       create(data).then((response) => {
-        console.log("Created data", response.data);
-        reloadData();
-        cancelDialog();
+        if (response.status === 200) {
+          reloadData();
+          cancelDialog();
+        }
       });
     };
 
@@ -306,15 +300,12 @@ export default defineComponent({
 
       fileReader.addEventListener("load", () => {
         imageUrl.value = fileReader.result;
-        console.log("setup", imageUrl.value);
       });
     });
 
     watch(
       () => store.state.snackbar,
-      () => {
-        console.log("datazzzzz", store.getters.getSnackBar);
-      }
+      () => {}
     );
 
     return {

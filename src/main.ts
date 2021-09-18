@@ -18,8 +18,12 @@ import "./components/shared";
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
-axios.defaults["isLoading"] = true;
 
+const currentUser = store.getters["Auth/getCurrentUser"];
+axios.defaults["isLoading"] = true;
+axios.defaults.headers.common["Authorization"] = `Bearer ${currentUser.token}`;
+axios.defaults.headers.common["Accept"] = `application/json`;
+axios.defaults.headers.common["Content-Type"] = `application/json`;
 const cancelSource = axios.CancelToken.source();
 
 const snackbar = {

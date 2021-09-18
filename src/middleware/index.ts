@@ -6,8 +6,8 @@ import store from "@/store";
 
 const DEFAULT_TITLE = "FFARS - Facility Financial Accounting & Reporting System";
 
-const getCurrentUser = async (): Promise<any> => {
-  return await store.getters["Auth/getCurrentUser"];
+const getCurrentUser = () => {
+  return store.getters["Auth/getCurrentUser"];
 };
 
 const getLoginStatus = async (): Promise<any> => {
@@ -23,25 +23,29 @@ const setTitle = async (to, _, next) => {
 };
 
 const validateToken = async (to, _, next) => {
+  const TO_PATH = to.path;
   const currentUser = await getCurrentUser();
   const token = currentUser ? currentUser.token : null;
-  try {
-    const { exp } = VueJwtDecode.decode(token);
-    if (Date.now() >= exp * 1000) {
-      //console.log("token has expired");
-      const message = "Token has expired";
-      // show login pop up
-      store.dispatch("Snackbar/setSnackBar", message);
-      next();
-    } else {
-      //console.log("token is still valid");
-      store.getters["Snackbar/getSnackBar"];
-      next();
+  if (token) {
+    try {
+      const { exp } = VueJwtDecode.decode(token);
+      if (Date.now() >= exp * 1000) {
+        const message = "Token has expired";
+        // show login pop up
+        store.dispatch("LoginDialog/SHOW", message);
+        next();
+      } else {
+        //console.log("token is still valid");
+        // store.getters["Snackbar/getSnackBar"];
+        next();
+      }
+    } catch (error) {
+      // return error in production env
+      //console.log(error, "error from decoding token");
+      return false;
     }
-  } catch (error) {
-    // return error in production env
-    //console.log(error, "error from decoding token");
-    return false;
+  } else {
+    next(`/login?redirect=${TO_PATH}`);
   }
 };
 
@@ -66,9 +70,6 @@ const setHeaders = async (to, _, next) => {
    **/
 
   if (currentUser) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${currentUser.token}`;
-    axios.defaults.headers.common["Accept"] = `application/json`;
-    axios.defaults.headers.common["Content-Type"] = `application/json`;
     next();
   } else {
     next(`/login?redirect=${TO_PATH}`);
@@ -79,6 +80,12 @@ const auth = async (to, _, next) => {
   const currentUser = getCurrentUser();
   const loggedIn = getLoginStatus();
   const TO_PATH = to.path;
+  const hasToken = axios.defaults.headers.common.Authorization;
+
+  if (!hasToken) {
+    const token = currentUser.token;
+    axios.defaults.headers.common["Authorization"] = `Bearer ${currentUser.token}`;
+  }
 
   if (to.matched.some((record: any) => record.meta.requiresAuth) && currentUser) {
     if (loggedIn) {
