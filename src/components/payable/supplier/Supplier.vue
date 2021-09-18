@@ -1,5 +1,5 @@
 <template>
-  <div class="Activity">
+  <div class="Supplier">
     <Snackbar />
 
     <v-card-actions class="pa-0">
@@ -8,7 +8,7 @@
       <v-btn
         color="primary"
         @click="openDialog"
-        :disabled="cant('create', 'Activity')"
+        :disabled="cant('create', 'Supplier')"
       >
         <v-icon>mdi-plus</v-icon>
         Add New
@@ -27,10 +27,10 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Code"
+                label="Filter by Name"
                 @change="searchItem($event)"
                 :items="data.itemsToFilter"
-                :item-text="'code'"
+                :item-text="'name'"
                 :item-divider="true"
                 return-object
                 required
@@ -44,13 +44,13 @@
           <v-icon
             class="mr-2"
             @click="openDialog(item)"
-            :disabled="cant('edit', 'Activity')"
+            :disabled="cant('edit', 'Supplier')"
           >
             mdi-pencil-box-outline
           </v-icon>
           <v-icon
             @click="openConfirmDialog(item.id)"
-            :disabled="cant('delete', 'Activity')"
+            :disabled="cant('delete', 'Supplier')"
           >
             mdi-trash-can-outline
           </v-icon>
@@ -67,81 +67,54 @@
 
     <Modal :modal="data.modal" :width="960">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Activity`" />
+        <ModalHeader :title="`${data.modalTitle} Supplier`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="2">
+                <v-col cols="12" md="12">
                   <v-text-field
-                    v-model="data.formData.code"
-                    label="Code"
+                    v-model="data.formData.name"
+                    label="Name"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="5">
-                  <v-select
-                    v-model="data.formData.project_id"
-                    :items="data.projects"
-                    item-value="id"
-                    label="Project"
-                    required
-                  >
-                    <template v-slot:selection="{ item }">
-                      {{ item.code }} - {{ item.description }}
-                    </template>
-                    <template v-slot:item="{ item }">
-                      {{ item.code }} - {{ item.description }}
-                    </template>
-                    <template v-slot:prepend-item>
-                      <v-list-item>
-                        <v-list-item-content>
-                          <v-text-field
-                            v-model="data.searchTerm"
-                            placeholder="Search"
-                            @input="searchProjects"
-                          ></v-text-field>
-                        </v-list-item-content>
-                      </v-list-item>
-                      <v-divider></v-divider>
-                    </template>
-                  </v-select>
-                </v-col>
-                <v-col cols="12" md="5">
-                  <v-select
-                    v-model="data.formData.sub_budget_class_id"
-                    :items="data.subBudgetClasses"
-                    item-value="id"
-                    label="Sub budget class"
-                    required
-                  >
-                    <template v-slot:selection="{ item }">
-                      {{ item.code }} - {{ item.description }}
-                    </template>
-                    <template v-slot:item="{ item }">
-                      {{ item.code }} - {{ item.description }}
-                    </template>
-                    <template v-slot:prepend-item>
-                      <v-list-item>
-                        <v-list-item-content>
-                          <v-text-field
-                            v-model="data.searchTerm"
-                            placeholder="Search"
-                            @input="searchSubBudgetClasses"
-                          ></v-text-field>
-                        </v-list-item-content>
-                      </v-list-item>
-                      <v-divider></v-divider>
-                    </template>
-                  </v-select>
-                </v-col>
-                <v-col cols="12" md="12" sm="12">
+                <v-col cols="12" md="4" sm="12">
                   <v-text-field
-                    v-model="data.formData.description"
-                    label="Description"
-                    required
+                    v-model="data.formData.email"
+                    label="Email"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                  <v-text-field
+                    v-model="data.formData.tin"
+                    label="TIN"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                  <v-text-field
+                    v-model="data.formData.phone"
+                    label="Phone"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                  <v-text-field
+                    v-model="data.formData.address"
+                    label="Address"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                  <v-text-field
+                    v-model="data.formData.bank_account_name"
+                    label="Bank Account Name"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                  <v-text-field
+                    v-model="data.formData.bank_account_number"
+                    label="Bank Account Number"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -161,7 +134,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Activity `" />
+        <ModalHeader :title="`Delete Supplier `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -179,9 +152,7 @@
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from "axios";
-import { Activity } from "./types/Activity";
-import { Project } from "@/components/setup/project/types/Project";
+import { Supplier } from "./types/Supplier";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 import {
   get,
@@ -189,20 +160,17 @@ import {
   update,
   destroy,
   search,
-} from "./services/activity.service";
-import { get as getProject } from "@/components/setup/project/services/project.service";
-import { get as getSubBudgetClass } from "@/components/setup/sub-budget-class/services/sub-budget-classes.service";
+} from "./services/supplier.service";
+import { AxiosResponse } from "axios";
 
 export default defineComponent({
-  name: "Activity",
+  name: "Supplier",
   setup() {
-    let dataItems: Array<Activity> = [];
-    let projects: Array<Project> = [];
-    let activityData = {} as Activity;
-    let subBudgetClasses: [];
+    let dataItems: Array<Supplier> = [];
+    let activityData = {} as Supplier;
 
     let data = reactive({
-      title: "Manage Activities",
+      title: "Suppliers",
       valid: true,
       isOpen: false,
       node: null,
@@ -210,28 +178,46 @@ export default defineComponent({
       modalTitle: "",
       headers: [
         {
-          text: "Code",
+          text: "Name",
           align: "start",
           sortable: false,
-          value: "code",
+          value: "name",
         },
         {
-          text: "Description",
+          text: "Email",
           align: "start",
           sortable: false,
-          value: "description",
+          value: "email",
         },
         {
-          text: "Project",
+          text: "TIN",
           align: "start",
           sortable: false,
-          value: "project.code",
+          value: "tin",
         },
         {
-          text: "Sub budget class",
+          text: "Phone",
           align: "start",
           sortable: false,
-          value: "sub_budget_class.code",
+          value: "phone",
+        },
+        {
+          text: "Address",
+          align: "start",
+          sortable: false,
+          value: "address",
+        },
+        {
+          text: "Bank Account Name",
+          align: "start",
+          sortable: false,
+          value: "bank_account_name",
+        },
+        {
+          text: "Bank Account Number",
+          align: "start",
+          sortable: false,
+          value: "bank_account_number",
         },
         {
           text: "Actions",
@@ -250,8 +236,6 @@ export default defineComponent({
       },
       rows: ["10", "20", "50", "100"],
       itemtodelete: "",
-      projects: projects,
-      subBudgetClasses: subBudgetClasses,
       searchTerm: "",
     });
 
@@ -269,15 +253,15 @@ export default defineComponent({
       });
     };
 
-    const searchItem = (itemName: Activity) => {
+    const searchItem = (itemName: Supplier) => {
       if (itemName != null) {
-        search({ code: itemName.code }).then((response: AxiosResponse) => {
+        search({ name: itemName.name }).then((response: AxiosResponse) => {
           data.items = response.data.data.data;
         });
       }
     };
 
-    const getData = (params: Activity) => {
+    const getData = (params: Supplier) => {
       data.response = params;
       get(params).then((response: AxiosResponse) => {
         data.response = response.data.data;
@@ -290,25 +274,13 @@ export default defineComponent({
       data.itemtodelete = deleteId;
     };
 
-    const getProjectData = () => {
-      getProject({ per_page: 10 }).then((response: AxiosResponse) => {
-        data.projects = response.data.data.data;
-      });
-    };
-
-    const getSubBudgetClassData = () => {
-      getSubBudgetClass({ per_page: 10 }).then((response: AxiosResponse) => {
-        data.subBudgetClasses = response.data.data.data;
-      });
-    };
-
     const cancelDialog = () => {
-      data.formData = {} as Activity;
+      data.formData = {} as Supplier;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as Activity;
+      data.formData = {} as Supplier;
       data.deletemodal = false;
     };
 
@@ -327,53 +299,29 @@ export default defineComponent({
       }
     };
 
-    const openDialog = (formData?: Activity) => {
+    const openDialog = (formData?: Supplier) => {
       if (formData.id) {
         data.formData = formData;
         data.modalTitle = "Update";
-        data.searchTerm = "";
-        searchProjects(formData.project.code);
-        searchSubBudgetClasses(formData.sub_budget_class.code);
       } else {
-        data.formData = {} as Activity;
+        data.formData = {} as Supplier;
         data.modalTitle = "Create";
-        data.searchTerm = "";
-        getProjectData();
-        getSubBudgetClassData();
       }
       data.modal = !data.modal;
     };
 
-    const updateActivity = (data: Activity) => {
+    const updateActivity = (data: Supplier) => {
       update(data).then(() => {
         cancelDialog();
         getTableData();
       });
     };
 
-    const createActivity = (data: Activity) => {
+    const createActivity = (data: Supplier) => {
       create(data).then(() => {
         cancelDialog();
         getTableData();
       });
-    };
-
-    const searchProjects = (item: string) => {
-      let regSearchTerm = item ? item : data.searchTerm;
-      getProject({ per_page: 10, regSearch: regSearchTerm }).then(
-        (response: AxiosResponse) => {
-          data.projects = response.data.data.data;
-        }
-      );
-    };
-
-    const searchSubBudgetClasses = (item: string) => {
-      let regSearchTerm = item ? item : data.searchTerm;
-      getSubBudgetClass({ per_page: 10, regSearch: regSearchTerm }).then(
-        (response: AxiosResponse) => {
-          data.subBudgetClasses = response.data.data.data;
-        }
-      );
     };
 
     return {
@@ -381,16 +329,12 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       openConfirmDialog,
-      getProjectData,
       updateActivity,
       save,
       remove,
       cancelConfirmDialog,
       searchItem,
       getData,
-      getSubBudgetClassData,
-      searchProjects,
-      searchSubBudgetClasses,
     };
   },
 });

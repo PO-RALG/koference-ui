@@ -27,6 +27,7 @@ import { activityRoutes } from "@/components/planning/activity";
 import { activityCostingRoutes } from "@/components/planning/activity-costing";
 import { invoiceRoutes } from "@/components/setup/invoice";
 import { revenueProjectionRoutes } from "@/components/planning/revenue-projection";
+import { supplierRoutes } from "@/components/payable/supplier";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -70,6 +71,7 @@ const routes: Array<RouteConfig> = [
       ...activityCostingRoutes,
       ...invoiceRoutes,
       ...revenueProjectionRoutes,
+      ...supplierRoutes,
     ],
   },
 ];
