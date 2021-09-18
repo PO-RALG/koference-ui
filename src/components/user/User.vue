@@ -82,11 +82,11 @@
                   />
                 </v-col>
                 <v-col cols="12" sm="12" md="6">
-                  <v-row v-if="data.showFacility" class="mt-n8">
+                  <v-row v-if="(data.showFacility || data.isFacilityUser)" class="mt-n8">
                     <v-col cols="12" sm="12" md="12">
                       <v-checkbox
                         v-model="data.isFacilityUser"
-                        label="Is Facility User?"
+                        label="Is Facility User"
                         @change="loadFacilities"
                       ></v-checkbox>
                     </v-col>
@@ -198,6 +198,7 @@ export default defineComponent({
 
     const cancelDialog = () => {
       data.formData = {} as User;
+      data.isFacilityUser = false;
       data.modal = !data.modal;
     };
 
@@ -237,6 +238,10 @@ export default defineComponent({
       if (formData && formData.id) {
         data.selectedRoles = formData.roles;
         data.formData = formData;
+        if (formData.facility_id) {
+          data.isFacilityUser = true;
+          loadFacilities();
+        }
         data.modalTitle = "Update";
       } else {
         data.selectedRoles = [];
@@ -326,7 +331,7 @@ export default defineComponent({
     const loadFacilities = () => {
       let isFacilityUser = !!data.isFacilityUser;
       data.isFacilityUser = isFacilityUser;
-      getFacilities({regsearch: {location_id: data.location["id"]}}).then((response: AxiosResponse) => {
+      getFacilities({ regsearch: { location_id: data.location["id"] } }).then((response: AxiosResponse) => {
         data.facilities = response.data.data.data;
       });
     };
