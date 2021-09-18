@@ -1,7 +1,5 @@
 <template>
   <div class="Facility Type">
-    <Snackbar />
-
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>

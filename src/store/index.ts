@@ -4,7 +4,7 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 import Auth from "./modules/Auth";
-import Snackbar from "./modules/Snackbar";
+import SnackBar from "./modules/SnackBar";
 import Loader from "./modules/Loader";
 import LoginDialog from "./modules/LoginDialog";
 
@@ -30,7 +30,7 @@ export default new Vuex.Store({
   },
   modules: {
     Auth,
-    Snackbar,
+    SnackBar,
     Loader,
     LoginDialog,
   },

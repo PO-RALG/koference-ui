@@ -43,7 +43,7 @@
               </v-row>
               <v-row>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field label="Email Address" v-model="data.formData.email" required> </v-text-field>
+                  <v-text-field label="Email Address" v-model="data.formData.email" v-bind:rules="data.emailRules" required> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
                   <v-text-field label="Phone Number" v-model="data.formData.phone_number" required> </v-text-field>
@@ -82,7 +82,7 @@
                   />
                 </v-col>
                 <v-col cols="12" sm="12" md="6">
-                  <v-row v-if="(data.showFacility || data.isFacilityUser)" class="mt-n8">
+                  <v-row v-if="data.showFacility || data.isFacilityUser" class="mt-n8">
                     <v-col cols="12" sm="12" md="12">
                       <v-checkbox
                         v-model="data.isFacilityUser"
@@ -136,12 +136,10 @@ import { get as getRoles } from "@/components/role/services/role-services";
 import { get as getLevels } from "@/components/admin-area/level/services/level-services";
 import { get as getFacilities } from "@/components/facility/services/facility.service";
 import { User } from "./types/User";
-import { Role } from "@/components/role/types/Role";
 
 export default defineComponent({
   setup() {
     let dataItems: Array<User> = [];
-    let roleItems: Array<Role> = [];
     let userData = {} as User;
     let data = reactive({
       title: "Manage Users",
@@ -203,7 +201,7 @@ export default defineComponent({
     };
 
     const save = () => {
-      let roles = data.formData.roles.map((role: any) => role.id);
+      let roles = data.formData.role ? data.formData.roles.map((role: any) => role.id) : [];
       set(data.formData, "roles", roles);
       if (data.formData.id) {
         updateUser(data.formData);

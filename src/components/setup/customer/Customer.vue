@@ -1,7 +1,5 @@
 <template>
   <div class="customers">
-    <Snackbar />
-
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
@@ -43,41 +41,24 @@
           <span>{{ item.endDate }}</span>
         </template>
         <template v-slot:item.activations="{ item }">
-          <v-switch
-            :input-value="item.active"
-            @change="setActivation(item)"
-            value
-          ></v-switch>
+          <v-switch :input-value="item.active" @change="setActivation(item)" value></v-switch>
         </template>
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openDialog(item)"
-              >
-                mdi-pencil-box-outline
-              </v-icon>
+              <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
             </template>
             <span>Edit</span>
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" @click="deleteCustomer(item.id)"
-                >mdi-trash-can-outline</v-icon
-              >
+              <v-icon v-bind="attrs" v-on="on" @click="deleteCustomer(item.id)">mdi-trash-can-outline</v-icon>
             </template>
             <span>Delete</span>
           </v-tooltip>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -91,32 +72,16 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.name"
-                    label="Name"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.name" label="Name" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.email"
-                    label="Email"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.email" label="Email" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.phone"
-                    label="Phone"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.phone" label="Phone" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.address"
-                    label="Address"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.address" label="Address" required></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -126,9 +91,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="blue darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -142,9 +105,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
-            >Cancel</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="cancelConfirmDialog">Cancel</v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -156,22 +117,9 @@
 import { AxiosResponse } from "axios";
 import { Customer } from "./types/Customer";
 import store from "@/store";
-import {
-  defineComponent,
-  reactive,
-  watch,
-  onMounted,
-  computed,
-} from "@vue/composition-api";
+import { defineComponent, reactive, watch, onMounted, computed } from "@vue/composition-api";
 
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-  activation,
-} from "./services/customer.service";
+import { get, create, update, destroy, search, activation } from "./services/customer.service";
 
 export default defineComponent({
   name: "Customer",
@@ -203,8 +151,7 @@ export default defineComponent({
 
     onMounted(() => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
@@ -235,8 +182,7 @@ export default defineComponent({
 
     const reloadData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });

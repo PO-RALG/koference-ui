@@ -1,7 +1,5 @@
 <template>
   <div class="Invoice">
-    <Snackbar />
-
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
@@ -39,31 +37,19 @@
           </v-card-title>
         </template>
         <template v-slot:[`item.invoice_number`]="{ item }">
-          <v-list-item exact light @click="previewInvoice(item)">{{
-            item.invoice_number
-          }}</v-list-item>
+          <v-list-item exact light @click="previewInvoice(item)">{{ item.invoice_number }}</v-list-item>
         </template>
 
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openDialog(item)"
-              >
-                mdi-pencil-box-outline
-              </v-icon>
+              <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
             </template>
             <span>Edit</span>
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="deleteInvoiceItemdefinition(item.id)"
+              <v-icon v-bind="attrs" v-on="on" @click="deleteInvoiceItemdefinition(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -71,11 +57,7 @@
           </v-tooltip>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -100,17 +82,9 @@
                   ></v-autocomplete>
                 </v-col>
                 <v-col class="pt-6" cols="12" md="6">
-                  <DatePicker
-                    :label="'Ivoice Date'"
-                    v-model="data.formData.date"
-                  />
+                  <DatePicker :label="'Ivoice Date'" v-model="data.formData.date" />
                 </v-col>
-                <v-row
-                  class="mt-n8 pa-3"
-                  text-center
-                  v-for="(invoice, index) in data.invoice_items"
-                  :key="index"
-                >
+                <v-row class="mt-n8 pa-3" text-center v-for="(invoice, index) in data.invoice_items" :key="index">
                   <v-col cols="4" lg="6" md="6" sm="12">
                     <v-select
                       :items="data.itemdefinitions"
@@ -132,12 +106,7 @@
                   </v-col>
 
                   <v-col col="3" lg="1" class="d-flex pt-7 pr-12">
-                    <v-btn
-                      color="blue darken-1"
-                      text
-                      @click="addRow"
-                      v-if="index == data.invoice_items.length - 1"
-                    >
+                    <v-btn color="blue darken-1" text @click="addRow" v-if="index == data.invoice_items.length - 1">
                       <v-icon small color="success"> mdi-plus-circle </v-icon>
                     </v-btn>
 
@@ -159,9 +128,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -175,9 +142,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
-            >Cancel</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="cancelConfirmDialog">Cancel</v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -189,22 +154,9 @@
 import { AxiosResponse } from "axios";
 import { ManageInvoice } from "./types";
 import store from "@/store";
-import {
-  defineComponent,
-  reactive,
-  watch,
-  onMounted,
-  computed,
-} from "@vue/composition-api";
+import { defineComponent, reactive, watch, onMounted, computed } from "@vue/composition-api";
 
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-  activation,
-} from "./services/invoice";
+import { get, create, update, destroy, search, activation } from "./services/invoice";
 import { allgfscodes } from "../gfs-code/service/gfs.service";
 import { customers } from "../customer/services/customer.service";
 import { itemdefinitions } from "../invoice-item-definition/services/invoice-item-definition";
@@ -265,8 +217,7 @@ export default defineComponent({
     onMounted(() => {
       data.loading = true;
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
@@ -294,12 +245,10 @@ export default defineComponent({
 
     const searchCategory = (categoryName) => {
       if (categoryName != null) {
-        search({ invoice_number: categoryName.invoice_number }).then(
-          (response: any) => {
-            console.log("response data", response.data.data);
-            data.items = response.data.data.data;
-          }
-        );
+        search({ invoice_number: categoryName.invoice_number }).then((response: any) => {
+          console.log("response data", response.data.data);
+          data.items = response.data.data.data;
+        });
       } else {
         reloadData();
       }
@@ -307,8 +256,7 @@ export default defineComponent({
 
     const reloadData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });

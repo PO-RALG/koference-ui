@@ -15,7 +15,7 @@ import store from "@/store";
 import axios from "axios";
 
 import Landing from "@/layouts/Landing.vue";
-import SnackBar from "@/utils/SnackBar.vue";
+import SnackBar from "@/components/shared/SnackBar.vue";
 import LoginDialog from "@/components/auth/LoginDialog.vue";
 
 export default defineComponent({

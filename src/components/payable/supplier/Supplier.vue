@@ -1,15 +1,9 @@
 <template>
   <div class="Supplier">
-    <Snackbar />
-
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        color="primary"
-        @click="openDialog"
-        :disabled="cant('create', 'Supplier')"
-      >
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Supplier')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -41,26 +35,15 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon
-            class="mr-2"
-            @click="openDialog(item)"
-            :disabled="cant('edit', 'Supplier')"
-          >
+          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Supplier')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon
-            @click="openConfirmDialog(item.id)"
-            :disabled="cant('delete', 'Supplier')"
-          >
+          <v-icon @click="openConfirmDialog(item.id)" :disabled="cant('delete', 'Supplier')">
             mdi-trash-can-outline
           </v-icon>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -75,47 +58,25 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="12">
-                  <v-text-field
-                    v-model="data.formData.name"
-                    label="Name"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.name" label="Name" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field
-                    v-model="data.formData.email"
-                    label="Email"
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.email" label="Email"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field
-                    v-model="data.formData.tin"
-                    label="TIN"
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.tin" label="TIN"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field
-                    v-model="data.formData.phone"
-                    label="Phone"
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.phone" label="Phone"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field
-                    v-model="data.formData.address"
-                    label="Address"
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.address" label="Address"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field
-                    v-model="data.formData.bank_account_name"
-                    label="Bank Account Name"
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.bank_account_name" label="Bank Account Name"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field
-                    v-model="data.formData.bank_account_number"
-                    label="Bank Account Number"
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.bank_account_number" label="Bank Account Number"></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -141,9 +102,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
-            Cancel
-          </v-btn>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog"> Cancel </v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -154,13 +113,7 @@
 <script lang="ts">
 import { Supplier } from "./types/Supplier";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-} from "./services/supplier.service";
+import { get, create, update, destroy, search } from "./services/supplier.service";
 import { AxiosResponse } from "axios";
 
 export default defineComponent({
@@ -245,8 +198,7 @@ export default defineComponent({
 
     const getTableData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };

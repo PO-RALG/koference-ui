@@ -20,8 +20,9 @@ axios.defaults.headers.common["Content-Type"] = `application/json`;
 axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
 
 const currentUser = store.getters["Auth/getCurrentUser"];
+
 axios.defaults["isLoading"] = true;
-axios.defaults.headers.common["Authorization"] = `Bearer ${currentUser.token}`;
+axios.defaults.headers.common["Authorization"] = currentUser ? `Bearer ${currentUser.token}` : null;
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 const cancelSource = axios.CancelToken.source();
@@ -40,28 +41,26 @@ const requestHandler = (request: any) => {
 
 const errorHandler = (error: any) => {
   const errorResponse = error.data;
+  const payload = { info: error.data.errors, message: error.data.message, color: "warning", icon: "mdi-alert-box" };
   switch (errorResponse.message) {
     case "Token has expired":
       showLoginDialog(errorResponse);
       break;
     default:
-      showOtheErrorSnackbar(errorResponse);
+      store.dispatch("SnackBar/SHOW", payload);
       break;
   }
   return Promise.reject({ ...errorResponse });
 };
 
 const successHandler = (response: any) => {
+  const message = response.data.message;
+  const payload = { info: message, color: "success", icon: "mdi-information" };
   switch (response.config.method) {
     case "put":
     case "post":
     case "delete":
-      snackbar.show = true;
-      snackbar.color = "success";
-      snackbar.icon = "mdi-checkbox-marked-circle";
-      snackbar.message = response.data.message;
-      // store.dispatch("notify", snackbar);
-      store.state.snackbar = snackbar;
+      store.dispatch("SnackBar/SHOW", payload);
   }
   return response;
 };
@@ -69,13 +68,6 @@ const successHandler = (response: any) => {
 const showLoginDialog = (response: any) => {
   const resp = { message: response.message };
   store.dispatch("LoginDialog/SHOW", resp);
-};
-
-const showOtheErrorSnackbar = (response: any) => {
-  snackbar.message = `${response.message}`;
-  snackbar.show = true;
-  snackbar.color = "red";
-  snackbar.icon = " mdi-alert";
 };
 
 axios.interceptors.request.use(

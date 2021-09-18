@@ -1,7 +1,5 @@
 <template>
   <div class="Activity Costing">
-    <Snackbar />
-
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
@@ -32,11 +30,7 @@
           </v-card-title>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -51,11 +45,7 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="2">
-                  <v-text-field
-                    v-model="data.formData.code"
-                    label="Code"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="5">
                   <v-select
@@ -65,12 +55,8 @@
                     label="Project"
                     required
                   >
-                    <template v-slot:selection="{ item }">
-                      {{ item.code }} - {{ item.description }}
-                    </template>
-                    <template v-slot:item="{ item }">
-                      {{ item.code }} - {{ item.description }}
-                    </template>
+                    <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }} </template>
+                    <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }} </template>
                     <template v-slot:prepend-item>
                       <v-list-item>
                         <v-list-item-content>
@@ -93,12 +79,8 @@
                     label="Sub budget class"
                     required
                   >
-                    <template v-slot:selection="{ item }">
-                      {{ item.code }} - {{ item.description }}
-                    </template>
-                    <template v-slot:item="{ item }">
-                      {{ item.code }} - {{ item.description }}
-                    </template>
+                    <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }} </template>
+                    <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }} </template>
                     <template v-slot:prepend-item>
                       <v-list-item>
                         <v-list-item-content>
@@ -114,11 +96,7 @@
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="12" sm="12">
-                  <v-text-field
-                    v-model="data.formData.description"
-                    label="Description"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.description" label="Description" required></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -144,9 +122,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
-            Cancel
-          </v-btn>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog"> Cancel </v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -157,13 +133,7 @@
 <script lang="ts">
 import { AxiosResponse } from "axios";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-} from "./services/activity-costing.service";
+import { get, create, update, destroy, search } from "./services/activity-costing.service";
 import { ActivityCosting } from "./types/ActivityCosting";
 
 export default defineComponent({
@@ -230,8 +200,7 @@ export default defineComponent({
 
     const getTableData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
+        let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
@@ -240,11 +209,9 @@ export default defineComponent({
 
     const searchItem = (itemName: ActivityCosting) => {
       if (itemName != null) {
-        search({ code: itemName.activity.code }).then(
-          (response: AxiosResponse) => {
-            data.items = response.data.data.data;
-          }
-        );
+        search({ code: itemName.activity.code }).then((response: AxiosResponse) => {
+          data.items = response.data.data.data;
+        });
       }
     };
 
