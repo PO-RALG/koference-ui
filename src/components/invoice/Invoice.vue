@@ -268,10 +268,11 @@
                       </td>
 
                       <td>
-                        {{ data.invoicedata.customer.address }}<br />
+                        <strong> Customer Name: </strong>
                         {{ data.invoicedata.customer.name }}<br />
-                        {{ data.invoicedata.customer.email }}<br />
-                        {{ data.invoicedata.customer.phone }}<br />
+                        Address:{{ data.invoicedata.customer.address }}<br />
+                        Email:{{ data.invoicedata.customer.email }}<br />
+                        Phone:{{ data.invoicedata.customer.phone }}<br />
                       </td>
                     </tr>
                   </table>
@@ -677,7 +678,7 @@ export default defineComponent({
   text-align: left;
 }
 .login-logo {
-  height: 10%;
-  width: 10%;
+  height: 14%;
+  width: 14%;
 }
 </style>
