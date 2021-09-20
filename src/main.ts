@@ -41,7 +41,7 @@ const requestHandler = (request: any) => {
 
 const errorHandler = (error: any) => {
   const errorResponse = error.data;
-  const payload = { info: error.data.errors, message: error.data.message, color: "warning", icon: "mdi-alert-box" };
+  const payload = { info: error.data.errors, message: error.data.message, color: "error", icon: "mdi-alert-box" };
   switch (errorResponse.message) {
     case "Token has expired":
       showLoginDialog(errorResponse);

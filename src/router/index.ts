@@ -38,13 +38,20 @@ const routes: Array<RouteConfig> = [
   {
     path: "/login",
     component: () => import("@/components/auth/Login.vue"),
-    meta: { title: "Login", middleware: [setTitle] },
+    meta: {
+      title: "Login",
+      middleware: [setTitle],
+    },
     props: (route) => ({ query: route.query }),
   },
   {
     path: "/",
     component: () => import("@/layouts/Home.vue"),
-    meta: { title: "Dashboard", middleware: [setTitle] },
+    meta: {
+      requiresAuth: true,
+      title: "Dashboard",
+      middleware: [setTitle, validateToken, setHeaders, auth],
+    },
     children: [
       ...userRoutes,
       ...financialYearRoutes,
@@ -100,8 +107,6 @@ const isLoggedIn = (to, _, next) => {
   }
 };
 
-router.beforeEach(
-  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
-);
+router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
 
 export default router;

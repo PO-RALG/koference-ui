@@ -16,7 +16,7 @@
             <v-col cols="8" class="text-left pl-0 mt-n2">
               <div class="description">
                 <h3 class="name">{{ fullName }}</h3>
-                <div class="description-title">
+                <div class="description-title" v-if="user.roles">
                   <a href="#">[{{ roleName }}]</a>
                 </div>
                 <div class="location">
@@ -42,7 +42,7 @@
             v-else-if="menu.children"
             :key="menu.name"
             v-model="menu.model"
-            :prepend-icon="(menu.icon && menu.children) ? menu.icon : menu['icon-alt']"
+            :prepend-icon="menu.icon && menu.children ? menu.icon : menu['icon-alt']"
             :append-icon="'mdi mdi-chevron-down'"
           >
             <template v-slot:activator>
