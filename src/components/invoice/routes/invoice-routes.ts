@@ -3,8 +3,7 @@ import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 const invoiceRoutes = [
   {
     path: "/manage-invoices",
-    component: () =>
-      import(/* webpackChunkName: "Customer" */ "../Invoice.vue"),
+    component: () => import(/* webpackChunkName: "Invoice" */ "../Invoice.vue"),
     meta: {
       requiresAuth: true,
       title: "Manage Invoice",
