@@ -130,7 +130,7 @@ import store from "@/store";
 import { defineComponent, reactive, watch, onMounted, computed, ref } from "@vue/composition-api";
 
 import { get, create, update, destroy, search } from "./services/document.service";
-import { documentcategoried } from "../document-category/services/documentcategory.service";
+import { get as getDocumentCategories } from "../document-category/services/documentcategory.service";
 
 export default defineComponent({
   name: "Document",
@@ -172,6 +172,10 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
@@ -179,14 +183,10 @@ export default defineComponent({
         data.itemsToFilter = response.data.data.data;
       });
 
-      documentcategoried().then((response: any) => {
+      getDocumentCategories({}).then((response: any) => {
         data.documentcategories = response.data.data.data;
       });
-    });
-
-    computed(() => {
-      return "test";
-    });
+    };
 
     const searchCategory = (categoryName) => {
       if (categoryName != null) {

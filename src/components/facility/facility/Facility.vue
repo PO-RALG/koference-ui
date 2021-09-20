@@ -150,9 +150,9 @@ import { AxiosResponse } from "axios";
 import { get, create, update, destroy, search } from "./services/facility.service";
 
 import { Facility } from "./types/Facility";
-import { FacilityType } from "@/components/facility-type/types/FacilityType";
-import { AdminArea } from "../admin-area/admin-area/types/AdminArea";
-import { get as getFacilityType } from "@/components/facility-type/services/facility-types.service";
+import { FacilityType } from "@/components/facility/facility-type/types/FacilityType";
+import { AdminArea } from "@/components/admin-area/admin-area/types/AdminArea";
+import { get as getFacilityType } from "@/components/facility/facility-type/services/facility-types.service";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 
 export default defineComponent({
@@ -242,9 +242,13 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       getTableData();
       getNodes();
-    });
+    };
 
     const getTableData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {

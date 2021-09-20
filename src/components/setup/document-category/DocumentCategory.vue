@@ -50,7 +50,7 @@
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" @click="deleteFinancialYear(item.id)">mdi-trash-can-outline</v-icon>
+              <v-icon v-bind="attrs" v-on="on" @click="deleteDocumentCategory(item.id)">mdi-trash-can-outline</v-icon>
             </template>
             <span>Delete</span>
           </v-tooltip>
@@ -108,8 +108,7 @@
 <script lang="ts">
 import { AxiosResponse } from "axios";
 import { DocumentCategory } from "./types/DocumentCategory";
-import store from "@/store";
-import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 
 import { get, create, update, destroy, search } from "./services/documentcategory.service";
 
@@ -144,6 +143,10 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = {
@@ -157,11 +160,7 @@ export default defineComponent({
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
-    });
-
-    computed(() => {
-      return "test";
-    });
+    };
 
     const searchCategory = (categoryName) => {
       if (categoryName != null) {
@@ -181,12 +180,13 @@ export default defineComponent({
       });
     };
 
-    const deleteFinancialYear = (deleteId: any) => {
+    const deleteDocumentCategory = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getFinancialYear = () => {
+
+    const getDocumentCategory = () => {
       get(data).then((response) => {
         console.log("data", response.data);
       });
@@ -211,7 +211,7 @@ export default defineComponent({
 
     const save = () => {
       if (data.formData.id) {
-        updateFinancialYear(data.formData);
+        updateDocumentCategory(data.formData);
       } else {
         createUser(data.formData);
       }
@@ -228,7 +228,7 @@ export default defineComponent({
       data.modal = !data.modal;
     };
 
-    const updateFinancialYear = (data: any) => {
+    const updateDocumentCategory = (data: any) => {
       update(data).then((response) => {
         if (response.status === 200) {
           reloadData();
@@ -259,9 +259,9 @@ export default defineComponent({
       openDialog,
       getData,
       cancelDialog,
-      deleteFinancialYear,
-      getFinancialYear,
-      updateFinancialYear,
+      deleteDocumentCategory,
+      getDocumentCategory,
+      updateDocumentCategory,
       save,
       reloadData,
       remove,

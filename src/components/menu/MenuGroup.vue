@@ -24,17 +24,19 @@
                 <v-icon small class="page__grab-icon">mdi-arrow-all</v-icon>
               </td>
               <td>{{ index + 1 }}</td>
-              <td><v-icon small>{{ group.icon }}</v-icon></td>
+              <td>
+                <v-icon small>{{ group.icon }}</v-icon>
+              </td>
               <td>{{ group.position }}</td>
               <td>{{ group.name }}</td>
-            <td>
-              <v-icon class="mr-2" @click="openDialog(group)" :disabled="cant('edit', 'AuthMenuGroup')">
-                mdi-pencil-box-outline
-              </v-icon>
-              <v-icon @click="openConfirmDialog(group)" :disabled="cant('delete', 'AuthMenuGroup')">
-                mdi-trash-can-outline
-              </v-icon>
-            </td>
+              <td>
+                <v-icon class="mr-2" @click="openDialog(group)" :disabled="cant('edit', 'AuthMenuGroup')">
+                  mdi-pencil-box-outline
+                </v-icon>
+                <v-icon @click="openConfirmDialog(group)" :disabled="cant('delete', 'AuthMenuGroup')">
+                  mdi-trash-can-outline
+                </v-icon>
+              </td>
             </tr>
           </draggable>
         </template>
@@ -140,12 +142,16 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       get(TYPE, {}).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.items = response.data.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
       });
-    });
+    };
 
     const cancelDialog = () => {
       data.formData = {} as MenuGroup;
@@ -182,6 +188,7 @@ export default defineComponent({
       update(TYPE, data).then((response: AxiosResponse) => {
         if (response.status === 200) {
           cancelDialog();
+          initialize();
         }
       });
     };
@@ -190,6 +197,7 @@ export default defineComponent({
       create(TYPE, data).then((response: AxiosResponse) => {
         if (response.status === 200) {
           cancelDialog();
+          initialize();
         }
       });
     };
@@ -208,6 +216,7 @@ export default defineComponent({
       const payload = item;
       deleteEntry(TYPE, payload).then((response: AxiosResponse) => {
         console.log(response);
+        initialize();
       });
       data.item = {} as MenuGroup;
       data.isOpen = false;

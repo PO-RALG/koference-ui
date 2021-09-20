@@ -110,10 +110,9 @@
 <script lang="ts">
 import { AxiosResponse } from "axios";
 import { FundSources } from "./types";
-import store from "@/store";
-import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 
-import { get, create, update, destroy, activation, search } from "./services/funding-sources";
+import { get, create, update, destroy, search } from "./services/funding-sources";
 
 export default defineComponent({
   name: "FundingSources",
@@ -165,10 +164,6 @@ export default defineComponent({
       });
     });
 
-    computed(() => {
-      return "test";
-    });
-
     const searchCategory = (categoryName) => {
       console.log("argument", categoryName);
 
@@ -182,12 +177,6 @@ export default defineComponent({
       }
     };
 
-    const setActivation = (item) => {
-      activation(item).then((response: any) => {
-        console.log("activated data", response.data);
-        reloadData();
-      });
-    };
     const reloadData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
@@ -201,6 +190,7 @@ export default defineComponent({
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
+
     const getFunfingSources = () => {
       get(data).then((response) => {
         console.log("data", response.data);
@@ -218,7 +208,6 @@ export default defineComponent({
     };
 
     const remove = () => {
-      console.log("delete data with id", data.itemtodelete);
       destroy(data.itemtodelete).then(() => {
         reloadData();
         data.deletemodal = false;
@@ -230,7 +219,7 @@ export default defineComponent({
       if (data.formData.id) {
         updateFunfingSources(data.formData);
       } else {
-        createUser(data.formData);
+        createFundingSource(data.formData);
       }
     };
 
@@ -253,7 +242,7 @@ export default defineComponent({
       });
     };
 
-    const createUser = (data: any) => {
+    const createFundingSource = (data: any) => {
       create(data).then((response) => {
         console.log("Created data", response.data);
         reloadData();
@@ -281,7 +270,6 @@ export default defineComponent({
       reloadData,
       remove,
       cancelConfirmDialog,
-      setActivation,
       searchCategory,
     };
   },

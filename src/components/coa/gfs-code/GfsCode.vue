@@ -1,5 +1,5 @@
 <template>
-  <div class="sub-budget-classes">
+  <div class="customers">
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
@@ -22,10 +22,10 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Code"
+                label="Filter by Name"
                 @change="searchCategory($event)"
                 :items="data.itemsToFilter"
-                :item-text="'code'"
+                :item-text="'name'"
                 :item-divider="true"
                 return-object
                 required
@@ -41,7 +41,7 @@
           <span>{{ item.endDate }}</span>
         </template>
 
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
@@ -50,7 +50,7 @@
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" @click="deleteSubBudgetClass(item.id)">mdi-trash-can-outline</v-icon>
+              <v-icon v-bind="attrs" v-on="on" @click="deleteGfsCode(item.id)">mdi-trash-can-outline</v-icon>
             </template>
             <span>Delete</span>
           </v-tooltip>
@@ -62,7 +62,7 @@
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} SubBudgetClass`" />
+        <ModalHeader :title="`${data.modalTitle} Gfs Codes`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -71,31 +71,17 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="6">
+                  <v-text-field v-model="data.formData.name" label="Name" required></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6">
                   <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field v-model="data.formData.description" label="Description" required></v-text-field>
-                </v-col>
-
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="12">
                   <v-autocomplete
-                    v-model="data.formData.funding_type_id"
-                    label="Fund type"
-                    :items="data.fundingtypes"
-                    :item-text="'code'"
-                    item-value="id"
-                    :item-divider="true"
-                    required
-                    clearable
-                  ></v-autocomplete>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-autocomplete
-                    v-model="data.formData.carryover_fund_type_id"
-                    label="CarryOver Fund type"
-                    :items="data.fundingtypes"
-                    :item-text="'code'"
+                    v-model="data.formData.category_id"
+                    label="Category"
+                    :items="data.gfscategories"
+                    :item-text="'description'"
                     item-value="id"
                     :item-divider="true"
                     required
@@ -117,7 +103,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Sub Budget Class `" />
+        <ModalHeader :title="`Delete Gfs Codes `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -134,41 +120,31 @@
 
 <script lang="ts">
 import { AxiosResponse } from "axios";
-import { SubBudgetClass } from "./types/SubBudgetClass";
-import store from "@/store";
-import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
+import { GfsCodes } from "./types/";
+import { defineComponent, reactive, watch, onMounted, ref } from "@vue/composition-api";
 
-import { get, create, update, destroy, search } from "./services/sub-budget-classes.service";
-import { fundingtypes } from "../fund-type/service/fund-types.service";
+import { get, create, update, destroy, search } from "./service/gfs.service";
+import { gfscategories } from "../gfs-category/service/gfs-categories.service";
 
 export default defineComponent({
-  name: "SubBudgetClass",
+  name: "GfsCodes",
   setup() {
-    let dataItems: Array<SubBudgetClass> = [];
-    let documentCategoryData: SubBudgetClass;
+    let dataItems: Array<GfsCodes> = [];
+    let gfsCategoryData: GfsCodes;
+    let fileToupload = ref("");
+    let imageUrl: any = ref("");
 
     let data = reactive({
-      title: "Manage Sub Budget Class",
+      title: "Manage GfsCodes",
       modalTitle: "",
       headers: [
+        { text: "Name", align: "start", sortable: false, value: "name" },
         { text: "Code", align: "start", sortable: false, value: "code" },
         {
-          text: "Description",
+          text: "Category code",
           align: "start",
           sortable: false,
-          value: "description",
-        },
-        {
-          text: "Fund Type Code",
-          align: "start",
-          sortable: false,
-          value: "funding_type.code",
-        },
-        {
-          text: "CarryOver Fund Type Code",
-          align: "start",
-          sortable: false,
-          value: "carryover_fund_type.code",
+          value: "category.description",
         },
 
         { text: "Actions", value: "actions", sortable: false },
@@ -177,12 +153,9 @@ export default defineComponent({
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
-      formData: documentCategoryData,
-      params: {
-        total: 10,
-        size: 10,
-      },
-      fundingtypes: [],
+      formData: gfsCategoryData,
+      documentcategories: [],
+      gfscategories: [],
       rows: ["10", "20", "50", "100"],
       itemtodelete: "",
       response: {},
@@ -191,24 +164,14 @@ export default defineComponent({
     onMounted(() => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
-        data.response = {
-          from,
-          to,
-          total,
-          current_page,
-          per_page,
-          last_page,
-        };
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
-      fundingtypes().then((response: any) => {
-        data.fundingtypes = response.data.data.data;
-      });
-    });
 
-    computed(() => {
-      return "test";
+      gfscategories({ per_page: 2000 }).then((response: any) => {
+        data.gfscategories = response.data.data.data;
+      });
     });
 
     const searchCategory = (categoryName) => {
@@ -229,29 +192,29 @@ export default defineComponent({
       });
     };
 
-    const deleteSubBudgetClass = (deleteId: any) => {
+    const deleteGfsCode = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getSubBudgetClass = () => {
+
+    const getGfsCode = () => {
       get(data).then((response) => {
-        //console.log("data", response.data);
+        // console.log("data", response.data);
       });
     };
 
     const cancelDialog = () => {
-      data.formData = {} as SubBudgetClass;
+      data.formData = {} as GfsCodes;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as SubBudgetClass;
+      data.formData = {} as GfsCodes;
       data.deletemodal = false;
     };
 
     const remove = () => {
-      console.log("delete data with id", data.itemtodelete);
       destroy(data.itemtodelete).then(() => {
         reloadData();
         data.deletemodal = false;
@@ -259,11 +222,10 @@ export default defineComponent({
     };
 
     const save = () => {
-      console.log("Form Data", data.formData);
       if (data.formData.id) {
-        updateFinancialYear(data.formData);
+        updateGfsCodes(data.formData);
       } else {
-        createUser(data.formData);
+        createGfsCode(data.formData);
       }
     };
 
@@ -272,27 +234,40 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as SubBudgetClass;
+        data.formData = {} as GfsCodes;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
     };
 
-    const updateFinancialYear = (data: any) => {
+    const updateGfsCodes = (data: any) => {
       update(data).then((response) => {
-        console.log("Updated data", response.data);
         reloadData();
         cancelDialog();
       });
     };
 
-    const createUser = (data: any) => {
+    const createGfsCode = (data: any) => {
       create(data).then((response) => {
-        console.log("Created data", response.data);
         reloadData();
         cancelDialog();
       });
     };
+    // watching a getter
+
+    watch(fileToupload, (fileToupload: any) => {
+      if (!(fileToupload instanceof File)) {
+        return;
+      }
+      let fileReader = new FileReader();
+
+      fileReader.readAsDataURL(fileToupload);
+
+      fileReader.addEventListener("load", () => {
+        imageUrl.value = fileReader.result;
+      });
+    });
+
     const getData = (params: any) => {
       data.response = params;
       get(params).then((response: AxiosResponse) => {
@@ -303,17 +278,18 @@ export default defineComponent({
 
     return {
       data,
-      getData,
       openDialog,
       cancelDialog,
-      deleteSubBudgetClass,
-      getSubBudgetClass,
-      updateFinancialYear,
+      deleteGfsCode,
+      getGfsCode,
+      updateGfsCodes,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
       searchCategory,
+      imageUrl,
+      getData,
     };
   },
 });

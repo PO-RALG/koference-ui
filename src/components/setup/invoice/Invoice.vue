@@ -153,11 +153,10 @@
 <script lang="ts">
 import { AxiosResponse } from "axios";
 import { ManageInvoice } from "./types";
-import store from "@/store";
 import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
 
 import { get, create, update, destroy, search, activation } from "./services/invoice";
-import { allgfscodes } from "../gfs-code/service/gfs.service";
+import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import { customers } from "../customer/services/customer.service";
 import { itemdefinitions } from "../invoice-item-definition/services/invoice-item-definition";
 
@@ -235,7 +234,6 @@ export default defineComponent({
     });
     const setActivation = (item) => {
       activation(item).then((response: any) => {
-        console.log("activated data", response.data);
         reloadData();
       });
     };
@@ -246,7 +244,6 @@ export default defineComponent({
     const searchCategory = (categoryName) => {
       if (categoryName != null) {
         search({ invoice_number: categoryName.invoice_number }).then((response: any) => {
-          console.log("response data", response.data.data);
           data.items = response.data.data.data;
         });
       } else {
@@ -267,10 +264,9 @@ export default defineComponent({
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
+
     const getInvoiceItemdefinition = () => {
-      get(data).then((response) => {
-        console.log("data", response.data);
-      });
+      get(data).then((response) => {});
     };
 
     const cancelDialog = () => {
@@ -284,7 +280,6 @@ export default defineComponent({
     };
 
     const remove = () => {
-      console.log("delete data with id", data.itemtodelete);
       destroy(data.itemtodelete).then(() => {
         reloadData();
         data.deletemodal = false;
@@ -293,7 +288,6 @@ export default defineComponent({
 
     const save = () => {
       data.formData.items = data.invoice_items;
-      console.log("Form Data", data.formData);
       if (data.formData.id) {
         updateInvoiceItemDefinition(data.formData);
       } else {
@@ -314,7 +308,6 @@ export default defineComponent({
 
     const updateInvoiceItemDefinition = (data: any) => {
       update(data).then((response) => {
-        console.log("Updated data", response.data);
         reloadData();
         cancelDialog();
       });
@@ -322,7 +315,6 @@ export default defineComponent({
 
     const createCustomer = (data: any) => {
       create(data).then((response) => {
-        console.log("Created data", response.data);
         reloadData();
         cancelDialog();
       });
@@ -345,9 +337,8 @@ export default defineComponent({
     const removeRow = (index: any) => {
       data.invoice_items.splice(index, 1);
     };
-    const previewInvoice = (item: number) => {
-      console.log("data", item);
-    };
+
+    const previewInvoice = (item: number) => {};
 
     return {
       data,

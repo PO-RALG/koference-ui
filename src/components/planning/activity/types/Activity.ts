@@ -1,5 +1,5 @@
-import { Project } from "@/components/setup/project/types/Project";
-import { SubBudgetClass } from "@/components/setup/sub-budget-class/types/SubBudgetClass";
+import { Project } from "@/components/coa/project/types/Project";
+import { SubBudgetClass } from "@/components/coa/sub-budget-class/types/SubBudgetClass";
 
 export interface Activity {
   id: number;
@@ -8,5 +8,5 @@ export interface Activity {
   project_id: number;
   sub_budget_class_id: number;
   project: Project;
-  sub_budget_class:SubBudgetClass
+  sub_budget_class: SubBudgetClass;
 }

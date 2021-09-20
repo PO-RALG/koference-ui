@@ -107,12 +107,16 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       get({}).then((response: any) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
-    });
+    };
 
     const cancelDialog = () => {
       data.formData = {} as Level;
@@ -142,6 +146,7 @@ export default defineComponent({
         console.log(response.status);
         if (response.status === 200) {
           cancelDialog();
+          initialize();
         }
       });
     };
@@ -150,6 +155,7 @@ export default defineComponent({
       createLevel(data).then((response) => {
         if (response.status === 200) {
           cancelDialog();
+          initialize();
         }
       });
     };
@@ -166,8 +172,9 @@ export default defineComponent({
 
     const deleteItem = (item: number | string) => {
       deleteLevel(item).then((response) => {
-        console.log(response);
+        initialize();
       });
+
       data.item = null;
       data.isOpen = false;
     };

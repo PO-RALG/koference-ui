@@ -1,4 +1,4 @@
-import { FacilityType } from "@/components/facility-type/types/FacilityType";
+import { FacilityType } from "@/components/facility/facility-type/types/FacilityType";
 
 export interface Facility {
   id: number;
@@ -10,5 +10,5 @@ export interface Facility {
   name: string;
   phone_number: string;
   postal_address: string;
-  facility_type: FacilityType 
+  facility_type: FacilityType;
 }

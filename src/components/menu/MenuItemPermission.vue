@@ -90,6 +90,10 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       const menuID: any = attrs.id;
       find(menuID, TYPE).then((response: AxiosResponse) => {
         data.menu = response.data.data;
@@ -105,7 +109,7 @@ export default defineComponent({
           return entry.category;
         });
       });
-    });
+    };
 
     let selectedCategory = computed(() => {
       return data.selectedCategory;

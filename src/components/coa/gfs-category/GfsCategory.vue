@@ -1,7 +1,7 @@
 <template>
-  <div class="fund-types">
+  <div class="meta-data-category">
     <v-card-actions class="pa-0">
-      <h2>{{ data.title }}</h2>
+      <h2>Manage GFS Categories</h2>
       <v-spacer></v-spacer>
       <v-btn color="primary" @click="openDialog">
         <v-icon>mdi-plus</v-icon>
@@ -14,6 +14,7 @@
         :items="data.items"
         class="elevation-1"
         item-key="id"
+        :expanded.sync="data.expanded"
         :single-expand="true"
         disable-pagination
         hide-default-footer
@@ -29,21 +30,51 @@
                 flat
                 hide-details
                 prepend-icon="mdi-magnify"
-                label="Search by Name"
+                label="Filter by Category Name"
               ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
-        <template v-slot:item="{ item }">
+        <template v-slot:item="{ item, isExpanded, expand }">
           <tr>
             <td>{{ item.description }}</td>
-            <td>{{ item.code }}</td>
 
             <td>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="expand(!isExpanded)">
+                    mdi-format-list-bulleted
+                  </v-icon>
+                </template>
+                <span>List of Gfs codes</span>
+              </v-tooltip>
+            </td>
+            <td>
               <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
-              <v-icon @click="deleteFundType(item.id)"> mdi-trash-can-outline </v-icon>
+              <v-icon @click="deleteGfsCategory(item.id)"> mdi-trash-can-outline </v-icon>
             </td>
           </tr>
+        </template>
+
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length" class="pb-5 pa-3">
+            <b>Category Name:</b>
+            {{ item.description }}
+            <br />
+            Category Code:
+            <em>
+              <b class="pa-3">{{ item.code }}</b>
+            </em>
+            <v-card outlined flat max-width="80%">
+              <v-data-table
+                :headers="data.gfsCodes"
+                :items="item.gfs_codes"
+                :items-per-page="item.metadataOptions ? item.metadataOptions.length : 20"
+                hide-default-footer
+                dense
+              ></v-data-table>
+            </v-card>
+          </td>
         </template>
         <template v-slot:footer>
           <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
@@ -52,7 +83,7 @@
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Fund Types`" />
+        <ModalHeader :title="`${data.modalTitle} GfsCodes`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -81,7 +112,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Fund Types `" />
+        <ModalHeader :title="`Delete GfsCodes `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -98,30 +129,31 @@
 
 <script lang="ts">
 import { AxiosResponse } from "axios";
-import { FundTypes } from "./types";
-import store from "@/store";
-import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
+import { GfsCategories } from "./types/";
+import { defineComponent, reactive, onMounted, ref } from "@vue/composition-api";
 
-import { get, create, update, destroy, search } from "./service/fund-types.service";
+import { get, create, update, destroy, search } from "./service/gfs-categories.service";
 
 export default defineComponent({
-  name: "FundTypes",
+  name: "GfsCategories",
   setup() {
-    let dataItems: Array<FundTypes> = [];
-    let documentCategoryData: FundTypes;
+    let dataItems: Array<GfsCategories> = [];
+    let documentCategoryData: GfsCategories;
+    let fileToupload = ref("");
+    let imageUrl: any = ref("");
 
     let data = reactive({
-      title: "Manage FundTypes",
+      title: "Manage Gfs Categories",
       modalTitle: "",
       headers: [
         {
-          text: "Desciption",
+          text: "Category Name",
           align: "start",
           sortable: false,
           value: "name",
         },
         {
-          text: "Code",
+          text: "Gfs Codes List",
           align: "start",
           sortable: false,
           value: "code",
@@ -129,16 +161,23 @@ export default defineComponent({
 
         { text: "Actions", value: "actions", sortable: false },
       ],
-
+      gfsCodes: [
+        { text: "Gfs Name", align: "start", sortable: false, value: "name" },
+        { text: "Gfs Code", align: "start", sortable: false, value: "code" },
+      ],
       modal: false,
       deletemodal: false,
       items: dataItems,
       itemsToFilter: [],
       formData: documentCategoryData,
+      params: {
+        total: 10,
+        size: 10,
+      },
+      documentcategories: [],
       rows: ["10", "20", "50", "100"],
       itemtodelete: "",
       response: {},
-      documentcategories: [],
     });
 
     onMounted(() => {
@@ -155,10 +194,6 @@ export default defineComponent({
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
-    });
-
-    computed(() => {
-      return "test";
     });
 
     const searchCategory = (categoryName) => {
@@ -182,24 +217,24 @@ export default defineComponent({
       });
     };
 
-    const deleteFundType = (deleteId: any) => {
+    const deleteGfsCategory = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
-    const getFundTypes = () => {
+    const getGfsCategory = () => {
       get(data).then((response) => {
         console.log("data", response.data);
       });
     };
 
     const cancelDialog = () => {
-      data.formData = {} as FundTypes;
+      data.formData = {} as GfsCategories;
       data.modal = !data.modal;
     };
 
     const cancelConfirmDialog = () => {
-      data.formData = {} as FundTypes;
+      data.formData = {} as GfsCategories;
       data.deletemodal = false;
     };
 
@@ -214,9 +249,9 @@ export default defineComponent({
     const save = () => {
       console.log("Form Data", data.formData);
       if (data.formData.id) {
-        updateFundType(data.formData);
+        updateGfsCategory(data.formData);
       } else {
-        createUser(data.formData);
+        createCategory(data.formData);
       }
     };
 
@@ -225,27 +260,26 @@ export default defineComponent({
         data.formData = formData;
         data.modalTitle = "Update";
       } else {
-        data.formData = {} as FundTypes;
+        data.formData = {} as GfsCategories;
         data.modalTitle = "Create";
       }
       data.modal = !data.modal;
     };
 
-    const updateFundType = (data: any) => {
+    const updateGfsCategory = (data: any) => {
       update(data).then((response) => {
-        console.log("Updated data", response.data);
         reloadData();
         cancelDialog();
       });
     };
 
-    const createUser = (data: any) => {
+    const createCategory = (data: any) => {
       create(data).then((response) => {
-        console.log("Created data", response.data);
         reloadData();
         cancelDialog();
       });
     };
+    // watching a getter
 
     const getData = (params: any) => {
       data.response = params;
@@ -260,14 +294,15 @@ export default defineComponent({
       getData,
       openDialog,
       cancelDialog,
-      deleteFundType,
-      getFundTypes,
-      updateFundType,
+      deleteGfsCategory,
+      getGfsCategory,
+      updateGfsCategory,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
       searchCategory,
+      imageUrl,
     };
   },
 });

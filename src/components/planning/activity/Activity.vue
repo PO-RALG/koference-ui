@@ -146,11 +146,11 @@
 <script lang="ts">
 import { AxiosResponse } from "axios";
 import { Activity } from "./types/Activity";
-import { Project } from "@/components/setup/project/types/Project";
+import { Project } from "@/components/coa/project/types/Project";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 import { get, create, update, destroy, search } from "./services/activity.service";
-import { get as getProject } from "@/components/setup/project/services/project.service";
-import { get as getSubBudgetClass } from "@/components/setup/sub-budget-class/services/sub-budget-classes.service";
+import { get as getProject } from "@/components/coa/project/services/project.service";
+import { get as getSubBudgetClass } from "@/components/coa/sub-budget-class/services/sub-budget-classes.service";
 
 export default defineComponent({
   name: "Activity",

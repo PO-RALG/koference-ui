@@ -46,6 +46,10 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       const roleID: any = attrs.id;
       find(roleID).then((response: AxiosResponse) => {
         data.role = response.data.data;
@@ -55,7 +59,7 @@ export default defineComponent({
       getPermissions({}).then((response: AxiosResponse) => {
         data.permissions = response.data.data;
       });
-    });
+    };
 
     const addToSelection = (item: any) => {
       let idx = data.selected.indexOf(item);

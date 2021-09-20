@@ -200,12 +200,16 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       get(TYPE, { per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.items = response.data.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
       });
-    });
+    };
 
     const cancelDialog = () => {
       data.formData = {} as MenuItem;
@@ -245,6 +249,7 @@ export default defineComponent({
       update(TYPE, data).then((response: AxiosResponse) => {
         if (response.status === 200) {
           cancelDialog();
+          initialize();
         }
       });
     };
@@ -253,6 +258,7 @@ export default defineComponent({
       create(TYPE, data).then((response: AxiosResponse) => {
         if (response.status === 200) {
           cancelDialog();
+          initialize();
         }
       });
     };
@@ -271,6 +277,7 @@ export default defineComponent({
       const payload = item;
       deleteEntry(TYPE, payload).then((response: AxiosResponse) => {
         console.log(response);
+        initialize();
       });
       data.item = {} as MenuItem;
       data.isOpen = false;

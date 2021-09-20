@@ -121,13 +121,17 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       get({}).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.items = response.data.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
       });
       loadLevels();
-    });
+    };
 
     const cancelDialog = () => {
       data.formData = {} as Role;
@@ -164,6 +168,7 @@ export default defineComponent({
       update(data).then((response: AxiosResponse) => {
         if (response.status === 200) {
           cancelDialog();
+          initialize();
         }
       });
     };
@@ -173,7 +178,12 @@ export default defineComponent({
     };
 
     const createRole = (data: Role) => {
-      create(data);
+      create(data).then((response) => {
+        if (response.status === 200) {
+          cancelDialog();
+          initialize();
+        }
+      })
     };
 
     const openConfirmDialog = (item: Role) => {
@@ -190,6 +200,7 @@ export default defineComponent({
       const payload = item;
       deleteRole(payload).then((response: AxiosResponse) => {
         console.log(response);
+        initialize();
       });
       data.item = {} as Role;
       data.isOpen = false;

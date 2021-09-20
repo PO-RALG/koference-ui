@@ -157,12 +157,14 @@ export default defineComponent({
         data.itemsToFilter = response.data.data.data;
       });
     });
+
     const setActivation = (item) => {
       activation(item).then((response: any) => {
         console.log("activated data", response.data);
         reloadData();
       });
     };
+
     computed(() => {
       return "test";
     });

@@ -34,7 +34,6 @@ const actions = {
 
 const mutations = {
   SHOW(state, payload) {
-    console.log("payload", payload);
     state.show = true;
     state.message = payload;
   },

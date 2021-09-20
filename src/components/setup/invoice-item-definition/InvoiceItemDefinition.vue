@@ -147,12 +147,11 @@
 <script lang="ts">
 import { AxiosResponse } from "axios";
 import { ManageInvoiceItemDefinition } from "./types/";
-import store from "@/store";
 import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
 
 import { get, create, update, destroy, search, activation } from "./services/invoice-item-definition";
-import { allgfscodes } from "../../setup/gfs-code/service/gfs.service";
-import { fundingsources } from "../../setup/funding-source/services/funding-sources";
+import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
+import { fundingsources } from "@/components/coa/funding-source/services/funding-sources";
 
 export default defineComponent({
   name: "ManageInvoiceItemDefinition",
@@ -197,30 +196,32 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
+
       allgfscodes({ per_page: 2000 }).then((response: any) => {
-        console.log("gfs codes", response.data);
         data.gfscodes = response.data.data.data;
       });
+
       fundingsources({ per_page: 2000 }).then((response: any) => {
-        console.log("gfs codes", response.data);
         data.fundingsources = response.data.data.data;
       });
-    });
+    };
+
     const setActivation = (item) => {
       activation(item).then((response: any) => {
         console.log("activated data", response.data);
         reloadData();
       });
     };
-    computed(() => {
-      return "test";
-    });
 
     const searchCategory = (categoryName) => {
       console.log("argument", categoryName);
@@ -248,6 +249,7 @@ export default defineComponent({
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
+
     const getInvoiceItemdefinition = () => {
       get(data).then((response) => {
         console.log("data", response.data);

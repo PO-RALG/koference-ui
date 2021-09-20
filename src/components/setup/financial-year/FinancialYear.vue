@@ -23,7 +23,7 @@
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
                 label="Filter by Name"
-                @change="searchCategory($event)"
+                @change="searchFinancialYear($event)"
                 :items="data.itemsToFilter"
                 :item-text="'name'"
                 :item-divider="true"
@@ -41,7 +41,7 @@
           <span>{{ item.endDate }}</span>
         </template>
         <template v-slot:item.activations="{ item }">
-          <v-switch :input-value="item.current" @change="setActivation(item)" value></v-switch>
+          <v-switch :input-value="item.current" @change="toggleStatus(item)" value></v-switch>
         </template>
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
@@ -72,7 +72,7 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="12">
-                  <v-text-field v-model="data.formData.name" label="First name" required></v-text-field>
+                  <v-text-field v-model="data.formData.name" label="Financial Year Name" required></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -115,10 +115,9 @@
 <script lang="ts">
 import { AxiosResponse } from "axios";
 import { FinancialYear } from "./types/FinancialYear";
-import store from "@/store";
-import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 
-import { get, create, update, destroy, activation, search } from "./services/financialyear.service";
+import { get, create, update, destroy, setCurrent, search } from "./services/financialyear.service";
 
 export default defineComponent({
   name: "FinancialYear",
@@ -147,24 +146,21 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
       });
-    });
+    };
 
-    computed(() => {
-      return "test";
-    });
-
-    const searchCategory = (categoryName) => {
-      // console.log("argument", categoryName);
-
+    const searchFinancialYear = (categoryName) => {
       if (categoryName != null) {
         search({ name: categoryName.name }).then((response: any) => {
-          //console.log("response data", response);
           data.items = response.data.data.data;
         });
       } else {
@@ -172,12 +168,14 @@ export default defineComponent({
       }
     };
 
-    const setActivation = (item) => {
-      activation(item).then((response: any) => {
-        console.log("activated data", response.data);
-        reloadData();
+    const toggleStatus = (item) => {
+      setCurrent(item).then((response: any) => {
+        if (response.status === 200) {
+          reloadData();
+        }
       });
     };
+
     const reloadData = () => {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
@@ -191,6 +189,7 @@ export default defineComponent({
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
+
     const getFinancialYear = () => {
       get(data).then((response) => {
         console.log("data", response.data);
@@ -208,7 +207,6 @@ export default defineComponent({
     };
 
     const remove = () => {
-      console.log("delete data with id", data.itemtodelete);
       destroy(data.itemtodelete).then(() => {
         reloadData();
         data.deletemodal = false;
@@ -216,11 +214,10 @@ export default defineComponent({
     };
 
     const save = () => {
-      console.log("Form Data", data.formData);
       if (data.formData.id) {
         updateFinancialYear(data.formData);
       } else {
-        createUser(data.formData);
+        createFinancialYear(data.formData);
       }
     };
 
@@ -237,17 +234,19 @@ export default defineComponent({
 
     const updateFinancialYear = (data: any) => {
       update(data).then((response) => {
-        console.log("Updated data", response.data);
-        reloadData();
-        cancelDialog();
+        if (response.status === 200) {
+          reloadData();
+          cancelDialog();
+        }
       });
     };
 
-    const createUser = (data: any) => {
+    const createFinancialYear = (data: any) => {
       create(data).then((response) => {
-        console.log("Created data", response.data);
-        reloadData();
-        cancelDialog();
+        if (response.status === 200) {
+          reloadData();
+          cancelDialog();
+        }
       });
     };
 
@@ -271,8 +270,8 @@ export default defineComponent({
       reloadData,
       remove,
       cancelConfirmDialog,
-      setActivation,
-      searchCategory,
+      toggleStatus,
+      searchFinancialYear,
     };
   },
 });

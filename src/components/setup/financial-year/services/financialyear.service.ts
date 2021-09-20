@@ -1,10 +1,13 @@
 import axios from "axios";
 
+const API = "/api/v1/financial-years";
+
 const get = async (payload: any) => {
-  return await axios.get("/api/v1/financial-years", { params: payload });
+  return await axios.get(`${API}`, { params: payload });
 };
+
 const search = async (payload: any) => {
-  return await axios.get(`/api/v1/financial-years/`, {
+  return await axios.get(`${API}`, {
     params: {
       search: JSON.stringify(payload),
     },
@@ -12,22 +15,23 @@ const search = async (payload: any) => {
 };
 
 const find = async (id: string | number) => {
-  return await axios.get(`/api/v1/financial-years/${id}`);
+  return await axios.get(`${API}/${id}`);
 };
 
 const create = async (payload: any) => {
-  return await axios.post(`/api/v1/financial-years`, payload);
+  return await axios.post(`${API}`, payload);
 };
-const activation = async (payload: any) => {
-  return await axios.post(`/api/v1/set-financial-year/` + payload.id, payload);
+
+const setCurrent = async (payload: any) => {
+  return await axios.post(`${API}/${payload.id}/set-current`);
 };
 
 const update = async (payload: any) => {
-  return await axios.put(`/api/v1/financial-years/` + payload.id, payload);
-};
-const destroy = async (payload: any) => {
-  console.log("payload", payload);
-  return await axios.delete(`/api/v1/financial-years/` + payload);
+  return await axios.put(`${API}/${payload.id}`, payload);
 };
 
-export { get, find, create, update, destroy, activation, search };
+const destroy = async (id: string | number) => {
+  return await axios.delete(`${API}/${id}`);
+};
+
+export { get, find, create, update, destroy, setCurrent, search };

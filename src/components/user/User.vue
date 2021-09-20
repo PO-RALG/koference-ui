@@ -140,7 +140,7 @@ import { get, create, update, deleteUser } from "./services/user.service";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getRoles } from "@/components/role/services/role-services";
 import { get as getLevels } from "@/components/admin-area/level/services/level-services";
-import { get as getFacilities } from "@/components/facility/services/facility.service";
+import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
 import { User } from "./types/User";
 
 export default defineComponent({
@@ -190,6 +190,10 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       get({}).then((response: AxiosResponse) => {
         let { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
@@ -198,7 +202,7 @@ export default defineComponent({
       loadLevels();
       getNodes();
       loadRoles();
-    });
+    };
 
     const cancelDialog = () => {
       data.formData = {} as User;
@@ -264,6 +268,7 @@ export default defineComponent({
         console.log(response.status);
         if (response.status === 200) {
           cancelDialog();
+          initialize();
         }
       });
     };
@@ -272,6 +277,7 @@ export default defineComponent({
       create(data).then((response: AxiosResponse) => {
         if (response.status === 200) {
           cancelDialog();
+          initialize();
         }
       });
     };
@@ -290,6 +296,7 @@ export default defineComponent({
       const payload = item;
       deleteUser(payload).then((response: AxiosResponse) => {
         console.log(response);
+        initialize();
       });
       data.item = {} as User;
       data.isOpen = false;

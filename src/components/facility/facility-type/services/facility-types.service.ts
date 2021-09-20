@@ -1,10 +1,13 @@
 import axios from "axios";
 
+const API = "/api/v1/facility-types";
+
 const get = async (payload: any) => {
-  return await axios.get("/api/v1/facility-types", { params: payload });
+  return await axios.get(`${API}`, { params: payload });
 };
+
 const search = async (payload: any) => {
-  return await axios.get(`/api/v1/facility-types/`, {
+  return await axios.get(`${API}`, {
     params: {
       search: JSON.stringify(payload),
     },
@@ -12,19 +15,19 @@ const search = async (payload: any) => {
 };
 
 const find = async (id: string | number) => {
-  return await axios.get(`/api/v1/facility-types/${id}`);
+  return await axios.get(`${API}/${id}`);
 };
 
 const create = async (payload: any) => {
-  return await axios.post(`/api/v1/facility-types`, payload);
+  return await axios.post(`${API}`, payload);
 };
 
 const update = async (payload: any) => {
-  return await axios.put(`/api/v1/facility-types/` + payload.id, payload);
+  return await axios.put(`${API}/${payload.id}`, payload);
 };
 const destroy = async (payload: any) => {
   console.log("payload", payload);
-  return await axios.delete(`/api/v1/facility-types/` + payload);
+  return await axios.delete(`${API}/${payload}`);
 };
 
 export { get, find, create, update, destroy, search };

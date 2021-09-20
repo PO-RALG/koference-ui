@@ -117,7 +117,6 @@
 
 <script lang="ts">
 import { BackAccount } from "./types/BackAccount";
-import store from "@/store";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 
 import { get, create, update, destroy, search } from "./services/back-accounts.service";
@@ -192,6 +191,10 @@ export default defineComponent({
     });
 
     onMounted(() => {
+      initialize();
+    });
+
+    const initialize = () => {
       // make api call
       let params: any = {
         total: 10,
@@ -206,7 +209,7 @@ export default defineComponent({
         console.log("gfs codes", response.data.data.data);
         data.accounttypes = response.data.data.data;
       });
-    });
+    };
 
     const searchCategory = (categoryName) => {
       console.log("argument", categoryName);
@@ -237,6 +240,7 @@ export default defineComponent({
       data.itemtodelete = deleteId;
       // console.log("delete year", data);
     };
+
     const getSubBudgetClass = () => {
       get(data).then((response) => {
         console.log("data", response.data);

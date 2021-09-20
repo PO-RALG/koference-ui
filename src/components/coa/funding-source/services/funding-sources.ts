@@ -3,9 +3,11 @@ import axios from "axios";
 const get = async (payload: any) => {
   return await axios.get("/api/v1/funding-sources", { params: payload });
 };
+
 const fundingsources = async (payload: any) => {
   return await axios.get("/api/v1/funding-sources", { params: payload });
 };
+
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/funding-sources/`, {
     params: {
@@ -21,25 +23,14 @@ const find = async (id: string | number) => {
 const create = async (payload: any) => {
   return await axios.post(`/api/v1/funding-sources`, payload);
 };
-const activation = async (payload: any) => {
-  return await axios.post(`/api/v1/set-financial-year/` + payload.id, payload);
-};
 
 const update = async (payload: any) => {
   return await axios.put(`/api/v1/funding-sources/` + payload.id, payload);
 };
+
 const destroy = async (payload: any) => {
   console.log("payload", payload);
   return await axios.delete(`/api/v1/funding-sources/` + payload);
 };
 
-export {
-  get,
-  find,
-  create,
-  update,
-  destroy,
-  activation,
-  fundingsources,
-  search,
-};
+export { get, find, create, update, destroy, fundingsources, search };
