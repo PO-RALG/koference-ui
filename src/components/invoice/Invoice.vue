@@ -217,7 +217,26 @@
                 <td colspan="4">
                   <table>
                     <tr>
-                      <td class="title pb-10">
+                      <td class="title">
+                        <v-btn
+                          color="green darken-1"
+                          text
+                          @click="cancelInvoiceDialog"
+                          ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
+                        >
+                        <v-btn
+                          color="info darken-1"
+                          text
+                          @click="cancelInvoiceDialog"
+                          ><v-icon> mdi-printer </v-icon> Print</v-btn
+                        >
+
+                        <v-btn
+                          color="red darken-1"
+                          text
+                          @click="cancelInvoiceDialog"
+                          >Close</v-btn
+                        >
                         <!-- <img
                           src="https://www.sparksuite.com/images/logo.png"
                           style="width: 100%; max-width: 300px"
@@ -308,7 +327,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="green darken-1" text @click="cancelInvoiceDialog"
+          <!-- <v-btn color="green darken-1" text @click="cancelInvoiceDialog"
             ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
           >
           <v-btn color="info darken-1" text @click="cancelInvoiceDialog"
@@ -317,7 +336,7 @@
 
           <v-btn color="red darken-1" text @click="cancelInvoiceDialog"
             >Close</v-btn
-          >
+          > -->
         </ModalFooter>
       </template>
     </Modal>
