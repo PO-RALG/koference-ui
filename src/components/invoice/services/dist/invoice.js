@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.activation = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
+exports.viewinvoice = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
 var axios_1 = require("axios");
 var get = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -62,15 +62,6 @@ var search = function (payload) { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.search = search;
-var activation = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/invoices/" + payload.id + "/change-status", payload)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.activation = activation;
 var find = function (id) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -98,6 +89,15 @@ var update = function (payload) { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.update = update;
+var viewinvoice = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoices/" + payload.id, payload)];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.viewinvoice = viewinvoice;
 var destroy = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {

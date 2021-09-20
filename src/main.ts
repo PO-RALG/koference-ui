@@ -12,6 +12,12 @@ import vuetify from "./plugins/vuetify";
 
 import "@/mixins";
 
+import moment from "moment"; //require
+
+Vue.filter("myDate", function (created) {
+  return moment(created).format("Do MMMM YYYY");
+});
+
 import "./assets/main.scss";
 import "./components/shared";
 
@@ -22,7 +28,9 @@ axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
 const currentUser = store.getters["Auth/getCurrentUser"];
 
 axios.defaults["isLoading"] = true;
-axios.defaults.headers.common["Authorization"] = currentUser ? `Bearer ${currentUser.token}` : null;
+axios.defaults.headers.common["Authorization"] = currentUser
+  ? `Bearer ${currentUser.token}`
+  : null;
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 const cancelSource = axios.CancelToken.source();
@@ -117,7 +125,7 @@ axios.interceptors.response.use(
 Vue.use(VueCompositionAPI);
 Vue.use(VueJwtDecode);
 Vue.use(PerfectScrollbar);
-Vue.use(VueAxios, axios);
+Vue.use(VueAxios, axios, moment);
 
 Vue.config.productionTip = false;
 
