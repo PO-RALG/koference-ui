@@ -259,7 +259,7 @@ export default defineComponent({
       });
     };
 
-    const searchItem = (itemName) => {
+    const searchItem = (itemName: Facility) => {
       if (itemName != null) {
         search({ name: itemName.name }).then((response: AxiosResponse) => {
           data.items = response.data.data.data;

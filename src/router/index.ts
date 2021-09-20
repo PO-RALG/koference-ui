@@ -28,9 +28,11 @@ import { activityCostingRoutes } from "@/components/planning/activity-costing";
 import { invoiceRoutes } from "@/components/setup/invoice";
 import { revenueProjectionRoutes } from "@/components/planning/revenue-projection";
 import { supplierRoutes } from "@/components/payable/supplier";
+import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+
 
 Vue.use(VueRouter);
 
@@ -79,6 +81,7 @@ const routes: Array<RouteConfig> = [
       ...invoiceRoutes,
       ...revenueProjectionRoutes,
       ...supplierRoutes,
+      ...fundAllocationRoutes,
     ],
   },
 ];
