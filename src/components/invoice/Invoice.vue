@@ -144,19 +144,18 @@
                     <v-btn
                       color="blue darken-1"
                       text
-                      @click="addRow"
-                      v-if="index == data.invoice_items.length - 1"
-                    >
-                      <v-icon small color="success"> mdi-plus-circle </v-icon>
-                    </v-btn>
-
-                    <v-btn
-                      color="blue darken-1"
-                      text
                       v-if="index || (!index && data.invoice_items.length > 1)"
                       @click="removeRow(index)"
                     >
                       <v-icon small color="red"> mdi-minus-circle </v-icon>
+                    </v-btn>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="addRow"
+                      v-if="index == data.invoice_items.length - 1"
+                    >
+                      <v-icon small color="success"> mdi-plus-circle </v-icon>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -260,7 +259,8 @@
                     flat
                     label="Item name"
                     v-model="item.definition.name"
-                  ></v-text-field>
+                  >
+                  </v-text-field>
                 </td>
                 <td width="30%">
                   <v-text-field
@@ -542,14 +542,12 @@ export default defineComponent({
 
 <style>
 .invoice-box {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: auto;
-  padding: 30px;
+  padding: 2px;
   /* border: 1px solid #eee; */
   /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); */
-  font-size: 16px;
   line-height: 24px;
-  font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
   color: #555;
 }
 
@@ -573,7 +571,6 @@ export default defineComponent({
 }
 
 .invoice-box table tr.top table td.title {
-  font-size: 45px;
   line-height: 45px;
   color: #333;
 }
@@ -585,7 +582,6 @@ export default defineComponent({
 .invoice-box table tr.heading td {
   background: #eee;
   border-bottom: 1px solid #ddd;
-  font-weight: bold;
 }
 
 .invoice-box table tr.details td {
@@ -611,7 +607,6 @@ export default defineComponent({
 
 .invoice-box table tr.total td:nth-child(2) {
   border-top: 2px solid #eee;
-  font-weight: bold;
 }
 
 .invoice-box input[type="number"] {
@@ -633,11 +628,6 @@ export default defineComponent({
 }
 
 /** RTL **/
-.rtl {
-  direction: rtl;
-  font-family: Tahoma, "Helvetica Neue", "Helvetica", Helvetica, Arial,
-    sans-serif;
-}
 
 .rtl table {
   text-align: right;

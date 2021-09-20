@@ -42,7 +42,7 @@
         </template>
         <template v-slot:item.activations="{ item }">
           <v-switch
-            :input-value="item.current"
+            :input-value="item.active"
             @change="toggleStatus(item)"
             value
           ></v-switch>
@@ -156,7 +156,7 @@ import {
   create,
   update,
   destroy,
-  setCurrent,
+  startFinancialYear,
   search,
 } from "./services/financialyear.service";
 
@@ -211,7 +211,7 @@ export default defineComponent({
     };
 
     const toggleStatus = (item) => {
-      setCurrent(item).then((response: any) => {
+      startFinancialYear(item).then((response: any) => {
         if (response.status === 200) {
           reloadData();
         }

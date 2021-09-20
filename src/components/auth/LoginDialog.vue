@@ -36,7 +36,7 @@
     <!-- login form end -->
     <template v-slot:footer>
       <ModalFooter>
-        <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+        <v-btn color="blue darken-1" :disabled="true" text @click="cancelDialog">Cancel</v-btn>
         <v-btn color="primary" class="white--text" @click="login" :loading="data.loading">
           <v-icon left>mdi-login</v-icon>LOGIN
         </v-btn>
@@ -57,7 +57,6 @@ const { useState } = createNamespacedHelpers("LoginDialog");
 
 export default Vue.extend({
   setup(props) {
-    const query = props.query;
     let data = reactive({
       valid: true,
       show: true,
@@ -101,7 +100,7 @@ export default Vue.extend({
     };
 
     const cancelDialog = () => {
-      data.show = !data.show;
+      store.dispatch("LoginDialog/DONE");
     };
 
     return {
