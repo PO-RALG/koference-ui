@@ -41,7 +41,7 @@
           <span>{{ item.endDate }}</span>
         </template>
         <template v-slot:item.activations="{ item }">
-          <v-switch :input-value="item.current" @change="toggleStatus(item)" value></v-switch>
+          <v-switch :input-value="item.active" @change="toggleStatus(item)" value></v-switch>
         </template>
         <template v-slot:item.actions="{ item }">
           <v-tooltip bottom>
@@ -117,7 +117,7 @@ import { AxiosResponse } from "axios";
 import { FinancialYear } from "./types/FinancialYear";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 
-import { get, create, update, destroy, setCurrent, search } from "./services/financialyear.service";
+import { get, create, update, destroy, startFinancialYear, search } from "./services/financialyear.service";
 
 export default defineComponent({
   name: "FinancialYear",
@@ -169,7 +169,7 @@ export default defineComponent({
     };
 
     const toggleStatus = (item) => {
-      setCurrent(item).then((response: any) => {
+      startFinancialYear(item).then((response: any) => {
         if (response.status === 200) {
           reloadData();
         }

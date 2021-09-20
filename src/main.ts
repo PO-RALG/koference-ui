@@ -14,6 +14,7 @@ import "@/mixins";
 
 import "./assets/main.scss";
 import "./components/shared";
+import capitalize from "./helpers";
 
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
@@ -43,7 +44,7 @@ const requestHandler = (request: any) => {
 const errorHandler = (error: any) => {
   const payload: SnackBarPayload = {
     error: error.data.errors,
-    title: error.data.message,
+    title: capitalize(error.data.message),
     color: "error",
     icon: "mdi-alert-box",
     class: "error--text",
@@ -62,7 +63,7 @@ const errorHandler = (error: any) => {
 
 const successHandler = (response: any) => {
   const payload: SnackBarPayload = {
-    title: response.data.message,
+    title: capitalize(response.data.message),
     color: "success",
     icon: "mdi-information",
     class: "message success--text",
