@@ -108,9 +108,17 @@
                     v-model="data.formData.description"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="12">
+                <v-col class="pt-2" cols="12" md="12">
                   <tr class="heading blue-grey lighten-5">
-                    <td colspan="3">Add Invoice Items</td>
+                    <td colspan="3">
+                      Add invoice item {{ " " }}{{ "by pressing" }}
+                      <v-icon small color="success"> mdi-plus-circle </v-icon>
+                      {{ " " }} {{ "or" }} {{ "remove by pressing " }}{{ " " }}
+                      <v-icon small color="red"> mdi-minus-circle </v-icon
+                      >{{ " " }}{{ "sign in the right" }}
+                      {{ " " }}
+                      <v-icon color=""> mdi-arrow-right-bold </v-icon>
+                    </td>
                   </tr>
                 </v-col>
                 <v-row
@@ -128,6 +136,9 @@
                       :name="`data.invoice_items[${index}][invoice_item_definition_id]`"
                       label="Select Ivoice Item"
                       item-value="id"
+                      outlined
+                      dense
+                      hide-details
                     ></v-select>
                   </v-col>
 
@@ -135,6 +146,9 @@
                     <!-- :rules="formValidation.streamNameRules"-->
                     <v-text-field
                       label="Add Amount"
+                      outlined
+                      dense
+                      hide-details
                       v-model="invoice.amount"
                       :name="`data.invoice_items[${index}][name]`"
                     ></v-text-field>
@@ -191,7 +205,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.invoicedetails" :width="1000">
+    <Modal :modal="data.invoicedetails" :width="900">
       <template v-slot:header>
         <ModalHeader :title="`Invoice Details`" />
       </template>
@@ -208,11 +222,14 @@
                           src="https://www.sparksuite.com/images/logo.png"
                           style="width: 100%; max-width: 300px"
                         /> -->
-                        <!-- <img :src="data.coat" class="login-logo" /> -->
                       </td>
 
                       <td>
-                        Invoice #:{{ data.invoicedata.invoice_number }}<br />
+                        <strong>
+                          Invoice #:{{
+                            data.invoicedata.invoice_number
+                          }}</strong
+                        ><br />
                         Created: {{ data.invoicedata.date | myDate }}<br />
                       </td>
                     </tr>
@@ -225,6 +242,7 @@
                   <table>
                     <tr>
                       <td>
+                        <img :src="data.coat" class="login-logo pt-5" /><br />
                         Sparksuite, Inc.<br />
                         12345 Sunny Road<br />
                         Sunnyville, CA 12345
@@ -278,7 +296,11 @@
 
               <tr class="total">
                 <td colspan="3"></td>
-                <td>Total:{{ data.invoicedata.amount }}</td>
+                <td>
+                  <strong> Total:{{ data.invoicedata.amount }} </strong>
+                  <v-icon small>mdi-slash-forward</v-icon>
+                  <v-icon small class="">mdi-equal</v-icon>
+                </td>
               </tr>
             </table>
           </div>
@@ -402,12 +424,6 @@ export default defineComponent({
       });
     });
 
-    const setActivation = (item) => {
-      activation(item).then(() => {
-        reloadData();
-      });
-    };
-
     const searchCategory = (categoryName) => {
       if (categoryName != null) {
         search({ invoice_number: categoryName.invoice_number }).then(
@@ -440,7 +456,13 @@ export default defineComponent({
 
     const cancelDialog = () => {
       data.formData = {} as ManageInvoice;
-      data.modal = !data.modal;
+      (data.invoice_items = [
+        {
+          invoice_item_definition_id: "",
+          amount: "",
+        },
+      ]),
+        (data.modal = !data.modal);
     };
     const cancelInvoiceDialog = () => {
       data.invoicedetails = false;
@@ -532,7 +554,6 @@ export default defineComponent({
       remove,
       cancelConfirmDialog,
       searchCategory,
-      setActivation,
       previewInvoice,
       cancelInvoiceDialog,
     };
@@ -542,7 +563,7 @@ export default defineComponent({
 
 <style>
 .invoice-box {
-  max-width: 1100px;
+  max-width: 850px;
   margin: auto;
   padding: 2px;
   /* border: 1px solid #eee; */
@@ -637,7 +658,7 @@ export default defineComponent({
   text-align: left;
 }
 .login-logo {
-  height: 25%;
-  width: 25%;
+  height: 10%;
+  width: 10%;
 }
 </style>
