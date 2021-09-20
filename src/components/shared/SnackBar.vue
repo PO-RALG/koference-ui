@@ -2,38 +2,40 @@
   <v-snackbar
     @click="dismiss"
     v-if="show"
-    :color="message.color"
+    color="black"
     v-model="show"
     :bottom="true"
     :right="true"
+    :vertical="message.color !== 'success'"
+    :multiline="data.multiline"
     timeout="-1"
   >
     <v-row v-if="message.color === 'success'" @click="dismiss">
       <v-col cols="12" sm="12" md="12" lg="12">
-        <p class="message">
-          {{ message.info }}
+        <p :class="message.class">
+          {{ message.title }}
         </p>
       </v-col>
     </v-row>
     <v-row v-else @click="dismiss">
       <v-col cols="12" sm="12" md="12" lg="12">
-        <p class="message">
-          {{ message.message }}
+        <p :class="message.class">
+          {{ message.title }}
         </p>
-        <ul v-if="typeof message.info === 'object'">
-          <li v-for="(entry, index) in message.info" :key="index">
+        <ul v-if="typeof message.error === 'object'">
+          <li v-for="(entry, index) in message.error" :key="index" :class="message.class">
             {{ entry }}
           </li>
         </ul>
         <ul v-else>
-          <li>
-            {{ message.info }}
+          <li :class="message.class">
+            {{ message.error }}
           </li>
         </ul>
       </v-col>
     </v-row>
     <template v-slot:action="{ attrs }">
-      <v-btn color="white" text v-bind="attrs" @click="dismiss">Close</v-btn>
+      <v-btn :class="message.class" text v-bind="attrs" @click="dismiss">Close</v-btn>
     </template>
   </v-snackbar>
 </template>
@@ -49,7 +51,9 @@ export default defineComponent({
     let { show, message } = useState(["show", "message"]);
 
     let data = reactive({
-      timeout: 100000,
+      timeout: 10000,
+      vertical: false,
+      multiline: true,
     });
 
     const dismiss = () => {

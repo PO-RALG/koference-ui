@@ -27,12 +27,13 @@ axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 const cancelSource = axios.CancelToken.source();
 
-const snackbar = {
-  show: false,
-  color: "",
-  icon: "",
-  message: "",
-};
+interface SnackBarPayload {
+  color: string;
+  error?: Record<string, unknown>;
+  title: string;
+  icon: string;
+  class: string;
+}
 
 const requestHandler = (request: any) => {
   request.cancelToken = cancelSource.token;
@@ -40,22 +41,33 @@ const requestHandler = (request: any) => {
 };
 
 const errorHandler = (error: any) => {
-  const errorResponse = error.data;
-  const payload = { info: error.data.errors, message: error.data.message, color: "error", icon: "mdi-alert-box" };
-  switch (errorResponse.message) {
+  const payload: SnackBarPayload = {
+    error: error.data.errors,
+    title: error.data.message,
+    color: "error",
+    icon: "mdi-alert-box",
+    class: "error--text",
+  };
+
+  switch (error.data.message) {
     case "Token has expired":
-      showLoginDialog(errorResponse);
+      showLoginDialog(error.data);
       break;
     default:
       store.dispatch("SnackBar/SHOW", payload);
       break;
   }
-  return Promise.reject({ ...errorResponse });
+  return Promise.reject({ ...error.data });
 };
 
 const successHandler = (response: any) => {
-  const message = response.data.message;
-  const payload = { info: message, color: "success", icon: "mdi-information" };
+  const payload: SnackBarPayload = {
+    title: response.data.message,
+    color: "success",
+    icon: "mdi-information",
+    class: "message success--text",
+  };
+
   switch (response.config.method) {
     case "put":
     case "post":
