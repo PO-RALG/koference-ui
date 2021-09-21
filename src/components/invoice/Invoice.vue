@@ -42,32 +42,6 @@
           }}</v-list-item>
         </template>
 
-        <template v-slot:item.actions="{ item }">
-          <!-- <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openDialog(item)"
-              >
-                mdi-pencil-box-outline
-              </v-icon>
-            </template>
-            <span>Edit</span>
-          </v-tooltip> -->
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="deleteInvoiceItemdefinition(item.id)"
-                >mdi-arrow-u-left-top-bold</v-icon
-              >
-            </template>
-            <span>Reverse</span>
-          </v-tooltip>
-        </template>
         <template v-slot:footer>
           <Paginate
             :params="data.response"
@@ -221,7 +195,7 @@
                         <v-btn
                           color="green darken-1"
                           text
-                          @click="cancelInvoiceDialog"
+                          @click="openInvoiceReceipt()"
                           ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
                         >
                         <v-btn
@@ -230,17 +204,21 @@
                           @click="cancelInvoiceDialog"
                           ><v-icon> mdi-printer </v-icon> Print</v-btn
                         >
-
+                        <v-btn
+                          @click="
+                            deleteInvoiceItemdefinition(data.invoicedata.id)
+                          "
+                          color="warning darken-1"
+                          text
+                          ><v-icon>mdi-arrow-u-left-top-bold</v-icon>
+                          Reverse</v-btn
+                        >
                         <v-btn
                           color="red darken-1"
                           text
                           @click="cancelInvoiceDialog"
                           >Close</v-btn
                         >
-                        <!-- <img
-                          src="https://www.sparksuite.com/images/logo.png"
-                          style="width: 100%; max-width: 300px"
-                        /> -->
                       </td>
 
                       <td>
@@ -259,20 +237,56 @@
               <tr class="information">
                 <td colspan="4">
                   <table>
-                    <tr>
+                    <tr v-if="data.invoicedata">
                       <td>
                         <img :src="data.coat" class="login-logo pt-5" /><br />
-                        Sparksuite, Inc.<br />
-                        12345 Sunny Road<br />
-                        Sunnyville, CA 12345
+                        <strong> Facility Name: </strong>
+                        {{
+                          data.invoicedata.facility
+                            ? data.invoicedata.facility.name
+                            : ""
+                        }}<br />
+                        Address:
+                        {{
+                          data.invoicedata.facility
+                            ? data.invoicedata.facility.postal_address
+                            : ""
+                        }}<br />
+                        Email:
+                        {{
+                          data.invoicedata.facility
+                            ? data.invoicedata.facility.email
+                            : ""
+                        }}<br />
+                        Phone:{{
+                          data.invoicedata.facility
+                            ? data.invoicedata.facility.phone_number
+                            : ""
+                        }}
                       </td>
 
                       <td>
                         <strong> Customer Name: </strong>
-                        {{ data.invoicedata.customer.name }}<br />
-                        Address:{{ data.invoicedata.customer.address }}<br />
-                        Email:{{ data.invoicedata.customer.email }}<br />
-                        Phone:{{ data.invoicedata.customer.phone }}<br />
+                        {{
+                          data.invoicedata.customer
+                            ? data.invoicedata.customer.name
+                            : ""
+                        }}<br />
+                        Address:{{
+                          data.invoicedata.customer
+                            ? data.invoicedata.customer.address
+                            : ""
+                        }}<br />
+                        Email:{{
+                          data.invoicedata.customer
+                            ? data.invoicedata.customer.email
+                            : ""
+                        }}<br />
+                        Phone:{{
+                          data.invoicedata.customer
+                            ? data.invoicedata.customer.phone
+                            : ""
+                        }}<br />
                       </td>
                     </tr>
                   </table>
@@ -311,7 +325,6 @@
                   ></v-text-field>
                 </td>
                 <td></td>
-                <!-- <td>${{ (item.price * item.quantity) | currency }}</td> -->
               </tr>
 
               <tr class="total">
@@ -327,17 +340,106 @@
         </ModalBody>
       </template>
       <template v-slot:footer>
-        <ModalFooter>
-          <!-- <v-btn color="green darken-1" text @click="cancelInvoiceDialog"
-            ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
-          >
-          <v-btn color="info darken-1" text @click="cancelInvoiceDialog"
-            ><v-icon> mdi-printer </v-icon> Print</v-btn
-          >
+        <ModalFooter> </ModalFooter>
+      </template>
+    </Modal>
 
-          <v-btn color="red darken-1" text @click="cancelInvoiceDialog"
+    <Modal :modal="data.invoicereceipt" :width="900">
+      <template v-slot:header>
+        <ModalHeader :title="`Invoice Receipt`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          {{ newInvoiceItem }}
+          <v-form>
+            <v-container>
+              <v-row class="mt-n8 pa-5">
+                <v-col cols="12" md="6">
+                  <v-autocomplete
+                    v-model="data.invoicereceip.customer_id"
+                    label="Select Customer"
+                    :items="data.customers"
+                    :item-text="'name'"
+                    item-value="id"
+                  ></v-autocomplete>
+                </v-col>
+                <v-col class="pt-6" cols="12" md="6">
+                  <DatePicker
+                    v-model="data.invoicereceip.date"
+                    :label="'Receipt Date'"
+                  />
+                </v-col>
+                <v-col cols="12" md="12">
+                  <v-text-field
+                    hide-details="true"
+                    v-model="data.invoicereceip.description"
+                    label="Description"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-autocomplete
+                    v-model="data.invoicereceip.bank_account_id"
+                    label="Select Bank Account"
+                    :items="data.bankaccounts"
+                    :item-text="'number'"
+                    item-value="id"
+                  ></v-autocomplete>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    hide-details="true"
+                    v-model="data.invoicereceip.bank_reference_number"
+                    label="Bank Reference Number"
+                  ></v-text-field>
+                </v-col>
+
+                <v-col class="pt-2" cols="12" md="12"> </v-col>
+                <v-row
+                  class="mt-n8 pa-3"
+                  text-center
+                  v-for="(invoice, index) in data.invoicedata.invoice_items"
+                  :key="index"
+                  hide-details
+                >
+                  <v-col cols="4" lg="6" md="6" sm="12">
+                    <v-select
+                      :items="data.itemdefinitions"
+                      :item-text="'name'"
+                      v-model="invoice.invoice_item_definition_id"
+                      :name="`data.invoice_items[${index}][invoice_item_definition_id]`"
+                      label="Select Ivoice Item"
+                      item-value="id"
+                      outlined
+                      dense
+                      hide-details
+                    ></v-select>
+                  </v-col>
+
+                  <v-col cols="4" lg="4" md="4" sm="12">
+                    <!-- :rules="formValidation.streamNameRules"-->
+                    <v-text-field
+                      label="Add Amount"
+                      outlined
+                      dense
+                      hide-details
+                      v-model="invoice.amount"
+                      :name="`data.invoice_items[${index}][name]`"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-row>
+            </v-container>
+          </v-form>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelInvoiceReceipt"
             >Close</v-btn
-          > -->
+          >
+          <v-btn color="green darken-1" text @click="createReceipt">
+            Create</v-btn
+          >
         </ModalFooter>
       </template>
     </Modal>
@@ -347,7 +449,12 @@
 <script lang="ts">
 import { AxiosResponse } from "axios";
 import { ManageInvoice } from "./types";
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
+import {
+  defineComponent,
+  reactive,
+  onMounted,
+  computed,
+} from "@vue/composition-api";
 
 import {
   get,
@@ -356,9 +463,11 @@ import {
   destroy,
   search,
   viewinvoice,
+  receiptcreate,
 } from "./services/invoice";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import { customers } from "../setup/customer/services/customer.service";
+import { bankaccounts } from "../setup/bank-account/services/back-accounts.service";
 import { itemdefinitions } from "../setup/invoice-item-definition/services/invoice-item-definition";
 
 export default defineComponent({
@@ -368,6 +477,14 @@ export default defineComponent({
     let customerData: ManageInvoice;
 
     let data = reactive({
+      invoicereceip: {
+        date: "",
+        description: "",
+        customer_id: "",
+        bank_account_id: "",
+        bank_reference_number: "",
+        items: [],
+      },
       title: "Manage Invoice",
       modalTitle: "",
       headers: [
@@ -397,12 +514,11 @@ export default defineComponent({
           value: "amount",
         },
         { text: "Date", value: "date", sortable: true },
-
-        { text: "Actions", value: "actions", sortable: false },
       ],
       modal: false,
       deletemodal: false,
       invoicedetails: false,
+      invoicereceipt: false,
       items: dataItems,
       itemsToFilter: [],
       formData: customerData,
@@ -413,6 +529,7 @@ export default defineComponent({
       customers: [],
       itemdefinitions: [],
       invoicedata: [],
+      bankaccounts: [],
       invoice_items: [
         {
           invoice_item_definition_id: "",
@@ -468,10 +585,11 @@ export default defineComponent({
     const deleteInvoiceItemdefinition = (deleteId: any) => {
       data.deletemodal = !data.modal;
       data.itemtodelete = deleteId;
+      data.invoicedetails = false;
     };
 
     const getInvoiceItemdefinition = () => {
-      get(data).then(() => {});
+      get(data);
     };
 
     const cancelDialog = () => {
@@ -484,8 +602,22 @@ export default defineComponent({
       ]),
         (data.modal = !data.modal);
     };
+
     const cancelInvoiceDialog = () => {
       data.invoicedetails = false;
+    };
+
+    const cancelInvoiceReceipt = () => {
+      data.invoicereceipt = false;
+      data.invoicedetails = false;
+    };
+
+    const openInvoiceReceipt = () => {
+      data.invoicedetails = false;
+      data.invoicereceipt = true;
+      bankaccounts({ per_page: 2000 }).then((response: any) => {
+        data.bankaccounts = response.data.data.data;
+      });
     };
 
     const cancelConfirmDialog = () => {
@@ -505,7 +637,7 @@ export default defineComponent({
       if (data.formData.id) {
         updateInvoiceItemDefinition(data.formData);
       } else {
-        createCustomer(data.formData);
+        createInvoice(data.formData);
       }
     };
 
@@ -527,7 +659,27 @@ export default defineComponent({
       });
     };
 
-    const createCustomer = (data: any) => {
+    const createReceipt = () => {
+      data.invoicedata.invoice_items.map((item) => {
+        delete item.id;
+        delete item.created_at;
+        delete item.created_by;
+        delete item.id;
+        delete item.definition;
+        delete item.deleted_at;
+        delete item.gl_account;
+        delete item.invoice_id;
+        delete item.received_amount;
+        delete item.updated_at;
+      });
+      const obj = Object.assign({}, data.invoicedata.invoice_items);
+
+      data.invoicereceip.items.push(obj);
+      // console.log("mmmmmm", data.invoicedata.invoice_items);
+      receiptcreate(data.invoicereceip);
+    };
+
+    const createInvoice = (data: any) => {
       create(data).then(() => {
         reloadData();
         cancelDialog();
@@ -562,6 +714,7 @@ export default defineComponent({
     return {
       data,
       getData,
+      createReceipt,
       addRow,
       removeRow,
       openDialog,
@@ -576,6 +729,8 @@ export default defineComponent({
       searchCategory,
       previewInvoice,
       cancelInvoiceDialog,
+      cancelInvoiceReceipt,
+      openInvoiceReceipt,
     };
   },
 });

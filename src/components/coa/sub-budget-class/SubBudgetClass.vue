@@ -106,7 +106,7 @@
                     v-model="data.formData.funding_type_id"
                     label="Fund type"
                     :items="data.fundingtypes"
-                    :item-text="'code'"
+                    :item-text="'description'"
                     item-value="id"
                     :item-divider="true"
                     required
@@ -119,7 +119,7 @@
                     v-model="data.formData.carryover_fund_type_id"
                     label="CarryOver Fund type"
                     :items="data.fundingtypes"
-                    :item-text="'code'"
+                    :item-text="'description'"
                     item-value="id"
                     :item-divider="true"
                     required
