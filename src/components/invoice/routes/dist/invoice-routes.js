@@ -4,9 +4,7 @@ var middleware_1 = require("@/middleware");
 var invoiceRoutes = [
     {
         path: "/manage-invoices",
-        component: function () {
-            return Promise.resolve().then(function () { return require(/* webpackChunkName: "Customer" */ "../Invoice.vue"); });
-        },
+        component: function () { return Promise.resolve().then(function () { return require(/* webpackChunkName: "Invoice" */ "../Invoice.vue"); }); },
         meta: {
             requiresAuth: true,
             title: "Manage Invoice",

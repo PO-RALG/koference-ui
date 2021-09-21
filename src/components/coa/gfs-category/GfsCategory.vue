@@ -83,7 +83,7 @@
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} GfsCodes`" />
+        <ModalHeader :title="`${data.modalTitle} GfsCode Category`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">

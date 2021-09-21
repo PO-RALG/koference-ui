@@ -22,8 +22,12 @@ const create = async (payload: any) => {
   return await axios.post(`${API}`, payload);
 };
 
-const setCurrent = async (payload: any) => {
-  return await axios.post(`${API}/${payload.id}/set-current`);
+const startFinancialYear = async (payload: any) => {
+  return await axios.post(`${API}/${payload.id}/start`);
+};
+
+const toggleActive = async (payload: any) => {
+  return await axios.post(`${API}/${payload.id}/toggle`);
 };
 
 const update = async (payload: any) => {
@@ -34,4 +38,13 @@ const destroy = async (id: string | number) => {
   return await axios.delete(`${API}/${id}`);
 };
 
-export { get, find, create, update, destroy, setCurrent, search };
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  startFinancialYear,
+  search,
+  toggleActive,
+};
