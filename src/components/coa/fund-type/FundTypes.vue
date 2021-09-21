@@ -40,21 +40,13 @@
             <td>{{ item.code }}</td>
 
             <td>
-              <v-icon class="mr-2" @click="openDialog(item)">
-                mdi-pencil-box-outline
-              </v-icon>
-              <v-icon @click="deleteFundType(item.id)">
-                mdi-trash-can-outline
-              </v-icon>
+              <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
+              <v-icon @click="deleteFundType(item.id)"> mdi-trash-can-outline </v-icon>
             </td>
           </tr>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -68,18 +60,10 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.description"
-                    label="Description"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.description" label="Description" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.code"
-                    label="Code"
-                    required
-                  ></v-text-field>
+                  <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -89,9 +73,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -105,9 +87,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
-            >Cancel</v-btn
-          >
+          <v-btn color="green darken-1" text @click="cancelConfirmDialog">Cancel</v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -116,163 +96,26 @@
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from "axios";
-import { FundTypes } from "./types";
-import {
-  defineComponent,
-  reactive,
-  onMounted,
-  computed,
-} from "@vue/composition-api";
-
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-} from "./service/fund-types.service";
+import { defineComponent } from "@vue/composition-api";
+import { useFundType } from "./composables/fund-type";
 
 export default defineComponent({
   name: "FundTypes",
   setup() {
-    let dataItems: Array<FundTypes> = [];
-    let documentCategoryData: FundTypes;
-
-    let data = reactive({
-      title: "Manage FundTypes",
-      modalTitle: "",
-      headers: [
-        {
-          text: "Desciption",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-        {
-          text: "Code",
-          align: "start",
-          sortable: false,
-          value: "code",
-        },
-
-        { text: "Actions", value: "actions", sortable: false },
-      ],
-
-      modal: false,
-      deletemodal: false,
-      items: dataItems,
-      itemsToFilter: [],
-      formData: documentCategoryData,
-      rows: ["10", "20", "50", "100"],
-      itemtodelete: "",
-      response: {},
-      documentcategories: [],
-    });
-
-    onMounted(() => {
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = {
-          from,
-          to,
-          total,
-          current_page,
-          per_page,
-          last_page,
-        };
-        data.items = response.data.data.data;
-        data.itemsToFilter = response.data.data.data;
-      });
-    });
-
-    const searchCategory = (categoryName) => {
-      if (categoryName != null) {
-        search({ name: categoryName.name }).then((response: any) => {
-          data.items = response.data.data.data;
-        });
-      } else {
-        reloadData();
-      }
-    };
-
-    const reloadData = () => {
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data;
-      });
-    };
-
-    const deleteFundType = (deleteId: any) => {
-      data.deletemodal = !data.modal;
-      data.itemtodelete = deleteId;
-      // console.log("delete year", data);
-    };
-
-    const getFundTypes = () => {
-      get(data).then((response) => {});
-    };
-
-    const cancelDialog = () => {
-      data.formData = {} as FundTypes;
-      data.modal = !data.modal;
-    };
-
-    const cancelConfirmDialog = () => {
-      data.formData = {} as FundTypes;
-      data.deletemodal = false;
-    };
-
-    const remove = () => {
-      destroy(data.itemtodelete).then(() => {
-        reloadData();
-        data.deletemodal = false;
-      });
-    };
-
-    const save = () => {
-      if (data.formData.id) {
-        updateFundType(data.formData);
-      } else {
-        createFundType(data.formData);
-      }
-    };
-
-    const openDialog = (formData?: any) => {
-      if (formData.id) {
-        data.formData = formData;
-        data.modalTitle = "Update";
-      } else {
-        data.formData = {} as FundTypes;
-        data.modalTitle = "Create";
-      }
-      data.modal = !data.modal;
-    };
-
-    const updateFundType = (data: any) => {
-      update(data).then((response) => {
-        reloadData();
-        cancelDialog();
-      });
-    };
-
-    const createFundType = (data: any) => {
-      create(data).then((response) => {
-        reloadData();
-        cancelDialog();
-      });
-    };
-
-    const getData = (params: any) => {
-      data.response = params;
-      get(params).then((response: AxiosResponse) => {
-        data.response = response.data.data;
-        data.items = response.data.data.data;
-      });
-    };
+    const {
+      data,
+      getData,
+      openDialog,
+      cancelDialog,
+      deleteFundType,
+      getFundTypes,
+      updateFundType,
+      save,
+      reloadData,
+      remove,
+      cancelConfirmDialog,
+      searchCategory,
+    } = useFundType();
 
     return {
       data,

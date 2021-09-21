@@ -11,7 +11,7 @@
 
 <script>
 import { defineComponent } from "@vue/composition-api";
-export default defineComponent ({
+export default defineComponent({
   props: {
     label: {
       type: String,
@@ -19,7 +19,7 @@ export default defineComponent ({
     },
     items: {
       type: Array,
-      required: true,
+      required: false,
     },
     filterFunction: { type: Function },
   },
