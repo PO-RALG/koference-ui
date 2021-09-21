@@ -5,58 +5,90 @@
       <v-spacer></v-spacer>
     </v-card-actions>
     <v-card>
-      <v-data-table
-        :headers="data.headers"
-        :items="data.items"
-        hide-default-footer
-        class="elevation-1"
-        disable-pagination
-      >
-        <template v-slot:top>
-          <v-card-title>
-            <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-select
-                v-model="data.funding_source_id"
-                :items="data.fundingSources"
-                item-value="id"
-                label="Funding source"
-                @change="searchBudgets(data.funding_source_id)"
-              >
-                <template v-slot:selection="{ item }">
-                  {{ item.code }} - {{ item.description }}
-                </template>
-                <template v-slot:item="{ item }">
-                  {{ item.code }} - {{ item.description }}
-                </template>
-                <template v-slot:prepend-item>
-                  <v-list-item>
-                    <v-list-item-content>
-                      <v-text-field
-                        v-model="data.searchTerm"
-                        placeholder="Search"
-                        @input="searchFundingSources"
-                      ></v-text-field>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider></v-divider>
-                </template>
-              </v-select>
+      <v-card-title>
+        <v-col cols="6" sm="12" md="2" class="pa-0">
+          <v-select
+            v-model="data.funding_source_id"
+            :items="data.fundingSources"
+            item-value="id"
+            label="Funding source"
+            @change="searchBudgets(data.funding_source_id)"
+          >
+            <template v-slot:selection="{ item }">
+              {{ item.code }} - {{ item.description }}
+            </template>
+            <template v-slot:item="{ item }">
+              {{ item.code }} - {{ item.description }}
+            </template>
+            <template v-slot:prepend-item>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-text-field
+                    v-model="data.searchTerm"
+                    placeholder="Search"
+                    @input="searchFundingSources"
+                  ></v-text-field>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider></v-divider>
+            </template>
+          </v-select>
+        </v-col>
+        <v-col cols="6" sm="12" md="2">
+          <v-text-field v-model="data.items.total_budget" label="Carryover Fund" disabled></v-text-field>
+        </v-col>
+        <v-col cols="6" sm="12" md="2">
+          <v-text-field v-model="data.items.total_budget" label="Current Fund" disabled></v-text-field>
+        </v-col>
+        <v-col cols="6" sm="12" md="2">
+          <v-text-field v-model="data.items.total_budget" label="Total Fund" disabled></v-text-field>
+        </v-col>
+        <v-col cols="6" sm="12" md="2">
+          <v-text-field v-model="data.items.total_budget" label="Total Allocated" disabled></v-text-field>
+        </v-col>
+        <v-col cols="6" sm="12" md="2">
+          <v-text-field v-model="data.items.total_budget" label="Unallocated Amount" disabled></v-text-field>
+        </v-col>
+      </v-card-title>
+      <v-card-text>
+        <template>
+          <v-row>
+            <v-col cols="12" md="4" sm="12"><h3>GL Account</h3></v-col>
+            <v-col cols="12" md="1" sm="12"><h3>Budget</h3></v-col>
+            <v-col cols="12" md="1" sm="12"><h3>Allocated</h3></v-col>
+            <v-col cols="12" md="1" sm="12"><h3>Expenditure</h3></v-col>
+            <v-col cols="12" md="2" sm="12"><h3>Available</h3></v-col>
+            <v-col cols="12" md="2" sm="12"><h3>Allocate</h3></v-col>
+          </v-row>
+        </template>
+        <template v-for="(item, i) in data.items.lines">
+          <v-row
+            :key="i"
+            cols="12"
+          >
+            <v-col cols="12" md="4" sm="12">
+              {{item.gl}} <br>
+              <span style="color:teal">{{item.activity}}({{item.budget_category}})</span> <br>
+              {{item.gfs}} <br>
             </v-col>
-          </v-card-title>
+            <v-col cols="12" md="1" sm="12">
+              {{item.amount}}
+            </v-col>
+            <v-col cols="12" md="1" sm="12">
+              {{item.total_allocated}}
+            </v-col>
+            <v-col cols="12" md="1" sm="12">
+              {{item.expenditure}}
+            </v-col>
+            <v-col cols="12" md="2" sm="12">
+              {{item.allocation}}
+            </v-col>
+            <v-col cols="12" md="2" sm="12">
+              <v-text-field v-model="item.allocation_amount"></v-text-field>
+            </v-col>
+          </v-row>
         </template>
-
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Supplier')">
-            mdi-pencil-box-outline
-          </v-icon>
-          <v-icon @click="openConfirmDialog(item.id)" :disabled="cant('delete', 'Supplier')">
-            mdi-trash-can-outline
-          </v-icon>
-        </template>
-        <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
-        </template>
-      </v-data-table>
+      </v-card-text>
     </v-card>
 
     <Modal :modal="data.modal" :width="960">
@@ -131,7 +163,7 @@ import { get as getFundingSource } from "@/components/coa/funding-source/service
 export default defineComponent({
   name: "FundAllocation",
   setup() {
-    let dataItems: Array<FundAllocation> = [];
+    let dataItems = {};
     let fundAllocationData = {} as FundAllocation;
 
     let data = reactive({
@@ -141,55 +173,6 @@ export default defineComponent({
       node: null,
       response: {},
       modalTitle: "",
-      headers: [
-        {
-          text: "Name",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-        {
-          text: "Email",
-          align: "start",
-          sortable: false,
-          value: "email",
-        },
-        {
-          text: "TIN",
-          align: "start",
-          sortable: false,
-          value: "tin",
-        },
-        {
-          text: "Phone",
-          align: "start",
-          sortable: false,
-          value: "phone",
-        },
-        {
-          text: "Address",
-          align: "start",
-          sortable: false,
-          value: "address",
-        },
-        {
-          text: "Bank Account Name",
-          align: "start",
-          sortable: false,
-          value: "bank_account_name",
-        },
-        {
-          text: "Bank Account Number",
-          align: "start",
-          sortable: false,
-          value: "bank_account_number",
-        },
-        {
-          text: "Actions",
-          value: "actions",
-          sortable: false,
-        },
-      ],
       modal: false,
       deletemodal: false,
       items: dataItems,
@@ -484,7 +467,7 @@ export default defineComponent({
             ],
             "total_budget":8549760
         }}
-        data.items = bgData.bgdata.lines;
+        data.items = bgData.bgdata;
         // search({ name: id.name }).then((response: AxiosResponse) => {
         //   data.items = response.data.data.data;
         // });
