@@ -213,7 +213,9 @@ export default defineComponent({
     };
 
     const getFundTypes = () => {
-      get(data).then((response) => {});
+      get(data).then((response) => {
+        console.log(response);
+      });
     };
 
     const cancelDialog = () => {
