@@ -12,5 +12,4 @@ const capitalize = (string: string): string => {
   return str2;
 };
 
-
 export default capitalize;

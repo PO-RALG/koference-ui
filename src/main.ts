@@ -6,28 +6,24 @@ import PerfectScrollbar from "vue2-perfect-scrollbar";
 import VueCompositionAPI from "@vue/composition-api";
 import moment from "moment"; //require
 
-import App from "./App.vue";
-import router from "./router";
+import App from "@/App.vue";
+import router from "@/router";
 import store from "@/store";
-import vuetify from "./plugins/vuetify";
+import vuetify from "@/plugins/vuetify";
 
 import "@/mixins";
 import filters from "./filters";
 
-import "./assets/main.scss";
-import "./components/shared";
-import capitalize from "./helpers";
+import "@/assets/main.scss";
+import "@/components/shared";
+import capitalize from "@/helpers/FormatHelper";
+import getCurrentUser from "@/helpers/CurrentUserHelper";
 
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
 
-const currentUser = store.getters["Auth/getCurrentUser"];
-
 axios.defaults["isLoading"] = true;
-axios.defaults.headers.common["Authorization"] = currentUser ? `Bearer ${currentUser.token}` : null;
-axios.defaults.headers.common["Accept"] = `application/json`;
-axios.defaults.headers.common["Content-Type"] = `application/json`;
 const cancelSource = axios.CancelToken.source();
 
 interface SnackBarPayload {
@@ -38,8 +34,12 @@ interface SnackBarPayload {
   class: string;
 }
 
-const requestHandler = (request: any) => {
+const requestHandler = async (request: any) => {
+  const currentUser = await getCurrentUser();
   request.cancelToken = cancelSource.token;
+  axios.defaults.headers.common["Authorization"] = currentUser ? `Bearer ${currentUser.token}` : null;
+  axios.defaults.headers.common["Accept"] = `application/json`;
+  axios.defaults.headers.common["Content-Type"] = `application/json`;
   return request;
 };
 
@@ -47,9 +47,9 @@ const errorHandler = (error: any) => {
   const payload: SnackBarPayload = {
     error: error.data.errors,
     title: capitalize(error.data.message),
-    color: "error",
+    color: "info",
     icon: "mdi-alert-box",
-    class: "error--text",
+    class: "info--text",
   };
 
   switch (error.data.message) {
