@@ -40,7 +40,7 @@
           <v-list-item exact light @click="previewInvoice(item)">{{ item.invoice_number }}</v-list-item>
         </template>
 
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <!-- <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
             <v-icon
@@ -90,7 +90,7 @@
                 <v-col class="pt-6" cols="12" md="6">
                   <DatePicker :label="'Ivoice Date'" v-model="data.formData.date" />
                 </v-col>
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="12" class="mt-n8">
                   <v-text-field label="Description" v-model="data.formData.description"></v-text-field>
                 </v-col>
                 <v-col class="pt-2" cols="12" md="12">
@@ -105,181 +105,206 @@
                     </td>
                   </tr>
                 </v-col>
-                <v-row
-                  class="mt-n8 pa-3"
-                  text-center
-                  v-for="(invoice, index) in data.invoice_items"
-                  :key="index"
-                  hide-details
-                >
-                  <v-col cols="4" lg="6" md="6" sm="12">
-                    <v-select
-                      :items="data.itemdefinitions"
-                      :item-text="'name'"
-                      v-model="invoice.invoice_item_definition_id"
-                      :name="`data.invoice_items[${index}][invoice_item_definition_id]`"
-                      label="Select Ivoice Item"
-                      item-value="id"
-                      outlined
-                      dense
-                      hide-details
-                    ></v-select>
-                  </v-col>
-
-                  <v-col cols="4" lg="4" md="4" sm="12">
-                    <!-- :rules="formValidation.streamNameRules"-->
-                    <v-text-field
-                      label="Add Amount"
-                      outlined
-                      dense
-                      hide-details
-                      v-model="invoice.amount"
-                      :name="`data.invoice_items[${index}][name]`"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col col="3" lg="1" class="d-flex pt-7 pr-12">
-                    <v-btn
-                      color="blue darken-1"
-                      text
-                      v-if="index || (!index && data.invoice_items.length > 1)"
-                      @click="removeRow(index)"
-                    >
-                      <v-icon small color="red"> mdi-minus-circle </v-icon>
-                    </v-btn>
-                    <v-btn color="blue darken-1" text @click="addRow" v-if="index == data.invoice_items.length - 1">
-                      <v-icon small color="success"> mdi-plus-circle </v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
               </v-row>
+              <div class="invoice-table">
+                <v-data-table :headers="HEADERS" :items="data.items" disable-pagination hide-default-footer>
+                  <template v-slot:[`body`]="props">
+                    <tr
+                      v-for="(invoice, index) in data.invoice_items"
+                      :key="index"
+                      class="invoice-tr"
+                    >
+                      <td>
+                        <v-select
+                          :items="data.itemdefinitions"
+                          :item-text="'name'"
+                          v-model="invoice.invoice_item_definition_id"
+                          :name="`data.invoice_items[${index}][invoice_item_definition_id]`"
+                          label="Select Ivoice Item"
+                          item-value="id"
+                          dense
+                          outlined
+                          hide-details
+                          ></v-select>
+                      </td>
+                      <td class="invoice-td">
+                        <v-text-field
+                          dense
+                          hide-details
+                          outlined
+                          v-model="invoice.amount"
+                          :name="`data.invoice_items[${index}][name]`"
+                          >
+                        </v-text-field>
+                      </td>
+                      <td class="invoice-td">
+                        <v-text-field
+                          dense
+                          hide-details
+                          outlined
+                          v-model="invoice.amount_received"
+                          :name="`data.invoice_items[${index}][name]`"
+                          >
+                        </v-text-field>
+                      </td>
+                      <td class="invoice-td">
+                        <v-text-field
+                          dense
+                          hide-details
+                          outlined
+                          v-model="invoice.amount_pending"
+                          :name="`data.invoice_items[${index}][name]`"
+                          >
+                        </v-text-field>
+                      </td>
+                      <td>
+                        <v-btn
+                          color="blue darken-1"
+                          small
+                          text
+                          v-if="index || (!index && data.invoice_items.length > 1)"
+                          @click="removeRow(index)"
+                          >
+                          <v-icon small color="red"> mdi-minus-circle </v-icon>
+                        </v-btn>
+                        <v-btn small color="blue darken-1" text @click="addRow" v-if="index == data.invoice_items.length - 1">
+                          <v-icon small color="success"> mdi-plus-circle </v-icon>
+                        </v-btn>
+                      </td>
+                    </tr>
+                  </template>
+                  <template v-slot:[`item.icon`]="{ item }">
+                    <v-icon class="mr-2">{{ item.icon }}</v-icon>
+                  </template>
+                </v-data-table>
+              </div>
             </v-container>
           </v-form>
         </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
+        <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
+        <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
 
     <Modal :modal="data.deletemodal" :width="400">
-      <template v-slot:header>
-        <ModalHeader :title="`Reverse Invoice `" />
-      </template>
-      <template v-slot:body>
-        <ModalBody> Are you sure you want to reverse this invoice? </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog">No</v-btn>
-          <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
-        </ModalFooter>
-      </template>
+    <template v-slot:header>
+      <ModalHeader :title="`Reverse Invoice `" />
+    </template>
+    <template v-slot:body>
+      <ModalBody> Are you sure you want to reverse this invoice? </ModalBody>
+    </template>
+    <template v-slot:footer>
+      <ModalFooter>
+      <v-btn color="blue darken-1" text @click="cancelConfirmDialog">No</v-btn>
+      <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
+      </ModalFooter>
+    </template>
     </Modal>
 
     <Modal :modal="data.invoicedetails" :width="900">
-      <template v-slot:header>
-        <ModalHeader :title="`Invoice Details`" />
-      </template>
-      <template v-slot:body>
-        <ModalBody>
-          <div class="invoice-box">
-            <table cellpadding="0" cellspacing="0">
-              <tr class="top">
-                <td colspan="4">
-                  <table>
-                    <tr>
-                      <td class="title">
-                        <v-btn color="green darken-1" text @click="cancelInvoiceDialog"
-                          ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
-                        >
-                        <v-btn color="info darken-1" text @click="cancelInvoiceDialog"
-                          ><v-icon> mdi-printer </v-icon> Print</v-btn
-                        >
+    <template v-slot:header>
+      <ModalHeader :title="`Invoice Details`" />
+    </template>
+    <template v-slot:body>
+      <ModalBody>
+      <div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+          <tr class="top">
+            <td colspan="4">
+              <table>
+                <tr>
+                  <td class="title">
+                    <v-btn color="green darken-1" text @click="cancelInvoiceDialog"
+                           ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
+                         >
+                         <v-btn color="info darken-1" text @click="cancelInvoiceDialog"
+                                ><v-icon> mdi-printer </v-icon> Print</v-btn
+                              >
 
-                        <v-btn color="red darken-1" text @click="cancelInvoiceDialog">Close</v-btn>
-                        <!-- <img
-                      src="https://www.sparksuite.com/images/logo.png"
-                      style="width: 100%; max-width: 300px"
-                      /> -->
-                      </td>
+                              <v-btn color="red darken-1" text @click="cancelInvoiceDialog">Close</v-btn>
+                              <!-- <img
+                                src="https://www.sparksuite.com/images/logo.png"
+                                style="width: 100%; max-width: 300px"
+                                /> -->
+                  </td>
 
-                      <td>
-                        <strong> Invoice #:{{ data.invoicedata.invoice_number }}</strong
-                        ><br />
-                        Created: {{ data.invoicedata.date | format }}<br />
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
+                  <td>
+                    <strong> Invoice #:{{ data.invoicedata.invoice_number }}</strong
+                    ><br />
+                    Created: {{ data.invoicedata.date | format }}<br />
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-              <tr class="information">
-                <td colspan="4">
-                  <table>
-                    <tr>
-                      <td>
-                        <img :src="data.coat" class="login-logo pt-5" /><br />
-                        Sparksuite, Inc.<br />
-                        12345 Sunny Road<br />
-                        Sunnyville, CA 12345
-                      </td>
+          <tr class="information">
+            <td colspan="4">
+              <table>
+                <tr>
+                  <td>
+                    <img :src="data.coat" class="login-logo pt-5" /><br />
+                    Sparksuite, Inc.<br />
+                    12345 Sunny Road<br />
+                    Sunnyville, CA 12345
+                  </td>
 
-                      <td>
-                        <strong> Customer Name: </strong>
-                        {{ data.invoicedata.customer.name }}<br />
-                        Address:{{ data.invoicedata.customer.address }}<br />
-                        Email:{{ data.invoicedata.customer.email }}<br />
-                        Phone:{{ data.invoicedata.customer.phone }}<br />
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
+                  <td>
+                    <strong> Customer Name: </strong>
+                    {{ data.invoicedata.customer.name }}<br />
+                    Address:{{ data.invoicedata.customer.address }}<br />
+                    Email:{{ data.invoicedata.customer.email }}<br />
+                    Phone:{{ data.invoicedata.customer.phone }}<br />
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-              <tr class="heading">
-                <td colspan="3">Invoice Items</td>
-                <td>Amount(TZS)</td>
-              </tr>
-              <tr class="heading"></tr>
+          <tr class="heading">
+            <td colspan="3">Invoice Items</td>
+            <td>Amount(TZS)</td>
+          </tr>
+          <tr class="heading"></tr>
 
-              <tr class="item" v-for="item in data.invoicedata.invoice_items" :key="item.id">
-                <td colspan="3">
-                  <v-text-field :hide-details="true" disabled flat label="Item name" v-model="item.definition.name">
-                  </v-text-field>
-                </td>
-                <td width="30%">
-                  <v-text-field
-                    :hide-details="true"
-                    type="number"
-                    disabled
-                    flat
-                    reverse
-                    v-model="item.amount"
-                  ></v-text-field>
-                </td>
-                <td></td>
-                <!-- <td>${{ (item.price * item.quantity) | currency }}</td> -->
-              </tr>
+          <tr class="item" v-for="item in data.invoicedata.invoice_items" :key="item.id">
+            <td colspan="3">
+              <v-text-field :hide-details="true" disabled flat label="Item name" v-model="item.definition.name">
+              </v-text-field>
+            </td>
+            <td width="30%">
+              <v-text-field
+                :hide-details="true"
+                type="number"
+                disabled
+                flat
+                reverse
+                v-model="item.amount"
+                ></v-text-field>
+            </td>
+            <td></td>
+            <!-- <td>${{ (item.price * item.quantity) | currency }}</td> -->
+          </tr>
 
-              <tr class="total">
-                <td colspan="3"></td>
-                <td>
-                  <strong> Total:{{ data.invoicedata.amount }} </strong>
-                  <v-icon small>mdi-slash-forward</v-icon>
-                  <v-icon small class="">mdi-equal</v-icon>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter>
-          <!-- <v-btn color="green darken-1" text @click="cancelInvoiceDialog"
+          <tr class="total">
+            <td colspan="3"></td>
+            <td>
+              <strong> Total:{{ data.invoicedata.amount }} </strong>
+              <v-icon small>mdi-slash-forward</v-icon>
+              <v-icon small class="">mdi-equal</v-icon>
+            </td>
+          </tr>
+        </table>
+      </div>
+      </ModalBody>
+    </template>
+    <template v-slot:footer>
+      <ModalFooter>
+      <!-- <v-btn color="green darken-1" text @click="cancelInvoiceDialog"
         ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
         >
         <v-btn color="info darken-1" text @click="cancelInvoiceDialog"
@@ -289,8 +314,8 @@
         <v-btn color="red darken-1" text @click="cancelInvoiceDialog"
         >Close</v-btn
         > -->
-        </ModalFooter>
-      </template>
+      </ModalFooter>
+    </template>
     </Modal>
   </div>
 </template>
@@ -319,6 +344,7 @@ export default defineComponent({
       searchCategory,
       previewInvoice,
       cancelInvoiceDialog,
+      HEADERS,
     } = useInvoice();
 
     return {
@@ -338,12 +364,13 @@ export default defineComponent({
       searchCategory,
       previewInvoice,
       cancelInvoiceDialog,
+      HEADERS,
     };
   },
 });
 </script>
 
-<style>
+<style lang="scss">
 .invoice-box {
   max-width: 850px;
   margin: auto;
@@ -442,5 +469,31 @@ export default defineComponent({
 .login-logo {
   height: 14%;
   width: 14%;
+}
+
+tbody tr:nth-of-type(odd) {
+  background-color: none;
+}
+
+.invoice-table {
+  table {
+    border: 1px solid #cccc;
+    tr.invoice-tr {
+      border-right: 1px solid #ccc;
+    }
+    th {
+      border-right: 1px solid #ccc;
+      &:last-child {
+        border-right: none;
+      }
+    }
+    td {
+      border-right: 1px solid #ccc;
+      padding: 5px;
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
 }
 </style>
