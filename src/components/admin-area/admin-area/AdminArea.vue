@@ -60,7 +60,7 @@
                   <h5 class="tree-title">SELECTED ADMIN AREA PARENT ({{ data.formData.parent.name }})</h5>
                 </v-label>
                 <v-label v-else>
-                  <h5 class="tree-title">SELECT ADMIN AREA LOCATION</h5>
+                  <h5 class="tree-title">SELECT ADMIN AREA PARENT</h5>
                 </v-label>
                 <TreeBrowser
                   v-if="data.node"
