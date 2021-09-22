@@ -41,7 +41,7 @@ export default defineComponent({
       selectedItems: props.selected,
     });
 
-    const selectItem = (val) => {
+    const selectItem = (val: any) => {
       emit("itemSelected", val.item);
     };
 

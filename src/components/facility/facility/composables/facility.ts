@@ -233,4 +233,4 @@ export const useFacility = (): any => {
     getNodes,
     searchFacilityTypes,
   };
-}
+};
