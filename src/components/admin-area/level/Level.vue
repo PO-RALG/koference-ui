@@ -16,7 +16,7 @@
         hide-default-footer
         disable-pagination
         class="elevation-1"
-      >
+        >
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Level')">
             mdi-pencil-box-outline
@@ -29,33 +29,33 @@
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
-      <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Level`" />
-      </template>
-      <template v-slot:body>
-        <ModalBody>
-          <v-form ref="form" v-model="data.valid">
-            <v-container>
-              <v-row>
-                <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-                  <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
-                </v-col>
-                <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-                  <v-text-field label="Position" v-model="data.formData.position" required> </v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-form>
-        </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter class="mt-n8">
-          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save">
-            {{ data.modalTitle }}
-          </v-btn>
-        </ModalFooter>
-      </template>
+    <template v-slot:header>
+      <ModalHeader :title="`${data.modalTitle} Level`" />
+    </template>
+    <template v-slot:body>
+      <ModalBody>
+      <v-form ref="form" v-model="data.valid">
+        <v-container>
+          <v-row>
+            <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
+              <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
+            </v-col>
+            <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
+              <v-text-field label="Position" v-model="data.formData.position" required> </v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-form>
+      </ModalBody>
+    </template>
+    <template v-slot:footer>
+      <ModalFooter class="mt-n8">
+      <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+      <v-btn color="blue darken-1" text @click="save">
+        {{ data.modalTitle }}
+      </v-btn>
+      </ModalFooter>
+    </template>
     </Modal>
     <ConfirmDialog
       @rejectFunction="closeConfirmDialog"
@@ -64,128 +64,29 @@
       :data="data.item"
       :isOpen="data.isOpen"
       :title="'Delete Level'"
-    />
+      />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import { AxiosResponse } from "axios";
-import { get, createLevel, updateLevel, deleteLevel } from "./services/level-services";
-import { Level } from "./types/Level";
+import { defineComponent } from "@vue/composition-api";
+import { useLevels } from "./composables/level";
 
 export default defineComponent({
   setup() {
-    let dataItems: Array<Level> = [];
-    let levelData: Level = {
-      id: null,
-      name: "",
-      position: null,
-    };
+    const {
+      data,
 
-    let data = reactive({
-      title: "Manage Levels",
-      valid: true,
-      isOpen: false,
-      item: null,
-      response: {},
-      modalTitle: "",
-      headers: [
-        { text: "Name", value: "name" },
-        { text: "Code", value: "code" },
-        { text: "Position", align: "start", sortable: true, value: "position" },
-        { text: "Actions", value: "actions", sortable: false },
-      ],
-      modal: false,
-      items: dataItems,
-      formData: levelData,
-      params: {
-        total: 100,
-        size: 10,
-      },
-      nameRules: [(v: any) => !!v || "Name is required"],
-    });
+      openDialog,
+      cancelDialog,
+      closeConfirmDialog,
+      openConfirmDialog,
 
-    onMounted(() => {
-      initialize();
-    });
-
-    const initialize = () => {
-      get({}).then((response: any) => {
-        let { from, to, total, current_page, per_page, last_page } = response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data;
-      });
-    };
-
-    const cancelDialog = () => {
-      data.formData = {} as Level;
-      data.modal = !data.modal;
-    };
-
-    const save = () => {
-      if (data.formData.id) {
-        update(data.formData);
-      } else {
-        create(data.formData);
-      }
-    };
-
-    const openDialog = (formData?: Level) => {
-      if (formData && formData.id) {
-        data.formData = formData;
-        data.modalTitle = "Update";
-      } else {
-        data.modalTitle = "Create";
-      }
-      data.modal = !data.modal;
-    };
-
-    const update = (data: Level) => {
-      updateLevel(data).then((response) => {
-        console.log(response.status);
-        if (response.status === 200) {
-          cancelDialog();
-          initialize();
-        }
-      });
-    };
-
-    const create = (data: Level) => {
-      createLevel(data).then((response) => {
-        if (response.status === 200) {
-          cancelDialog();
-          initialize();
-        }
-      });
-    };
-
-    const openConfirmDialog = (item: Level) => {
-      data.item = item;
-      data.isOpen = true;
-    };
-
-    const closeConfirmDialog = () => {
-      data.item = null;
-      data.isOpen = false;
-    };
-
-    const deleteItem = (item: number | string) => {
-      deleteLevel(item).then((response) => {
-        initialize();
-      });
-
-      data.item = null;
-      data.isOpen = false;
-    };
-
-    const getData = (params: any) => {
-      data.response = params;
-      get(params).then((response: AxiosResponse) => {
-        data.response = response.data.data;
-        data.items = response.data.data.data;
-      });
-    };
+      updateLevel,
+      save,
+      deleteItem,
+      getData,
+    } = useLevels();
 
     return {
       data,
@@ -203,5 +104,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped></style>

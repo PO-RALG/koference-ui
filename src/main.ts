@@ -11,10 +11,11 @@ import store from "@/store";
 import vuetify from "./plugins/vuetify";
 
 import "@/mixins";
+import filters from "./filters";
 
 import moment from "moment"; //require
 
-Vue.filter("myDate", function (created) {
+Vue.filter("myDate", function (created: Date) {
   return moment(created).format("Do MMMM YYYY");
 });
 
@@ -29,9 +30,7 @@ axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
 const currentUser = store.getters["Auth/getCurrentUser"];
 
 axios.defaults["isLoading"] = true;
-axios.defaults.headers.common["Authorization"] = currentUser
-  ? `Bearer ${currentUser.token}`
-  : null;
+axios.defaults.headers.common["Authorization"] = currentUser ? `Bearer ${currentUser.token}` : null;
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 const cancelSource = axios.CancelToken.source();
@@ -127,6 +126,7 @@ Vue.use(VueCompositionAPI);
 Vue.use(VueJwtDecode);
 Vue.use(PerfectScrollbar);
 Vue.use(VueAxios, axios, moment);
+Vue.use(filters);
 
 Vue.config.productionTip = false;
 
