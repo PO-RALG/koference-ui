@@ -1,5 +1,5 @@
 <template>
-  <div class="Invoice">
+  <div>
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
@@ -76,7 +76,7 @@
                     v-model="data.formData.date"
                   />
                 </v-col>
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="12" class="mt-n8">
                   <v-text-field
                     label="Description"
                     v-model="data.formData.description"
@@ -95,61 +95,99 @@
                     </td>
                   </tr>
                 </v-col>
-                <v-row
-                  class="mt-n8 pa-3"
-                  text-center
-                  v-for="(invoice, index) in data.invoice_items"
-                  :key="index"
-                  hide-details
-                >
-                  <v-col cols="4" lg="6" md="6" sm="12">
-                    <v-select
-                      :items="data.itemdefinitions"
-                      :item-text="'name'"
-                      v-model="invoice.invoice_item_definition_id"
-                      :name="`data.invoice_items[${index}][invoice_item_definition_id]`"
-                      label="Select Ivoice Item"
-                      item-value="id"
-                      outlined
-                      dense
-                      hide-details
-                    ></v-select>
-                  </v-col>
-
-                  <v-col cols="4" lg="4" md="4" sm="12">
-                    <!-- :rules="formValidation.streamNameRules"-->
-                    <v-text-field
-                      label="Add Amount"
-                      outlined
-                      dense
-                      hide-details
-                      v-model="invoice.amount"
-                      :name="`data.invoice_items[${index}][name]`"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col col="3" lg="1" class="d-flex pt-7 pr-12">
-                    <v-btn
-                      color="blue darken-1"
-                      text
-                      v-if="index || (!index && data.invoice_items.length > 1)"
-                      @click="removeRow(index)"
-                    >
-                      <v-icon small color="red"> mdi-minus-circle </v-icon>
-                    </v-btn>
-                    <v-btn
-                      color="blue darken-1"
-                      text
-                      @click="addRow"
-                      v-if="index == data.invoice_items.length - 1"
-                    >
-                      <v-icon small color="success"> mdi-plus-circle </v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
+                <v-col class="pt-2 invoice-table" cols="12" md="12">
+                  <v-data-table
+                    :headers="HEADERS"
+                    :items="data.items"
+                    disable-pagination
+                    hide-default-footer
+                  >
+                    <template v-slot:body>
+                      <tr
+                        v-for="(invoice, index) in data.invoice_items"
+                        :key="index"
+                        class="invoice-tr"
+                      >
+                        <td>
+                          <v-select
+                            :items="data.itemdefinitions"
+                            :item-text="'name'"
+                            v-model="invoice.invoice_item_definition_id"
+                            :name="`data.invoice_items[${index}][invoice_item_definition_id]`"
+                            label="Select Ivoice Item"
+                            item-value="id"
+                            dense
+                            outlined
+                            hide-details
+                          ></v-select>
+                        </td>
+                        <td class="invoice-td">
+                          <v-text-field
+                            dense
+                            hide-details
+                            outlined
+                            v-model="invoice.amount"
+                            :name="`data.invoice_items[${index}][name]`"
+                          >
+                          </v-text-field>
+                        </td>
+                        <td class="invoice-td">
+                          <v-text-field
+                            dense
+                            hide-details
+                            outlined
+                            v-model="invoice.amount_received"
+                            :name="`data.invoice_items[${index}][name]`"
+                          >
+                          </v-text-field>
+                        </td>
+                        <td class="invoice-td">
+                          <v-text-field
+                            dense
+                            hide-details
+                            outlined
+                            v-model="invoice.amount_pending"
+                            :name="`data.invoice_items[${index}][name]`"
+                          >
+                          </v-text-field>
+                        </td>
+                        <td>
+                          <v-btn
+                            color="blue darken-1"
+                            small
+                            text
+                            v-if="
+                              index || (!index && data.invoice_items.length > 1)
+                            "
+                            @click="removeRow(index)"
+                          >
+                            <v-icon small color="red">
+                              mdi-minus-circle
+                            </v-icon>
+                          </v-btn>
+                          <v-btn
+                            small
+                            color="blue darken-1"
+                            text
+                            @click="addRow"
+                            v-if="index == data.invoice_items.length - 1"
+                          >
+                            <v-icon small color="success">
+                              mdi-plus-circle
+                            </v-icon>
+                          </v-btn>
+                        </td>
+                      </tr>
+                    </template>
+                    <template v-slot:[`item.icon`]="{ item }">
+                      <v-icon class="mr-2">{{ item.icon }}</v-icon>
+                    </template>
+                  </v-data-table>
+                </v-col>
               </v-row>
             </v-container>
           </v-form>
+          <pre>{{ formData }}</pre>
         </ModalBody>
       </template>
       <template v-slot:footer>
@@ -227,7 +265,7 @@
                             data.invoicedata.invoice_number
                           }}</strong
                         ><br />
-                        Created: {{ data.invoicedata.date | myDate }}<br />
+                        Created: {{ data.invoicedata.date | format }}<br />
                       </td>
                     </tr>
                   </table>
@@ -461,265 +499,34 @@
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from "axios";
-import { ManageInvoice } from "./types";
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-  viewinvoice,
-  receiptcreate,
-} from "./services/invoice";
-import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
-import { customers } from "../setup/customer/services/customer.service";
-import { bankaccounts } from "../setup/bank-account/services/back-accounts.service";
-import { itemdefinitions } from "../setup/invoice-item-definition/services/invoice-item-definition";
+import { defineComponent } from "@vue/composition-api";
+import { useInvoice } from "./composables/invoice";
 
 export default defineComponent({
   name: "ManageInvoice",
   setup() {
-    let dataItems: Array<ManageInvoice> = [];
-    let customerData: ManageInvoice;
-
-    let data = reactive({
-      invoicereceip: {
-        date: "",
-        description: "",
-        customer_id: "",
-        bank_account_id: "",
-        bank_reference_number: "",
-        items: [],
-      },
-      title: "Manage Invoice",
-      modalTitle: "",
-      headers: [
-        {
-          text: "Invoice Number",
-          align: "start",
-          sortable: false,
-          value: "invoice_number",
-        },
-        {
-          text: "Customer",
-          align: "start",
-          sortable: false,
-          value: "customer.name",
-        },
-        {
-          text: "Description",
-          align: "start",
-          sortable: false,
-          value: "description",
-        },
-
-        {
-          text: "Ammount",
-          align: "start",
-          sortable: false,
-          value: "amount",
-        },
-        { text: "Date", value: "date", sortable: true },
-      ],
-      modal: false,
-      deletemodal: false,
-      invoicedetails: false,
-      invoicereceipt: false,
-      items: dataItems,
-      itemsToFilter: [],
-      formData: customerData,
-      rows: ["10", "20", "50", "100"],
-      itemtodelete: "",
-      response: {},
-      gfscodes: [],
-      customers: [],
-      itemdefinitions: [],
-      invoicedata: [],
-      bankaccounts: [],
-      customer: "",
-      invoice_items: [
-        {
-          invoice_item_definition_id: "",
-          amount: "",
-        },
-      ],
-      loading: false,
-      coat: "/coat_of_arms.svg.png",
-    });
-
-    onMounted(() => {
-      data.loading = true;
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data;
-        data.itemsToFilter = response.data.data.data;
-        data.loading = false;
-      });
-      allgfscodes({ per_page: 2000 }).then((response: any) => {
-        data.gfscodes = response.data.data.data;
-      });
-      customers({ per_page: 2000 }).then((response: any) => {
-        data.customers = response.data.data.data;
-      });
-      itemdefinitions({ per_page: 2000 }).then((response: any) => {
-        data.itemdefinitions = response.data.data.data;
-      });
-    });
-
-    const searchCategory = (categoryName) => {
-      if (categoryName != null) {
-        search({ invoice_number: categoryName.invoice_number }).then(
-          (response: any) => {
-            data.items = response.data.data.data;
-          }
-        );
-      } else {
-        reloadData();
-      }
-    };
-
-    const reloadData = () => {
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data;
-      });
-    };
-
-    const deleteInvoiceItemdefinition = (deleteId: any) => {
-      data.deletemodal = !data.modal;
-      data.itemtodelete = deleteId;
-      data.invoicedetails = false;
-    };
-
-    const getInvoiceItemdefinition = () => {
-      get(data);
-    };
-
-    const cancelDialog = () => {
-      data.formData = {} as ManageInvoice;
-      (data.invoice_items = [
-        {
-          invoice_item_definition_id: "",
-          amount: "",
-        },
-      ]),
-        (data.modal = !data.modal);
-    };
-
-    const cancelInvoiceDialog = () => {
-      data.invoicedetails = false;
-    };
-
-    const cancelInvoiceReceipt = () => {
-      data.invoicereceipt = false;
-      data.invoicedetails = false;
-      data.invoicereceip.items = [];
-    };
-
-    const openInvoiceReceipt = (invoiceData: any) => {
-      data.invoicedetails = false;
-      data.invoicereceipt = true;
-      data.customer = invoiceData;
-      data.invoicereceip.customer_id = invoiceData;
-
-      if (data.invoicedata.invoice_items.length > 0) {
-        data.invoicedata.invoice_items.forEach((value) => {
-          let one_item = {
-            invoicedAmount: value.amount,
-            received: value.received_amount,
-            itemName: value.definition.name,
-            invoice_item_id: value.id,
-            amount: "",
-          };
-          data.invoicereceip.items.push(one_item);
-        });
-        bankaccounts({ per_page: 2000 }).then((response: any) => {
-          data.bankaccounts = response.data.data.data;
-        });
-      }
-    };
-
-    const cancelConfirmDialog = () => {
-      data.formData = {} as ManageInvoice;
-      data.deletemodal = false;
-    };
-
-    const remove = () => {
-      destroy(data.itemtodelete).then(() => {
-        reloadData();
-        data.deletemodal = false;
-      });
-    };
-
-    const save = () => {
-      data.formData.items = data.invoice_items;
-      if (data.formData.id) {
-        updateInvoiceItemDefinition(data.formData);
-      } else {
-        createInvoice(data.formData);
-      }
-    };
-
-    const openDialog = (formData?: any) => {
-      if (formData.id) {
-        data.formData = formData;
-        data.modalTitle = "Update";
-      } else {
-        data.formData = {} as ManageInvoice;
-        data.modalTitle = "Create";
-      }
-      data.modal = !data.modal;
-    };
-
-    const updateInvoiceItemDefinition = (data: any) => {
-      update(data).then(() => {
-        reloadData();
-        cancelDialog();
-      });
-    };
-
-    const createReceipt = () => {
-      receiptcreate(data.invoicereceip);
-    };
-
-    const createInvoice = (data: any) => {
-      create(data).then(() => {
-        reloadData();
-        cancelDialog();
-      });
-    };
-
-    const getData = (params: any) => {
-      data.response = params;
-      get(params).then((response: AxiosResponse) => {
-        data.response = response.data.data;
-        data.items = response.data.data.data;
-      });
-    };
-    const addRow = () => {
-      data.invoice_items.push({
-        invoice_item_definition_id: "",
-        amount: "",
-      });
-    };
-
-    const removeRow = (index: any) => {
-      data.invoice_items.splice(index, 1);
-    };
-
-    const previewInvoice = (item: number) => {
-      viewinvoice(item).then((response: AxiosResponse) => {
-        data.invoicedata = response.data.data;
-        data.invoicedetails = true;
-      });
-    };
+    const {
+      data,
+      getData,
+      createReceipt,
+      addRow,
+      removeRow,
+      openDialog,
+      cancelDialog,
+      deleteInvoiceItemdefinition,
+      getInvoiceItemdefinition,
+      updateInvoiceItemDefinition,
+      save,
+      reloadData,
+      remove,
+      cancelConfirmDialog,
+      searchCategory,
+      previewInvoice,
+      cancelInvoiceDialog,
+      cancelInvoiceReceipt,
+      openInvoiceReceipt,
+      HEADERS,
+    } = useInvoice();
 
     return {
       data,
@@ -741,12 +548,13 @@ export default defineComponent({
       cancelInvoiceDialog,
       cancelInvoiceReceipt,
       openInvoiceReceipt,
+      HEADERS,
     };
   },
 });
 </script>
 
-<style>
+<style lang="scss">
 .invoice-box {
   max-width: 1000px;
   margin: auto;
@@ -845,5 +653,34 @@ export default defineComponent({
 .login-logo {
   height: 14%;
   width: 14%;
+}
+
+tbody tr:nth-of-type(odd) {
+  background-color: none;
+}
+
+.invoice-table {
+  table {
+    border: 1px solid #cccc;
+    tr.invoice-tr {
+      border-right: 1px solid #ccc;
+    }
+    th {
+      border-right: 1px solid #ccc;
+      &:last-child {
+        border-right: none;
+      }
+    }
+    td {
+      border-right: 1px solid #ccc;
+      padding: 5px;
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+  .v-card__actions {
+    margin-right: 15px;
+  }
 }
 </style>

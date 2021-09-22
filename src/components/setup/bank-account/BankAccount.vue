@@ -39,7 +39,7 @@
           <span>{{ item.endDate }}</span>
         </template>
 
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -153,219 +153,29 @@
 </template>
 
 <script lang="ts">
-import { BackAccount } from "./types/BackAccount";
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-} from "./services/back-accounts.service";
-import { bankaccounttypes } from "../../setup/bank-account-type/services/banck-account-types.service";
+import { defineComponent } from "@vue/composition-api";
+import { useBank } from "./composables/bank";
 
 export default defineComponent({
   name: "BackAccount",
   setup() {
-    let dataItems: Array<BackAccount> = [];
-    let documentCategoryData: BackAccount;
-
-    let data = reactive({
-      title: "Manage Bank Accounts",
-      modalTitle: "",
-      headers: [
-        {
-          text: "GL Account",
-          align: "start",
-          sortable: false,
-          value: "gl_account",
-          width: 600,
-        },
-        {
-          text: "Bank",
-          align: "start",
-          sortable: false,
-          value: "bank",
-        },
-        {
-          text: "branch",
-          align: "start",
-          sortable: false,
-          value: "branch",
-        },
-        {
-          text: "Name",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-
-        {
-          text: "Number",
-          align: "start",
-          sortable: false,
-          value: "number",
-        },
-        {
-          text: "Gfs Code",
-          align: "start",
-          sortable: false,
-          value: "gfs_code.name",
-        },
-
-        { text: "Actions", value: "actions", sortable: false },
-      ],
-      modal: false,
-      deletemodal: false,
-      items: dataItems,
-      itemsToFilter: [],
-      formData: documentCategoryData,
-      params: {
-        total: 10,
-        size: 10,
-      },
-      itemtodelete: "",
-      accounttypes: [],
-      filterdialog: false,
-
-      selectedSbc: [],
-      subbudgetclasses: [],
-    });
-
-    onMounted(() => {
-      initialize();
-    });
-
-    const initialize = () => {
-      // make api call
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data to render", response.data.data);
-        data.items = response.data.data.data;
-        data.itemsToFilter = response.data.data.data;
-      });
-      bankaccounttypes().then((response: any) => {
-        console.log("gfs codes", response.data.data.data);
-        data.accounttypes = response.data.data.data;
-      });
-    };
-
-    const searchCategory = (categoryName) => {
-      console.log("argument", categoryName);
-
-      if (categoryName != null) {
-        search({ name: categoryName.name }).then((response: any) => {
-          console.log("response data", response);
-          data.items = response.data.data.data;
-        });
-      } else {
-        reloadData();
-      }
-    };
-
-    const reloadData = () => {
-      let params: any = {
-        total: 10,
-        size: 10,
-      };
-      get(params).then((response: any) => {
-        console.log("data", response.data.data);
-        data.items = response.data.data.data;
-      });
-    };
-
-    const deleteSubBudgetClass = (deleteId: any) => {
-      data.deletemodal = !data.modal;
-      data.itemtodelete = deleteId;
-      // console.log("delete year", data);
-    };
-
-    const getSubBudgetClass = () => {
-      get(data).then((response) => {
-        console.log("data", response.data);
-      });
-    };
-
-    const cancelDialog = () => {
-      data.formData = {} as BackAccount;
-      data.modal = !data.modal;
-    };
-
-    const cancelConfirmDialog = () => {
-      data.formData = {} as BackAccount;
-      data.deletemodal = false;
-      reloadData();
-    };
-    const cancelFilterDialog = () => {
-      data.filterdialog = false;
-      reloadData();
-    };
-
-    const remove = () => {
-      console.log("delete data with id", data.itemtodelete);
-      destroy(data.itemtodelete).then(() => {
-        reloadData();
-        data.deletemodal = false;
-      });
-    };
-
-    const save = () => {
-      console.log("Form Data", data.formData);
-      if (data.formData.id) {
-        updateFinancialYear(data.formData);
-      } else {
-        createUser(data.formData);
-      }
-    };
-
-    const openDialog = (formData?: any) => {
-      if (formData.id) {
-        data.formData = formData;
-        data.modalTitle = "Update";
-      } else {
-        data.formData = {} as BackAccount;
-        data.modalTitle = "Create";
-      }
-      data.modal = !data.modal;
-    };
-
-    const updateFinancialYear = (data: any) => {
-      update(data).then((response) => {
-        console.log("Updated data", response.data);
-        reloadData();
-        cancelDialog();
-      });
-    };
-
-    const createUser = (data: any) => {
-      create(data).then((response) => {
-        console.log("Created data", response.data);
-        reloadData();
-        cancelDialog();
-      });
-    };
-
-    const openFilterDialog = () => {
-      data.filterdialog = true;
-      data.modal = false;
-    };
-
-    const resumeDialog = () => {
-      data.modal = true;
-      data.filterdialog = false;
-    };
-
-    const filterSbc = (term: string) => {
-      let result = data.subbudgetclasses.filter((item) =>
-        item.code.toLowerCase().includes(term.toLowerCase())
-      );
-      data.subbudgetclasses = result;
-      return data.subbudgetclasses;
-    };
+    const {
+      filterSbc,
+      data,
+      openDialog,
+      cancelDialog,
+      deleteSubBudgetClass,
+      getSubBudgetClass,
+      updateFinancialYear,
+      save,
+      reloadData,
+      remove,
+      cancelConfirmDialog,
+      searchCategory,
+      openFilterDialog,
+      cancelFilterDialog,
+      resumeDialog,
+    } = useBank();
 
     return {
       filterSbc,

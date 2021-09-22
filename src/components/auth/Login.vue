@@ -29,7 +29,8 @@
                     <img :src="data.coat" class="login-logo" />
                     <v-alert
                       v-if="$route.query.redirect"
-                      color="warning"
+                      dismissible
+                      color="cyan"
                       border="left"
                       elevation="2"
                       colored-border

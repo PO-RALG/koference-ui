@@ -4,12 +4,12 @@
   </label>
   <input
     class="field"
+    :value="modelValue"
     v-bind="{
       ...$attrs,
       onInput: updateValue,
     }"
     :id="uuid"
-    :value="modelValue"
     :placeholder="label"
     :aria-describedby="error ? `${uuid}-error` : null"
     :aria-invalid="error ? true : false"
