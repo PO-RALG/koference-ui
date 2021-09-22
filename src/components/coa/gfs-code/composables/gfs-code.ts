@@ -154,6 +154,10 @@ export const useGfsCode = (): any => {
     });
   };
 
+  const fetch = async () => {
+    await get({ per_page: 1000 });
+  };
+
   return {
     data,
     openDialog,
@@ -168,5 +172,7 @@ export const useGfsCode = (): any => {
     searchCategory,
     imageUrl,
     getData,
+    getGfsCodes: get,
+    fetch,
   };
 };

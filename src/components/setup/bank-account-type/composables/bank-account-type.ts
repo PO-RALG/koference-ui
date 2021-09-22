@@ -3,11 +3,12 @@ import { AxiosResponse } from "axios";
 
 import { BanckAccountType } from "../types";
 import { get, create, update, destroy, search } from "../services/banck-account-types.service";
-import { gfscodes as getGfsCodes } from "@/components/coa/gfs-code/service/gfs.service";
+import { useGfsCode } from "@/components/coa/gfs-code/composables/gfs-code";
 
 export const useBankAccountType = (): any => {
   const dataItems: Array<BanckAccountType> = [];
   let customerData: BanckAccountType;
+  const { getGfsCodes } = useGfsCode();
 
   const data = reactive({
     title: "Manage Bank Account Type",
@@ -52,7 +53,6 @@ export const useBankAccountType = (): any => {
   });
 
   const searchCategory = (categoryName: any) => {
-
     if (categoryName != null) {
       search({ name: categoryName.name }).then((response: any) => {
         console.log("response data", response.data.data);
@@ -124,16 +124,16 @@ export const useBankAccountType = (): any => {
   };
 
   const loadGfsCodes = () => {
-    getGfsCodes().then((response: any) => {
-      data.gfscodes = response.data.data;
+    getGfsCodes().then((response: AxiosResponse) => {
+      data.gfscodes = response.data.data.data;
     });
-  }
+  };
 
   const gfsCodes = computed(() => {
     return data.gfscodes.map((gfs) => {
       gfs.fullName = `(${gfs.code}) - ${gfs.name}`;
       return gfs;
-    })
+    });
   });
 
   const updateCustomer = (data: any) => {
@@ -173,4 +173,4 @@ export const useBankAccountType = (): any => {
     searchCategory,
     gfsCodes,
   };
-}
+};
