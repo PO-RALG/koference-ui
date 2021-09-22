@@ -4,6 +4,7 @@ import VueJwtDecode from "vue-jwt-decode";
 import VueAxios from "vue-axios";
 import PerfectScrollbar from "vue2-perfect-scrollbar";
 import VueCompositionAPI from "@vue/composition-api";
+import moment from "moment"; //require
 
 import App from "./App.vue";
 import router from "./router";
@@ -12,12 +13,6 @@ import vuetify from "./plugins/vuetify";
 
 import "@/mixins";
 import filters from "./filters";
-
-import moment from "moment"; //require
-
-Vue.filter("myDate", function (created: Date) {
-  return moment(created).format("Do MMMM YYYY");
-});
 
 import "./assets/main.scss";
 import "./components/shared";

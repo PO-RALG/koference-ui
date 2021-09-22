@@ -35,10 +35,10 @@
           </v-card-title>
         </template>
         <template v-slot:[`item.start_date`]="{ item }">
-          <span>{{ item.start_date | format }}</span>
+          <span>{{ item.start_date | format("DD/MM/YYYY") }}</span>
         </template>
         <template v-slot:[`item.end_date`]="{ item }">
-          <span>{{ item.end_date | format }}</span>
+          <span>{{ item.end_date | format("DD/MM/YYYY") }}</span>
         </template>
         <template v-slot:[`item.activations`]="{ item }">
           <v-switch :input-value="item.active" @change="toggleStatus(item)" value></v-switch>
