@@ -114,7 +114,7 @@ var receiptcreate = function (payload) { return __awaiter(void 0, void 0, void 0
         switch (_a.label) {
             case 0:
                 console.log("payload", payload);
-                return [4 /*yield*/, axios_1["default"].post("/api/v1/receipts/" + 14 + "/invoice", payload)];
+                return [4 /*yield*/, axios_1["default"].post("/api/v1/receipts/" + 27 + "/invoice", payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

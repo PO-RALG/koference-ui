@@ -36,7 +36,7 @@ const destroy = async (payload: any) => {
 
 const receiptcreate = async (payload: any) => {
   console.log("payload", payload);
-  return await axios.post(`/api/v1/receipts/` + 14 + "/invoice", payload);
+  return await axios.post(`/api/v1/receipts/` + 27 + "/invoice", payload);
 };
 export {
   get,

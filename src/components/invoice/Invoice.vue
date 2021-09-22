@@ -164,10 +164,10 @@
 
     <Modal :modal="data.deletemodal" :width="400">
       <template v-slot:header>
-        <ModalHeader :title="`Reverse Invoice `" />
+        <ModalHeader :title="`Cancel Invoice `" />
       </template>
       <template v-slot:body>
-        <ModalBody> Are you sure you want to reverse this invoice? </ModalBody>
+        <ModalBody> Are you sure you want to cancel this invoice? </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
@@ -195,7 +195,7 @@
                         <v-btn
                           color="green darken-1"
                           text
-                          @click="openInvoiceReceipt()"
+                          @click="openInvoiceReceipt(data.invoicedata)"
                           ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
                         >
                         <v-btn
@@ -211,7 +211,7 @@
                           color="warning darken-1"
                           text
                           ><v-icon>mdi-arrow-u-left-top-bold</v-icon>
-                          Reverse</v-btn
+                          Cancel</v-btn
                         >
                         <v-btn
                           color="red darken-1"
@@ -350,7 +350,6 @@
       </template>
       <template v-slot:body>
         <ModalBody>
-          {{ newInvoiceItem }}
           <v-form>
             <v-container>
               <v-row class="mt-n8 pa-5">
@@ -358,9 +357,9 @@
                   <v-autocomplete
                     v-model="data.invoicereceip.customer_id"
                     label="Select Customer"
-                    :items="data.customers"
-                    :item-text="'name'"
-                    item-value="id"
+                    :items="data.customer"
+                    :item-text="'customer.name'"
+                    item-value="customer.id"
                   ></v-autocomplete>
                 </v-col>
                 <v-col class="pt-6" cols="12" md="6">
@@ -394,28 +393,43 @@
                 </v-col>
 
                 <v-col class="pt-2" cols="12" md="12"> </v-col>
+                <!-- <pre>{{ data.customer }}</pre> -->
                 <v-row
                   class="mt-n8 pa-3"
                   text-center
-                  v-for="(invoice, index) in data.invoicedata.invoice_items"
+                  v-for="(invoice, index) in data.invoicereceip.items"
                   :key="index"
                   hide-details
                 >
-                  <v-col cols="4" lg="6" md="6" sm="12">
-                    <v-select
-                      :items="data.itemdefinitions"
-                      :item-text="'name'"
-                      v-model="invoice.invoice_item_definition_id"
-                      :name="`data.invoice_items[${index}][invoice_item_definition_id]`"
-                      label="Select Ivoice Item"
-                      item-value="id"
+                  <v-col cols="4" lg="3" md="6" sm="12">
+                    <v-text-field
+                      label="Item Name"
                       outlined
                       dense
                       hide-details
-                    ></v-select>
+                      v-model="invoice.itemName"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="4" lg="3" md="6" sm="12">
+                    <v-text-field
+                      label="Invoiced Amount"
+                      outlined
+                      dense
+                      hide-details
+                      v-model="invoice.invoicedAmount"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="4" lg="3" md="6" sm="12">
+                    <v-text-field
+                      label="Amount Received"
+                      outlined
+                      dense
+                      hide-details
+                      v-model="invoice.received"
+                    ></v-text-field>
                   </v-col>
 
-                  <v-col cols="4" lg="4" md="4" sm="12">
+                  <v-col cols="4" lg="3" md="4" sm="12">
                     <!-- :rules="formValidation.streamNameRules"-->
                     <v-text-field
                       label="Add Amount"
@@ -449,12 +463,7 @@
 <script lang="ts">
 import { AxiosResponse } from "axios";
 import { ManageInvoice } from "./types";
-import {
-  defineComponent,
-  reactive,
-  onMounted,
-  computed,
-} from "@vue/composition-api";
+import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 
 import {
   get,
@@ -530,6 +539,7 @@ export default defineComponent({
       itemdefinitions: [],
       invoicedata: [],
       bankaccounts: [],
+      customer: "",
       invoice_items: [
         {
           invoice_item_definition_id: "",
@@ -610,14 +620,30 @@ export default defineComponent({
     const cancelInvoiceReceipt = () => {
       data.invoicereceipt = false;
       data.invoicedetails = false;
+      data.invoicereceip.items = [];
     };
 
-    const openInvoiceReceipt = () => {
+    const openInvoiceReceipt = (invoiceData: any) => {
       data.invoicedetails = false;
       data.invoicereceipt = true;
-      bankaccounts({ per_page: 2000 }).then((response: any) => {
-        data.bankaccounts = response.data.data.data;
-      });
+      data.customer = invoiceData;
+      data.invoicereceip.customer_id = invoiceData;
+
+      if (data.invoicedata.invoice_items.length > 0) {
+        data.invoicedata.invoice_items.forEach((value) => {
+          let one_item = {
+            invoicedAmount: value.amount,
+            received: value.received_amount,
+            itemName: value.definition.name,
+            invoice_item_id: value.id,
+            amount: "",
+          };
+          data.invoicereceip.items.push(one_item);
+        });
+        bankaccounts({ per_page: 2000 }).then((response: any) => {
+          data.bankaccounts = response.data.data.data;
+        });
+      }
     };
 
     const cancelConfirmDialog = () => {
@@ -660,22 +686,6 @@ export default defineComponent({
     };
 
     const createReceipt = () => {
-      data.invoicedata.invoice_items.map((item) => {
-        delete item.id;
-        delete item.created_at;
-        delete item.created_by;
-        delete item.id;
-        delete item.definition;
-        delete item.deleted_at;
-        delete item.gl_account;
-        delete item.invoice_id;
-        delete item.received_amount;
-        delete item.updated_at;
-      });
-      const obj = Object.assign({}, data.invoicedata.invoice_items);
-
-      data.invoicereceip.items.push(obj);
-      // console.log("mmmmmm", data.invoicedata.invoice_items);
       receiptcreate(data.invoicereceip);
     };
 
