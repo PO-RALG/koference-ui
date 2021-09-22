@@ -179,7 +179,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.invoicedetails" :width="900">
+    <Modal :modal="data.invoicedetails" :width="1000">
       <template v-slot:header>
         <ModalHeader :title="`Invoice Details`" />
       </template>
@@ -748,7 +748,7 @@ export default defineComponent({
 
 <style>
 .invoice-box {
-  max-width: 850px;
+  max-width: 1000px;
   margin: auto;
   padding: 2px;
   /* border: 1px solid #eee; */
