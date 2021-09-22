@@ -21,11 +21,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
-import { AxiosResponse } from "axios";
-import { find, getPermissions, addPermissions as assignPermissions } from "./services/role-services";
+import { defineComponent } from "@vue/composition-api";
+import { useRolePermission } from "./composables/role-permission";
 import PermissionList from "./PermissionList.vue";
-import router from "@/router";
 
 export default defineComponent({
   components: {
@@ -37,67 +35,8 @@ export default defineComponent({
       required: false,
     },
   },
-  setup(props, { attrs }) {
-    let data = reactive({
-      valid: true,
-      role: null,
-      selected: [],
-      permissions: [],
-    });
-
-    onMounted(() => {
-      initialize();
-    });
-
-    const initialize = () => {
-      const roleID: any = attrs.id;
-      find(roleID).then((response: AxiosResponse) => {
-        data.role = response.data.data;
-        data.selected = response.data.data.permisions;
-      });
-
-      getPermissions({}).then((response: AxiosResponse) => {
-        data.permissions = response.data.data;
-      });
-    };
-
-    const addToSelection = (item: any) => {
-      let idx = data.selected.indexOf(item);
-      if (idx > -1) {
-        data.selected.splice(idx, 1);
-      } else {
-        data.selected.push(item);
-      }
-    };
-
-    const addPermissions = () => {
-      let payload = {
-        role_id: attrs.id,
-        permissions: data.selected.map((val) => val.id),
-      };
-      assignPermissions(payload).then((response) => {
-        if (response.status === 200) {
-          router.push({ path: `/manage-roles` });
-        }
-      });
-    };
-
-    const goBack = () => {
-      router.push({ path: `/manage-roles` });
-    };
-
-    let permissions = computed(() => {
-      return data.permissions;
-    });
-
-    const filterPermissions = (name?) => {
-      if (name) {
-        permissions.value.filter((entry: any) => entry.resource.includes(name));
-        return permissions;
-      } else {
-        return permissions;
-      }
-    };
+  setup(props, context) {
+    const { data, addToSelection, addPermissions, permissions, filterPermissions, goBack } = useRolePermission(context);
 
     return {
       data,

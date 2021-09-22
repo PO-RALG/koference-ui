@@ -32,8 +32,8 @@ export default defineComponent({
     },
     columnName: {
       type: String,
-      default: "entries"
-    }
+      default: "entries",
+    },
   },
   setup(props, { emit }) {
     let data = reactive({
@@ -46,6 +46,7 @@ export default defineComponent({
     };
 
     const rowClick = (item, row) => {
+      console.log("item", item);
       let selectState = row.isSelected ? false : true;
       row.select(selectState);
     };

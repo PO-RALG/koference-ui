@@ -1,52 +1,41 @@
-import { AxiosResponse } from "axios";
 import { reactive, onMounted } from "@vue/composition-api";
+import { AxiosResponse } from "axios";
 
-import { ManageInvoice } from "../types";
-import { get, create, update, destroy, search, viewinvoice } from "../services/invoice";
+import { get, create, update, destroy, search, activation } from "../services/invoice-item-definition";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
-import { customers } from "@/components/setup/customer/services/customer.service";
-import { itemdefinitions } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
+import { fundingsources } from "@/components/coa/funding-source/services/funding-sources";
+import { ManageInvoiceItemDefinition } from "../types/";
 
-export const useInvoice = (): any => {
-  const dataItems: Array<ManageInvoice> = [];
-  let customerData: ManageInvoice;
+export const useInvoiceDefinition = (): any => {
+  const dataItems: Array<ManageInvoiceItemDefinition> = [];
+  let customerData: ManageInvoiceItemDefinition;
 
   const data = reactive({
-    title: "Manage Invoice",
+    title: "Manage Invoice Item Definition",
     modalTitle: "",
     headers: [
+      { text: "Name", align: "start", sortable: false, value: "name" },
       {
-        text: "Invoice Number",
+        text: "Unit of Measure",
         align: "start",
         sortable: false,
-        value: "invoice_number",
+        value: "unit_of_measure",
       },
-      {
-        text: "Customer",
-        align: "start",
-        sortable: false,
-        value: "customer.name",
-      },
+      { text: "Code", align: "start", sortable: false, value: "code" },
+
       {
         text: "Description",
         align: "start",
         sortable: false,
         value: "description",
       },
-
-      {
-        text: "Ammount",
-        align: "start",
-        sortable: false,
-        value: "amount",
-      },
-      { text: "Date", value: "date", sortable: true },
-
+      { text: "Fund Source", value: "fund_source.code", sortable: true },
+      { text: "Gfs Code", value: "gfs_code.code", sortable: true },
+      { text: "Activation", value: "activations", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
     modal: false,
     deletemodal: false,
-    invoicedetails: false,
     items: dataItems,
     itemsToFilter: [],
     formData: customerData,
@@ -54,46 +43,44 @@ export const useInvoice = (): any => {
     itemtodelete: "",
     response: {},
     gfscodes: [],
-    customers: [],
-    itemdefinitions: [],
-    invoicedata: [],
-    invoice_items: [
-      {
-        invoice_item_definition_id: "",
-        amount: "",
-      },
-    ],
-    loading: false,
-    coat: "/coat_of_arms.svg.png",
+    fundingsources: [],
   });
 
   onMounted(() => {
-    data.loading = true;
+    initialize();
+  });
+
+  const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
-      data.loading = false;
     });
 
     allgfscodes({ per_page: 2000 }).then((response: any) => {
       data.gfscodes = response.data.data.data;
     });
 
-    customers({ per_page: 2000 }).then((response: any) => {
-      data.customers = response.data.data.data;
+    fundingsources({ per_page: 2000 }).then((response: any) => {
+      data.fundingsources = response.data.data.data;
     });
+  };
 
-    itemdefinitions({ per_page: 2000 }).then((response: any) => {
-      data.itemdefinitions = response.data.data.data;
+  const setActivation = (item) => {
+    activation(item).then((response: any) => {
+      console.log("activated data", response.data);
+      reloadData();
     });
-  });
+  };
 
   const searchCategory = (categoryName) => {
+    console.log("argument", categoryName);
+
     if (categoryName != null) {
-      search({ invoice_number: categoryName.invoice_number }).then((response: any) => {
-        data.items = response.data.data.data;
+      search({ name: categoryName.name }).then((response: any) => {
+        console.log("response data", response.data.data);
+        data.items = response.data.data;
       });
     } else {
       reloadData();
@@ -111,32 +98,27 @@ export const useInvoice = (): any => {
   const deleteInvoiceItemdefinition = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
+    // console.log("delete year", data);
   };
 
   const getInvoiceItemdefinition = () => {
-    get(data).then(() => {});
+    get(data).then((response) => {
+      console.log("data", response.data);
+    });
   };
 
   const cancelDialog = () => {
-    data.formData = {} as ManageInvoice;
-    (data.invoice_items = [
-      {
-        invoice_item_definition_id: "",
-        amount: "",
-      },
-    ]),
-      (data.modal = !data.modal);
-  };
-  const cancelInvoiceDialog = () => {
-    data.invoicedetails = false;
+    data.formData = {} as ManageInvoiceItemDefinition;
+    data.modal = !data.modal;
   };
 
   const cancelConfirmDialog = () => {
-    data.formData = {} as ManageInvoice;
+    data.formData = {} as ManageInvoiceItemDefinition;
     data.deletemodal = false;
   };
 
   const remove = () => {
+    console.log("delete data with id", data.itemtodelete);
     destroy(data.itemtodelete).then(() => {
       reloadData();
       data.deletemodal = false;
@@ -144,7 +126,7 @@ export const useInvoice = (): any => {
   };
 
   const save = () => {
-    data.formData.items = data.invoice_items;
+    console.log("Form Data", data.formData);
     if (data.formData.id) {
       updateInvoiceItemDefinition(data.formData);
     } else {
@@ -157,21 +139,23 @@ export const useInvoice = (): any => {
       data.formData = formData;
       data.modalTitle = "Update";
     } else {
-      data.formData = {} as ManageInvoice;
+      data.formData = {} as ManageInvoiceItemDefinition;
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
   };
 
   const updateInvoiceItemDefinition = (data: any) => {
-    update(data).then(() => {
+    update(data).then((response) => {
+      console.log("Updated data", response.data);
       reloadData();
       cancelDialog();
     });
   };
 
   const createCustomer = (data: any) => {
-    create(data).then(() => {
+    create(data).then((response) => {
+      console.log("Created data", response.data);
       reloadData();
       cancelDialog();
     });
@@ -185,29 +169,9 @@ export const useInvoice = (): any => {
     });
   };
 
-  const addRow = () => {
-    data.invoice_items.push({
-      invoice_item_definition_id: "",
-      amount: "",
-    });
-  };
-
-  const removeRow = (index: any) => {
-    data.invoice_items.splice(index, 1);
-  };
-
-  const previewInvoice = (item: number) => {
-    viewinvoice(item).then((response: AxiosResponse) => {
-      data.invoicedata = response.data.data;
-      data.invoicedetails = true;
-    });
-  };
-
   return {
     data,
     getData,
-    addRow,
-    removeRow,
     openDialog,
     cancelDialog,
     deleteInvoiceItemdefinition,
@@ -218,7 +182,6 @@ export const useInvoice = (): any => {
     remove,
     cancelConfirmDialog,
     searchCategory,
-    previewInvoice,
-    cancelInvoiceDialog,
+    setActivation,
   };
 };

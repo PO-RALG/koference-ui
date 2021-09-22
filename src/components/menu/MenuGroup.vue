@@ -102,7 +102,6 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import draggable from "vuedraggable";
-
 import { useMenuGroups } from "./composables/menu-group";
 
 export default defineComponent({
