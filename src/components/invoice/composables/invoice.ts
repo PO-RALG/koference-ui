@@ -12,11 +12,11 @@ export const useInvoice = (): any => {
   let customerData: ManageInvoice;
 
   const HEADERS = [
-    { text: "Item", align: "start", sortable: false, value: "invoice_number", width: '30%' },
-    { text: "Amount", align: "start", sortable: false, value: "amount", width: '15%' },
-    { text: "Amount Received", align: "start", sortable: false, value: "amount_received", width: '15%'},
-    { text: "Amount Pending", align: "start", sortable: false, value: "amount_pending", width: '15%' },
-    { text: "", align: "start", sortable: false, value: "amount_pending", width: '15%' },
+    { text: "Item", align: "start", sortable: false, value: "invoice_number", width: "30%" },
+    { text: "Amount", align: "start", sortable: false, value: "amount", width: "15%" },
+    { text: "Amount Received", align: "start", sortable: false, value: "amount_received", width: "17%" },
+    { text: "Amount Pending", align: "start", sortable: false, value: "amount_pending", width: "15%" },
+    { text: "", align: "center", sortable: false, value: "amount_pending", width: "13%" },
   ];
 
   const data = reactive({
