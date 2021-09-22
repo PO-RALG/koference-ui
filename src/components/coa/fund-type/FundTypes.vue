@@ -56,7 +56,6 @@
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
-          <!-- <img v-show="imageUrl" :src="imageUrl" alt="" /> -->
           <v-form>
             <v-container>
               <v-row>
@@ -97,156 +96,26 @@
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from "axios";
-import { FundTypes } from "./types";
-import { defineComponent, reactive, onMounted, computed } from "@vue/composition-api";
-
-import { get, create, update, destroy, search } from "./service/fund-types.service";
+import { defineComponent } from "@vue/composition-api";
+import { useFundType } from "./composables/fund-type";
 
 export default defineComponent({
   name: "FundTypes",
   setup() {
-    let dataItems: Array<FundTypes> = [];
-    let documentCategoryData: FundTypes;
-
-    let data = reactive({
-      title: "Manage FundTypes",
-      modalTitle: "",
-      headers: [
-        {
-          text: "Desciption",
-          align: "start",
-          sortable: false,
-          value: "name",
-        },
-        {
-          text: "Code",
-          align: "start",
-          sortable: false,
-          value: "code",
-        },
-
-        { text: "Actions", value: "actions", sortable: false },
-      ],
-
-      modal: false,
-      deletemodal: false,
-      items: dataItems,
-      itemsToFilter: [],
-      formData: documentCategoryData,
-      rows: ["10", "20", "50", "100"],
-      itemtodelete: "",
-      response: {},
-      documentcategories: [],
-    });
-
-    onMounted(() => {
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } = response.data.data;
-        data.response = {
-          from,
-          to,
-          total,
-          current_page,
-          per_page,
-          last_page,
-        };
-        data.items = response.data.data.data;
-        data.itemsToFilter = response.data.data.data;
-      });
-    });
-
-    const searchCategory = (categoryName) => {
-      if (categoryName != null) {
-        search({ name: categoryName.name }).then((response: any) => {
-          data.items = response.data.data.data;
-        });
-      } else {
-        reloadData();
-      }
-    };
-
-    const reloadData = () => {
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } = response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data;
-      });
-    };
-
-    const deleteFundType = (deleteId: any) => {
-      data.deletemodal = !data.modal;
-      data.itemtodelete = deleteId;
-      // console.log("delete year", data);
-    };
-
-    const getFundTypes = () => {
-      get(data).then((response) => {
-        console.log("data", response.data);
-      });
-    };
-
-    const cancelDialog = () => {
-      data.formData = {} as FundTypes;
-      data.modal = !data.modal;
-    };
-
-    const cancelConfirmDialog = () => {
-      data.formData = {} as FundTypes;
-      data.deletemodal = false;
-    };
-
-    const remove = () => {
-      console.log("delete data with id", data.itemtodelete);
-      destroy(data.itemtodelete).then(() => {
-        reloadData();
-        data.deletemodal = false;
-      });
-    };
-
-    const save = () => {
-      console.log("Form Data", data.formData);
-      if (data.formData.id) {
-        updateFundType(data.formData);
-      } else {
-        createFundType(data.formData);
-      }
-    };
-
-    const openDialog = (formData?: any) => {
-      if (formData.id) {
-        data.formData = formData;
-        data.modalTitle = "Update";
-      } else {
-        data.formData = {} as FundTypes;
-        data.modalTitle = "Create";
-      }
-      data.modal = !data.modal;
-    };
-
-    const updateFundType = (data: any) => {
-      update(data).then((response) => {
-        console.log("Updated data", response.data);
-        reloadData();
-        cancelDialog();
-      });
-    };
-
-    const createFundType = (data: any) => {
-      create(data).then((response) => {
-        console.log("Created data", response.data);
-        reloadData();
-        cancelDialog();
-      });
-    };
-
-    const getData = (params: any) => {
-      data.response = params;
-      get(params).then((response: AxiosResponse) => {
-        data.response = response.data.data;
-        data.items = response.data.data.data;
-      });
-    };
+    const {
+      data,
+      getData,
+      openDialog,
+      cancelDialog,
+      deleteFundType,
+      getFundTypes,
+      updateFundType,
+      save,
+      reloadData,
+      remove,
+      cancelConfirmDialog,
+      searchCategory,
+    } = useFundType();
 
     return {
       data,

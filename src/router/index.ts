@@ -25,7 +25,7 @@ import { bankAccountTypesRoutes } from "@/components/setup/bank-account-type";
 import { invoiceItemDefinitionRoutes } from "@/components/setup/invoice-item-definition";
 import { activityRoutes } from "@/components/planning/activity";
 import { activityCostingRoutes } from "@/components/planning/activity-costing";
-import { invoiceRoutes } from "@/components/setup/invoice";
+import { invoiceRoutes } from "@/components/invoice";
 import { revenueProjectionRoutes } from "@/components/planning/revenue-projection";
 import { supplierRoutes } from "@/components/payable/supplier";
 
@@ -107,6 +107,8 @@ const isLoggedIn = (to, _, next) => {
   }
 };
 
-router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
+router.beforeEach(
+  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
+);
 
 export default router;

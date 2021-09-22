@@ -38,4 +38,13 @@ const destroy = async (id: string | number) => {
   return await axios.delete(`${API}/${id}`);
 };
 
-export { get, find, create, update, destroy, startFinancialYear, search, toggleActive };
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  startFinancialYear,
+  search,
+  toggleActive,
+};

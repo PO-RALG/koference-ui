@@ -11,6 +11,13 @@ import store from "@/store";
 import vuetify from "./plugins/vuetify";
 
 import "@/mixins";
+import filters from "./filters";
+
+import moment from "moment"; //require
+
+Vue.filter("myDate", function (created: Date) {
+  return moment(created).format("Do MMMM YYYY");
+});
 
 import "./assets/main.scss";
 import "./components/shared";
@@ -118,7 +125,8 @@ axios.interceptors.response.use(
 Vue.use(VueCompositionAPI);
 Vue.use(VueJwtDecode);
 Vue.use(PerfectScrollbar);
-Vue.use(VueAxios, axios);
+Vue.use(VueAxios, axios, moment);
+Vue.use(filters);
 
 Vue.config.productionTip = false;
 
