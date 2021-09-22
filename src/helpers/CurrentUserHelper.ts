@@ -3,7 +3,7 @@
  * @params null
  * @returns currentUser: Object
  */
-const getCurentUser = async (): any => {
+const getCurentUser = async (): Promise<any> => {
   return await JSON.parse(localStorage.getItem("FFARS_USER"));
 };
 
