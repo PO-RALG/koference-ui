@@ -274,7 +274,19 @@ exports.useInvoice = function () {
         });
     };
     var createReceipt = function () {
-        invoice_1.receiptcreate(data.invoicereceip);
+        invoice_1.receiptcreate(data.invoicereceip).then(function () {
+            data.invoicereceipt = false;
+            reloadData();
+            data.invoicereceip = {
+                invoice_id: "",
+                date: "",
+                description: "",
+                customer_id: "",
+                bank_account_id: "",
+                bank_reference_number: "",
+                items: []
+            };
+        });
     };
     var createInvoice = function (data) {
         invoice_1.create(data).then(function () {

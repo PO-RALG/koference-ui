@@ -307,7 +307,19 @@ export const useInvoice = (): any => {
   };
 
   const createReceipt = () => {
-    receiptcreate(data.invoicereceip);
+    receiptcreate(data.invoicereceip).then(() => {
+      data.invoicereceipt = false;
+      reloadData();
+      data.invoicereceip = {
+        invoice_id: "",
+        date: "",
+        description: "",
+        customer_id: "",
+        bank_account_id: "",
+        bank_reference_number: "",
+        items: [],
+      };
+    });
   };
 
   const createInvoice = (data: any) => {
