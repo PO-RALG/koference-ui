@@ -5,158 +5,120 @@
       <v-spacer></v-spacer>
     </v-card-actions>
     <v-card>
-      <v-card-title>
-        <v-col cols="6" sm="12" md="2" class="pa-0">
-          <v-select
-            v-model="data.funding_source_id"
-            :items="data.fundingSources"
-            item-value="id"
-            label="Funding source"
-            @change="searchBudgets(data.funding_source_id)"
-          >
-            <template v-slot:selection="{ item }">
-              {{ item.code }} - {{ item.description }}
-            </template>
-            <template v-slot:item="{ item }">
-              {{ item.code }} - {{ item.description }}
-            </template>
-            <template v-slot:prepend-item>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-text-field
-                    v-model="data.searchTerm"
-                    placeholder="Search"
-                    @input="searchFundingSources"
-                  ></v-text-field>
-                </v-list-item-content>
-              </v-list-item>
-              <v-divider></v-divider>
-            </template>
-          </v-select>
-        </v-col>
-        <v-col cols="6" sm="12" md="2">
-          <v-text-field v-model="data.itemUnallocated.carryover" label="Carryover Fund" disabled></v-text-field>
-        </v-col>
-        <v-col cols="6" sm="12" md="2">
-          <v-text-field v-model="data.itemUnallocated.current" label="Current Fund" disabled></v-text-field>
-        </v-col>
-        <v-col cols="6" sm="12" md="2">
-          <v-text-field v-model="data.itemUnallocated.total" label="Total Fund" disabled></v-text-field>
-        </v-col>
-        <v-col cols="6" sm="12" md="2">
-          <v-text-field v-model="data.itemUnallocated.allocated" label="Total Allocated" disabled></v-text-field>
-        </v-col>
-        <v-col cols="6" sm="12" md="2">
-          <v-text-field v-model="data.running_balance" label="Unallocated Amount" disabled></v-text-field>
-        </v-col>
-      </v-card-title>
-      <v-card-text>
-        <template>
-          <v-row>
-            <v-col cols="12" md="4" sm="12"><h3>GL Account</h3></v-col>
-            <v-col cols="12" md="1" sm="12"><h3>Budget</h3></v-col>
-            <v-col cols="12" md="1" sm="12"><h3>Allocated</h3></v-col>
-            <v-col cols="12" md="1" sm="12"><h3>Expenditure</h3></v-col>
-            <v-col cols="12" md="2" sm="12"><h3>Available</h3></v-col>
-            <v-col cols="12" md="2" sm="12"><h3>Allocate</h3></v-col>
-          </v-row>
-        </template>
-        <template v-for="(item, i) in data.items.lines">
-          <v-row
-            :key="i"
-            cols="12"
-          >
-            <v-col cols="12" md="4" sm="12">
-              {{item.gl}} <br>
-              <span style="color:teal">{{item.activity}}({{item.budget_category}})</span> <br>
-              {{item.gfs}} <br>
-            </v-col>
-            <v-col cols="12" md="1" sm="12">
-              {{item.amount}}
-            </v-col>
-            <v-col cols="12" md="1" sm="12">
-              {{item.total_allocated}}
-            </v-col>
-            <v-col cols="12" md="1" sm="12">
-              {{item.expenditure}}
-            </v-col>
-            <v-col cols="12" md="2" sm="12">
-              {{item.total_allocated - item.expenditure}}
-            </v-col>
-            <v-col cols="12" md="2" sm="12">
-              <v-text-field v-model="item.allocation_amount" @input="newAllocation(item.allocation_amount)" type="number"></v-text-field>
-            </v-col>
-          </v-row>
-        </template>
-      </v-card-text>
-    </v-card>
-
-    <Modal :modal="data.modal" :width="960">
-      <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Supplier`" />
-      </template>
-      <template v-slot:body>
-        <ModalBody v-if="data.formData">
-          <v-form>
-            <v-container>
-              <v-row>
-                <v-col cols="12" md="12">
-                  <v-text-field v-model="data.formData.name" label="Name" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.email" label="Email"></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.tin" label="TIN"></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.phone" label="Phone"></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.address" label="Address"></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.bank_account_name" label="Bank Account Name"></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.bank_account_number" label="Bank Account Number"></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-form>
-        </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save">
-            {{ data.modalTitle }}
+      <v-form>
+        <v-card-title>
+          <v-col cols="12" sm="12" md="3" class="pa-0">
+            <v-select
+              v-model="data.funding_source_id"
+              :items="data.fundingSources"
+              item-value="id"
+              label="Funding source"
+              @change="searchBudgets(data.funding_source_id)"
+            >
+              <template v-slot:selection="{ item }">
+                {{ item.code }} - {{ item.description }}
+              </template>
+              <template v-slot:item="{ item }">
+                {{ item.code }} - {{ item.description }}
+              </template>
+              <template v-slot:prepend-item>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-text-field
+                      v-model="data.searchTerm"
+                      placeholder="Search"
+                      @input="searchFundingSources"
+                    ></v-text-field>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider></v-divider>
+              </template>
+            </v-select>
+          </v-col>
+          <v-col cols="6" sm="12" md="1" v-if="data.items.lines.length">
+            <v-text-field v-model="data.itemUnallocated.carryover" label="Carryover Fund" disabled></v-text-field>
+          </v-col>
+          <v-col cols="6" sm="12" md="2" v-if="data.items.lines.length">
+            <v-text-field v-model="data.itemUnallocated.current" label="Current Fund" disabled></v-text-field>
+          </v-col>
+          <v-col cols="6" sm="12" md="2" v-if="data.items.lines.length">
+            <v-text-field v-model="data.itemUnallocated.total" label="Total Fund" disabled></v-text-field>
+          </v-col>
+          <v-col cols="6" sm="12" md="2" v-if="data.items.lines.length">
+            <v-text-field v-model="data.allocated" label="Total Allocated" disabled></v-text-field>
+          </v-col>
+          <v-col cols="6" sm="12" md="2" v-if="data.items.lines.length">
+            <v-text-field v-model="data.running_balance" label="Unallocated Amount" disabled>
+              <v-icon v-if="data.running_balance > 0" slot="append" color="green">mdi-check</v-icon>
+              <v-icon v-if="data.running_balance < 0" slot="append" color="red">mdi-close</v-icon>
+            </v-text-field>
+          </v-col>
+        </v-card-title>
+        <v-card-text>
+          <template v-if="data.items.lines.length">
+            <v-simple-table>
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">
+                      GL Account
+                    </th>
+                    <th class="text-left">
+                      Budget
+                    </th>
+                    <th class="text-left">
+                      Allocated
+                    </th>
+                    <th class="text-left">
+                      Expenditure
+                    </th>
+                    <th class="text-left">
+                      Available
+                    </th>
+                    <th class="text-left">
+                      Allocate
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(item, i) in data.items.lines"
+                    :key="i.id"
+                  >
+                    <td>
+                      {{item.gl}} <br>
+                      <span style="color:teal">{{item.activity}}({{ item.budget_category }})</span> <br>
+                      {{item.gfs}} <br>
+                    </td>
+                    <td>{{item.amount}}</td>
+                    <td>{{item.total_allocated}}</td>
+                    <td>{{item.expenditure}}</td>
+                    <td>{{item.total_allocated - item.expenditure}}</td>
+                    <td>
+                      <v-text-field v-model="item.allocation_amount" @input="newAllocation(item.allocation_amount)" type="number"></v-text-field>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </template>
+          
+        </v-card-text>
+        <v-card-actions v-if="data.items.lines.length" class="pa-4">
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="save">
+            save
           </v-btn>
-        </ModalFooter>
-      </template>
-    </Modal>
-
-    <Modal :modal="data.deletemodal" :width="300">
-      <template v-slot:header>
-        <ModalHeader :title="`Delete Supplier `" />
-      </template>
-      <template v-slot:body>
-        <ModalBody> Are you sure? </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog"> Cancel </v-btn>
-          <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
-        </ModalFooter>
-      </template>
-    </Modal>
+        </v-card-actions>
+      </v-form>
+    </v-card>
   </div>
 </template>
 
 <script lang="ts">
 import { AxiosResponse } from "axios";
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
-import { get, create, update, destroy, search } from "./services/fund-allocation.service";
+import { create } from "./services/fund-allocation.service";
 import { FundAllocation } from "@/components/payable/fund-allocation/types/FundAllocation"
 import { get as getFundingSource } from "@/components/coa/funding-source/services/funding-sources"
 
@@ -164,108 +126,37 @@ export default defineComponent({
   name: "FundAllocation",
   setup() {
     let dataItems = {lines:[]};
-    let fundAllocationData = {} as FundAllocation;
 
     let data = reactive({
       title: "Fund Allocations",
       valid: true,
-      isOpen: false,
-      node: null,
       response: {},
-      modalTitle: "",
-      modal: false,
-      deletemodal: false,
       items: dataItems,
-      itemsToFilter: [],
-      formData: fundAllocationData,
-      params: {
-        total: 100,
-        size: 10,
-      },
-      rows: ["10", "20", "50", "100"],
-      itemtodelete: "",
       searchTerm: "",
       funding_source_id:"",
       fundingSources:[],
       itemUnallocated:{allocated: 0,total: 0,current: 0,carryover: 0 },
       running_balance:0,
+      allocated:0,
     });
 
     onMounted(() => {
       getTableData();
-      getFundingSource({ per_page: 10 }).then((response: AxiosResponse) => {
-        data.fundingSources = response.data.data.data;
-      });
     });
+    
 
     const getTableData = () => {
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        let { from, to, total, current_page, per_page, last_page } = response.data.data;
-        data.items = response.data.data.data;
-        data.itemsToFilter = response.data.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-      });
-    };
-
-    const getData = (params: FundAllocation) => {
-      data.response = params;
-      get(params).then((response: AxiosResponse) => {
-        data.response = response.data.data;
-        data.items = response.data.data.data;
-      });
-    };
-
-    const openConfirmDialog = (deleteId: string) => {
-      data.deletemodal = !data.modal;
-      data.itemtodelete = deleteId;
-    };
-
-    const cancelDialog = () => {
-      data.formData = {} as FundAllocation;
-      data.modal = !data.modal;
-    };
-
-    const cancelConfirmDialog = () => {
-      data.formData = {} as FundAllocation;
-      data.deletemodal = false;
-    };
-
-    const remove = () => {
-      destroy(data.itemtodelete).then(() => {
-        data.deletemodal = false;
-        getTableData();
+      getFundingSource({ per_page: 10 }).then((response: AxiosResponse) => {
+        data.fundingSources = response.data.data.data;
       });
     };
 
     const save = () => {
-      if (data.formData.id) {
-        updateActivity(data.formData);
-      } else {
-        createActivity(data.formData);
-      }
+      createFundAllocation(data.items);
     };
 
-    const openDialog = (formData?: FundAllocation) => {
-      if (formData.id) {
-        data.formData = formData;
-        data.modalTitle = "Update";
-      } else {
-        data.formData = {} as FundAllocation;
-        data.modalTitle = "Create";
-      }
-      data.modal = !data.modal;
-    };
-
-    const updateActivity = (data: FundAllocation) => {
-      update(data).then(() => {
-        cancelDialog();
-        getTableData();
-      });
-    };
-
-    const createActivity = (data: FundAllocation) => {
+    const createFundAllocation = (data) => {
       create(data).then(() => {
-        cancelDialog();
         getTableData();
       });
     };
@@ -277,7 +168,7 @@ export default defineComponent({
       });
     };
 
-    const searchBudgets = (id) => {
+    const searchBudgets = (id:string) => {
       if (id != null) {
         let fundbudgetData = {
           "data":{
@@ -560,7 +451,8 @@ export default defineComponent({
 
         data.items = fundbudgetData.data;
         data.itemUnallocated = unallocatedData.data;
-        data.running_balance = data.itemUnallocated.total-data.itemUnallocated.allocated;
+        data.allocated = data.itemUnallocated.allocated;
+        data.running_balance = data.itemUnallocated.total-data.allocated;
         
         // search({ name: id.name }).then((response: AxiosResponse) => {
         //   data.items = response.data.data.data;
@@ -571,24 +463,18 @@ export default defineComponent({
     const newAllocation = (amount:number)=>{
       if (amount != null) {
         let allocatedArray = data.items.lines;
-        let sum_allocated = allocatedArray.reduce((sum: number, b: any ) => { return sum + parseFloat(b.allocation_amount)},0);
-        console.log(sum_allocated);
-        data.itemUnallocated.allocated = data.itemUnallocated.allocated + sum_allocated;
-        data.running_balance = data.itemUnallocated.total-data.itemUnallocated.allocated;
+        let sum_allocated = allocatedArray.reduce((sum: number, b: any ) => {
+           let allocation_amount = b.allocation_amount?parseFloat(b.allocation_amount):0;
+           return sum + allocation_amount
+        },0);
+        data.allocated = data.itemUnallocated.allocated + sum_allocated;
+        data.running_balance = data.itemUnallocated.total-data.allocated;
       }
-      
     }
 
     return {
       data,
-      openDialog,
-      cancelDialog,
-      openConfirmDialog,
-      updateActivity,
       save,
-      remove,
-      cancelConfirmDialog,
-      getData,
       searchFundingSources,
       searchBudgets,
       newAllocation,
