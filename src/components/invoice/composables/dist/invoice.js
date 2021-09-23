@@ -47,6 +47,36 @@ exports.useInvoice = function () {
             width: "13%"
         },
     ];
+    var RECEIPTHEADERS = [
+        {
+            text: "Item",
+            align: "start",
+            sortable: false,
+            value: "invoice_number",
+            width: "30%"
+        },
+        {
+            text: "Amount",
+            align: "start",
+            sortable: false,
+            value: "amount",
+            width: "15%"
+        },
+        {
+            text: "Amount Received",
+            align: "start",
+            sortable: false,
+            value: "amount_received",
+            width: "17%"
+        },
+        {
+            text: "Add Amount",
+            align: "start",
+            sortable: false,
+            value: "amount_pending",
+            width: "15%"
+        },
+    ];
     var data = composition_api_1.reactive({
         invoicereceip: {
             date: "",
@@ -65,6 +95,7 @@ exports.useInvoice = function () {
                 sortable: false,
                 value: "invoice_number"
             },
+            { text: "Invoice Date", value: "date", sortable: true },
             {
                 text: "Customer",
                 align: "start",
@@ -83,7 +114,6 @@ exports.useInvoice = function () {
                 sortable: false,
                 value: "amount"
             },
-            { text: "Date", value: "date", sortable: true },
         ],
         modal: false,
         deletemodal: false,
@@ -280,6 +310,7 @@ exports.useInvoice = function () {
         cancelInvoiceDialog: cancelInvoiceDialog,
         cancelInvoiceReceipt: cancelInvoiceReceipt,
         openInvoiceReceipt: openInvoiceReceipt,
-        HEADERS: HEADERS
+        HEADERS: HEADERS,
+        RECEIPTHEADERS: RECEIPTHEADERS
     };
 };
