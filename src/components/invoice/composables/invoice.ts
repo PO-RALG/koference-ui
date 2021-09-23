@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { ManageInvoice } from "../types";
+import { Invoice } from "../types";
 import { reactive, onMounted } from "@vue/composition-api";
 import {
   get,
@@ -16,8 +16,8 @@ import { bankaccounts } from "@/components/setup/bank-account/services/back-acco
 import { itemdefinitions } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
 
 export const useInvoice = (): any => {
-  const dataItems: Array<ManageInvoice> = [];
-  let customerData: ManageInvoice;
+  const dataItems: Array<Invoice> = [];
+  let invoiceData: Invoice;
   const HEADERS = [
     {
       text: "Item",
@@ -113,16 +113,22 @@ export const useInvoice = (): any => {
         value: "customer.name",
       },
       {
-        text: "Description",
-        align: "start",
-        sortable: false,
-        value: "description",
-      },
-      {
         text: "Ammount",
         align: "start",
         sortable: false,
         value: "amount",
+      },
+      {
+        text: "Amount Paid",
+        align: "start",
+        sortable: false,
+        value: "amount",
+      },
+      {
+        text: "Description",
+        align: "start",
+        sortable: false,
+        value: "description",
       },
     ],
     modal: false,
@@ -131,16 +137,16 @@ export const useInvoice = (): any => {
     invoicereceipt: false,
     items: dataItems,
     itemsToFilter: [],
-    formData: customerData,
+    formData: invoiceData,
     rows: ["10", "20", "50", "100"],
-    itemtodelete: "",
+    itemTodelete: "",
     response: {},
     gfscodes: [],
     customers: [],
     itemdefinitions: [],
-    invoicedata: [],
+    invoicedata: invoiceData,
     bankaccounts: [],
-    customer: "",
+    customer: [],
     invoice_items: [
       {
         invoice_item_definition_id: "",
@@ -150,6 +156,7 @@ export const useInvoice = (): any => {
     loading: false,
     coat: "/coat_of_arms.svg.png",
   });
+
   onMounted(() => {
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
@@ -160,16 +167,20 @@ export const useInvoice = (): any => {
       data.itemsToFilter = response.data.data.data;
       data.loading = false;
     });
+
     allgfscodes({ per_page: 2000 }).then((response: any) => {
       data.gfscodes = response.data.data.data;
     });
+
     customers({ per_page: 2000 }).then((response: any) => {
       data.customers = response.data.data.data;
     });
+
     itemdefinitions({ per_page: 2000 }).then((response: any) => {
       data.itemdefinitions = response.data.data.data;
     });
   });
+
   const searchCategory = (categoryName) => {
     if (categoryName != null) {
       search({ invoice_number: categoryName.invoice_number }).then(
@@ -181,6 +192,7 @@ export const useInvoice = (): any => {
       reloadData();
     }
   };
+
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
@@ -189,16 +201,19 @@ export const useInvoice = (): any => {
       data.items = response.data.data.data;
     });
   };
+
   const deleteInvoiceItemdefinition = (deleteId: any) => {
     data.deletemodal = !data.modal;
-    data.itemtodelete = deleteId;
+    data.itemTodelete = deleteId;
     data.invoicedetails = false;
   };
+
   const getInvoiceItemdefinition = () => {
     get(data);
   };
+
   const cancelDialog = () => {
-    data.formData = {} as ManageInvoice;
+    data.formData = {} as Invoice;
     (data.invoice_items = [
       {
         invoice_item_definition_id: "",
@@ -207,20 +222,23 @@ export const useInvoice = (): any => {
     ]),
       (data.modal = !data.modal);
   };
+
   const cancelInvoiceDialog = () => {
     data.invoicedetails = false;
   };
+
   const cancelInvoiceReceipt = () => {
     data.invoicereceipt = false;
     data.invoicedetails = false;
     data.invoicereceip.items = [];
   };
+
   const openInvoiceReceipt = (invoiceData: any) => {
     data.invoicedetails = false;
     data.invoicereceipt = true;
-    data.customer = invoiceData;
+    data.customer = [invoiceData];
     data.invoicereceip.customer_id = invoiceData;
-    if (data.invoicedata.invoice_items.length > 0) {
+    if (data.invoicedata.invoice_items) {
       data.invoicedata.invoice_items.forEach((value) => {
         const one_item = {
           invoicedAmount: value.amount,
@@ -231,21 +249,25 @@ export const useInvoice = (): any => {
         };
         data.invoicereceip.items.push(one_item);
       });
+
       bankaccounts({ per_page: 2000 }).then((response: any) => {
         data.bankaccounts = response.data.data.data;
       });
     }
   };
+
   const cancelConfirmDialog = () => {
-    data.formData = {} as ManageInvoice;
+    data.formData = {} as Invoice;
     data.deletemodal = false;
   };
+
   const remove = () => {
-    destroy(data.itemtodelete).then(() => {
+    destroy(data.itemTodelete).then(() => {
       reloadData();
       data.deletemodal = false;
     });
   };
+
   const save = () => {
     data.formData.items = data.invoice_items;
     if (data.formData.id) {
@@ -254,31 +276,36 @@ export const useInvoice = (): any => {
       createInvoice(data.formData);
     }
   };
+
   const openDialog = (formData?: any) => {
     if (formData.id) {
       data.formData = formData;
       data.modalTitle = "Update";
     } else {
-      data.formData = {} as ManageInvoice;
+      data.formData = {} as Invoice;
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
   };
+
   const updateInvoiceItemDefinition = (data: any) => {
     update(data).then(() => {
       reloadData();
       cancelDialog();
     });
   };
+
   const createReceipt = () => {
     receiptcreate(data.invoicereceip);
   };
+
   const createInvoice = (data: any) => {
     create(data).then(() => {
       reloadData();
       cancelDialog();
     });
   };
+
   const getData = (params: any) => {
     data.response = params;
     get(params).then((response: AxiosResponse) => {
@@ -286,21 +313,25 @@ export const useInvoice = (): any => {
       data.items = response.data.data.data;
     });
   };
+
   const addRow = () => {
     data.invoice_items.push({
       invoice_item_definition_id: "",
       amount: "",
     });
   };
-  const removeRow = (index: any) => {
+
+  const removeRow = (index: number) => {
     data.invoice_items.splice(index, 1);
   };
+
   const previewInvoice = (item: number) => {
     viewinvoice(item).then((response: AxiosResponse) => {
       data.invoicedata = response.data.data;
       data.invoicedetails = true;
     });
   };
+
   return {
     data,
     getData,

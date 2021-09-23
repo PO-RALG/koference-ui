@@ -226,7 +226,7 @@
       </template>
       <template v-slot:body>
         <ModalBody>
-          <div class="invoice-box">
+          <div class="invoice-box" v-if="data.invoicedata">
             <table cellpadding="0" cellspacing="0">
               <tr class="top">
                 <td colspan="4">
@@ -265,10 +265,17 @@
                       <td>
                         <strong>
                           Invoice #:{{
-                            data.invoicedata.invoice_number
+                            data.invoicedata
+                              ? data.invoicedata.invoice_number
+                              : ""
                           }}</strong
                         ><br />
-                        Created: {{ data.invoicedata.date | format }}<br />
+                        Created:
+                        {{
+                          data.invoicedata
+                            ? data.invoicedata.date
+                            : "" | format
+                        }}<br />
                       </td>
                     </tr>
                   </table>
@@ -391,6 +398,9 @@
       </template>
       <template v-slot:body>
         <ModalBody>
+          <pre>
+            {{ data.invoicedata }}
+          </pre>
           <v-form>
             <v-container>
               <v-row class="mt-n8 pa-5">
