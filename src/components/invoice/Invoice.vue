@@ -426,8 +426,8 @@
                   <v-autocomplete
                     v-model="data.invoicereceip.bank_account_id"
                     label="Select Bank Account"
-                    :items="data.bankaccounts"
-                    :item-text="'number'"
+                    :items="bankName"
+                    :item-text="`fullName`"
                     item-value="id"
                   ></v-autocomplete>
                 </v-col>
@@ -542,6 +542,7 @@ export default defineComponent({
       openInvoiceReceipt,
       HEADERS,
       RECEIPTHEADERS,
+      bankName,
     } = useInvoice();
 
     return {
@@ -566,6 +567,7 @@ export default defineComponent({
       openInvoiceReceipt,
       HEADERS,
       RECEIPTHEADERS,
+      bankName,
     };
   },
 });

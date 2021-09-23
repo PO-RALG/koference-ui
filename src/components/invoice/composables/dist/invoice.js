@@ -131,7 +131,7 @@ exports.useInvoice = function () {
         rows: ["10", "20", "50", "100"],
         itemTodelete: "",
         response: {},
-        gfscodes: [],
+        bankName: [],
         customers: [],
         itemdefinitions: [],
         invoicedata: invoiceData,
@@ -156,7 +156,7 @@ exports.useInvoice = function () {
             data.loading = false;
         });
         gfs_service_1.allgfscodes({ per_page: 2000 }).then(function (response) {
-            data.gfscodes = response.data.data.data;
+            data.bankName = response.data.data.data;
         });
         customer_service_1.customers({ per_page: 2000 }).then(function (response) {
             data.customers = response.data.data.data;
@@ -229,6 +229,12 @@ exports.useInvoice = function () {
             });
         }
     };
+    var bankName = composition_api_1.computed(function () {
+        return data.bankaccounts.map(function (account) {
+            account.fullName = "Account Number -" + account.number + ")  " + account.bank;
+            return account;
+        });
+    });
     var cancelConfirmDialog = function () {
         data.formData = {};
         data.deletemodal = false;
@@ -317,6 +323,7 @@ exports.useInvoice = function () {
         cancelInvoiceReceipt: cancelInvoiceReceipt,
         openInvoiceReceipt: openInvoiceReceipt,
         HEADERS: HEADERS,
-        RECEIPTHEADERS: RECEIPTHEADERS
+        RECEIPTHEADERS: RECEIPTHEADERS,
+        bankName: bankName
     };
 };
