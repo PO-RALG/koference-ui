@@ -55,6 +55,36 @@ export const useInvoice = (): any => {
       width: "13%",
     },
   ];
+  const RECEIPTHEADERS = [
+    {
+      text: "Item",
+      align: "start",
+      sortable: false,
+      value: "invoice_number",
+      width: "30%",
+    },
+    {
+      text: "Amount",
+      align: "start",
+      sortable: false,
+      value: "amount",
+      width: "15%",
+    },
+    {
+      text: "Amount Received",
+      align: "start",
+      sortable: false,
+      value: "amount_received",
+      width: "17%",
+    },
+    {
+      text: "Add Amount",
+      align: "start",
+      sortable: false,
+      value: "amount_pending",
+      width: "15%",
+    },
+  ];
 
   const data = reactive({
     invoicereceip: {
@@ -74,6 +104,8 @@ export const useInvoice = (): any => {
         sortable: false,
         value: "invoice_number",
       },
+      { text: "Invoice Date", value: "date", sortable: true },
+
       {
         text: "Customer",
         align: "start",
@@ -92,7 +124,6 @@ export const useInvoice = (): any => {
         sortable: false,
         value: "amount",
       },
-      { text: "Date", value: "date", sortable: true },
     ],
     modal: false,
     deletemodal: false,
@@ -291,5 +322,6 @@ export const useInvoice = (): any => {
     cancelInvoiceReceipt,
     openInvoiceReceipt,
     HEADERS,
+    RECEIPTHEADERS,
   };
 };

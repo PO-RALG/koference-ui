@@ -36,6 +36,9 @@
             </v-col>
           </v-card-title>
         </template>
+        <template v-slot:[`item.date`]="{ item }">
+          <v-list-item exact light>{{ item.date | format() }}</v-list-item>
+        </template>
         <template v-slot:[`item.invoice_number`]="{ item }">
           <v-list-item exact light @click="previewInvoice(item)">{{
             item.invoice_number
@@ -432,53 +435,59 @@
 
                 <v-col class="pt-2" cols="12" md="12"> </v-col>
                 <!-- <pre>{{ data.customer }}</pre> -->
-                <v-row
-                  class="mt-n8 pa-3"
-                  text-center
-                  v-for="(invoice, index) in data.invoicereceip.items"
-                  :key="index"
-                  hide-details
-                >
-                  <v-col cols="4" lg="3" md="6" sm="12">
-                    <v-text-field
-                      label="Item Name"
-                      outlined
-                      dense
-                      hide-details
-                      v-model="invoice.itemName"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="4" lg="3" md="6" sm="12">
-                    <v-text-field
-                      label="Invoiced Amount"
-                      outlined
-                      dense
-                      hide-details
-                      v-model="invoice.invoicedAmount"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="4" lg="3" md="6" sm="12">
-                    <v-text-field
-                      label="Amount Received"
-                      outlined
-                      dense
-                      hide-details
-                      v-model="invoice.received"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="4" lg="3" md="4" sm="12">
-                    <!-- :rules="formValidation.streamNameRules"-->
-                    <v-text-field
-                      label="Add Amount"
-                      outlined
-                      dense
-                      hide-details
-                      v-model="invoice.amount"
-                      :name="`data.invoice_items[${index}][name]`"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+                <v-col class="pt-2 invoice-table" cols="12" md="12">
+                  <v-data-table
+                    :headers="RECEIPTHEADERS"
+                    :items="data.items"
+                    disable-pagination
+                    hide-default-footer
+                  >
+                    <template v-slot:body>
+                      <tr
+                        v-for="(invoice, index) in data.invoicereceip.items"
+                        :key="index"
+                        class="invoice-tr"
+                      >
+                        <td>
+                          <v-text-field
+                            outlined
+                            dense
+                            hide-details
+                            v-model="invoice.itemName"
+                          ></v-text-field>
+                        </td>
+                        <td class="invoice-td">
+                          <v-text-field
+                            outlined
+                            dense
+                            hide-details
+                            v-model="invoice.invoicedAmount"
+                          ></v-text-field>
+                        </td>
+                        <td class="invoice-td">
+                          <v-text-field
+                            outlined
+                            dense
+                            hide-details
+                            v-model="invoice.received"
+                          ></v-text-field>
+                        </td>
+                        <td class="invoice-td">
+                          <v-text-field
+                            outlined
+                            dense
+                            hide-details
+                            v-model="invoice.amount"
+                            :name="`data.invoice_items[${index}][name]`"
+                          ></v-text-field>
+                        </td>
+                      </tr>
+                    </template>
+                    <template v-slot:[`item.icon`]="{ item }">
+                      <v-icon class="mr-2">{{ item.icon }}</v-icon>
+                    </template>
+                  </v-data-table>
+                </v-col>
               </v-row>
             </v-container>
           </v-form>
@@ -526,6 +535,7 @@ export default defineComponent({
       cancelInvoiceReceipt,
       openInvoiceReceipt,
       HEADERS,
+      RECEIPTHEADERS,
     } = useInvoice();
 
     return {
@@ -549,6 +559,7 @@ export default defineComponent({
       cancelInvoiceReceipt,
       openInvoiceReceipt,
       HEADERS,
+      RECEIPTHEADERS,
     };
   },
 });
