@@ -231,7 +231,7 @@ exports.useInvoice = function () {
     };
     var bankName = composition_api_1.computed(function () {
         return data.bankaccounts.map(function (account) {
-            account.fullName = "Account Number -" + account.number + ")  " + account.bank;
+            account.fullName = "Account Number -" + account.number + "  " + account.bank + " - " + account.branch;
             return account;
         });
     });

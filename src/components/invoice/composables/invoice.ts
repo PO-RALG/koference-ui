@@ -237,6 +237,7 @@ export const useInvoice = (): any => {
   const openInvoiceReceipt = (invoiceData: any) => {
     data.invoicedetails = false;
     data.invoicereceipt = true;
+
     data.customer = [invoiceData]; //mapping customer in autocomplete field
     data.invoicereceip.customer_id = invoiceData; //mapping customer in autocomplete for two way binding
 
@@ -260,7 +261,7 @@ export const useInvoice = (): any => {
 
   const bankName = computed(() => {
     return data.bankaccounts.map((account) => {
-      account.fullName = `Account Number -${account.number})  ${account.bank}`;
+      account.fullName = `Account Number -${account.number}  ${account.bank} - ${account.branch}`;
       return account;
     });
   });
@@ -334,7 +335,7 @@ export const useInvoice = (): any => {
     data.invoice_items.splice(index, 1);
   };
 
-  const previewInvoice = (item: number) => {
+  const previewInvoice = (item: any) => {
     viewinvoice(item).then((response: AxiosResponse) => {
       data.invoicedata = response.data.data;
       data.invoicedetails = true;
