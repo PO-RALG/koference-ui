@@ -398,9 +398,6 @@
       </template>
       <template v-slot:body>
         <ModalBody>
-          <pre>
-            {{ data.invoicedata }}
-          </pre>
           <v-form>
             <v-container>
               <v-row class="mt-n8 pa-5">
