@@ -107,7 +107,7 @@
                   >
                     <template v-slot:body>
                       <tr
-                        v-for="(invoice, index) in data.invoice_items"
+                        v-for="(invoice, index) in data.formData.items"
                         :key="index"
                         class="invoice-tr"
                       >
@@ -134,33 +134,13 @@
                           >
                           </v-text-field>
                         </td>
-                        <td class="invoice-td">
-                          <v-text-field
-                            dense
-                            hide-details
-                            outlined
-                            v-model="invoice.amount_received"
-                            :name="`data.invoice_items[${index}][name]`"
-                          >
-                          </v-text-field>
-                        </td>
-                        <td class="invoice-td">
-                          <v-text-field
-                            dense
-                            hide-details
-                            outlined
-                            v-model="invoice.amount_pending"
-                            :name="`data.invoice_items[${index}][name]`"
-                          >
-                          </v-text-field>
-                        </td>
                         <td>
                           <v-btn
                             color="blue darken-1"
                             small
                             text
                             v-if="
-                              index || (!index && data.invoice_items.length > 1)
+                              index || (!index && data.formData.items.length > 1)
                             "
                             @click="removeRow(index)"
                           >
@@ -173,7 +153,7 @@
                             color="blue darken-1"
                             text
                             @click="addRow"
-                            v-if="index == data.invoice_items.length - 1"
+                            v-if="index == data.formData.items.length - 1"
                           >
                             <v-icon small color="success">
                               mdi-plus-circle
@@ -190,7 +170,6 @@
               </v-row>
             </v-container>
           </v-form>
-          <pre>{{ formData }}</pre>
         </ModalBody>
       </template>
       <template v-slot:footer>

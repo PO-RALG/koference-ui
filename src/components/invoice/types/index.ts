@@ -1,10 +1,43 @@
 export interface Invoice {
   id?: number;
-  items?: InvoiceItem;
-  facility_id?: number;
-  customer_id?: number;
-  description?: string;
-  date?: Date;
+  items: InvoiceItem;
+  facility_id: number;
+  customer_id: number;
+  description: string;
+  date: Date;
+}
+
+export interface Item {
+  id?: number;
+  invoice_number: string;
+  amount: number;
+  description: string;
+  customer: Customer;
+  date: Date;
+  facility_id: number;
+  financial_year_id: number;
+  customer_id: number;
+  received_amount: number;
+  invoice_items: Array<InvoiceItem>;
+}
+
+export interface Customer {
+  id: number;
+  name: string;
+}
+
+export interface InvoiceItem {
+  id?: number;
+  amount: number | string;
+  invoice_item_definition_id: number | string;
+}
+
+export interface FormData {
+  date: Date;
+  description: string;
+  facility_id: number;
+  customer_id: number;
+  items: Array<InvoiceItem>;
 }
 
 export const newInvoice = (): Invoice => {
@@ -20,26 +53,7 @@ export const newInvoice = (): Invoice => {
     description: null,
     date: null,
   };
-}
-
-export interface Item {
-  id?: number;
-  invoice_number?: string;
-  amount?: number;
-  description?: string;
-  customer?: Customer;
-  date?: Date;
-  facility_id?: number;
-  financial_year_id?: number;
-  customer_id?: number;
-  received_amount?: number;
-  invoice_items?: Array<InvoiceItem>;
-}
-
-export interface Customer {
-  id?: number;
-  name?: string;
-}
+};
 
 export const newCustomer = (): Customer => {
   return {
@@ -48,36 +62,20 @@ export const newCustomer = (): Customer => {
   };
 };
 
-export interface InvoiceItem {
-  id?: number;
-  amount?: number | string;
-  invoice_item_definition_id?: number | string;
-}
-
 export const newInvoiceItem = (): InvoiceItem => {
   return {
-    id: null,
-    amount: null,
-    invoice_item_definition_id: null,
+    amount: "",
+    invoice_item_definition_id: "",
   };
 };
 
-export interface FormData {
-  id?: number;
-  date?: Date;
-  description?: string;
-  facility_id?: number;
-  customer_id?: number;
-  items?: Array<InvoiceItem>;
-}
-
 export const newFormData = (): FormData => {
+  const { amount, invoice_item_definition_id } = newInvoiceItem();
   return {
-    id: null,
     date: null,
     description: "",
     facility_id: null,
     customer_id: null,
-    items: [newInvoiceItem()],
+    items: [{ amount, invoice_item_definition_id }],
   };
 };

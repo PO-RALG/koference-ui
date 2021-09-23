@@ -1,58 +1,39 @@
 import { AxiosResponse } from "axios";
-import { ManageInvoice } from "../types";
+import { Invoice, FormData, newFormData } from "../types";
 import { reactive, onMounted } from "@vue/composition-api";
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-  viewinvoice,
-  receiptcreate,
-} from "../services/invoice";
+import { get, create, update, destroy, search, viewinvoice, receiptcreate } from "../services/invoice";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import { customers } from "@/components/setup/customer/services/customer.service";
 import { bankaccounts } from "@/components/setup/bank-account/services/back-accounts.service";
 import { itemdefinitions } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
+import store from "@/store";
+
 
 export const useInvoice = (): any => {
-  const dataItems: Array<ManageInvoice> = [];
-  let customerData: ManageInvoice;
+  const dataItems: Array<Invoice> = [];
+  const FormData: FormData = newFormData();
+  let customerData: Invoice;
   const HEADERS = [
     {
       text: "Item",
       align: "start",
       sortable: false,
       value: "invoice_number",
-      width: "30%",
+      width: "50%",
     },
     {
       text: "Amount",
       align: "start",
       sortable: false,
       value: "amount",
-      width: "15%",
-    },
-    {
-      text: "Amount Received",
-      align: "start",
-      sortable: false,
-      value: "amount_received",
-      width: "17%",
-    },
-    {
-      text: "Amount Pending",
-      align: "start",
-      sortable: false,
-      value: "amount_pending",
-      width: "15%",
+      width: "35%",
     },
     {
       text: "",
       align: "center",
       sortable: false,
       value: "amount_pending",
-      width: "13%",
+      width: "15%",
     },
   ];
   const RECEIPTHEADERS = [
@@ -131,7 +112,7 @@ export const useInvoice = (): any => {
     invoicereceipt: false,
     items: dataItems,
     itemsToFilter: [],
-    formData: customerData,
+    formData: FormData,
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},
@@ -154,8 +135,7 @@ export const useInvoice = (): any => {
   onMounted(() => {
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
@@ -174,11 +154,9 @@ export const useInvoice = (): any => {
 
   const searchCategory = (categoryName) => {
     if (categoryName != null) {
-      search({ invoice_number: categoryName.invoice_number }).then(
-        (response: any) => {
-          data.items = response.data.data.data;
-        }
-      );
+      search({ invoice_number: categoryName.invoice_number }).then((response: any) => {
+        data.items = response.data.data.data;
+      });
     } else {
       reloadData();
     }
@@ -186,8 +164,7 @@ export const useInvoice = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -204,7 +181,7 @@ export const useInvoice = (): any => {
   };
 
   const cancelDialog = () => {
-    data.formData = {} as ManageInvoice;
+    data.formData = {} as FormData;
     (data.invoice_items = [
       {
         invoice_item_definition_id: "",
@@ -247,7 +224,7 @@ export const useInvoice = (): any => {
   };
 
   const cancelConfirmDialog = () => {
-    data.formData = {} as ManageInvoice;
+    data.formData = {} as FormData;
     data.deletemodal = false;
   };
 
@@ -259,21 +236,18 @@ export const useInvoice = (): any => {
   };
 
   const save = () => {
-    data.formData.items = data.invoice_items;
-    if (data.formData.id) {
-      updateInvoiceItemDefinition(data.formData);
-    } else {
-      createInvoice(data.formData);
-    }
+    createInvoice(data.formData);
   };
-  const openDialog = (formData?: any) => {
-    if (formData.id) {
-      data.formData = formData;
-      data.modalTitle = "Update";
-    } else {
-      data.formData = {} as ManageInvoice;
-      data.modalTitle = "Create";
-    }
+
+  const initializeFormData = (): FormData => {
+    return (data.formData = newFormData());
+  };
+
+  const openDialog = () => {
+    const user = store.getters["Auth/getCurrentUser"];
+    initializeFormData();
+    data.formData.facility_id = user.facility_id;
+    data.modalTitle = "Create";
     data.modal = !data.modal;
   };
 
@@ -304,15 +278,16 @@ export const useInvoice = (): any => {
   };
 
   const addRow = () => {
-    data.invoice_items.push({
+    data.formData.items.push({
       invoice_item_definition_id: "",
       amount: "",
     });
   };
 
   const removeRow = (index: any) => {
-    data.invoice_items.splice(index, 1);
+    data.formData.items.splice(index, 1);
   };
+
   const previewInvoice = (item: number) => {
     viewinvoice(item).then((response: AxiosResponse) => {
       data.invoicedata = response.data.data;
