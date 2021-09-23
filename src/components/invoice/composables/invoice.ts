@@ -1,17 +1,100 @@
 import { AxiosResponse } from "axios";
-import { reactive, onMounted } from "@vue/composition-api";
-
 import { ManageInvoice } from "../types";
-import { get, create, update, destroy, search, viewinvoice } from "../services/invoice";
+import { reactive, onMounted } from "@vue/composition-api";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+  viewinvoice,
+  receiptcreate,
+} from "../services/invoice";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import { customers } from "@/components/setup/customer/services/customer.service";
+import { bankaccounts } from "@/components/setup/bank-account/services/back-accounts.service";
 import { itemdefinitions } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
 
 export const useInvoice = (): any => {
   const dataItems: Array<ManageInvoice> = [];
   let customerData: ManageInvoice;
+  const HEADERS = [
+    {
+      text: "Item",
+      align: "start",
+      sortable: false,
+      value: "invoice_number",
+      width: "30%",
+    },
+    {
+      text: "Amount",
+      align: "start",
+      sortable: false,
+      value: "amount",
+      width: "15%",
+    },
+    {
+      text: "Amount Received",
+      align: "start",
+      sortable: false,
+      value: "amount_received",
+      width: "17%",
+    },
+    {
+      text: "Amount Pending",
+      align: "start",
+      sortable: false,
+      value: "amount_pending",
+      width: "15%",
+    },
+    {
+      text: "",
+      align: "center",
+      sortable: false,
+      value: "amount_pending",
+      width: "13%",
+    },
+  ];
+  const RECEIPTHEADERS = [
+    {
+      text: "Item",
+      align: "start",
+      sortable: false,
+      value: "invoice_number",
+      width: "30%",
+    },
+    {
+      text: "Amount",
+      align: "start",
+      sortable: false,
+      value: "amount",
+      width: "15%",
+    },
+    {
+      text: "Amount Received",
+      align: "start",
+      sortable: false,
+      value: "amount_received",
+      width: "17%",
+    },
+    {
+      text: "Add Amount",
+      align: "start",
+      sortable: false,
+      value: "amount_pending",
+      width: "15%",
+    },
+  ];
 
   const data = reactive({
+    invoicereceip: {
+      date: "",
+      description: "",
+      customer_id: "",
+      bank_account_id: "",
+      bank_reference_number: "",
+      items: [],
+    },
     title: "Manage Invoice",
     modalTitle: "",
     headers: [
@@ -21,6 +104,8 @@ export const useInvoice = (): any => {
         sortable: false,
         value: "invoice_number",
       },
+      { text: "Invoice Date", value: "date", sortable: true },
+
       {
         text: "Customer",
         align: "start",
@@ -33,20 +118,17 @@ export const useInvoice = (): any => {
         sortable: false,
         value: "description",
       },
-
       {
         text: "Ammount",
         align: "start",
         sortable: false,
         value: "amount",
       },
-      { text: "Date", value: "date", sortable: true },
-
-      { text: "Actions", value: "actions", sortable: false },
     ],
     modal: false,
     deletemodal: false,
     invoicedetails: false,
+    invoicereceipt: false,
     items: dataItems,
     itemsToFilter: [],
     formData: customerData,
@@ -57,6 +139,8 @@ export const useInvoice = (): any => {
     customers: [],
     itemdefinitions: [],
     invoicedata: [],
+    bankaccounts: [],
+    customer: "",
     invoice_items: [
       {
         invoice_item_definition_id: "",
@@ -70,21 +154,19 @@ export const useInvoice = (): any => {
   onMounted(() => {
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.loading = false;
     });
-
     allgfscodes({ per_page: 2000 }).then((response: any) => {
       data.gfscodes = response.data.data.data;
     });
-
     customers({ per_page: 2000 }).then((response: any) => {
       data.customers = response.data.data.data;
     });
-
     itemdefinitions({ per_page: 2000 }).then((response: any) => {
       data.itemdefinitions = response.data.data.data;
     });
@@ -92,9 +174,11 @@ export const useInvoice = (): any => {
 
   const searchCategory = (categoryName) => {
     if (categoryName != null) {
-      search({ invoice_number: categoryName.invoice_number }).then((response: any) => {
-        data.items = response.data.data.data;
-      });
+      search({ invoice_number: categoryName.invoice_number }).then(
+        (response: any) => {
+          data.items = response.data.data.data;
+        }
+      );
     } else {
       reloadData();
     }
@@ -102,7 +186,8 @@ export const useInvoice = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -111,10 +196,11 @@ export const useInvoice = (): any => {
   const deleteInvoiceItemdefinition = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
+    data.invoicedetails = false;
   };
 
   const getInvoiceItemdefinition = () => {
-    get(data).then(() => {});
+    get(data);
   };
 
   const cancelDialog = () => {
@@ -127,8 +213,37 @@ export const useInvoice = (): any => {
     ]),
       (data.modal = !data.modal);
   };
+
   const cancelInvoiceDialog = () => {
     data.invoicedetails = false;
+  };
+
+  const cancelInvoiceReceipt = () => {
+    data.invoicereceipt = false;
+    data.invoicedetails = false;
+    data.invoicereceip.items = [];
+  };
+
+  const openInvoiceReceipt = (invoiceData: any) => {
+    data.invoicedetails = false;
+    data.invoicereceipt = true;
+    data.customer = invoiceData;
+    data.invoicereceip.customer_id = invoiceData;
+    if (data.invoicedata.invoice_items.length > 0) {
+      data.invoicedata.invoice_items.forEach((value) => {
+        const one_item = {
+          invoicedAmount: value.amount,
+          received: value.received_amount,
+          itemName: value.definition.name,
+          invoice_item_id: value.id,
+          amount: "",
+        };
+        data.invoicereceip.items.push(one_item);
+      });
+      bankaccounts({ per_page: 2000 }).then((response: any) => {
+        data.bankaccounts = response.data.data.data;
+      });
+    }
   };
 
   const cancelConfirmDialog = () => {
@@ -148,10 +263,9 @@ export const useInvoice = (): any => {
     if (data.formData.id) {
       updateInvoiceItemDefinition(data.formData);
     } else {
-      createCustomer(data.formData);
+      createInvoice(data.formData);
     }
   };
-
   const openDialog = (formData?: any) => {
     if (formData.id) {
       data.formData = formData;
@@ -170,7 +284,11 @@ export const useInvoice = (): any => {
     });
   };
 
-  const createCustomer = (data: any) => {
+  const createReceipt = () => {
+    receiptcreate(data.invoicereceip);
+  };
+
+  const createInvoice = (data: any) => {
     create(data).then(() => {
       reloadData();
       cancelDialog();
@@ -195,7 +313,6 @@ export const useInvoice = (): any => {
   const removeRow = (index: any) => {
     data.invoice_items.splice(index, 1);
   };
-
   const previewInvoice = (item: number) => {
     viewinvoice(item).then((response: AxiosResponse) => {
       data.invoicedata = response.data.data;
@@ -206,6 +323,7 @@ export const useInvoice = (): any => {
   return {
     data,
     getData,
+    createReceipt,
     addRow,
     removeRow,
     openDialog,
@@ -220,5 +338,9 @@ export const useInvoice = (): any => {
     searchCategory,
     previewInvoice,
     cancelInvoiceDialog,
+    cancelInvoiceReceipt,
+    openInvoiceReceipt,
+    HEADERS,
+    RECEIPTHEADERS,
   };
 };

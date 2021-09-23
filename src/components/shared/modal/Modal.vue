@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="modal" persistent :max-width="width">
-      <v-card>
+      <v-card class="modal-container">
         <slot name="header"></slot>
         <slot name="body"></slot>
         <slot name="footer"></slot>

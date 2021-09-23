@@ -28,9 +28,23 @@ const update = async (payload: any) => {
 const viewinvoice = async (payload: any) => {
   return await axios.get(`/api/v1/invoices/` + payload.id, payload);
 };
+
 const destroy = async (payload: any) => {
   console.log("payload", payload);
   return await axios.delete(`/api/v1/invoices/` + payload);
 };
 
-export { get, find, create, update, destroy, search, viewinvoice };
+const receiptcreate = async (payload: any) => {
+  console.log("payload", payload);
+  return await axios.post(`/api/v1/receipts/` + 27 + "/invoice", payload);
+};
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  search,
+  viewinvoice,
+  receiptcreate,
+};

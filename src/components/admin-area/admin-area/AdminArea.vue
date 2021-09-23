@@ -10,13 +10,7 @@
     </v-card-actions>
 
     <v-card>
-      <v-data-table
-        :headers="HEADERS"
-        :items="data.items"
-        hide-default-footer
-        disable-pagination
-        class="elevation-1"
-      >
+      <v-data-table :headers="HEADERS" :items="data.items" hide-default-footer disable-pagination class="elevation-1">
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'AdminArea')">
             mdi-pencil-box-outline
@@ -62,7 +56,12 @@
                 </v-col>
               </v-row>
               <v-col cols="12" sm="12" md="12" class="hierarchy-container">
-                <v-label><h5>SELECT LOCATION PARENT</h5></v-label>
+                <v-label v-if="data.formData.parent">
+                  <h5 class="tree-title">SELECTED ADMIN AREA PARENT ({{ data.formData.parent.name }})</h5>
+                </v-label>
+                <v-label v-else>
+                  <h5 class="tree-title">SELECT ADMIN AREA PARENT</h5>
+                </v-label>
                 <TreeBrowser
                   v-if="data.node"
                   @onClick="loadLocationChildren"
