@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { ManageInvoice } from "../types";
+import { Invoice } from "../types";
 import { reactive, onMounted } from "@vue/composition-api";
 import {
   get,
@@ -16,8 +16,8 @@ import { bankaccounts } from "@/components/setup/bank-account/services/back-acco
 import { itemdefinitions } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
 
 export const useInvoice = (): any => {
-  const dataItems: Array<ManageInvoice> = [];
-  let customerData: ManageInvoice;
+  const dataItems: Array<Invoice> = [];
+  let invoiceData: Invoice;
   const HEADERS = [
     {
       text: "Item",
@@ -113,16 +113,22 @@ export const useInvoice = (): any => {
         value: "customer.name",
       },
       {
-        text: "Description",
-        align: "start",
-        sortable: false,
-        value: "description",
-      },
-      {
         text: "Ammount",
         align: "start",
         sortable: false,
         value: "amount",
+      },
+      {
+        text: "Amount Paid",
+        align: "start",
+        sortable: false,
+        value: "amount",
+      },
+      {
+        text: "Description",
+        align: "start",
+        sortable: false,
+        value: "description",
       },
     ],
     modal: false,
@@ -131,16 +137,16 @@ export const useInvoice = (): any => {
     invoicereceipt: false,
     items: dataItems,
     itemsToFilter: [],
-    formData: customerData,
+    formData: invoiceData,
     rows: ["10", "20", "50", "100"],
-    itemtodelete: "",
+    itemTodelete: "",
     response: {},
     gfscodes: [],
     customers: [],
     itemdefinitions: [],
-    invoicedata: [],
+    invoicedata: invoiceData,
     bankaccounts: [],
-    customer: "",
+    customer: [],
     invoice_items: [
       {
         invoice_item_definition_id: "",
@@ -161,12 +167,15 @@ export const useInvoice = (): any => {
       data.itemsToFilter = response.data.data.data;
       data.loading = false;
     });
+
     allgfscodes({ per_page: 2000 }).then((response: any) => {
       data.gfscodes = response.data.data.data;
     });
+
     customers({ per_page: 2000 }).then((response: any) => {
       data.customers = response.data.data.data;
     });
+
     itemdefinitions({ per_page: 2000 }).then((response: any) => {
       data.itemdefinitions = response.data.data.data;
     });
@@ -195,7 +204,7 @@ export const useInvoice = (): any => {
 
   const deleteInvoiceItemdefinition = (deleteId: any) => {
     data.deletemodal = !data.modal;
-    data.itemtodelete = deleteId;
+    data.itemTodelete = deleteId;
     data.invoicedetails = false;
   };
 
@@ -204,7 +213,7 @@ export const useInvoice = (): any => {
   };
 
   const cancelDialog = () => {
-    data.formData = {} as ManageInvoice;
+    data.formData = {} as Invoice;
     (data.invoice_items = [
       {
         invoice_item_definition_id: "",
@@ -227,9 +236,9 @@ export const useInvoice = (): any => {
   const openInvoiceReceipt = (invoiceData: any) => {
     data.invoicedetails = false;
     data.invoicereceipt = true;
-    data.customer = invoiceData;
+    data.customer = [invoiceData];
     data.invoicereceip.customer_id = invoiceData;
-    if (data.invoicedata.invoice_items.length > 0) {
+    if (data.invoicedata.invoice_items) {
       data.invoicedata.invoice_items.forEach((value) => {
         const one_item = {
           invoicedAmount: value.amount,
@@ -240,6 +249,7 @@ export const useInvoice = (): any => {
         };
         data.invoicereceip.items.push(one_item);
       });
+
       bankaccounts({ per_page: 2000 }).then((response: any) => {
         data.bankaccounts = response.data.data.data;
       });
@@ -247,12 +257,12 @@ export const useInvoice = (): any => {
   };
 
   const cancelConfirmDialog = () => {
-    data.formData = {} as ManageInvoice;
+    data.formData = {} as Invoice;
     data.deletemodal = false;
   };
 
   const remove = () => {
-    destroy(data.itemtodelete).then(() => {
+    destroy(data.itemTodelete).then(() => {
       reloadData();
       data.deletemodal = false;
     });
@@ -266,12 +276,13 @@ export const useInvoice = (): any => {
       createInvoice(data.formData);
     }
   };
+
   const openDialog = (formData?: any) => {
     if (formData.id) {
       data.formData = formData;
       data.modalTitle = "Update";
     } else {
-      data.formData = {} as ManageInvoice;
+      data.formData = {} as Invoice;
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
@@ -313,6 +324,7 @@ export const useInvoice = (): any => {
   const removeRow = (index: any) => {
     data.invoice_items.splice(index, 1);
   };
+
   const previewInvoice = (item: number) => {
     viewinvoice(item).then((response: AxiosResponse) => {
       data.invoicedata = response.data.data;
