@@ -79,6 +79,7 @@ exports.useInvoice = function () {
     ];
     var data = composition_api_1.reactive({
         invoicereceip: {
+            invoice_id: "",
             date: "",
             description: "",
             customer_id: "",
@@ -109,10 +110,10 @@ exports.useInvoice = function () {
                 value: "amount"
             },
             {
-                text: "Amount Paid",
+                text: "Received Amount",
                 align: "start",
                 sortable: false,
-                value: "amount"
+                value: "received_amount"
             },
             {
                 text: "Description",
@@ -213,6 +214,7 @@ exports.useInvoice = function () {
         data.invoicereceipt = true;
         data.customer = [invoiceData]; //mapping customer in autocomplete field
         data.invoicereceip.customer_id = invoiceData; //mapping customer in autocomplete for two way binding
+        data.invoicereceip.invoice_id = invoiceData.id;
         if (data.invoicedata.invoice_items) {
             data.invoicedata.invoice_items.forEach(function (value) {
                 var one_item = {
