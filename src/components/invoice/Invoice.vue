@@ -190,7 +190,6 @@
               </v-row>
             </v-container>
           </v-form>
-          <pre>{{ formData }}</pre>
         </ModalBody>
       </template>
       <template v-slot:footer>
