@@ -95,6 +95,7 @@ export const useInvoice = (): any => {
       bank_reference_number: "",
       items: [],
     },
+
     title: "Manage Invoice",
     modalTitle: "",
     headers: [
@@ -236,8 +237,9 @@ export const useInvoice = (): any => {
   const openInvoiceReceipt = (invoiceData: any) => {
     data.invoicedetails = false;
     data.invoicereceipt = true;
-    data.customer = [invoiceData];
-    data.invoicereceip.customer_id = invoiceData;
+    data.customer = [invoiceData]; //mapping customer in autocomplete field
+    data.invoicereceip.customer_id = invoiceData; //mapping customer in autocomplete for two way binding
+
     if (data.invoicedata.invoice_items) {
       data.invoicedata.invoice_items.forEach((value) => {
         const one_item = {

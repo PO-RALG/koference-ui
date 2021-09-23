@@ -211,8 +211,8 @@ exports.useInvoice = function () {
     var openInvoiceReceipt = function (invoiceData) {
         data.invoicedetails = false;
         data.invoicereceipt = true;
-        data.customer = [invoiceData];
-        data.invoicereceip.customer_id = invoiceData;
+        data.customer = [invoiceData]; //mapping customer in autocomplete field
+        data.invoicereceip.customer_id = invoiceData; //mapping customer in autocomplete for two way binding
         if (data.invoicedata.invoice_items) {
             data.invoicedata.invoice_items.forEach(function (value) {
                 var one_item = {
