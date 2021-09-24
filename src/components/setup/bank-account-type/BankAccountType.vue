@@ -1,9 +1,13 @@
 <template>
-  <div class="Bank Account Type">
+  <div class="Bank Account Types">
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn
+        :disabled="cant('create', 'BankAccountType')"
+        color="primary"
+        @click="openDialog"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -42,9 +46,10 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip bottom>
+          <v-tooltip :disabled="cant('edit', 'BankAccountType')" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                :disabled="cant('edit', 'BankAccountType')"
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
@@ -55,9 +60,13 @@
             </template>
             <span>Edit</span>
           </v-tooltip>
-          <v-tooltip bottom>
+          <v-tooltip :disabled="cant('delete', 'BankAccountType')" bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" @click="deleteCustomer(item.id)"
+              <v-icon
+                :disabled="cant('delete', 'BankAccountType')"
+                v-bind="attrs"
+                v-on="on"
+                @click="deleteCustomer(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -109,14 +118,18 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save"
+          <v-btn
+            :disabled="cant('create', 'BankAccountType')"
+            color="blue darken-1"
+            text
+            @click="save"
             >{{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
       </template>
     </Modal>
 
-    <Modal :modal="data.deletemodal" :width="300">
+    <Modal :modal="data.deletemodal" :width="320">
       <template v-slot:header>
         <ModalHeader :title="`Delete Bank Account Type `" />
       </template>
@@ -128,7 +141,13 @@
           <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
             >Cancel</v-btn
           >
-          <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
+          <v-btn
+            :disabled="cant('delete', 'BankAccountType')"
+            color="red darken-1"
+            text
+            @click="remove"
+            >Yes</v-btn
+          >
         </ModalFooter>
       </template>
     </Modal>
