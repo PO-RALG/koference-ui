@@ -1,10 +1,9 @@
 export interface Invoice {
-  id?: number;
-  items: InvoiceItem;
+  date: Date;
+  description: string;
   facility_id: number;
   customer_id: number;
-  description: string;
-  date: Date;
+  items: Array<InvoiceItem>;
 }
 
 export interface Item {
@@ -13,7 +12,7 @@ export interface Item {
   amount: number;
   description: string;
   customer: Customer;
-  date: Date;
+  date: string;
   facility_id: number;
   financial_year_id: number;
   customer_id: number;
@@ -40,18 +39,33 @@ export interface FormData {
   items: Array<InvoiceItem>;
 }
 
+export interface ReceiptItem {
+  name: string;
+  amount: number;
+  invoice_item_id: number;
+}
+
+export interface InvoiceReceipt {
+  id: null;
+  amount: number;
+  invoice_number: number;
+  date: Date;
+  description: string;
+  customer_id: number;
+  customer: Customer;
+  bank_account_id: number;
+  bank_reference_number: string;
+  items: Array<ReceiptItem>;
+}
+
 export const newInvoice = (): Invoice => {
+  const { amount, invoice_item_definition_id } = newInvoiceItem();
   return {
-    id: null,
-    items: {
-      id: null,
-      amount: "",
-      invoice_item_definition_id: null,
-    },
+    date: null,
+    description: "",
     facility_id: null,
     customer_id: null,
-    description: null,
-    date: null,
+    items: [{ amount, invoice_item_definition_id }],
   };
 };
 
@@ -72,10 +86,35 @@ export const newInvoiceItem = (): InvoiceItem => {
 export const newFormData = (): FormData => {
   const { amount, invoice_item_definition_id } = newInvoiceItem();
   return {
-    date: null,
+    date: new Date(),
     description: "",
     facility_id: null,
     customer_id: null,
     items: [{ amount, invoice_item_definition_id }],
+  };
+};
+
+const newReceipItem = (): ReceiptItem => {
+  return {
+    name: "",
+    amount: null,
+    invoice_item_id: null,
+  };
+};
+
+export const newInvoiceReceipt = (): InvoiceReceipt => {
+  const { amount, invoice_item_id } = newReceipItem();
+  const { id, name } = newCustomer();
+  return {
+    id: null,
+    amount: null,
+    invoice_number: null,
+    date: new Date(),
+    description: "",
+    customer_id: null,
+    customer: { id, name },
+    bank_account_id: null,
+    bank_reference_number: "",
+    items: [{ amount, invoice_item_id }],
   };
 };

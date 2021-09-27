@@ -1,6 +1,16 @@
+import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import { Invoice, FormData, newFormData } from "../types";
-import { reactive, onMounted } from "@vue/composition-api";
+
+import {
+  Invoice,
+  FormData,
+  InvoiceReceipt,
+  Item,
+  ReceiptItem,
+  newInvoice,
+  newFormData,
+  newInvoiceReceipt,
+} from "../types";
 import { get, create, update, destroy, search, viewinvoice, receiptcreate } from "../services/invoice";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import { customers } from "@/components/setup/customer/services/customer.service";
@@ -8,11 +18,11 @@ import { bankaccounts } from "@/components/setup/bank-account/services/back-acco
 import { itemdefinitions } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
 import store from "@/store";
 
-
 export const useInvoice = (): any => {
   const dataItems: Array<Invoice> = [];
   const FormData: FormData = newFormData();
-  let customerData: Invoice;
+  const invoiceData: Invoice = newInvoice();
+  const InvoiceReceipt: InvoiceReceipt = newInvoiceReceipt();
   const HEADERS = [
     {
       text: "Item",
@@ -68,14 +78,8 @@ export const useInvoice = (): any => {
   ];
 
   const data = reactive({
-    invoicereceip: {
-      date: "",
-      description: "",
-      customer_id: "",
-      bank_account_id: "",
-      bank_reference_number: "",
-      items: [],
-    },
+    invoiceReceipt: InvoiceReceipt,
+    invoicereceip: InvoiceReceipt,
     title: "Manage Invoice",
     modalTitle: "",
     headers: [
@@ -94,16 +98,22 @@ export const useInvoice = (): any => {
         value: "customer.name",
       },
       {
-        text: "Description",
-        align: "start",
-        sortable: false,
-        value: "description",
-      },
-      {
         text: "Ammount",
         align: "start",
         sortable: false,
         value: "amount",
+      },
+      {
+        text: "Amount Paid",
+        align: "start",
+        sortable: false,
+        value: "amount",
+      },
+      {
+        text: "Description",
+        align: "start",
+        sortable: false,
+        value: "description",
       },
     ],
     modal: false,
@@ -114,14 +124,14 @@ export const useInvoice = (): any => {
     itemsToFilter: [],
     formData: FormData,
     rows: ["10", "20", "50", "100"],
-    itemtodelete: "",
+    itemTodelete: "",
     response: {},
     gfscodes: [],
     customers: [],
     itemdefinitions: [],
-    invoicedata: [],
+    invoicedata: invoiceData,
     bankaccounts: [],
-    customer: "",
+    customer: [],
     invoice_items: [
       {
         invoice_item_definition_id: "",
@@ -141,12 +151,15 @@ export const useInvoice = (): any => {
       data.itemsToFilter = response.data.data.data;
       data.loading = false;
     });
+
     allgfscodes({ per_page: 2000 }).then((response: any) => {
       data.gfscodes = response.data.data.data;
     });
+
     customers({ per_page: 2000 }).then((response: any) => {
       data.customers = response.data.data.data;
     });
+
     itemdefinitions({ per_page: 2000 }).then((response: any) => {
       data.itemdefinitions = response.data.data.data;
     });
@@ -172,7 +185,7 @@ export const useInvoice = (): any => {
 
   const deleteInvoiceItemdefinition = (deleteId: any) => {
     data.deletemodal = !data.modal;
-    data.itemtodelete = deleteId;
+    data.itemTodelete = deleteId;
     data.invoicedetails = false;
   };
 
@@ -202,11 +215,12 @@ export const useInvoice = (): any => {
   };
 
   const openInvoiceReceipt = (invoiceData: any) => {
+    console.log("receipt", invoiceData);
     data.invoicedetails = false;
     data.invoicereceipt = true;
-    data.customer = invoiceData;
+    data.customer = [invoiceData];
     data.invoicereceip.customer_id = invoiceData;
-    if (data.invoicedata.invoice_items.length > 0) {
+    if (data.invoicedata.invoice_items) {
       data.invoicedata.invoice_items.forEach((value) => {
         const one_item = {
           invoicedAmount: value.amount,
@@ -217,6 +231,7 @@ export const useInvoice = (): any => {
         };
         data.invoicereceip.items.push(one_item);
       });
+
       bankaccounts({ per_page: 2000 }).then((response: any) => {
         data.bankaccounts = response.data.data.data;
       });
@@ -229,7 +244,7 @@ export const useInvoice = (): any => {
   };
 
   const remove = () => {
-    destroy(data.itemtodelete).then(() => {
+    destroy(data.itemTodelete).then(() => {
       reloadData();
       data.deletemodal = false;
     });
@@ -262,7 +277,7 @@ export const useInvoice = (): any => {
     receiptcreate(data.invoicereceip);
   };
 
-  const createInvoice = (data: any) => {
+  const createInvoice = (data) => {
     create(data).then(() => {
       reloadData();
       cancelDialog();
@@ -284,18 +299,70 @@ export const useInvoice = (): any => {
     });
   };
 
-  const removeRow = (index: any) => {
+  const removeRow = (index: number) => {
     data.formData.items.splice(index, 1);
   };
 
-  const previewInvoice = (item: number) => {
+  const previewInvoice = (item) => {
+    const {
+      id,
+      amount,
+      invoice_number,
+      date,
+      description,
+      customer_id,
+      customer,
+      bank_account_id,
+      bank_reference_number,
+      items,
+    } = item;
+
+    const invoiceItems: ReceiptItem = items.map((entry) => {
+      return {
+        name: entry.definition.name,
+        amount,
+        invoice_item_id: entry.id,
+      };
+    });
+
+    data.invoiceReceipt = {
+      id,
+      amount,
+      invoice_number,
+      date,
+      customer,
+      description,
+      customer_id,
+      bank_account_id,
+      bank_reference_number,
+      items: invoiceItems,
+    };
+
     viewinvoice(item).then((response: AxiosResponse) => {
       data.invoicedata = response.data.data;
       data.invoicedetails = true;
     });
   };
 
+  const items = computed(() => {
+    return data.items.map((item) => {
+      return {
+        id: item.id,
+        amount: item.amount,
+        invoice_number: item.invoice_number,
+        date: item.date,
+        description: item.description,
+        customer_id: item.customer_id,
+        customer: { id: item.customer.id, name: item.customer.name },
+        bank_account_id: item.bank_account_id,
+        bank_reference_number: item.bank_reference_number,
+        items: item.invoice_items,
+      };
+    });
+  });
+
   return {
+    items,
     data,
     getData,
     createReceipt,
