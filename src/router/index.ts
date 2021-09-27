@@ -29,6 +29,7 @@ import { invoiceRoutes } from "@/components/invoice";
 import { revenueProjectionRoutes } from "@/components/planning/revenue-projection";
 import { supplierRoutes } from "@/components/payable/supplier";
 import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
+import { paymentVoucherRoutes } from "@/components/payable/payment-voucher";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -82,6 +83,7 @@ const routes: Array<RouteConfig> = [
       ...revenueProjectionRoutes,
       ...supplierRoutes,
       ...fundAllocationRoutes,
+      ...paymentVoucherRoutes,
     ],
   },
 ];

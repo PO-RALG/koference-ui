@@ -1,9 +1,9 @@
 <template>
-  <div class="Supplier">
+  <div class="Payment Voucher">
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Supplier')">
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Payment Voucher')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -35,10 +35,10 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Supplier')">
+          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Payment Voucher')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item.id)" :disabled="cant('delete', 'Supplier')">
+          <v-icon @click="openConfirmDialog(item.id)" :disabled="cant('delete', 'Payment Voucher')">
             mdi-trash-can-outline
           </v-icon>
         </template>
@@ -50,7 +50,7 @@
 
     <Modal :modal="data.modal" :width="960">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Supplier`" />
+        <ModalHeader :title="`${data.modalTitle} Payment Voucher`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -95,7 +95,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Supplier `" />
+        <ModalHeader :title="`Delete Payment Voucher `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -112,30 +112,30 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import { useSupplier } from "./composables/supplier";
+import { usePaymentVoucher } from "./composables/payment-voucher";
 
 export default defineComponent({
-  name: "Supplier",
+  name: "PaymentVoucher",
   setup() {
     const {
       data,
       openDialog,
       cancelDialog,
       openConfirmDialog,
-      updateSupply,
+      updatePaymentVoucher,
       save,
       remove,
       cancelConfirmDialog,
       searchItem,
       getData,
-    } = useSupplier();
+    } = usePaymentVoucher();
 
     return {
       data,
       openDialog,
       cancelDialog,
       openConfirmDialog,
-      updateSupply,
+      updatePaymentVoucher,
       save,
       remove,
       cancelConfirmDialog,

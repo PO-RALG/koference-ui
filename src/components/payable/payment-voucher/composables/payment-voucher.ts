@@ -1,15 +1,15 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, update, destroy, search } from "../services/supplier.service";
-import { Supplier } from "../types/Supplier";
+import { get, create, update, destroy, search } from "../services/payment-voucher.service";
+import { PaymentVoucher } from "../types/PaymentVoucher";
 
-export const useSupplier = (): any => {
-  const dataItems: Array<Supplier> = [];
-  const supplyData = {} as Supplier;
+export const usePaymentVoucher = (): any => {
+  const dataItems: Array<PaymentVoucher> = [];
+  const paymentVoucherData = {} as PaymentVoucher;
 
   const data = reactive({
-    title: "Suppliers",
+    title: "Payment Vouchers",
     valid: true,
     isOpen: false,
     node: null,
@@ -68,7 +68,7 @@ export const useSupplier = (): any => {
     deletemodal: false,
     items: dataItems,
     itemsToFilter: [],
-    formData: supplyData,
+    formData: paymentVoucherData,
     params: {
       total: 100,
       size: 10,
@@ -91,7 +91,7 @@ export const useSupplier = (): any => {
     });
   };
 
-  const searchItem = (itemName: Supplier) => {
+  const searchItem = (itemName: PaymentVoucher) => {
     if (itemName != null) {
       search({ name: itemName.name }).then((response: AxiosResponse) => {
         data.items = response.data.data.data;
@@ -99,7 +99,7 @@ export const useSupplier = (): any => {
     }
   };
 
-  const getData = (params: Supplier) => {
+  const getData = (params: PaymentVoucher) => {
     data.response = params;
     get(params).then((response: AxiosResponse) => {
       data.response = response.data.data;
@@ -113,12 +113,12 @@ export const useSupplier = (): any => {
   };
 
   const cancelDialog = () => {
-    data.formData = {} as Supplier;
+    data.formData = {} as PaymentVoucher;
     data.modal = !data.modal;
   };
 
   const cancelConfirmDialog = () => {
-    data.formData = {} as Supplier;
+    data.formData = {} as PaymentVoucher;
     data.deletemodal = false;
   };
 
@@ -131,31 +131,31 @@ export const useSupplier = (): any => {
 
   const save = () => {
     if (data.formData.id) {
-      updateSupply(data.formData);
+      updateActivity(data.formData);
     } else {
-      createSupply(data.formData);
+      createActivity(data.formData);
     }
   };
 
-  const openDialog = (formData?: Supplier) => {
+  const openDialog = (formData?: PaymentVoucher) => {
     if (formData.id) {
       data.formData = formData;
       data.modalTitle = "Update";
     } else {
-      data.formData = {} as Supplier;
+      data.formData = {} as PaymentVoucher;
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
   };
 
-  const updateSupply = (data: Supplier) => {
+  const updateActivity = (data: PaymentVoucher) => {
     update(data).then(() => {
       cancelDialog();
       getTableData();
     });
   };
 
-  const createSupply = (data: Supplier) => {
+  const createActivity = (data: PaymentVoucher) => {
     create(data).then(() => {
       cancelDialog();
       getTableData();
@@ -167,7 +167,7 @@ export const useSupplier = (): any => {
     openDialog,
     cancelDialog,
     openConfirmDialog,
-    updateSupply,
+    updateActivity,
     save,
     remove,
     cancelConfirmDialog,
