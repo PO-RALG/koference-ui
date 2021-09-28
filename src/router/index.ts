@@ -29,6 +29,7 @@ import { invoiceRoutes } from "@/components/invoice";
 import { revenueProjectionRoutes } from "@/components/planning/revenue-projection";
 import { supplierRoutes } from "@/components/payable/supplier";
 import { glAccountRoutes } from "@/components/general-ledger/gl-account";
+import { glTransactionRoutes } from "@/components/general-ledger/transaction";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -81,6 +82,7 @@ const routes: Array<RouteConfig> = [
       ...revenueProjectionRoutes,
       ...supplierRoutes,
       ...glAccountRoutes,
+      ...glTransactionRoutes,
     ],
   },
 ];
