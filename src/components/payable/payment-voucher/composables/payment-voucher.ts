@@ -17,46 +17,58 @@ export const usePaymentVoucher = (): any => {
     modalTitle: "",
     headers: [
       {
-        text: "Name",
+        text: "Date",
         align: "start",
         sortable: false,
-        value: "name",
+        value: "date",
       },
       {
-        text: "Email",
+        text: "Reference Number",
         align: "start",
         sortable: false,
-        value: "email",
+        value: "reference_no",
       },
       {
-        text: "TIN",
+        text: "Supplier",
         align: "start",
         sortable: false,
-        value: "tin",
+        value: "supplier.name",
       },
       {
-        text: "Phone",
+        text: "Bank Account",
         align: "start",
         sortable: false,
-        value: "phone",
+        value: "bank_account",
       },
       {
-        text: "Address",
+        text: "Financial Year",
         align: "start",
         sortable: false,
-        value: "address",
+        value: "financial_year.name",
       },
       {
-        text: "Bank Account Name",
+        text: "Amount",
         align: "start",
         sortable: false,
-        value: "bank_account_name",
+        value: "amount",
       },
       {
-        text: "Bank Account Number",
+        text: "Amount Paid",
         align: "start",
         sortable: false,
-        value: "bank_account_number",
+        value: "amount_paid",
+      },
+      {
+        text: "Full Paid",
+        align: "start",
+        sortable: false,
+        value: "full_paid",
+      },
+      {
+        text: "Description",
+        align: "start",
+        sortable: false,
+        value: "description",
       },
       {
         text: "Actions",
@@ -93,7 +105,7 @@ export const usePaymentVoucher = (): any => {
 
   const searchItem = (itemName: PaymentVoucher) => {
     if (itemName != null) {
-      search({ name: itemName.name }).then((response: AxiosResponse) => {
+      search({ reference_no: itemName.reference_no }).then((response: AxiosResponse) => {
         data.items = response.data.data.data;
       });
     }

@@ -3,7 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Payment Voucher')">
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Voucher')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -21,10 +21,10 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Name"
+                label="Filter by Reference number"
                 @change="searchItem($event)"
                 :items="data.itemsToFilter"
-                :item-text="'name'"
+                :item-text="'reference_no'"
                 :item-divider="true"
                 return-object
                 required
@@ -33,12 +33,14 @@
             </v-col>
           </v-card-title>
         </template>
-
+        <template v-slot:[`item.date`]="{ item }">
+          <span>{{ item.date | format("DD/MM/YYYY") }}</span>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Payment Voucher')">
+          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Voucher')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item.id)" :disabled="cant('delete', 'Payment Voucher')">
+          <v-icon @click="openConfirmDialog(item.id)" :disabled="cant('delete', 'Voucher')">
             mdi-trash-can-outline
           </v-icon>
         </template>
@@ -56,27 +58,61 @@
         <ModalBody v-if="data.formData">
           <v-form>
             <v-container>
-              <v-row>
-                <v-col cols="12" md="12">
-                  <v-text-field v-model="data.formData.name" label="Name" required></v-text-field>
+              <v-row class="pa-2">
+                <v-col cols="12" md="4">
+                  <DatePicker
+                    :label="'Date'"
+                    v-model="data.formData.date"
+                  />
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.email" label="Email"></v-text-field>
+                  <v-select
+                    v-model="data.formData.supplier_id"
+                    :items="data.suppliers"
+                    item-value="id"
+                    label="Supplier"
+                    required
+                  >
+                    <!-- <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.name }} </template> -->
+                    <!-- <template v-slot:item="{ item }"> {{ item.code }} - {{ item.name }} </template> -->
+                    <template v-slot:prepend-item>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-text-field
+                            v-model="data.searchTerm"
+                            placeholder="Search"
+                            @input="searchSupplier"
+                          ></v-text-field>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-divider></v-divider>
+                    </template>
+                  </v-select>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.tin" label="TIN"></v-text-field>
+                  <v-select
+                    v-model="data.formData.financial_year_id"
+                    :items="data.financialYears"
+                    item-value="id"
+                    label="Financial Year"
+                    required
+                  >
+                  </v-select>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.phone" label="Phone"></v-text-field>
+                  <v-text-field v-model="data.formData.reference_no" label="Reference Number"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.address" label="Address"></v-text-field>
+                  <v-text-field v-model="data.formData.amount" label="Amount" type="number"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.bank_account_name" label="Bank Account Name"></v-text-field>
+                  <v-text-field v-model="data.formData.amount_paid" label="Amount Paid" type="number"></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.bank_account_number" label="Bank Account Number"></v-text-field>
+                <v-col cols="12" md="2" sm="12">
+                  <v-checkbox v-model="data.formData.active" :label="`Active`"></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="10" sm="12">
+                  <v-text-field v-model="data.formData.description" label="Description"></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
