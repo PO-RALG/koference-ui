@@ -8,7 +8,6 @@ import { bankaccounts } from "@/components/setup/bank-account/services/back-acco
 import { itemdefinitions } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
 import store from "@/store";
 
-
 export const useInvoice = (): any => {
   const dataItems: Array<Invoice> = [];
   const FormData: FormData = newFormData();
@@ -94,16 +93,22 @@ export const useInvoice = (): any => {
         value: "customer.name",
       },
       {
-        text: "Description",
-        align: "start",
-        sortable: false,
-        value: "description",
-      },
-      {
         text: "Ammount",
         align: "start",
         sortable: false,
         value: "amount",
+      },
+      {
+        text: "Amount Paid",
+        align: "start",
+        sortable: false,
+        value: "amount",
+      },
+      {
+        text: "Description",
+        align: "start",
+        sortable: false,
+        value: "description",
       },
     ],
     modal: false,
@@ -114,14 +119,14 @@ export const useInvoice = (): any => {
     itemsToFilter: [],
     formData: FormData,
     rows: ["10", "20", "50", "100"],
-    itemtodelete: "",
+    itemTodelete: "",
     response: {},
     gfscodes: [],
     customers: [],
     itemdefinitions: [],
-    invoicedata: [],
+    invoicedata: invoiceData,
     bankaccounts: [],
-    customer: "",
+    customer: [],
     invoice_items: [
       {
         invoice_item_definition_id: "",
@@ -141,12 +146,15 @@ export const useInvoice = (): any => {
       data.itemsToFilter = response.data.data.data;
       data.loading = false;
     });
+
     allgfscodes({ per_page: 2000 }).then((response: any) => {
       data.gfscodes = response.data.data.data;
     });
+
     customers({ per_page: 2000 }).then((response: any) => {
       data.customers = response.data.data.data;
     });
+
     itemdefinitions({ per_page: 2000 }).then((response: any) => {
       data.itemdefinitions = response.data.data.data;
     });
@@ -172,7 +180,7 @@ export const useInvoice = (): any => {
 
   const deleteInvoiceItemdefinition = (deleteId: any) => {
     data.deletemodal = !data.modal;
-    data.itemtodelete = deleteId;
+    data.itemTodelete = deleteId;
     data.invoicedetails = false;
   };
 
@@ -204,9 +212,9 @@ export const useInvoice = (): any => {
   const openInvoiceReceipt = (invoiceData: any) => {
     data.invoicedetails = false;
     data.invoicereceipt = true;
-    data.customer = invoiceData;
+    data.customer = [invoiceData];
     data.invoicereceip.customer_id = invoiceData;
-    if (data.invoicedata.invoice_items.length > 0) {
+    if (data.invoicedata.invoice_items) {
       data.invoicedata.invoice_items.forEach((value) => {
         const one_item = {
           invoicedAmount: value.amount,
@@ -217,6 +225,7 @@ export const useInvoice = (): any => {
         };
         data.invoicereceip.items.push(one_item);
       });
+
       bankaccounts({ per_page: 2000 }).then((response: any) => {
         data.bankaccounts = response.data.data.data;
       });
@@ -229,7 +238,7 @@ export const useInvoice = (): any => {
   };
 
   const remove = () => {
-    destroy(data.itemtodelete).then(() => {
+    destroy(data.itemTodelete).then(() => {
       reloadData();
       data.deletemodal = false;
     });

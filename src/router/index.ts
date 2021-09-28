@@ -28,6 +28,7 @@ import { activityCostingRoutes } from "@/components/planning/activity-costing";
 import { invoiceRoutes } from "@/components/invoice";
 import { revenueProjectionRoutes } from "@/components/planning/revenue-projection";
 import { supplierRoutes } from "@/components/payable/supplier";
+import { glAccountRoutes } from "@/components/general-ledger/gl-account";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -79,6 +80,7 @@ const routes: Array<RouteConfig> = [
       ...invoiceRoutes,
       ...revenueProjectionRoutes,
       ...supplierRoutes,
+      ...glAccountRoutes,
     ],
   },
 ];
@@ -107,8 +109,6 @@ const isLoggedIn = (to, _, next) => {
   }
 };
 
-router.beforeEach(
-  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
-);
+router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
 
 export default router;

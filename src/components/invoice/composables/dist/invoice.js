@@ -9,7 +9,7 @@ var back_accounts_service_1 = require("@/components/setup/bank-account/services/
 var invoice_item_definition_1 = require("@/components/setup/invoice-item-definition/services/invoice-item-definition");
 exports.useInvoice = function () {
     var dataItems = [];
-    var customerData;
+    var invoiceData;
     var HEADERS = [
         {
             text: "Item",
@@ -103,16 +103,22 @@ exports.useInvoice = function () {
                 value: "customer.name"
             },
             {
-                text: "Description",
-                align: "start",
-                sortable: false,
-                value: "description"
-            },
-            {
                 text: "Ammount",
                 align: "start",
                 sortable: false,
                 value: "amount"
+            },
+            {
+                text: "Amount Paid",
+                align: "start",
+                sortable: false,
+                value: "amount"
+            },
+            {
+                text: "Description",
+                align: "start",
+                sortable: false,
+                value: "description"
             },
         ],
         modal: false,
@@ -121,16 +127,16 @@ exports.useInvoice = function () {
         invoicereceipt: false,
         items: dataItems,
         itemsToFilter: [],
-        formData: customerData,
+        formData: invoiceData,
         rows: ["10", "20", "50", "100"],
-        itemtodelete: "",
+        itemTodelete: "",
         response: {},
         gfscodes: [],
         customers: [],
         itemdefinitions: [],
-        invoicedata: [],
+        invoicedata: invoiceData,
         bankaccounts: [],
-        customer: "",
+        customer: [],
         invoice_items: [
             {
                 invoice_item_definition_id: "",
@@ -178,7 +184,7 @@ exports.useInvoice = function () {
     };
     var deleteInvoiceItemdefinition = function (deleteId) {
         data.deletemodal = !data.modal;
-        data.itemtodelete = deleteId;
+        data.itemTodelete = deleteId;
         data.invoicedetails = false;
     };
     var getInvoiceItemdefinition = function () {
@@ -205,9 +211,9 @@ exports.useInvoice = function () {
     var openInvoiceReceipt = function (invoiceData) {
         data.invoicedetails = false;
         data.invoicereceipt = true;
-        data.customer = invoiceData;
+        data.customer = [invoiceData];
         data.invoicereceip.customer_id = invoiceData;
-        if (data.invoicedata.invoice_items.length > 0) {
+        if (data.invoicedata.invoice_items) {
             data.invoicedata.invoice_items.forEach(function (value) {
                 var one_item = {
                     invoicedAmount: value.amount,
@@ -228,7 +234,7 @@ exports.useInvoice = function () {
         data.deletemodal = false;
     };
     var remove = function () {
-        invoice_1.destroy(data.itemtodelete).then(function () {
+        invoice_1.destroy(data.itemTodelete).then(function () {
             reloadData();
             data.deletemodal = false;
         });
