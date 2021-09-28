@@ -1,38 +1,58 @@
 import { AxiosResponse } from "axios";
-import { Invoice, FormData, newFormData } from "../types";
-import { reactive, onMounted } from "@vue/composition-api";
-import { get, create, update, destroy, search, viewinvoice, receiptcreate } from "../services/invoice";
+import { Invoice } from "../types";
+import { reactive, onMounted, computed } from "@vue/composition-api";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+  viewinvoice,
+  receiptcreate,
+} from "../services/invoice";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import { customers } from "@/components/setup/customer/services/customer.service";
 import { bankaccounts } from "@/components/setup/bank-account/services/back-accounts.service";
 import { itemdefinitions } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
-import store from "@/store";
 
 export const useInvoice = (): any => {
   const dataItems: Array<Invoice> = [];
-  const FormData: FormData = newFormData();
-  let customerData: Invoice;
+  let invoiceData: Invoice;
   const HEADERS = [
     {
       text: "Item",
       align: "start",
       sortable: false,
       value: "invoice_number",
-      width: "50%",
+      width: "30%",
     },
     {
       text: "Amount",
       align: "start",
       sortable: false,
       value: "amount",
-      width: "35%",
+      width: "15%",
+    },
+    {
+      text: "Amount Received",
+      align: "start",
+      sortable: false,
+      value: "amount_received",
+      width: "17%",
+    },
+    {
+      text: "Amount Pending",
+      align: "start",
+      sortable: false,
+      value: "amount_pending",
+      width: "15%",
     },
     {
       text: "",
       align: "center",
       sortable: false,
       value: "amount_pending",
-      width: "15%",
+      width: "13%",
     },
   ];
   const RECEIPTHEADERS = [
@@ -68,6 +88,7 @@ export const useInvoice = (): any => {
 
   const data = reactive({
     invoicereceip: {
+      invoice_id: "",
       date: "",
       description: "",
       customer_id: "",
@@ -75,6 +96,7 @@ export const useInvoice = (): any => {
       bank_reference_number: "",
       items: [],
     },
+
     title: "Manage Invoice",
     modalTitle: "",
     headers: [
@@ -99,10 +121,10 @@ export const useInvoice = (): any => {
         value: "amount",
       },
       {
-        text: "Amount Paid",
+        text: "Received Amount",
         align: "start",
         sortable: false,
-        value: "amount",
+        value: "received_amount",
       },
       {
         text: "Description",
@@ -117,11 +139,11 @@ export const useInvoice = (): any => {
     invoicereceipt: false,
     items: dataItems,
     itemsToFilter: [],
-    formData: FormData,
+    formData: invoiceData,
     rows: ["10", "20", "50", "100"],
     itemTodelete: "",
     response: {},
-    gfscodes: [],
+    bankName: [],
     customers: [],
     itemdefinitions: [],
     invoicedata: invoiceData,
@@ -140,7 +162,8 @@ export const useInvoice = (): any => {
   onMounted(() => {
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
@@ -148,7 +171,7 @@ export const useInvoice = (): any => {
     });
 
     allgfscodes({ per_page: 2000 }).then((response: any) => {
-      data.gfscodes = response.data.data.data;
+      data.bankName = response.data.data.data;
     });
 
     customers({ per_page: 2000 }).then((response: any) => {
@@ -162,9 +185,11 @@ export const useInvoice = (): any => {
 
   const searchCategory = (categoryName) => {
     if (categoryName != null) {
-      search({ invoice_number: categoryName.invoice_number }).then((response: any) => {
-        data.items = response.data.data.data;
-      });
+      search({ invoice_number: categoryName.invoice_number }).then(
+        (response: any) => {
+          data.items = response.data.data.data;
+        }
+      );
     } else {
       reloadData();
     }
@@ -172,7 +197,8 @@ export const useInvoice = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -189,7 +215,7 @@ export const useInvoice = (): any => {
   };
 
   const cancelDialog = () => {
-    data.formData = {} as FormData;
+    data.formData = {} as Invoice;
     (data.invoice_items = [
       {
         invoice_item_definition_id: "",
@@ -212,8 +238,10 @@ export const useInvoice = (): any => {
   const openInvoiceReceipt = (invoiceData: any) => {
     data.invoicedetails = false;
     data.invoicereceipt = true;
-    data.customer = [invoiceData];
-    data.invoicereceip.customer_id = invoiceData;
+
+    data.customer = [invoiceData]; //mapping customer in autocomplete field
+    data.invoicereceip.customer_id = invoiceData; //mapping customer in autocomplete for two way binding
+    data.invoicereceip.invoice_id = invoiceData.id;
     if (data.invoicedata.invoice_items) {
       data.invoicedata.invoice_items.forEach((value) => {
         const one_item = {
@@ -232,8 +260,15 @@ export const useInvoice = (): any => {
     }
   };
 
+  const bankName = computed(() => {
+    return data.bankaccounts.map((account) => {
+      account.fullName = `Account Number -${account.number}  ${account.bank} - ${account.branch}`;
+      return account;
+    });
+  });
+
   const cancelConfirmDialog = () => {
-    data.formData = {} as FormData;
+    data.formData = {} as Invoice;
     data.deletemodal = false;
   };
 
@@ -245,18 +280,22 @@ export const useInvoice = (): any => {
   };
 
   const save = () => {
-    createInvoice(data.formData);
+    data.formData.items = data.invoice_items;
+    if (data.formData.id) {
+      updateInvoiceItemDefinition(data.formData);
+    } else {
+      createInvoice(data.formData);
+    }
   };
 
-  const initializeFormData = (): FormData => {
-    return (data.formData = newFormData());
-  };
-
-  const openDialog = () => {
-    const user = store.getters["Auth/getCurrentUser"];
-    initializeFormData();
-    data.formData.facility_id = user.facility_id;
-    data.modalTitle = "Create";
+  const openDialog = (formData?: any) => {
+    if (formData.id) {
+      data.formData = formData;
+      data.modalTitle = "Update";
+    } else {
+      data.formData = {} as Invoice;
+      data.modalTitle = "Create";
+    }
     data.modal = !data.modal;
   };
 
@@ -268,7 +307,19 @@ export const useInvoice = (): any => {
   };
 
   const createReceipt = () => {
-    receiptcreate(data.invoicereceip);
+    receiptcreate(data.invoicereceip).then(() => {
+      data.invoicereceipt = false;
+      reloadData();
+      data.invoicereceip = {
+        invoice_id: "",
+        date: "",
+        description: "",
+        customer_id: "",
+        bank_account_id: "",
+        bank_reference_number: "",
+        items: [],
+      };
+    });
   };
 
   const createInvoice = (data: any) => {
@@ -287,17 +338,17 @@ export const useInvoice = (): any => {
   };
 
   const addRow = () => {
-    data.formData.items.push({
+    data.invoice_items.push({
       invoice_item_definition_id: "",
       amount: "",
     });
   };
 
   const removeRow = (index: any) => {
-    data.formData.items.splice(index, 1);
+    data.invoice_items.splice(index, 1);
   };
 
-  const previewInvoice = (item: number) => {
+  const previewInvoice = (item: any) => {
     viewinvoice(item).then((response: AxiosResponse) => {
       data.invoicedata = response.data.data;
       data.invoicedetails = true;
@@ -326,5 +377,6 @@ export const useInvoice = (): any => {
     openInvoiceReceipt,
     HEADERS,
     RECEIPTHEADERS,
+    bankName,
   };
 };
