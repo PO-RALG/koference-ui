@@ -70,18 +70,17 @@
                     v-model="data.formData.supplier_id"
                     :items="data.suppliers"
                     item-value="id"
-                    label="Supplier"
+                    item-text="name"
+                    label="Select Payee"
                     required
                   >
-                    <!-- <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.name }} </template> -->
-                    <!-- <template v-slot:item="{ item }"> {{ item.code }} - {{ item.name }} </template> -->
                     <template v-slot:prepend-item>
                       <v-list-item>
                         <v-list-item-content>
                           <v-text-field
                             v-model="data.searchTerm"
                             placeholder="Search"
-                            @input="searchSupplier"
+                            @input="searchSuppliers"
                           ></v-text-field>
                         </v-list-item-content>
                       </v-list-item>
@@ -90,28 +89,9 @@
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-select
-                    v-model="data.formData.financial_year_id"
-                    :items="data.financialYears"
-                    item-value="id"
-                    label="Financial Year"
-                    required
-                  >
-                  </v-select>
-                </v-col>
-                <v-col cols="12" md="4" sm="12">
                   <v-text-field v-model="data.formData.reference_no" label="Reference Number"></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.amount" label="Amount" type="number"></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.amount_paid" label="Amount Paid" type="number"></v-text-field>
-                </v-col>
-                <v-col cols="12" md="2" sm="12">
-                  <v-checkbox v-model="data.formData.active" :label="`Active`"></v-checkbox>
-                </v-col>
-                <v-col cols="12" md="10" sm="12">
+                <v-col cols="12" md="8" sm="12">
                   <v-text-field v-model="data.formData.description" label="Description"></v-text-field>
                 </v-col>
               </v-row>
@@ -164,6 +144,7 @@ export default defineComponent({
       cancelConfirmDialog,
       searchItem,
       getData,
+      searchSuppliers,
     } = usePaymentVoucher();
 
     return {
@@ -177,6 +158,7 @@ export default defineComponent({
       cancelConfirmDialog,
       searchItem,
       getData,
+      searchSuppliers,
     };
   },
 });

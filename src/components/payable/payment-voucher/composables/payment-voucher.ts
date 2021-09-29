@@ -3,6 +3,9 @@ import { AxiosResponse } from "axios";
 
 import { get, create, update, destroy, search } from "../services/payment-voucher.service";
 import { PaymentVoucher } from "../types/PaymentVoucher";
+import { get as getSupplier } from "@/components/payable/supplier/services/supplier.service"
+import { get as getFinancialYear } from "@/components/setup/financial-year/services/financialyear.service"
+import { get as getBankAccount } from "@/components/setup/bank-account/services/back-accounts.service"
 
 export const usePaymentVoucher = (): any => {
   const dataItems: Array<PaymentVoucher> = [];
@@ -88,6 +91,9 @@ export const usePaymentVoucher = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     searchTerm: "",
+    suppliers: [],
+    financialYears: [],
+    bankAccounts: [],
   });
 
   onMounted(() => {
@@ -153,9 +159,17 @@ export const usePaymentVoucher = (): any => {
     if (formData.id) {
       data.formData = formData;
       data.modalTitle = "Update";
+      data.searchTerm = "",
+      getSupplierData();
+      getFinancialYearData();
+      getBankAccountData();
     } else {
       data.formData = {} as PaymentVoucher;
       data.modalTitle = "Create";
+      data.searchTerm = "",
+      getSupplierData();
+      getFinancialYearData();
+      getBankAccountData();
     }
     data.modal = !data.modal;
   };
@@ -174,6 +188,31 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  const getSupplierData = () => {
+    getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
+      data.suppliers = response.data.data.data;
+    });
+  };
+
+  const searchSuppliers = (item: string) => {
+    const regSearchTerm = item ? item : data.searchTerm;
+    getSupplier({ per_page: 10, regSearch: regSearchTerm }).then((response: AxiosResponse) => {
+      data.suppliers = response.data.data.data;
+    });
+  };
+
+  const getFinancialYearData = () => {
+    getFinancialYear({ per_page: 10 }).then((response: AxiosResponse) => {
+      data.financialYears = response.data.data.data;
+    });
+  };
+
+  const getBankAccountData = () => {
+    getBankAccount({ per_page: 10 }).then((response: AxiosResponse) => {
+      data.bankAccounts = response.data.data.data;
+    });
+  };
+
   return {
     data,
     openDialog,
@@ -185,5 +224,6 @@ export const usePaymentVoucher = (): any => {
     cancelConfirmDialog,
     searchItem,
     getData,
+    searchSuppliers,
   };
 };
