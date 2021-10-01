@@ -1,6 +1,6 @@
 export interface PaymentVoucher {
   id: number;
-  date: Date;
+  date: string;
   supplier_id: number;
   bank_account_id: number;
   financial_year_id: number;

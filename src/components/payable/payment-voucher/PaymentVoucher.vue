@@ -50,7 +50,7 @@
       </v-data-table>
     </v-card>
 
-    <Modal :modal="data.modal" :width="960">
+    <Modal :modal="data.modal" :width="1260">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Payment Voucher`" />
       </template>
@@ -63,6 +63,7 @@
                   <DatePicker
                     :label="'Date'"
                     v-model="data.formData.date"
+                    required
                   />
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
@@ -91,10 +92,136 @@
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field v-model="data.formData.reference_no" label="Reference Number"></v-text-field>
                 </v-col>
-                <v-col cols="12" md="8" sm="12">
+                <v-col cols="12" md="12" sm="12">
                   <v-text-field v-model="data.formData.description" label="Description"></v-text-field>
                 </v-col>
               </v-row>
+              <template>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(item,i) in data.payables"
+                        :key="i"
+                      >
+                        <td>
+                          <v-row>
+                            <v-col md="4" sm="12">
+                              <v-select
+                                v-model="item.activity_id"
+                                :items="data.activities"
+                                item-value="id"
+                                item-text="name"
+                                label="Select Activity"
+                                required
+                              >
+                                <template v-slot:prepend-item>
+                                  <v-list-item>
+                                    <v-list-item-content>
+                                      <v-text-field
+                                        v-model="data.searchTerm"
+                                        placeholder="Search"
+                                        @input="searchActivities"
+                                      ></v-text-field>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                  <v-divider></v-divider>
+                                </template>
+                              </v-select>
+                            </v-col>
+                            <v-col md="4" sm="12">
+                              <v-select
+                                v-model="item.gfs_code_id"
+                                :items="data.gfsCodes"
+                                item-value="id"
+                                item-text="name"
+                                label="Select GFS Code"
+                                required
+                              >
+                                <template v-slot:prepend-item>
+                                  <v-list-item>
+                                    <v-list-item-content>
+                                      <v-text-field
+                                        v-model="data.searchTerm"
+                                        placeholder="Search"
+                                        @input="searchGfsCodes"
+                                      ></v-text-field>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                  <v-divider></v-divider>
+                                </template>
+                              </v-select>
+                            </v-col>
+                            <v-col md="4" sm="12">
+                              <v-select
+                                v-model="item.funding_source_id"
+                                :items="data.fundingSource"
+                                item-value="id"
+                                item-text="name"
+                                label="Select Funding Sources"
+                                required
+                              >
+                                <template v-slot:prepend-item>
+                                  <v-list-item>
+                                    <v-list-item-content>
+                                      <v-text-field
+                                        v-model="data.searchTerm"
+                                        placeholder="Search"
+                                        @input="searchFundingSource"
+                                      ></v-text-field>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                  <v-divider></v-divider>
+                                </template>
+                              </v-select>
+                            </v-col>
+                            <v-col md="6" sm="12">
+                              <v-select
+                                v-model="item.gl_account_id"
+                                :items="data.glAccount"
+                                item-value="id"
+                                item-text="name"
+                                label="Select Expenditure Type"
+                                required
+                              >
+                                <template v-slot:prepend-item>
+                                  <v-list-item>
+                                    <v-list-item-content>
+                                      <v-text-field
+                                        v-model="data.searchTerm"
+                                        placeholder="Search"
+                                        @input="searchGlAccount"
+                                      ></v-text-field>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                  <v-divider></v-divider>
+                                </template>
+                              </v-select>
+                            </v-col>
+                            <v-col md="6" sm="12">
+                              <v-text-field v-model="item.amount" label="Amount"></v-text-field>
+                            </v-col>
+                          </v-row>
+                        </td>
+                        <td>
+                          <v-btn v-if="data.payables.length == i+1" color="green darken-1" text @click="addPayable">
+                            <v-icon>mdi-plus</v-icon>
+                          </v-btn>
+                          <v-btn v-if="data.payables.length > 1" color="red darken-1" text @click="removePayable(i)">
+                            <v-icon>mdi-minus</v-icon>
+                          </v-btn>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </template>
             </v-container>
           </v-form>
         </ModalBody>
@@ -145,6 +272,8 @@ export default defineComponent({
       searchItem,
       getData,
       searchSuppliers,
+      addPayable,
+      removePayable,
     } = usePaymentVoucher();
 
     return {
@@ -159,6 +288,8 @@ export default defineComponent({
       searchItem,
       getData,
       searchSuppliers,
+      addPayable,
+      removePayable,
     };
   },
 });

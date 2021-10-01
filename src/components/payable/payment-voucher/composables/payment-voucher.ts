@@ -94,6 +94,7 @@ export const usePaymentVoucher = (): any => {
     suppliers: [],
     financialYears: [],
     bankAccounts: [],
+    payables: [{funding_source_id:'',gfs_code_id:'',amount:'',}],
   });
 
   onMounted(() => {
@@ -189,16 +190,20 @@ export const usePaymentVoucher = (): any => {
   };
 
   const getSupplierData = () => {
-    getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
-      data.suppliers = response.data.data.data;
-    });
+    getSupplier({ per_page: 10 }).then(
+      (response: AxiosResponse) => {
+        data.suppliers = response.data.data.data;
+      }
+    );
   };
 
   const searchSuppliers = (item: string) => {
     const regSearchTerm = item ? item : data.searchTerm;
-    getSupplier({ per_page: 10, regSearch: regSearchTerm }).then((response: AxiosResponse) => {
-      data.suppliers = response.data.data.data;
-    });
+    getSupplier({ per_page: 10, regSearch: regSearchTerm }).then(
+      (response: AxiosResponse) => {
+        data.suppliers = response.data.data.data;
+      }
+    );
   };
 
   const getFinancialYearData = () => {
@@ -213,6 +218,14 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  const addPayable = () => {
+    data.payables.push({ funding_source_id: "", gfs_code_id: "", amount: "" });
+  };
+
+  const removePayable = (index: number) => {
+    data.payables.splice(index, 1);
+  };
+
   return {
     data,
     openDialog,
@@ -225,5 +238,7 @@ export const usePaymentVoucher = (): any => {
     searchItem,
     getData,
     searchSuppliers,
+    addPayable,
+    removePayable,
   };
 };
