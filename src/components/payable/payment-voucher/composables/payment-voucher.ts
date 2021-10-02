@@ -4,8 +4,8 @@ import { AxiosResponse } from "axios";
 import { get, create, update, destroy, search } from "../services/payment-voucher.service";
 import { PaymentVoucher } from "../types/PaymentVoucher";
 import { get as getSupplier } from "@/components/payable/supplier/services/supplier.service"
-import { get as getFinancialYear } from "@/components/setup/financial-year/services/financialyear.service"
-import { get as getBankAccount } from "@/components/setup/bank-account/services/back-accounts.service"
+import { get as getActivity } from "@/components/planning/activity/services/activity.service"
+import { get as getGfsCode } from "@/components/coa/gfs-code/service/gfs.service"
 
 export const usePaymentVoucher = (): any => {
   const dataItems: Array<PaymentVoucher> = [];
@@ -92,8 +92,9 @@ export const usePaymentVoucher = (): any => {
     itemtodelete: "",
     searchTerm: "",
     suppliers: [],
-    financialYears: [],
-    bankAccounts: [],
+    activities: [],
+    gfsCodes: [],
+    fundingSources: [],
     payables: [{funding_source_id:'',gfs_code_id:'',amount:'',}],
   });
 
@@ -162,15 +163,17 @@ export const usePaymentVoucher = (): any => {
       data.modalTitle = "Update";
       data.searchTerm = "",
       getSupplierData();
-      getFinancialYearData();
-      getBankAccountData();
+      getActivityData();
+      getGfsCodeData();
+      getFundingSourceData();
     } else {
       data.formData = {} as PaymentVoucher;
       data.modalTitle = "Create";
       data.searchTerm = "",
       getSupplierData();
-      getFinancialYearData();
-      getBankAccountData();
+      getActivityData();
+      getGfsCodeData();
+      getFundingSourceData();
     }
     data.modal = !data.modal;
   };
@@ -206,16 +209,49 @@ export const usePaymentVoucher = (): any => {
     );
   };
 
-  const getFinancialYearData = () => {
-    getFinancialYear({ per_page: 10 }).then((response: AxiosResponse) => {
-      data.financialYears = response.data.data.data;
+  const getActivityData = () => {
+    getActivity({ per_page: 10 }).then((response: AxiosResponse) => {
+      data.activities = response.data.data.data;
     });
   };
 
-  const getBankAccountData = () => {
-    getBankAccount({ per_page: 10 }).then((response: AxiosResponse) => {
-      data.bankAccounts = response.data.data.data;
+  const searchActivities = (item: string) => {
+    const regSearchTerm = item ? item : data.searchTerm;
+    getActivity({ per_page: 10, regSearch: regSearchTerm }).then(
+      (response: AxiosResponse) => {
+        data.activities = response.data.data.data;
+      }
+    );
+  };
+
+  const getGfsCodeData = () => {
+    getGfsCode({ per_page: 10 }).then((response: AxiosResponse) => {
+      data.gfsCodes = response.data.data.data;
     });
+  };
+
+  const searchGfsCodes = (item: string) => {
+    const regSearchTerm = item ? item : data.searchTerm;
+    getActivity({ per_page: 10, regSearch: regSearchTerm }).then(
+      (response: AxiosResponse) => {
+        data.gfsCodes = response.data.data.data;
+      }
+    );
+  };
+
+  const getFundingSourceData = () => {
+    getGfsCode({ per_page: 10 }).then((response: AxiosResponse) => {
+      data.fundingSources = response.data.data.data;
+    });
+  };
+
+  const searchFundingSource = (item: string) => {
+    const regSearchTerm = item ? item : data.searchTerm;
+    getActivity({ per_page: 10, regSearch: regSearchTerm }).then(
+      (response: AxiosResponse) => {
+        data.fundingSources = response.data.data.data;
+      }
+    );
   };
 
   const addPayable = () => {
@@ -240,5 +276,8 @@ export const usePaymentVoucher = (): any => {
     searchSuppliers,
     addPayable,
     removePayable,
+    searchActivities,
+    searchGfsCodes,
+    searchFundingSource,
   };
 };

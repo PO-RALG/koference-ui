@@ -121,6 +121,8 @@
                                 label="Select Activity"
                                 required
                               >
+                                <template v-slot:selection="{ item }"> {{ item.description }} ({{ item.sub_budget_class.description }})  </template>
+                                <template v-slot:item="{ item }"> {{ item.description }} ({{ item.sub_budget_class.description }})  </template>
                                 <template v-slot:prepend-item>
                                   <v-list-item>
                                     <v-list-item-content>
@@ -161,7 +163,7 @@
                             <v-col md="4" sm="12">
                               <v-select
                                 v-model="item.funding_source_id"
-                                :items="data.fundingSource"
+                                :items="data.fundingSources"
                                 item-value="id"
                                 item-text="name"
                                 label="Select Funding Sources"
@@ -274,6 +276,9 @@ export default defineComponent({
       searchSuppliers,
       addPayable,
       removePayable,
+      searchActivities,
+      searchGfsCodes,
+      searchFundingSource,
     } = usePaymentVoucher();
 
     return {
@@ -290,6 +295,9 @@ export default defineComponent({
       searchSuppliers,
       addPayable,
       removePayable,
+      searchActivities,
+      searchGfsCodes,
+      searchFundingSource,
     };
   },
 });
