@@ -209,7 +209,7 @@ export const useUser = (): any => {
   const loadFacilities = () => {
     const isFacilityUser = !!data.isFacilityUser;
     data.isFacilityUser = isFacilityUser;
-    getFacilities({ regsearch: { location_id: data.location["id"] } }).then((response: AxiosResponse) => {
+    getFacilities({ search: { location_id: data.location["id"] } }).then((response: AxiosResponse) => {
       data.facilities = response.data.data.data;
     });
   };
