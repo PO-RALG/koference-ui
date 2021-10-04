@@ -3,12 +3,17 @@ import router from "@/router";
 const state = {
   currentUser: JSON.parse(localStorage.getItem("FFARS_USER")),
   loginError: {},
+  app: JSON.parse(localStorage.getItem("FFARS_APP")),
   loginStatus: JSON.parse(localStorage.getItem("FFARS_LOGIN_STATUS")),
 };
 
 const getters = {
   getCurrentUser: (state) => {
     return state.currentUser;
+  },
+
+  getSiteName: (state) => {
+    return state.app;
   },
 
   getLoginStatus: (state) =>{
@@ -25,6 +30,10 @@ const actions = {
     commit("LOG_OUT");
   },
 
+  async APP_NAME({commit }, payload) {
+    commit("SET_APP_NAME", payload);
+  },
+
   async LOGIN({ commit }, payload: any) {
     commit("AUTHENTICATE", payload);
   },
@@ -37,6 +46,12 @@ const mutations = {
     state.loginStatus = loginStatus;
     localStorage.setItem("FFARS_USER", payload);
     localStorage.setItem("FFARS_LOGIN_STATUS", JSON.stringify(loginStatus));
+  },
+
+  SET_APP_NAME(state, payload) {
+    const app = { name: payload };
+    state.app = app;
+    localStorage.setItem("FFARS_APP", JSON.stringify(app));
   },
 
   LOG_OUT(state) {
