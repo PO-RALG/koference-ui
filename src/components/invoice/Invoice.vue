@@ -363,21 +363,19 @@
                         v-model="item.amount"
                       ></v-text-field>
                     </td>
+                    <td>
+                      <v-text-field
+                        :hide-details="true"
+                        type="number"
+                        disabled
+                        flat
+                        reverse
+                        :value="item.amount - item.received_amount"
+                      ></v-text-field>
+                    </td>
                   </tr>
                 </template>
-                <template v-slot:[`item.icon`]="{ item }">
-                  <v-icon class="mr-2">{{ item.icon }}</v-icon>
-                </template>
               </v-data-table>
-
-              <tr class="total">
-                <td colspan="3"></td>
-                <td>
-                  <strong> Total:{{ data.invoicedata.amount }} </strong>
-                  <v-icon small>mdi-slash-forward</v-icon>
-                  <v-icon small class="">mdi-equal</v-icon>
-                </td>
-              </tr>
             </table>
           </div>
         </ModalBody>

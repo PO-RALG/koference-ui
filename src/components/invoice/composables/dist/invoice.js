@@ -50,7 +50,14 @@ exports.useInvoice = function () {
         },
         {
             text: "Received Amount",
-            align: "start",
+            align: "end",
+            sortable: false,
+            value: "amount",
+            width: "15%"
+        },
+        {
+            text: "Balance ",
+            align: "end",
             sortable: false,
             value: "amount",
             width: "15%"
