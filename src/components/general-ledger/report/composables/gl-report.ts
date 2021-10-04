@@ -1,5 +1,7 @@
-import { AxiosResponse } from "axios";
 import { reactive, onMounted, set, ref, computed } from "@vue/composition-api";
+import { AxiosResponse } from "axios";
+
+import store from "@/store";
 import { get } from "../services/gl-report-services";
 
 export const useGLReport = (): any => {
@@ -10,6 +12,13 @@ export const useGLReport = (): any => {
     title: "General Ledger Report",
     facility: null,
   });
+
+  const openPrintDialog = () => {
+    store.dispatch("Drawer/CLOSE");
+    setTimeout(function () {
+      window.print();
+    }, 0);
+  };
 
   onMounted(() => {
     init();
@@ -35,5 +44,6 @@ export const useGLReport = (): any => {
     data,
     facility,
     dTable,
+    openPrintDialog,
   };
 };

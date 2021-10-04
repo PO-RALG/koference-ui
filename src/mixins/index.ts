@@ -29,5 +29,10 @@ Vue.mixin({
         return !result;
       }
     },
+
+    isDemo(): boolean {
+      const site = store.getters["Auth/getSiteName"];
+      return site.name === "demo" ? true : false;
+    },
   },
 });

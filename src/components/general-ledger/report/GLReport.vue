@@ -2,9 +2,16 @@
   <div>
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
+      <v-spacer></v-spacer>
+      <v-btn class="print-button d-print-none" @click="openPrintDialog">
+        <v-icon class="pr-4 print-icon">mdi-printer</v-icon>
+        <v-divider :vertical="true"></v-divider>
+        <span class="pr-1 pl-2">Print</span>
+      </v-btn>
     </v-card-actions>
+
     <v-card>
-      <!--<AppLocationHeader :facility="facility" v-if="facility" />-->
+      <AppLocationHeader :facility="facility" v-if="facility" />
       <v-simple-table>
         <template v-slot:default>
           <thead>
@@ -56,8 +63,8 @@ import { useGLReport } from "./composables/gl-report";
 
 export default defineComponent({
   setup() {
-    const { data, facility } = useGLReport();
-    return { data, facility };
+    const { data, facility, openPrintDialog } = useGLReport();
+    return { data, facility, openPrintDialog };
   },
 });
 </script>
@@ -87,5 +94,10 @@ th.account-th {
 .total_dr {
   border-top: 2px solid #000;
   border-bottom: 5px double #000 !important;
+}
+.print-button {
+  span {
+    font-weight: bold;
+  }
 }
 </style>
