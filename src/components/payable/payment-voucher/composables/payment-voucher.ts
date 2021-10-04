@@ -6,6 +6,7 @@ import { PaymentVoucher } from "../types/PaymentVoucher";
 import { get as getSupplier } from "@/components/payable/supplier/services/supplier.service"
 import { get as getActivity } from "@/components/planning/activity/services/activity.service"
 import { get as getGfsCode } from "@/components/coa/gfs-code/service/gfs.service"
+import { get as getFundingSource } from "@/components/coa/funding-source/services/funding-sources"
 
 export const usePaymentVoucher = (): any => {
   const dataItems: Array<PaymentVoucher> = [];
@@ -164,16 +165,12 @@ export const usePaymentVoucher = (): any => {
       data.searchTerm = "",
       getSupplierData();
       getActivityData();
-      getGfsCodeData();
-      getFundingSourceData();
     } else {
       data.formData = {} as PaymentVoucher;
       data.modalTitle = "Create";
       data.searchTerm = "",
       getSupplierData();
       getActivityData();
-      getGfsCodeData();
-      getFundingSourceData();
     }
     data.modal = !data.modal;
   };
@@ -247,7 +244,8 @@ export const usePaymentVoucher = (): any => {
 
   const searchFundingSource = (item: string) => {
     const regSearchTerm = item ? item : data.searchTerm;
-    getActivity({ per_page: 10, regSearch: regSearchTerm }).then(
+    console.log(regSearchTerm);
+    getFundingSource({ per_page: 10, activity_id: regSearchTerm }).then(
       (response: AxiosResponse) => {
         data.fundingSources = response.data.data.data;
       }

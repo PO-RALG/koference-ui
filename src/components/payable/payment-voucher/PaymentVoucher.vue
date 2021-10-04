@@ -112,13 +112,14 @@
                       >
                         <td>
                           <v-row>
-                            <v-col md="4" sm="12">
+                            <v-col md="6" sm="12">
                               <v-select
                                 v-model="item.activity_id"
                                 :items="data.activities"
                                 item-value="id"
                                 item-text="name"
                                 label="Select Activity"
+                                @change="searchFundingSource($event)"
                                 required
                               >
                                 <template v-slot:selection="{ item }"> {{ item.description }} ({{ item.sub_budget_class.description }})  </template>
@@ -137,36 +138,14 @@
                                 </template>
                               </v-select>
                             </v-col>
-                            <v-col md="4" sm="12">
-                              <v-select
-                                v-model="item.gfs_code_id"
-                                :items="data.gfsCodes"
-                                item-value="id"
-                                item-text="name"
-                                label="Select GFS Code"
-                                required
-                              >
-                                <template v-slot:prepend-item>
-                                  <v-list-item>
-                                    <v-list-item-content>
-                                      <v-text-field
-                                        v-model="data.searchTerm"
-                                        placeholder="Search"
-                                        @input="searchGfsCodes"
-                                      ></v-text-field>
-                                    </v-list-item-content>
-                                  </v-list-item>
-                                  <v-divider></v-divider>
-                                </template>
-                              </v-select>
-                            </v-col>
-                            <v-col md="4" sm="12">
+                            <v-col md="6" sm="12">
                               <v-select
                                 v-model="item.funding_source_id"
                                 :items="data.fundingSources"
                                 item-value="id"
-                                item-text="name"
+                                item-text="code"
                                 label="Select Funding Sources"
+                                @change="searchGfsCodes($event)"
                                 required
                               >
                                 <template v-slot:prepend-item>
@@ -185,11 +164,11 @@
                             </v-col>
                             <v-col md="6" sm="12">
                               <v-select
-                                v-model="item.gl_account_id"
-                                :items="data.glAccount"
+                                v-model="item.gfs_code_id"
+                                :items="data.gfsCodes"
                                 item-value="id"
                                 item-text="name"
-                                label="Select Expenditure Type"
+                                label="Select GFS Code"
                                 required
                               >
                                 <template v-slot:prepend-item>
@@ -198,7 +177,7 @@
                                       <v-text-field
                                         v-model="data.searchTerm"
                                         placeholder="Search"
-                                        @input="searchGlAccount"
+                                        @input="searchGfsCodes"
                                       ></v-text-field>
                                     </v-list-item-content>
                                   </v-list-item>
