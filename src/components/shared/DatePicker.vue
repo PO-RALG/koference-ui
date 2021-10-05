@@ -2,7 +2,7 @@
   <v-layout row wrap>
     <v-menu
       v-model="data.showMenu"
-      :close-on-content-click="false"
+      :close-on-content-click="true"
       :nudge-right="40"
       transition="scale-transition"
       offset-y
