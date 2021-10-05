@@ -2,7 +2,7 @@
   <v-layout row wrap>
     <v-menu
       v-model="data.showMenu"
-      :close-on-content-click="true"
+      :close-on-content-click="false"
       :nudge-right="40"
       transition="scale-transition"
       offset-y
@@ -17,7 +17,8 @@
           :value="value"
           :error-messages="errors"
           v-bind="attrs"
-          v-on="on">
+          v-on="on"
+        >
         </v-text-field>
       </template>
       <v-date-picker
@@ -37,12 +38,12 @@
 import { defineComponent, reactive } from "@vue/composition-api";
 export default defineComponent({
   props: {
-    value:{
-      required: false
+    value: {
+      required: false,
     },
-    label:{
+    label: {
       type: String,
-      required: false
+      required: false,
     },
     max: {
       required: false,
@@ -61,14 +62,14 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const data = reactive({
-      showMenu: false
+      showMenu: false,
     });
 
-    const input = (event) =>  {
+    const input = (event) => {
       emit("input", event);
     };
 
-    const dateSelected = (date) =>  {
+    const dateSelected = (date) => {
       emit("dateSelectionEvent", date);
     };
 
@@ -76,7 +77,7 @@ export default defineComponent({
       data,
       input,
       dateSelected,
-    }
+    };
   },
 });
 </script>
