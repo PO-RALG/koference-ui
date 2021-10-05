@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { reactive, onMounted } from "@vue/composition-api";
-import { create } from "@/components/payable/fund-allocation/services/fund-allocation.service";
+import { create, getBudget } from "@/components/payable/fund-allocation/services/fund-allocation.service";
 import { Budget } from "@/components/payable/fund-allocation/types/FundAllocation"
 import { get as getFundingSource } from "@/components/coa/funding-source/services/funding-sources"
 
@@ -48,8 +48,11 @@ export const useFundAllocation = (): any =>{
     });
   };
 
-  const searchBudgets = (id:string) => {
-    if (id != null) {
+  const searchBudgets = (code:string) => {
+    getBudget({ per_page: 10, fund_code: code }).then((response: AxiosResponse) => {
+      data.items = response.data.data;
+    });
+    if (code != null) {
       let fundbudgetData = {
         "data":{
             "funding_source_id": "24",
@@ -329,7 +332,7 @@ export const useFundAllocation = (): any =>{
         "status":200
       };
 
-      data.items = fundbudgetData.data;
+      // data.items = fundbudgetData.data;
       data.itemUnallocated = unallocatedData.data;
       data.allocated = data.itemUnallocated.allocated;
       data.running_balance = data.itemUnallocated.total - data.allocated;

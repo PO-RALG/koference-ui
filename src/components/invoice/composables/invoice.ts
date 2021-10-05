@@ -26,6 +26,7 @@ export const useInvoice = (): any => {
       value: "invoice_number",
       width: "30%",
     },
+
     {
       text: "Amount",
       align: "start",
@@ -34,25 +35,35 @@ export const useInvoice = (): any => {
       width: "15%",
     },
     {
-      text: "Amount Received",
-      align: "start",
-      sortable: false,
-      value: "amount_received",
-      width: "17%",
-    },
-    {
-      text: "Amount Pending",
-      align: "start",
-      sortable: false,
-      value: "amount_pending",
-      width: "15%",
-    },
-    {
       text: "",
       align: "center",
       sortable: false,
       value: "amount_pending",
       width: "13%",
+    },
+  ];
+  const HEADERS_INVOICE_DETAILS = [
+    {
+      text: "Item",
+      align: "start",
+      sortable: false,
+      value: "invoice_number",
+      width: "30%",
+    },
+
+    {
+      text: "Amount",
+      align: "start",
+      sortable: false,
+      value: "amount",
+      width: "15%",
+    },
+    {
+      text: "Received Amount",
+      align: "start",
+      sortable: false,
+      value: "amount",
+      width: "15%",
     },
   ];
   const RECEIPTHEADERS = [
@@ -378,5 +389,6 @@ export const useInvoice = (): any => {
     HEADERS,
     RECEIPTHEADERS,
     bankName,
+    HEADERS_INVOICE_DETAILS,
   };
 };

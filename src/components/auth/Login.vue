@@ -1,7 +1,7 @@
 <template>
   <v-app justify-center class="grey lighten-3 pa-2 text-center main-body" fluid fill-height>
     <v-layout justify-center align-center class="body_bg">
-      <v-content align="center" justify="center">
+      <v-main align="center" justify="center">
         <v-row align="center" justify="center">
           <v-col cols="8" sm="8" md="7">
             <v-card height="fit" class="elevation-5">
@@ -39,6 +39,7 @@
                       You must be logged in to access {{ $route.query.redirect }}
                     </v-alert>
                     <h2 class="text-center pa-6 login-header" color="primary">LOGIN to your account</h2>
+                    <h4 class="siteName pa-0 pb-4" v-if="isDemo()">({{ data.siteName }})</h4>
                     <v-form ref="form" v-model="data.valid">
                       <v-text-field
                         prepend-inner-icon="mdi-account-box"
@@ -75,15 +76,15 @@
             </v-card>
           </v-col>
         </v-row>
-      </v-content>
+      </v-main>
     </v-layout>
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { reactive } from "@vue/composition-api";
-import { authenticate, setUser } from "./services";
+import { reactive, onMounted } from "@vue/composition-api";
+import { authenticate, setUser, getAppName, setAppName } from "./services";
 import { AxiosResponse } from "axios";
 import router from "@/router";
 
@@ -93,6 +94,7 @@ export default Vue.extend({
     const query = props.query;
     let data = reactive({
       model: 0,
+      siteName:"",
       valid: true,
       errorMessage: "",
       loading: false,
@@ -107,6 +109,13 @@ export default Vue.extend({
       ],
       password: "",
       passwordRules: [(v: any) => !!v || "Password is required"],
+    });
+
+    onMounted(() => {
+      getAppName().then((response) => {
+        setAppName(response.data.data);
+        data.siteName = response.data.data;
+      });
     });
 
     const login = () => {
@@ -180,5 +189,10 @@ export default Vue.extend({
 }
 .v-sheet {
   padding: 10px;
+}
+h4.siteName {
+  text-transform: uppercase;
+  color: red;
+  font-weight: bold;
 }
 </style>

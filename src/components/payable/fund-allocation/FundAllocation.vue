@@ -9,11 +9,11 @@
         <v-card-title>
           <v-col cols="12" sm="12" md="3" class="pa-0">
             <v-select
-              v-model="data.funding_source_id"
+              v-model="data.code"
               :items="data.fundingSources"
-              item-value="id"
+              item-value="code"
               label="Funding source"
-              @change="searchBudgets(data.funding_source_id)"
+              @change="searchBudgets(data.code)"
             >
               <template v-slot:selection="{ item }">
                 {{ item.code }} - {{ item.description }}
@@ -35,19 +35,19 @@
               </template>
             </v-select>
           </v-col>
-          <v-col cols="6" sm="12" md="1" v-if="data.items.lines.length">
+          <v-col cols="6" sm="12" md="1" v-if="data.items.length">
             <v-text-field v-model="data.itemUnallocated.carryover" label="Carryover Fund" disabled></v-text-field>
           </v-col>
-          <v-col cols="6" sm="12" md="2" v-if="data.items.lines.length">
+          <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field v-model="data.itemUnallocated.current" label="Current Fund" disabled></v-text-field>
           </v-col>
-          <v-col cols="6" sm="12" md="2" v-if="data.items.lines.length">
+          <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field v-model="data.itemUnallocated.total" label="Total Fund" disabled></v-text-field>
           </v-col>
-          <v-col cols="6" sm="12" md="2" v-if="data.items.lines.length">
+          <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field v-model="data.allocated" label="Total Allocated" disabled></v-text-field>
           </v-col>
-          <v-col cols="6" sm="12" md="2" v-if="data.items.lines.length">
+          <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field v-model="data.running_balance" label="Unallocated Amount" disabled>
               <v-icon v-if="data.running_balance > 0" slot="append" color="green">mdi-check</v-icon>
               <v-icon v-if="data.running_balance < 0" slot="append" color="red">mdi-close</v-icon>
@@ -55,7 +55,7 @@
           </v-col>
         </v-card-title>
         <v-card-text>
-          <template v-if="data.items.lines.length">
+          <template v-if="data.items.length">
             <v-simple-table>
               <template v-slot:default>
                 <thead>
@@ -82,15 +82,15 @@
                 </thead>
                 <tbody>
                   <tr
-                    v-for="(item, i) in data.items.lines"
+                    v-for="(item, i) in data.items"
                     :key="i.id"
                   >
                     <td>
-                      {{item.gl}} <br>
-                      <span style="color:teal">{{item.activity}}({{ item.budget_category }})</span> <br>
-                      {{item.gfs}} <br>
+                      {{item.code}} <br>
+                      <span style="color:teal">{{item.activity.description}}</span> <br>
+                      {{item.gfsCode.name}} <br>
                     </td>
-                    <td>{{item.amount}}</td>
+                    <td>{{item.budget}}</td>
                     <td>{{item.total_allocated}}</td>
                     <td>{{item.expenditure}}</td>
                     <td>{{item.total_allocated - item.expenditure}}</td>
@@ -104,7 +104,7 @@
           </template>
           
         </v-card-text>
-        <v-card-actions v-if="data.items.lines.length" class="pa-4">
+        <v-card-actions v-if="data.items.length" class="pa-4">
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="save">
             save

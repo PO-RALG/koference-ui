@@ -23,4 +23,23 @@ const setLoginError = async () => {
   store.dispatch["Auth/AUTHENTICATE"];
 };
 
-export { authenticate, setUser, setLoginError };
+const setAppName = (payload: string) => {
+  store.dispatch("Auth/APP_NAME", payload);
+}
+
+const getAppName = async () => {
+  return axios.get("/api/v1/app-name");
+}
+
+const getAppRoutes = async () => {
+  return axios.get("/api/v1/app-routes");
+}
+
+export {
+  authenticate,
+  setUser,
+  setLoginError,
+  getAppName,
+  getAppRoutes,
+  setAppName
+};
