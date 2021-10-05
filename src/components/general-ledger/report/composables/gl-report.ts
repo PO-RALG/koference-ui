@@ -68,7 +68,6 @@ export const useGLReport = (): any => {
         data.facility = response.data.data.facility;
         data.entries = response.data.data.data;
       });
-
     } else {
       get().then((response: AxiosResponse) => {
         data.facility = response.data.data.facility;
@@ -80,13 +79,27 @@ export const useGLReport = (): any => {
       data.financialYears = response.data.data.data;
     });
 
-    getGfsCodes({}).then((response) => {
+    const gfsParams = {
+      asc: "code",
+    };
+
+    getGfsCodes(gfsParams).then((response) => {
       data.gfsCodes = response.data.data.data;
     });
   };
 
   const facility = computed(() => {
     return data.facility;
+  });
+
+  const gfsCodes = computed(() => {
+    return data.gfsCodes.map((gfs) => {
+      return {
+        id: gfs.id,
+        name: `(${gfs.code}) - ${gfs.name}`,
+        code: gfs.code,
+      };
+    })
   });
 
   const validateDate = () => {
@@ -97,10 +110,10 @@ export const useGLReport = (): any => {
     const fyStartDate = moment(params.financial_year.start_date).format("YYYY-MM-DD");
     const fyEndDate = moment(params.financial_year.end_date).format("YYYY-MM-DD");
 
-    data.maxDate = moment(fyEndDate).isBefore(moment(data.currentDate))? fyEndDate : data.currentDate; 
+    data.maxDate = moment(fyEndDate).isBefore(moment(data.currentDate)) ? fyEndDate : data.currentDate;
     data.minDate = fyStartDate;
     data.showDateSelection = true;
-  }
+  };
 
   const dateSelected = (date) => {
     //console.log("date selected composables", date)
@@ -124,5 +137,6 @@ export const useGLReport = (): any => {
     validateDate,
     dateSelected,
     filterReport,
+    gfsCodes,
   };
 };

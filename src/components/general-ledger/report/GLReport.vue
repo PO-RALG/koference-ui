@@ -114,7 +114,7 @@
             <v-row class="pr-3 pl-3">
               <v-col cols="12" lg="6" md="6" sm="12">
                 <v-select
-                  :items="data.gfsCodes"
+                  :items="gfsCodes"
                   :item-text="'name'"
                   label="From GFS"
                   v-model="params.from_gfs"
@@ -128,7 +128,7 @@
               <v-col cols="12" lg="6" md="6" sm="12">
                 <v-select
                   height="10"
-                  :items="data.gfsCodes"
+                  :items="gfsCodes"
                   label="To GFS"
                   :item-text="'name'"
                   item-value="code"
@@ -173,6 +173,7 @@ export default defineComponent({
       validateDate,
       dateSelected,
       filterReport,
+      gfsCodes,
     } = useGLReport();
 
     return {
@@ -186,6 +187,7 @@ export default defineComponent({
       validateDate,
       dateSelected,
       filterReport,
+      gfsCodes,
     };
   },
 });
