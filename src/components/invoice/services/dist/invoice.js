@@ -54,7 +54,8 @@ var search = function (payload) { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoices/", {
                     params: {
-                        search: JSON.stringify(payload)
+                        search: JSON.stringify(payload),
+                        pending: true
                     }
                 })];
             case 1: return [2 /*return*/, _a.sent()];

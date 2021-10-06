@@ -338,6 +338,8 @@
                         :hide-details="true"
                         disabled
                         flat
+                        filled
+                        dense
                         v-model="item.definition.name"
                       >
                       </v-text-field>
@@ -349,6 +351,8 @@
                         :hide-details="true"
                         disabled
                         flat
+                        filled
+                        dense
                         v-model="item.received_amount"
                       >
                       </v-text-field>
@@ -359,7 +363,8 @@
                         type="number"
                         disabled
                         flat
-                        reverse
+                        filled
+                        dense
                         v-model="item.amount"
                       ></v-text-field>
                     </td>
@@ -369,7 +374,8 @@
                         type="number"
                         disabled
                         flat
-                        reverse
+                        filled
+                        dense
                         :value="item.amount - item.received_amount"
                       ></v-text-field>
                     </td>
@@ -387,13 +393,10 @@
 
     <Modal :modal="data.invoicereceipt" :width="900">
       <template v-slot:header>
-        <ModalHeader :title="`Invoice Receipt`" />
+        <ModalHeader :title="`Create Invoice Receipt`" />
       </template>
       <template v-slot:body>
         <ModalBody>
-          <!-- <pre>
-            {{ data.invoicedata.invoice_items }}
-          </pre> -->
           <v-form>
             <v-container>
               <v-row class="mt-n8 pa-5">
@@ -447,7 +450,7 @@
                   >
                     <template v-slot:body>
                       <tr
-                        v-for="(invoice, index) in data.invoicereceip.items"
+                        v-for="(invoice, index) in newInvoiceItems"
                         :key="index"
                         class="invoice-tr"
                       >
@@ -455,6 +458,8 @@
                           <v-text-field
                             outlined
                             dense
+                            readonly
+                            :filled="invoice.cleared"
                             hide-details
                             v-model="invoice.itemName"
                           ></v-text-field>
@@ -463,6 +468,8 @@
                           <v-text-field
                             outlined
                             dense
+                            readonly
+                            :filled="invoice.cleared"
                             hide-details
                             v-model="invoice.invoicedAmount"
                           ></v-text-field>
@@ -471,14 +478,19 @@
                           <v-text-field
                             outlined
                             dense
+                            readonly
+                            :filled="invoice.cleared"
                             hide-details
                             v-model="invoice.received"
                           ></v-text-field>
                         </td>
                         <td class="invoice-td">
                           <v-text-field
+                            :disabled="invoice.cleared"
+                            :filled="invoice.cleared"
                             outlined
                             dense
+                            type="number"
                             hide-details
                             v-model="invoice.amount"
                             :name="`data.invoice_items[${index}][name]`"
@@ -540,6 +552,7 @@ export default defineComponent({
       RECEIPTHEADERS,
       bankName,
       HEADERS_INVOICE_DETAILS,
+      newInvoiceItems,
     } = useInvoice();
     return {
       data,
@@ -565,6 +578,7 @@ export default defineComponent({
       RECEIPTHEADERS,
       bankName,
       HEADERS_INVOICE_DETAILS,
+      newInvoiceItems,
     };
   },
 });

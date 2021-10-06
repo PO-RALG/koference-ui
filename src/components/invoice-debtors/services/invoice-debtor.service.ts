@@ -5,7 +5,7 @@ const get = async (payload: any) => {
 };
 
 const search = async (payload: any) => {
-  return await axios.get(`/api/v1/invoices/debtors/`, {
+  return await axios.post(`/api/v1/invoices/debtors`, {
     params: {
       search: JSON.stringify(payload),
     },

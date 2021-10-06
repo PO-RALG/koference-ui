@@ -2,38 +2,105 @@ import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
 import { InvoiceDebtor } from "../types/InvoiceDebtor";
+import { Invoice } from "../../invoice/types";
+import { get, search } from "../services/invoice-debtor.service";
 import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-} from "../services/invoice-debtor.service";
+  search as customerInvoices,
+  viewinvoice,
+} from "../../invoice/services/invoice";
 
 export const useInvoiceDebtor = (): any => {
-  const dataItems: Array<InvoiceDebtor> = [];
-  let customerData: InvoiceDebtor;
+  const invoiceDebtorData: Array<InvoiceDebtor> = [];
+  const invoiceData: Array<Invoice> = [];
 
   const data = reactive({
     title: "Manage Invoice Debtors",
     modalTitle: "",
     headers: [
+      { text: "Actions", align: "start", value: "actions", sortable: false },
+
       { text: "Name", align: "start", sortable: false, value: "name" },
       { text: "Email", align: "start", sortable: false, value: "email" },
 
       { text: "Address", align: "start", sortable: false, value: "address" },
       { text: "Phone", align: "start", sortable: false, value: "phone" },
-      { text: "Activation", value: "activations", sortable: false },
-      { text: "Actions", value: "actions", sortable: false },
     ],
-    modal: false,
-    deletemodal: false,
-    items: dataItems,
+
+    HEADERS_INVOICE_DETAILS: [
+      {
+        text: "Item Name",
+        align: "start",
+        sortable: false,
+        value: "invoice_number",
+        width: "30%",
+      },
+
+      {
+        text: "Amount",
+        align: "start",
+        sortable: false,
+        value: "amount",
+        width: "15%",
+      },
+      {
+        text: "Received Amount",
+        align: "start",
+        sortable: false,
+        value: "amount",
+        width: "15%",
+      },
+      {
+        text: "Balance ",
+        align: "start",
+        sortable: false,
+        value: "amount",
+        width: "15%",
+      },
+    ],
+
+    invoice_headers: [
+      {
+        text: "Invoice Number",
+        sortable: false,
+        value: "invoice_number",
+        width: "17%",
+      },
+      { text: "Invoice Date", value: "date", sortable: true },
+      {
+        text: "Description",
+        align: "start",
+        sortable: false,
+        value: "description",
+      },
+      {
+        text: "Amount",
+        align: "start",
+        sortable: false,
+        value: "amount",
+      },
+      {
+        text: "Received Amount",
+        align: "start",
+        sortable: false,
+        value: "received_amount",
+      },
+      {
+        text: "Pending Amount",
+        align: "start",
+        sortable: false,
+        value: "pending",
+      },
+    ],
+
+    viewInvoiceDialog: false,
+    items: invoiceDebtorData,
     itemsToFilter: [],
-    formData: customerData,
     rows: ["10", "20", "50", "100"],
-    itemtodelete: "",
     response: {},
+    invoices: invoiceData,
+    selectedDebtor: {},
+    invoiceData: invoiceData,
+    invoicedetails: false,
   });
 
   onMounted(() => {
@@ -54,9 +121,8 @@ export const useInvoiceDebtor = (): any => {
     console.log("argument", categoryName);
 
     if (categoryName != null) {
-      search({ name: categoryName.name }).then((response: any) => {
-        console.log("response data", response.data.data);
-        data.items = response.data.data;
+      search({ email: categoryName.email }).then((response: any) => {
+        data.items = response.data.data.data;
       });
     } else {
       reloadData();
@@ -72,69 +138,28 @@ export const useInvoiceDebtor = (): any => {
     });
   };
 
-  const deleteCustomer = (deleteId: any) => {
-    data.deletemodal = !data.modal;
-    data.itemtodelete = deleteId;
-    // console.log("delete year", data);
+  const viewInvoice = (debtor: any) => {
+    data.selectedDebtor = debtor;
+    const params = { customer_id: debtor.id };
+    customerInvoices(params).then((response: AxiosResponse) => {
+      if (response.data.status === 200) {
+        data.viewInvoiceDialog = true;
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.invoices = response.data.data.data;
+      }
+    });
   };
-  const getCustomer = () => {
+
+  const getInvoiceDebtor = () => {
     get(data).then((response) => {
       console.log("data", response.data);
     });
   };
 
   const cancelDialog = () => {
-    data.formData = {} as InvoiceDebtor;
-    data.modal = !data.modal;
-  };
-
-  const cancelConfirmDialog = () => {
-    data.formData = {} as InvoiceDebtor;
-    data.deletemodal = false;
-  };
-
-  const remove = () => {
-    console.log("delete data with id", data.itemtodelete);
-    destroy(data.itemtodelete).then(() => {
-      reloadData();
-      data.deletemodal = false;
-    });
-  };
-
-  const save = () => {
-    console.log("Form Data", data.formData);
-    if (data.formData.id) {
-      updatecustomer(data.formData);
-    } else {
-      createCustomer(data.formData);
-    }
-  };
-
-  const openDialog = (formData?: any) => {
-    if (formData.id) {
-      data.formData = formData;
-      data.modalTitle = "Update";
-    } else {
-      data.formData = {} as InvoiceDebtor;
-      data.modalTitle = "Create";
-    }
-    data.modal = !data.modal;
-  };
-
-  const updatecustomer = (data: any) => {
-    update(data).then((response) => {
-      console.log("Updated data", response.data);
-      reloadData();
-      cancelDialog();
-    });
-  };
-
-  const createCustomer = (data: any) => {
-    create(data).then((response) => {
-      console.log("Created data", response.data);
-      reloadData();
-      cancelDialog();
-    });
+    data.viewInvoiceDialog = false;
   };
 
   const getData = (params: any) => {
@@ -145,18 +170,28 @@ export const useInvoiceDebtor = (): any => {
     });
   };
 
+  const previewInvoice = (item: any) => {
+    viewinvoice(item).then((response: AxiosResponse) => {
+      data.invoiceData = response.data.data;
+      data.invoicedetails = true;
+      data.viewInvoiceDialog = false;
+    });
+  };
+
+  const cancelInvoiceDialog = () => {
+    data.invoicedetails = false;
+    data.viewInvoiceDialog = true;
+  };
+
   return {
     data,
     getData,
-    openDialog,
     cancelDialog,
-    deleteCustomer,
-    getCustomer,
-    updatecustomer,
-    save,
+    viewInvoice,
+    getInvoiceDebtor,
     reloadData,
-    remove,
-    cancelConfirmDialog,
     searchCategory,
+    previewInvoice,
+    cancelInvoiceDialog,
   };
 };

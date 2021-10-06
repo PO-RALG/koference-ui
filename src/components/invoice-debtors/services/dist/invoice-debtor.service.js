@@ -50,7 +50,7 @@ exports.get = get;
 var search = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoices/debtors/", {
+            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/invoices/debtors", {
                     params: {
                         search: JSON.stringify(payload)
                     }

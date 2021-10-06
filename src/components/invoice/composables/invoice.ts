@@ -175,6 +175,7 @@ export const useInvoice = (): any => {
     ],
     loading: false,
     coat: "/coat_of_arms.svg.png",
+    toSave: {},
   });
 
   onMounted(() => {
@@ -373,6 +374,15 @@ export const useInvoice = (): any => {
     });
   };
 
+  const newInvoiceItems = computed(() => {
+    if (data.invoicereceip) {
+      return data.invoicereceip.items.map((item) => {
+        item.cleared = item.invoicedAmount == item.received ? true : false;
+        return item;
+      });
+    }
+  });
+
   return {
     data,
     getData,
@@ -397,5 +407,6 @@ export const useInvoice = (): any => {
     RECEIPTHEADERS,
     bankName,
     HEADERS_INVOICE_DETAILS,
+    newInvoiceItems,
   };
 };

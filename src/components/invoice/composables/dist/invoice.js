@@ -161,7 +161,8 @@ exports.useInvoice = function () {
             },
         ],
         loading: false,
-        coat: "/coat_of_arms.svg.png"
+        coat: "/coat_of_arms.svg.png",
+        toSave: {}
     });
     composition_api_1.onMounted(function () {
         data.loading = true;
@@ -332,6 +333,14 @@ exports.useInvoice = function () {
             data.invoicedetails = true;
         });
     };
+    var newInvoiceItems = composition_api_1.computed(function () {
+        if (data.invoicereceip) {
+            return data.invoicereceip.items.map(function (item) {
+                item.cleared = item.invoicedAmount == item.received ? true : false;
+                return item;
+            });
+        }
+    });
     return {
         data: data,
         getData: getData,
@@ -355,6 +364,7 @@ exports.useInvoice = function () {
         HEADERS: HEADERS,
         RECEIPTHEADERS: RECEIPTHEADERS,
         bankName: bankName,
-        HEADERS_INVOICE_DETAILS: HEADERS_INVOICE_DETAILS
+        HEADERS_INVOICE_DETAILS: HEADERS_INVOICE_DETAILS,
+        newInvoiceItems: newInvoiceItems
     };
 };
