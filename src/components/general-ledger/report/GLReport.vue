@@ -2,10 +2,25 @@
   <div>
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
+      <v-spacer></v-spacer>
+      <v-btn class="print-button d-print-none" @click="openPrintDialog">
+        <v-icon class="pr-4 print-icon">mdi-printer</v-icon>
+        <v-divider :vertical="true"></v-divider>
+        <span class="pr-1 pl-2">Print</span>
+      </v-btn>
     </v-card-actions>
     <v-card>
-      <!--<AppLocationHeader :facility="facility" v-if="facility" />-->
+      <AppLocationHeader :facility="facility" v-if="facility" />
       <v-simple-table>
+        <template v-slot:top>
+          <v-card-actions class="d-print-none">
+            <v-spacer></v-spacer>
+            <v-btn color="primary" @click="openDialog">
+              <v-icon>mdi-filter</v-icon>
+              Filter Report
+            </v-btn>
+          </v-card-actions>
+        </template>
         <template v-slot:default>
           <thead>
             <tr class="top-tr">
@@ -47,6 +62,97 @@
         </template>
       </v-simple-table>
     </v-card>
+
+    <Modal :modal="data.modal" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="'Filter Report'" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-container fluid>
+            <v-row>
+              <v-col cols="12" lg="12" md="12" sm="12" class="mt-5">
+                <v-select
+                  class="pr-3 pl-3"
+                  :items="data.financialYears"
+                  :item-text="'name'"
+                  return-object
+                  height="10"
+                  v-model="params.financial_year"
+                  @change="showDateSelection()"
+                  label="Financial Year"
+                  outlined
+                >
+                </v-select>
+              </v-col>
+            </v-row>
+
+            <v-row class="pr-5 pl-5 mt-n8" v-if="data.showDateSelection">
+              <v-col cols="12" lg="6" md="6" sm="12">
+                <DatePicker
+                  :label="'Start Date'"
+                  v-model="params.start_date"
+                  :min="data.minDate"
+                  :max="data.maxDate"
+                  @click="validateDate"
+                  @dateSelectionEvent="dateSelected"
+                />
+              </v-col>
+
+              <v-col cols="12" lg="6" md="6" sm="12">
+                <DatePicker
+                  :label="'End Date'"
+                  v-model="params.end_date"
+                  :min="data.minDate"
+                  :max="data.maxDate"
+                  @click="validateDate"
+                  @dateSelectionEvent="dateSelected"
+                />
+              </v-col>
+            </v-row>
+
+            <v-row class="pr-3 pl-3">
+              <v-col cols="12" lg="6" md="6" sm="12">
+                <v-select
+                  :items="gfsCodes"
+                  :item-text="'name'"
+                  label="From GFS"
+                  v-model="params.from_gfs"
+                  item-value="code"
+                  height="10"
+                  outlined
+                >
+                </v-select>
+              </v-col>
+
+              <v-col cols="12" lg="6" md="6" sm="12">
+                <v-select
+                  height="10"
+                  :items="gfsCodes"
+                  label="To GFS"
+                  :item-text="'name'"
+                  item-value="code"
+                  v-model="params.to_gfs"
+                  outlined
+                >
+                </v-select>
+              </v-col>
+            </v-row>
+            <v-row class="pr-5 pl-3 mt-n8">
+              <v-col cols="12" lg="12" md="12" sm="12">
+                <v-btn color="primary" height="50" @click="filterReport">
+                  <v-icon>mdi-filter</v-icon>
+                  Filter
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter></ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -56,8 +162,33 @@ import { useGLReport } from "./composables/gl-report";
 
 export default defineComponent({
   setup() {
-    const { data, facility } = useGLReport();
-    return { data, facility };
+    const {
+      data,
+      facility,
+      openPrintDialog,
+      params,
+      showDateSelection,
+      openDialog,
+      closeDialog,
+      validateDate,
+      dateSelected,
+      filterReport,
+      gfsCodes,
+    } = useGLReport();
+
+    return {
+      data,
+      facility,
+      openPrintDialog,
+      params,
+      showDateSelection,
+      openDialog,
+      closeDialog,
+      validateDate,
+      dateSelected,
+      filterReport,
+      gfsCodes,
+    };
   },
 });
 </script>
@@ -87,5 +218,17 @@ th.account-th {
 .total_dr {
   border-top: 2px solid #000;
   border-bottom: 5px double #000 !important;
+}
+.print-button {
+  span {
+    font-weight: bold;
+  }
+}
+
+.v-label {
+  font-size: 10px;
+}
+.filter-container {
+  border: 1px dashed #ccc;
 }
 </style>

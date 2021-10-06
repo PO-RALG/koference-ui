@@ -79,3 +79,11 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+@media print {
+  #content {
+    padding: 0 !important;
+  }
+}
+</style>
