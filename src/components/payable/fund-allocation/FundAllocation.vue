@@ -9,11 +9,9 @@
         <v-card-title>
           <v-col cols="12" sm="12" md="3" class="pa-0">
             <v-select
-              v-model="data.code"
               :items="data.fundingSources"
-              item-value="code"
               label="Funding source"
-              @change="searchBudgets(data.code)"
+              @change="searchBudgets($event)"
             >
               <template v-slot:selection="{ item }">
                 {{ item.code }} - {{ item.description }}
@@ -42,7 +40,7 @@
             <v-text-field v-model="data.itemUnallocated.current" label="Current Fund" disabled></v-text-field>
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
-            <v-text-field v-model="data.itemUnallocated.total" label="Total Fund" disabled></v-text-field>
+            <v-text-field v-model="data.itemUnallocated.totalFund" label="Total Fund" disabled></v-text-field>
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field v-model="data.allocated" label="Total Allocated" disabled></v-text-field>
@@ -91,9 +89,9 @@
                       {{item.gfsCode.name}} <br>
                     </td>
                     <td>{{item.budget}}</td>
-                    <td>{{item.total_allocated}}</td>
-                    <td>{{item.expenditure}}</td>
-                    <td>{{item.total_allocated - item.expenditure}}</td>
+                    <td>{{item.allocation}}</td>
+                    <td>{{item.totalExpenditure}}</td>
+                    <td>{{item.allocation - item.totalExpenditure}}</td>
                     <td>
                       <v-text-field v-model="item.allocation_amount" @input="newAllocation(item.allocation_amount)" type="number"></v-text-field>
                     </td>
@@ -104,9 +102,9 @@
           </template>
           
         </v-card-text>
-        <v-card-actions v-if="data.items.length" class="pa-4">
+        <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="save">
+          <v-btn color="primary" @click="save" v-if="data.items.length && data.running_balance > 0">
             save
           </v-btn>
         </v-card-actions>

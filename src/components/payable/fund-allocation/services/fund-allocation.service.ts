@@ -8,6 +8,10 @@ const getBudget = async (params: any) => {
   return await axios.get("/api/v1/filter-budgets",  {params});
 };
 
+const statistic = async (id: any) => {
+  return await axios.get(`/api/v1/funds/${id}/statistics`);
+};
+
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/fund-allocations/`, {
     params: {
@@ -21,7 +25,7 @@ const find = async (id: string | number) => {
 };
 
 const create = async (payload: any) => {
-  return await axios.post(`/api/v1/fund-allocations`, payload);
+  return await axios.post(`/api/v1/allocation-groups`, payload);
 };
 
 const update = async (payload: any) => {
@@ -31,4 +35,4 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/fund-allocations/` + payload);
 };
 
-export { get, find, create, update, destroy, search, getBudget };
+export { get, find, create, update, destroy, search, getBudget, statistic };
