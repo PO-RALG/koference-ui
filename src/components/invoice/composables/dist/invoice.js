@@ -52,14 +52,14 @@ exports.useInvoice = function () {
             text: "Received Amount",
             align: "end",
             sortable: false,
-            value: "amount",
+            value: "received_amount",
             width: "15%"
         },
         {
-            text: "Balance ",
+            text: "Pending Amount ",
             align: "end",
             sortable: false,
-            value: "amount",
+            value: "balance_amount",
             width: "15%"
         },
     ];
@@ -120,6 +120,12 @@ exports.useInvoice = function () {
                 value: "customer.name"
             },
             {
+                text: "Description",
+                align: "start",
+                sortable: false,
+                value: "description"
+            },
+            {
                 text: "Ammount",
                 align: "start",
                 sortable: false,
@@ -132,10 +138,10 @@ exports.useInvoice = function () {
                 value: "received_amount"
             },
             {
-                text: "Description",
+                text: "Pending Amount",
                 align: "start",
                 sortable: false,
-                value: "description"
+                value: "pending"
             },
         ],
         modal: false,

@@ -37,12 +37,21 @@
           </v-card-title>
         </template>
         <template v-slot:[`item.date`]="{ item }">
-          <v-list-item exact light>{{ item.date | format() }}</v-list-item>
+          {{ item.date | format() }}
+        </template>
+        <template v-slot:[`item.amount`]="{ item }">
+          {{ item.amount | toCurrency() }}
+        </template>
+        <template v-slot:[`item.received_amount`]="{ item }">
+          {{ item.received_amount | toCurrency() }}
         </template>
         <template v-slot:[`item.invoice_number`]="{ item }">
           <v-list-item exact light @click="previewInvoice(item)">{{
             item.invoice_number
           }}</v-list-item>
+        </template>
+        <template v-slot:[`item.pending`]="{ item }">
+          {{ (item.amount - item.received_amount) | toCurrency() }}
         </template>
 
         <template v-slot:footer>
@@ -187,6 +196,7 @@
       <template v-slot:header>
         <ModalHeader :title="`Cancel Invoice `" />
       </template>
+
       <template v-slot:body>
         <ModalBody> Are you sure you want to cancel this invoice? </ModalBody>
       </template>
@@ -346,14 +356,13 @@
                     </td>
 
                     <td class="invoice-td">
-                      <!-- {{ item }} -->
                       <v-text-field
                         :hide-details="true"
                         disabled
                         flat
                         filled
                         dense
-                        v-model="item.received_amount"
+                        v-model="item.amount"
                       >
                       </v-text-field>
                     </td>
@@ -365,7 +374,7 @@
                         flat
                         filled
                         dense
-                        v-model="item.amount"
+                        :value="item.received_amount"
                       ></v-text-field>
                     </td>
                     <td>

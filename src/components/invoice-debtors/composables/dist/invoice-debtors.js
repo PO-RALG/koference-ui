@@ -27,21 +27,21 @@ exports.useInvoiceDebtor = function () {
             },
             {
                 text: "Amount",
-                align: "start",
+                align: "end",
                 sortable: false,
                 value: "amount",
                 width: "15%"
             },
             {
                 text: "Received Amount",
-                align: "start",
+                align: "end",
                 sortable: false,
                 value: "amount",
                 width: "15%"
             },
             {
-                text: "Balance ",
-                align: "start",
+                text: "Pending Amount ",
+                align: "end",
                 sortable: false,
                 value: "amount",
                 width: "15%"

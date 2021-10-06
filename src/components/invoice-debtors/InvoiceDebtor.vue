@@ -73,12 +73,16 @@
               }}</v-list-item>
             </template>
             <template v-slot:[`item.date`]="{ item }">
-              <v-list-item exact light>{{ item.date | format() }}</v-list-item>
+              {{ item.date | format() }}
+            </template>
+            <template v-slot:[`item.amount`]="{ item }">
+              {{ item.amount | toCurrency() }}
             </template>
             <template v-slot:[`item.pending`]="{ item }">
-              <v-list-item exact light>{{
-                item.amount - item.received_amount
-              }}</v-list-item>
+              {{ (item.amount - item.received_amount) | toCurrency() }}
+            </template>
+            <template v-slot:[`item.received_amount`]="{ item }">
+              {{ item.received_amount | toCurrency() }}
             </template>
             <template v-slot:top>
               <v-card-title>

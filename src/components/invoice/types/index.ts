@@ -1,5 +1,6 @@
 import { InvoiceItem } from "./invoice-items";
 export interface Invoice {
+  [x: string]: any;
   id: number;
   items: any;
   facility_id: number;
