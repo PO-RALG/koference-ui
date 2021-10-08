@@ -60,9 +60,16 @@ export const useInvoice = (): any => {
     },
     {
       text: "Received Amount",
-      align: "start",
+      align: "end",
       sortable: false,
-      value: "amount",
+      value: "received_amount",
+      width: "15%",
+    },
+    {
+      text: "Pending Amount ",
+      align: "end",
+      sortable: false,
+      value: "balance_amount",
       width: "15%",
     },
   ];
@@ -126,6 +133,12 @@ export const useInvoice = (): any => {
         value: "customer.name",
       },
       {
+        text: "Description",
+        align: "start",
+        sortable: false,
+        value: "description",
+      },
+      {
         text: "Ammount",
         align: "start",
         sortable: false,
@@ -138,10 +151,10 @@ export const useInvoice = (): any => {
         value: "received_amount",
       },
       {
-        text: "Description",
+        text: "Pending Amount",
         align: "start",
         sortable: false,
-        value: "description",
+        value: "pending",
       },
     ],
     modal: false,
@@ -168,6 +181,7 @@ export const useInvoice = (): any => {
     ],
     loading: false,
     coat: "/coat_of_arms.svg.png",
+    toSave: {},
   });
 
   onMounted(() => {
@@ -181,15 +195,15 @@ export const useInvoice = (): any => {
       data.loading = false;
     });
 
-    allgfscodes({ per_page: 2000 }).then((response: any) => {
+    allgfscodes({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankName = response.data.data.data;
     });
 
-    customers({ per_page: 2000 }).then((response: any) => {
+    customers({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.customers = response.data.data.data;
     });
 
-    itemdefinitions({ per_page: 2000 }).then((response: any) => {
+    itemdefinitions({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.itemdefinitions = response.data.data.data;
     });
   });
@@ -197,7 +211,7 @@ export const useInvoice = (): any => {
   const searchCategory = (categoryName) => {
     if (categoryName != null) {
       search({ invoice_number: categoryName.invoice_number }).then(
-        (response: any) => {
+        (response: AxiosResponse) => {
           data.items = response.data.data.data;
         }
       );
@@ -265,7 +279,7 @@ export const useInvoice = (): any => {
         data.invoicereceip.items.push(one_item);
       });
 
-      bankaccounts({ per_page: 2000 }).then((response: any) => {
+      bankaccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
         data.bankaccounts = response.data.data.data;
       });
     }
@@ -366,6 +380,15 @@ export const useInvoice = (): any => {
     });
   };
 
+  const newInvoiceItems = computed(() => {
+    if (data.invoicereceip) {
+      return data.invoicereceip.items.map((item) => {
+        item.cleared = item.invoicedAmount == item.received ? true : false;
+        return item;
+      });
+    }
+  });
+
   return {
     data,
     getData,
@@ -390,5 +413,6 @@ export const useInvoice = (): any => {
     RECEIPTHEADERS,
     bankName,
     HEADERS_INVOICE_DETAILS,
+    newInvoiceItems,
   };
 };

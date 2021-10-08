@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
     </v-card-actions>
     <v-card>
-      <v-form>
+      <v-form v-model="data.valid">
         <v-card-title>
           <v-col cols="12" sm="12" md="3" class="pa-0">
             <v-select
@@ -34,21 +34,48 @@
             </v-select>
           </v-col>
           <v-col cols="6" sm="12" md="1" v-if="data.items.length">
-            <v-text-field v-model="data.itemUnallocated.carryover" label="Carryover Fund" disabled></v-text-field>
+            <v-text-field 
+              v-model="data.itemUnallocated.carryover"
+              label="Carryover Fund"
+              disabled
+            ></v-text-field>
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
-            <v-text-field v-model="data.itemUnallocated.current" label="Current Fund" disabled></v-text-field>
+            <v-text-field 
+              v-model="data.itemUnallocated.current"
+              label="Current Fund"
+              disabled
+            ></v-text-field>
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
-            <v-text-field v-model="data.itemUnallocated.totalFund" label="Total Fund" disabled></v-text-field>
+            <v-text-field
+              v-model="data.itemUnallocated.totalFund"
+              label="Total Fund"
+              disabled
+            ></v-text-field>
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
-            <v-text-field v-model="data.allocated" label="Total Allocated" disabled></v-text-field>
+            <v-text-field
+              v-model="data.allocated"
+              label="Total Allocated"
+              disabled
+            ></v-text-field>
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
-            <v-text-field v-model="data.running_balance" label="Unallocated Amount" disabled>
-              <v-icon v-if="data.running_balance > 0" slot="append" color="green">mdi-check</v-icon>
-              <v-icon v-if="data.running_balance < 0" slot="append" color="red">mdi-close</v-icon>
+            <v-text-field
+              v-model="data.running_balance"
+              label="Unallocated Amount"
+              disabled
+            >
+              <v-icon
+                v-if="data.running_balance > 0"
+                slot="append"
+                color="green"
+                >mdi-check</v-icon
+              >
+              <v-icon v-if="data.running_balance < 0" slot="append" color="red"
+                >mdi-close</v-icon
+              >
             </v-text-field>
           </v-col>
         </v-card-title>
@@ -58,53 +85,50 @@
               <template v-slot:default>
                 <thead>
                   <tr>
-                    <th class="text-left">
-                      GL Account
-                    </th>
-                    <th class="text-left">
-                      Budget
-                    </th>
-                    <th class="text-left">
-                      Allocated
-                    </th>
-                    <th class="text-left">
-                      Expenditure
-                    </th>
-                    <th class="text-left">
-                      Available
-                    </th>
-                    <th class="text-left">
-                      Allocate
-                    </th>
+                    <th class="text-left">GL Account</th>
+                    <th class="text-left">Budget</th>
+                    <th class="text-left">Allocated</th>
+                    <th class="text-left">Expenditure</th>
+                    <th class="text-left">Available</th>
+                    <th class="text-left">Allocate</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    v-for="(item, i) in data.items"
-                    :key="i.id"
-                  >
+                  <tr v-for="(item, i) in data.items" :key="i.id">
                     <td>
-                      {{item.code}} <br>
-                      <span style="color:teal">{{item.activity.description}}</span> <br>
-                      {{item.gfsCode.name}} <br>
+                      {{ item.code }} <br />
+                      <span style="color: teal">{{
+                        item.activity.description
+                        }}</span>
+                      <br />
+                      {{ item.gfsCode.name }}
                     </td>
-                    <td>{{item.budget}}</td>
-                    <td>{{item.allocation}}</td>
-                    <td>{{item.totalExpenditure}}</td>
-                    <td>{{item.allocation - item.totalExpenditure}}</td>
+                    <td>{{ item.budget }}</td>
+                    <td>{{ item.allocation }}</td>
+                    <td>{{ item.totalExpenditure }}</td>
+                    <td>{{ item.allocation - item.totalExpenditure }}</td>
                     <td>
-                      <v-text-field v-model="item.allocation_amount" @input="newAllocation(item.allocation_amount)" type="number"></v-text-field>
+                      <v-text-field
+                        :rules="[maxRules(item.budget - item.allocation)]"
+                        v-model="item.allocation_amount"
+                        @input="newAllocation(item.allocation_amount)"
+                        type="number"
+                      ></v-text-field>
                     </td>
                   </tr>
                 </tbody>
               </template>
             </v-simple-table>
           </template>
-          
         </v-card-text>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="save" v-if="data.items.length && data.running_balance > 0">
+          <v-btn
+            :disabled="!data.valid"
+            color="primary"
+            @click="save"
+            v-if="data.items.length"
+          >
             save
           </v-btn>
         </v-card-actions>
@@ -126,6 +150,7 @@ export default defineComponent({
       searchFundingSources,
       searchBudgets,
       newAllocation,
+      maxRules,
     } = useFundAllocation();
 
     return {
@@ -134,6 +159,7 @@ export default defineComponent({
       searchFundingSources,
       searchBudgets,
       newAllocation,
+      maxRules,
     };
   },
 });

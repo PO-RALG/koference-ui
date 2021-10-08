@@ -11,4 +11,5 @@ export interface Budget {
   facility_id: number;
   total_allocated: string;
   activity: string;
+  allocation: string;
 }

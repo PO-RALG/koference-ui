@@ -31,6 +31,7 @@ import { supplierRoutes } from "@/components/payable/supplier";
 import { glAccountRoutes } from "@/components/general-ledger/gl-account";
 import { glTransactionRoutes } from "@/components/general-ledger/transaction";
 import { glReportRoutes } from "@/components/general-ledger/report";
+import { invoiceDebtorsRoutes } from "@/components/invoice-debtors";
 import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
 import { paymentVoucherRoutes } from "@/components/payable/payment-voucher";
 
@@ -88,6 +89,7 @@ const routes: Array<RouteConfig> = [
       ...glAccountRoutes,
       ...glTransactionRoutes,
       ...glReportRoutes,
+      ...invoiceDebtorsRoutes,
       ...fundAllocationRoutes,
       ...paymentVoucherRoutes,
     ],
@@ -118,6 +120,8 @@ const isLoggedIn = (to, _, next) => {
   }
 };
 
-router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
+router.beforeEach(
+  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
+);
 
 export default router;

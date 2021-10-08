@@ -37,12 +37,21 @@
           </v-card-title>
         </template>
         <template v-slot:[`item.date`]="{ item }">
-          <v-list-item exact light>{{ item.date | format() }}</v-list-item>
+          {{ item.date | format() }}
+        </template>
+        <template v-slot:[`item.amount`]="{ item }">
+          {{ item.amount | toCurrency() }}
+        </template>
+        <template v-slot:[`item.received_amount`]="{ item }">
+          {{ item.received_amount | toCurrency() }}
         </template>
         <template v-slot:[`item.invoice_number`]="{ item }">
           <v-list-item exact light @click="previewInvoice(item)">{{
             item.invoice_number
           }}</v-list-item>
+        </template>
+        <template v-slot:[`item.pending`]="{ item }">
+          {{ (item.amount - item.received_amount) | toCurrency() }}
         </template>
 
         <template v-slot:footer>
@@ -187,6 +196,7 @@
       <template v-slot:header>
         <ModalHeader :title="`Cancel Invoice `" />
       </template>
+
       <template v-slot:body>
         <ModalBody> Are you sure you want to cancel this invoice? </ModalBody>
       </template>
@@ -338,18 +348,21 @@
                         :hide-details="true"
                         disabled
                         flat
+                        filled
+                        dense
                         v-model="item.definition.name"
                       >
                       </v-text-field>
                     </td>
 
                     <td class="invoice-td">
-                      <!-- {{ item }} -->
                       <v-text-field
                         :hide-details="true"
                         disabled
                         flat
-                        v-model="item.received_amount"
+                        filled
+                        dense
+                        v-model="item.amount"
                       >
                       </v-text-field>
                     </td>
@@ -359,25 +372,25 @@
                         type="number"
                         disabled
                         flat
-                        reverse
-                        v-model="item.amount"
+                        filled
+                        dense
+                        :value="item.received_amount"
+                      ></v-text-field>
+                    </td>
+                    <td>
+                      <v-text-field
+                        :hide-details="true"
+                        type="number"
+                        disabled
+                        flat
+                        filled
+                        dense
+                        :value="item.amount - item.received_amount"
                       ></v-text-field>
                     </td>
                   </tr>
                 </template>
-                <template v-slot:[`item.icon`]="{ item }">
-                  <v-icon class="mr-2">{{ item.icon }}</v-icon>
-                </template>
               </v-data-table>
-
-              <tr class="total">
-                <td colspan="3"></td>
-                <td>
-                  <strong> Total:{{ data.invoicedata.amount }} </strong>
-                  <v-icon small>mdi-slash-forward</v-icon>
-                  <v-icon small class="">mdi-equal</v-icon>
-                </td>
-              </tr>
             </table>
           </div>
         </ModalBody>
@@ -389,13 +402,10 @@
 
     <Modal :modal="data.invoicereceipt" :width="900">
       <template v-slot:header>
-        <ModalHeader :title="`Invoice Receipt`" />
+        <ModalHeader :title="`Create Invoice Receipt`" />
       </template>
       <template v-slot:body>
         <ModalBody>
-          <!-- <pre>
-            {{ data.invoicedata.invoice_items }}
-          </pre> -->
           <v-form>
             <v-container>
               <v-row class="mt-n8 pa-5">
@@ -449,7 +459,7 @@
                   >
                     <template v-slot:body>
                       <tr
-                        v-for="(invoice, index) in data.invoicereceip.items"
+                        v-for="(invoice, index) in newInvoiceItems"
                         :key="index"
                         class="invoice-tr"
                       >
@@ -457,6 +467,8 @@
                           <v-text-field
                             outlined
                             dense
+                            readonly
+                            :filled="invoice.cleared"
                             hide-details
                             v-model="invoice.itemName"
                           ></v-text-field>
@@ -465,6 +477,8 @@
                           <v-text-field
                             outlined
                             dense
+                            readonly
+                            :filled="invoice.cleared"
                             hide-details
                             v-model="invoice.invoicedAmount"
                           ></v-text-field>
@@ -473,14 +487,19 @@
                           <v-text-field
                             outlined
                             dense
+                            readonly
+                            :filled="invoice.cleared"
                             hide-details
                             v-model="invoice.received"
                           ></v-text-field>
                         </td>
                         <td class="invoice-td">
                           <v-text-field
+                            :disabled="invoice.cleared"
+                            :filled="invoice.cleared"
                             outlined
                             dense
+                            type="number"
                             hide-details
                             v-model="invoice.amount"
                             :name="`data.invoice_items[${index}][name]`"
@@ -542,6 +561,7 @@ export default defineComponent({
       RECEIPTHEADERS,
       bankName,
       HEADERS_INVOICE_DETAILS,
+      newInvoiceItems,
     } = useInvoice();
     return {
       data,
@@ -567,6 +587,7 @@ export default defineComponent({
       RECEIPTHEADERS,
       bankName,
       HEADERS_INVOICE_DETAILS,
+      newInvoiceItems,
     };
   },
 });
