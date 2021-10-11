@@ -11,8 +11,8 @@ export const useGLReport = (): any => {
   const dTable = ref(null);
 
   const params = reactive({
-    to_gfs: null,
     from_gfs: null,
+    to_gfs: null,
     financial_year: null,
     start_date: null,
     end_date: null,
@@ -99,7 +99,7 @@ export const useGLReport = (): any => {
         name: `(${gfs.code}) - ${gfs.name}`,
         code: gfs.code,
       };
-    })
+    });
   });
 
   const validateDate = () => {

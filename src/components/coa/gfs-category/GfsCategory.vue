@@ -43,7 +43,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                   <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="expand(!isExpanded)">
-                    mdi-format-list-bulleted
+                    mdi-chevron-down
                   </v-icon>
                 </template>
                 <span>List of Gfs codes</span>
@@ -58,18 +58,12 @@
 
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length" class="pb-5 pa-3">
-            <b>Category Name:</b>
-            {{ item.description }}
-            <br />
-            Category Code:
-            <em>
-              <b class="pa-3">{{ item.code }}</b>
-            </em>
-            <v-card outlined flat max-width="80%">
+            <b>CATEGORY:</b>
+            {{ item.description }} ({{ item.code }})
+            <v-card outlined flat max-width="100%">
               <v-data-table
                 :headers="data.gfsCodes"
                 :items="item.gfs_codes"
-                :items-per-page="item.metadataOptions ? item.metadataOptions.length : 20"
                 hide-default-footer
                 dense
               ></v-data-table>
