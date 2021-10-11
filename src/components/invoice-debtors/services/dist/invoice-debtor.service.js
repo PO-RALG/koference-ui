@@ -36,14 +36,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.receiptcreate = exports.viewinvoice = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
+exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
 var axios_1 = require("axios");
 var get = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoices", {
-                    params: payload
-                })];
+            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/invoices/debtors", { params: payload })];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -52,10 +50,9 @@ exports.get = get;
 var search = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoices/", {
+            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/invoices/debtors", {
                     params: {
-                        search: JSON.stringify(payload),
-                        pending: true
+                        search: JSON.stringify(payload)
                     }
                 })];
             case 1: return [2 /*return*/, _a.sent()];
@@ -66,7 +63,7 @@ exports.search = search;
 var find = function (id) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoices/" + id)];
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoices/debtors/" + id)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -75,7 +72,7 @@ exports.find = find;
 var create = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/invoices", payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/invoices/debtors", payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -84,40 +81,20 @@ exports.create = create;
 var update = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].put("/api/v1/invoices/" + payload.id, payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].put("/api/v1/invoices/debtors/" + payload.id, payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
 exports.update = update;
-var viewinvoice = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoices/" + payload.id, payload)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.viewinvoice = viewinvoice;
 var destroy = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 console.log("payload", payload);
-                return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/invoices/" + payload)];
+                return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/invoices/debtors/" + payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
 exports.destroy = destroy;
-var receiptcreate = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                console.log("payload", payload);
-                return [4 /*yield*/, axios_1["default"].post("/api/v1/receipts/" + payload.invoice_id + "/invoice", payload)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.receiptcreate = receiptcreate;

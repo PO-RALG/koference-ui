@@ -50,9 +50,16 @@ exports.useInvoice = function () {
         },
         {
             text: "Received Amount",
-            align: "start",
+            align: "end",
             sortable: false,
-            value: "amount",
+            value: "received_amount",
+            width: "15%"
+        },
+        {
+            text: "Pending Amount ",
+            align: "end",
+            sortable: false,
+            value: "balance_amount",
             width: "15%"
         },
     ];
@@ -113,6 +120,12 @@ exports.useInvoice = function () {
                 value: "customer.name"
             },
             {
+                text: "Description",
+                align: "start",
+                sortable: false,
+                value: "description"
+            },
+            {
                 text: "Ammount",
                 align: "start",
                 sortable: false,
@@ -125,10 +138,10 @@ exports.useInvoice = function () {
                 value: "received_amount"
             },
             {
-                text: "Description",
+                text: "Pending Amount",
                 align: "start",
                 sortable: false,
-                value: "description"
+                value: "pending"
             },
         ],
         modal: false,
@@ -154,7 +167,8 @@ exports.useInvoice = function () {
             },
         ],
         loading: false,
-        coat: "/coat_of_arms.svg.png"
+        coat: "/coat_of_arms.svg.png",
+        toSave: {}
     });
     composition_api_1.onMounted(function () {
         data.loading = true;
@@ -325,6 +339,14 @@ exports.useInvoice = function () {
             data.invoicedetails = true;
         });
     };
+    var newInvoiceItems = composition_api_1.computed(function () {
+        if (data.invoicereceip) {
+            return data.invoicereceip.items.map(function (item) {
+                item.cleared = item.invoicedAmount == item.received ? true : false;
+                return item;
+            });
+        }
+    });
     return {
         data: data,
         getData: getData,
@@ -348,6 +370,7 @@ exports.useInvoice = function () {
         HEADERS: HEADERS,
         RECEIPTHEADERS: RECEIPTHEADERS,
         bankName: bankName,
-        HEADERS_INVOICE_DETAILS: HEADERS_INVOICE_DETAILS
+        HEADERS_INVOICE_DETAILS: HEADERS_INVOICE_DETAILS,
+        newInvoiceItems: newInvoiceItems
     };
 };

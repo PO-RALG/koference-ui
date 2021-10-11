@@ -9,6 +9,7 @@ const search = async (payload: any) => {
   return await axios.get(`/api/v1/invoices/`, {
     params: {
       search: JSON.stringify(payload),
+      pending: true,
     },
   });
 };
