@@ -26,4 +26,11 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/vouchers/` + payload);
 };
 
-export { get, find, create, update, destroy, search };
+const fundByActivity = async (id: string | number) => {
+  return await axios.get(`/api/v1/budgets/${id}/funds`);
+};
+
+const fundByActivityFundSource = async (activityId: string | number ,id: string | number) => {
+  return await axios.get(`/api/v1/budgets/${activityId}/${id}/gfs`);
+};
+export { get, find, create, update, destroy, search, fundByActivity, fundByActivityFundSource };

@@ -59,7 +59,7 @@
           <v-form>
             <v-container>
               <v-row class="pa-2">
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="2">
                   <DatePicker
                     :label="'Date'"
                     v-model="data.formData.date"
@@ -89,10 +89,7 @@
                     </template>
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.reference_no" label="Reference Number"></v-text-field>
-                </v-col>
-                <v-col cols="12" md="12" sm="12">
+                <v-col cols="12" md="6" sm="12">
                   <v-text-field v-model="data.formData.description" label="Description"></v-text-field>
                 </v-col>
               </v-row>
@@ -148,18 +145,8 @@
                                 @change="searchGfsCodes($event)"
                                 required
                               >
-                                <template v-slot:prepend-item>
-                                  <v-list-item>
-                                    <v-list-item-content>
-                                      <v-text-field
-                                        v-model="data.searchTerm"
-                                        placeholder="Search"
-                                        @input="searchFundingSource"
-                                      ></v-text-field>
-                                    </v-list-item-content>
-                                  </v-list-item>
-                                  <v-divider></v-divider>
-                                </template>
+                                <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }}  </template>
+                                <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }}  </template>
                               </v-select>
                             </v-col>
                             <v-col md="6" sm="12">

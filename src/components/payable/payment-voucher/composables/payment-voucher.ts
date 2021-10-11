@@ -1,12 +1,11 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, update, destroy, search } from "../services/payment-voucher.service";
+import { get, create, update, destroy, search, fundByActivity, fundByActivityFundSource } from "../services/payment-voucher.service";
 import { PaymentVoucher } from "../types/PaymentVoucher";
 import { get as getSupplier } from "@/components/payable/supplier/services/supplier.service"
 import { get as getActivity } from "@/components/planning/activity/services/activity.service"
 import { get as getGfsCode } from "@/components/coa/gfs-code/service/gfs.service"
-import { get as getFundingSource } from "@/components/coa/funding-source/services/funding-sources"
 
 export const usePaymentVoucher = (): any => {
   const dataItems: Array<PaymentVoucher> = [];
@@ -92,6 +91,7 @@ export const usePaymentVoucher = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     searchTerm: "",
+    activityId: "",
     suppliers: [],
     activities: [],
     gfsCodes: [],
@@ -228,10 +228,9 @@ export const usePaymentVoucher = (): any => {
   };
 
   const searchGfsCodes = (item: string) => {
-    const regSearchTerm = item ? item : data.searchTerm;
-    getActivity({ per_page: 10, regSearch: regSearchTerm }).then(
+    fundByActivityFundSource(data.activityId,item).then(
       (response: AxiosResponse) => {
-        data.gfsCodes = response.data.data.data;
+        data.gfsCodes = response.data.data;
       }
     );
   };
@@ -243,11 +242,10 @@ export const usePaymentVoucher = (): any => {
   };
 
   const searchFundingSource = (item: string) => {
-    const regSearchTerm = item ? item : data.searchTerm;
-    console.log(regSearchTerm);
-    getFundingSource({ per_page: 10, activity_id: regSearchTerm }).then(
+    data.activityId = item
+    fundByActivity(item).then(
       (response: AxiosResponse) => {
-        data.fundingSources = response.data.data.data;
+        data.fundingSources = response.data.data;
       }
     );
   };
