@@ -264,7 +264,7 @@ export const useInvoice = (): any => {
 
   const cancelInvoiceReceipt = () => {
     data.invoicereceipt = false;
-    data.invoicedetails = false;
+    data.invoicedetails = true;
     data.invoicereceip.items = [];
   };
 

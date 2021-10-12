@@ -63,7 +63,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="860">
+    <Modal :modal="data.modal" :width="1000">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Invoice`" />
       </template>
@@ -377,9 +377,15 @@
 
                 <template v-slot:[`body.append`]="{ headers }">
                   <tr>
-                    <th v-for="(header, i) in headers" :key="i">
+                    <th
+                      class="grey lighten-3"
+                      v-for="(header, i) in headers"
+                      :key="i"
+                    >
                       <div v-if="header.value == 'no'">
-                        {{ "TOTAL" }}
+                        <h2>
+                          {{ "TOTAL" }}
+                        </h2>
                       </div>
                       <span v-if="header.value == 'amount'">
                         <h2>
@@ -409,7 +415,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.invoicereceipt" :width="900">
+    <Modal :modal="data.invoicereceipt" :width="1000">
       <template v-slot:header>
         <ModalHeader :title="`Create Invoice Receipt`" />
       </template>

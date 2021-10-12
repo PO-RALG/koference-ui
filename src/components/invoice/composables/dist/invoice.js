@@ -247,7 +247,7 @@ exports.useInvoice = function () {
     };
     var cancelInvoiceReceipt = function () {
         data.invoicereceipt = false;
-        data.invoicedetails = false;
+        data.invoicedetails = true;
         data.invoicereceip.items = [];
     };
     var openInvoiceReceipt = function (invoiceData) {
