@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 exports.__esModule = true;
 exports.useInvoice = void 0;
 var composition_api_1 = require("@vue/composition-api");
@@ -35,10 +46,17 @@ exports.useInvoice = function () {
     ];
     var HEADERS_INVOICE_DETAILS = [
         {
-            text: "Item",
+            text: "No",
             align: "start",
             sortable: false,
-            value: "invoice_number",
+            value: "no",
+            width: "5%"
+        },
+        {
+            text: "Item Name",
+            align: "start",
+            sortable: false,
+            value: "item",
             width: "30%"
         },
         {
@@ -50,14 +68,14 @@ exports.useInvoice = function () {
         },
         {
             text: "Received Amount",
-            align: "end",
+            align: "start",
             sortable: false,
             value: "received_amount",
             width: "15%"
         },
         {
             text: "Pending Amount ",
-            align: "end",
+            align: "start",
             sortable: false,
             value: "balance_amount",
             width: "15%"
@@ -229,7 +247,7 @@ exports.useInvoice = function () {
     };
     var cancelInvoiceReceipt = function () {
         data.invoicereceipt = false;
-        data.invoicedetails = false;
+        data.invoicedetails = true;
         data.invoicereceip.items = [];
     };
     var openInvoiceReceipt = function (invoiceData) {
@@ -259,6 +277,24 @@ exports.useInvoice = function () {
             account.fullName = "Account Number -" + account.number + "  " + account.bank + " - " + account.branch;
             return account;
         });
+    });
+    var newInvoiceItem = composition_api_1.computed(function () {
+        return data.invoicedata.invoice_items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); });
+    });
+    // map: (data: any) => void;
+    var text = composition_api_1.ref(newInvoiceItem);
+    var sumDebts = composition_api_1.computed(function () {
+        return {
+            sumamount: text.value.reduce(function (sum, totalAmount) {
+                return sum + Number(totalAmount.amount);
+            }, 0),
+            sumamountReceived: text.value.reduce(function (sum, totalAmount) {
+                return sum + Number(totalAmount.received_amount);
+            }, 0),
+            sumamountPending: text.value.reduce(function (sum, totalAmount) {
+                return sum + Number(totalAmount.amount - totalAmount.received_amount);
+            }, 0)
+        };
     });
     var cancelConfirmDialog = function () {
         data.formData = {};
@@ -371,6 +407,8 @@ exports.useInvoice = function () {
         RECEIPTHEADERS: RECEIPTHEADERS,
         bankName: bankName,
         HEADERS_INVOICE_DETAILS: HEADERS_INVOICE_DETAILS,
-        newInvoiceItems: newInvoiceItems
+        newInvoiceItems: newInvoiceItems,
+        newInvoiceItem: newInvoiceItem,
+        sumDebts: sumDebts
     };
 };

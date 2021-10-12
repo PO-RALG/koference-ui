@@ -63,7 +63,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="860">
+    <Modal :modal="data.modal" :width="1000">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Invoice`" />
       </template>
@@ -139,6 +139,8 @@
                             dense
                             hide-details
                             outlined
+                            type="number"
+                            onkeydown="javascript: return event.keyCode == 69 ? false : true"
                             v-model="invoice.amount"
                             :name="`data.invoice_items[${index}][name]`"
                           >
@@ -333,61 +335,74 @@
 
               <v-data-table
                 :headers="HEADERS_INVOICE_DETAILS"
-                :items="data.items"
+                :items="newInvoiceItem"
                 disable-pagination
                 hide-default-footer
               >
-                <template v-slot:body>
-                  <tr
-                    v-for="item in data.invoicedata.invoice_items"
-                    :key="item.id"
-                    class="invoice-tr"
-                  >
-                    <td>
-                      <v-text-field
-                        :hide-details="true"
-                        disabled
-                        flat
-                        filled
-                        dense
-                        v-model="item.definition.name"
-                      >
-                      </v-text-field>
-                    </td>
+                <template v-slot:[`item.no`]="{ index }">
+                  <tr class="text--bold">
+                    {{
+                      index + 1
+                    }}
+                  </tr>
+                </template>
+                <template v-slot:[`item.item`]="{ item }">
+                  <tr class="text--bold">
+                    {{
+                      item.definition.name
+                    }}
+                  </tr>
+                </template>
+                <template v-slot:[`item.received_amount`]="{ item }">
+                  <tr class="text--bold">
+                    {{
+                      item.received_amount | toCurrency()
+                    }}
+                  </tr>
+                </template>
+                <template v-slot:[`item.amount`]="{ item }">
+                  <tr class="text--bold">
+                    {{
+                      item.amount | toCurrency()
+                    }}
+                  </tr>
+                </template>
+                <template v-slot:[`item.balance_amount`]="{ item }">
+                  <tr class="text--bold">
+                    {{
+                      (item.amount - item.received_amount) | toCurrency()
+                    }}
+                  </tr>
+                </template>
 
-                    <td class="invoice-td">
-                      <v-text-field
-                        :hide-details="true"
-                        disabled
-                        flat
-                        filled
-                        dense
-                        v-model="item.amount"
-                      >
-                      </v-text-field>
-                    </td>
-                    <td>
-                      <v-text-field
-                        :hide-details="true"
-                        type="number"
-                        disabled
-                        flat
-                        filled
-                        dense
-                        :value="item.received_amount"
-                      ></v-text-field>
-                    </td>
-                    <td>
-                      <v-text-field
-                        :hide-details="true"
-                        type="number"
-                        disabled
-                        flat
-                        filled
-                        dense
-                        :value="item.amount - item.received_amount"
-                      ></v-text-field>
-                    </td>
+                <template v-slot:[`body.append`]="{ headers }">
+                  <tr>
+                    <th
+                      class="grey lighten-3"
+                      v-for="(header, i) in headers"
+                      :key="i"
+                    >
+                      <div v-if="header.value == 'no'">
+                        <h2>
+                          {{ "TOTAL" }}
+                        </h2>
+                      </div>
+                      <span v-if="header.value == 'amount'">
+                        <h2>
+                          {{ sumDebts.sumamount | toCurrency() }}
+                        </h2>
+                      </span>
+                      <span v-if="header.value == 'received_amount'">
+                        <h2>
+                          {{ sumDebts.sumamountReceived | toCurrency() }}
+                        </h2>
+                      </span>
+                      <span v-if="header.value == 'balance_amount'">
+                        <h2>
+                          {{ sumDebts.sumamountPending | toCurrency() }}
+                        </h2>
+                      </span>
+                    </th>
                   </tr>
                 </template>
               </v-data-table>
@@ -400,7 +415,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.invoicereceipt" :width="900">
+    <Modal :modal="data.invoicereceipt" :width="1000">
       <template v-slot:header>
         <ModalHeader :title="`Create Invoice Receipt`" />
       </template>
@@ -466,8 +481,9 @@
                         <td>
                           <v-text-field
                             outlined
+                            class="black--text"
                             dense
-                            readonly
+                            disabled
                             :filled="invoice.cleared"
                             hide-details
                             v-model="invoice.itemName"
@@ -477,7 +493,7 @@
                           <v-text-field
                             outlined
                             dense
-                            readonly
+                            disabled
                             :filled="invoice.cleared"
                             hide-details
                             v-model="invoice.invoicedAmount"
@@ -487,19 +503,24 @@
                           <v-text-field
                             outlined
                             dense
-                            readonly
+                            disabled
                             :filled="invoice.cleared"
                             hide-details
                             v-model="invoice.received"
                           ></v-text-field>
                         </td>
                         <td class="invoice-td">
+                          <span v-if="invoice.cleared">
+                            {{ "Cleared" }}
+                            <v-icon color="green">mdi-check</v-icon>
+                          </span>
                           <v-text-field
-                            :disabled="invoice.cleared"
+                            v-else
                             :filled="invoice.cleared"
                             outlined
                             dense
                             type="number"
+                            onkeydown="javascript: return event.keyCode == 69 ? false : true"
                             hide-details
                             v-model="invoice.amount"
                             :name="`data.invoice_items[${index}][name]`"
@@ -562,6 +583,8 @@ export default defineComponent({
       bankName,
       HEADERS_INVOICE_DETAILS,
       newInvoiceItems,
+      newInvoiceItem,
+      sumDebts,
     } = useInvoice();
     return {
       data,
@@ -588,6 +611,8 @@ export default defineComponent({
       bankName,
       HEADERS_INVOICE_DETAILS,
       newInvoiceItems,
+      newInvoiceItem,
+      sumDebts,
     };
   },
 });
@@ -700,5 +725,14 @@ tbody tr:nth-of-type(odd) {
   .v-card__actions {
     margin-right: 15px;
   }
+}
+</style>
+<style>
+/*remove arrow in number inputs*/
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>
