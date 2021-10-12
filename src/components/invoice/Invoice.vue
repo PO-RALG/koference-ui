@@ -36,6 +36,11 @@
             </v-col>
           </v-card-title>
         </template>
+        <template v-slot:[`item.description`]="{ item }">
+          <span>
+            {{ item.description | capitalizeFirstLatter }}
+          </span>
+        </template>
         <template v-slot:[`item.date`]="{ item }">
           {{ item.date | format() }}
         </template>
@@ -332,6 +337,12 @@
                   </table>
                 </td>
               </tr>
+              <v-sheet class="pl-3">
+                <v-sheet class="information grey lighten-3 text-capitalize">
+                  <strong> Description:</strong>
+                  {{ data.invoicedata.description | capitalizeFirstLatter }}
+                </v-sheet>
+              </v-sheet>
 
               <v-data-table
                 :headers="HEADERS_INVOICE_DETAILS"
@@ -378,7 +389,7 @@
                 <template v-slot:[`body.append`]="{ headers }">
                   <tr>
                     <th
-                      class="grey lighten-3"
+                      class="grey lighten-5"
                       v-for="(header, i) in headers"
                       :key="i"
                     >
@@ -388,17 +399,17 @@
                         </h2>
                       </div>
                       <span v-if="header.value == 'amount'">
-                        <h2>
+                        <h2 class="underline-amount">
                           {{ sumDebts.sumamount | toCurrency() }}
                         </h2>
                       </span>
                       <span v-if="header.value == 'received_amount'">
-                        <h2>
+                        <h2 class="underline-amount">
                           {{ sumDebts.sumamountReceived | toCurrency() }}
                         </h2>
                       </span>
                       <span v-if="header.value == 'balance_amount'">
-                        <h2>
+                        <h2 class="underline-amount">
                           {{ sumDebts.sumamountPending | toCurrency() }}
                         </h2>
                       </span>
@@ -421,11 +432,19 @@
       </template>
       <template v-slot:body>
         <ModalBody>
+          <v-card-actions class="pa-0">
+            <v-spacer></v-spacer>
+            <strong>
+              <h2>Invoice #:{{ data.invoicereceip.invoice_number }}</h2>
+            </strong>
+          </v-card-actions>
+
           <v-form>
             <v-container>
               <v-row class="mt-n8 pa-5">
                 <v-col cols="12" md="6">
                   <v-autocomplete
+                    readonly
                     v-model="data.invoicereceip.customer_id"
                     label="Select Customer"
                     :items="data.customer"
@@ -464,7 +483,12 @@
                 </v-col>
 
                 <v-col class="pt-2" cols="12" md="12"> </v-col>
-                <!-- <pre>{{ data.customer }}</pre> -->
+                <!-- <v-sheet class="pl-3">
+                  <v-sheet class="information grey lighten-3 text-capitalize">
+                    <strong> Description:</strong>
+                    {{ data.invoicereceip.description | capitalizeFirstLatter }}
+                  </v-sheet>
+                </v-sheet> -->
                 <v-col class="pt-2 invoice-table" cols="12" md="12">
                   <v-data-table
                     :headers="RECEIPTHEADERS"
@@ -619,6 +643,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.underline-amount {
+  border-style: double none none;
+}
 .invoice-box {
   max-width: 1000px;
   margin: auto;

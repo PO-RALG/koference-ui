@@ -228,7 +228,6 @@
                   </table>
                 </td>
               </tr>
-
               <v-data-table
                 :headers="data.HEADERS_INVOICE_DETAILS"
                 :items="data.items"
