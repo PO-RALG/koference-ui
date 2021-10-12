@@ -103,17 +103,12 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr
-                        v-for="(item,i) in data.payables"
-                        :key="i"
-                      >
-                        <td>
+                      <tr>
+                        <td colspan="2">
                           <v-row>
-                            <v-col md="6" sm="12">
+                            <v-col md="4" sm="12">
                               <v-select
-                                v-model="item.activity_id"
                                 :items="data.activities"
-                                item-value="id"
                                 item-text="name"
                                 label="Select Activity"
                                 @change="searchFundingSource($event)"
@@ -135,11 +130,9 @@
                                 </template>
                               </v-select>
                             </v-col>
-                            <v-col md="6" sm="12">
+                            <v-col md="4" sm="12">
                               <v-select
-                                v-model="item.funding_source_id"
                                 :items="data.fundingSources"
-                                item-value="id"
                                 item-text="code"
                                 label="Select Funding Sources"
                                 @change="searchGfsCodes($event)"
@@ -149,28 +142,35 @@
                                 <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }}  </template>
                               </v-select>
                             </v-col>
-                            <v-col md="6" sm="12">
+                            <v-col md="4" sm="12">
                               <v-select
-                                v-model="item.gfs_code_id"
                                 :items="data.gfsCodes"
                                 item-value="id"
                                 item-text="name"
                                 label="Select GFS Code"
                                 required
                               >
-                                <template v-slot:prepend-item>
-                                  <v-list-item>
-                                    <v-list-item-content>
-                                      <v-text-field
-                                        v-model="data.searchTerm"
-                                        placeholder="Search"
-                                        @input="searchGfsCodes"
-                                      ></v-text-field>
-                                    </v-list-item-content>
-                                  </v-list-item>
-                                  <v-divider></v-divider>
-                                </template>
                               </v-select>
+                            </v-col>
+                          </v-row>
+                        </td>
+                      </tr>
+                      <tr v-for="(account,i) in data.accounts"
+                        :key="i">
+                        <td class="py-2" @click="addPayable" colspan="2">
+                          {{account.code}}<br>
+                          <span style="color: teal">{{account.description}}</span><br>
+                          {{account.allocation}}
+                        </td>
+                      </tr>
+                      <tr
+                        v-for="(item,i) in data.payables"
+                        :key="i"
+                      >
+                        <td>
+                          <v-row>
+                            <v-col md="6" sm="12">
+                              <v-text-field v-model="item.amount" label="Amount"></v-text-field>
                             </v-col>
                             <v-col md="6" sm="12">
                               <v-text-field v-model="item.amount" label="Amount"></v-text-field>

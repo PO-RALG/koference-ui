@@ -5,11 +5,15 @@ import { get, create, update, destroy, search, fundByActivity, fundByActivityFun
 import { PaymentVoucher } from "../types/PaymentVoucher";
 import { get as getSupplier } from "@/components/payable/supplier/services/supplier.service"
 import { get as getActivity } from "@/components/planning/activity/services/activity.service"
-import { get as getGfsCode } from "@/components/coa/gfs-code/service/gfs.service"
+import { getBudget } from "@/components/payable/fund-allocation/services/fund-allocation.service"
+import { Activity } from "@/components/planning/activity/types/Activity";
+import { FundSources } from "@/components/coa/funding-source/types/index";
 
 export const usePaymentVoucher = (): any => {
   const dataItems: Array<PaymentVoucher> = [];
   const paymentVoucherData = {} as PaymentVoucher;
+  const activityItem = {} as Activity;
+  const fundSourceItem = {} as FundSources;
 
   const data = reactive({
     title: "Payment Vouchers",
@@ -91,11 +95,13 @@ export const usePaymentVoucher = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     searchTerm: "",
-    activityId: "",
+    activityItem: activityItem,
+    fundSourceItem: fundSourceItem,
     suppliers: [],
     activities: [],
     gfsCodes: [],
     fundingSources: [],
+    accounts: [],
     payables: [{funding_source_id:'',gfs_code_id:'',amount:'',}],
   });
 
@@ -221,34 +227,31 @@ export const usePaymentVoucher = (): any => {
     );
   };
 
-  const getGfsCodeData = () => {
-    getGfsCode({ per_page: 10 }).then((response: AxiosResponse) => {
-      data.gfsCodes = response.data.data.data;
-    });
-  };
-
-  const searchGfsCodes = (item: string) => {
-    fundByActivityFundSource(data.activityId,item).then(
+  const searchGfsCodes = (fund: FundSources) => {
+    data.fundSourceItem = fund;
+    console.log(data.fundSourceItem)
+    fundByActivityFundSource(data.activityItem.id,data.fundSourceItem.id).then(
       (response: AxiosResponse) => {
         data.gfsCodes = response.data.data;
       }
     );
-  };
-
-  const getFundingSourceData = () => {
-    getGfsCode({ per_page: 10 }).then((response: AxiosResponse) => {
-      data.fundingSources = response.data.data.data;
+    getBudget({ activity_code: data.activityItem.code, fund_code: data.fundSourceItem.code }).then((response: AxiosResponse) => {
+      data.accounts = response.data.data;
     });
   };
 
-  const searchFundingSource = (item: string) => {
-    data.activityId = item
-    fundByActivity(item).then(
+  const searchFundingSource = (item: Activity) => {
+    data.activityItem = item
+    fundByActivity(item.id).then(
       (response: AxiosResponse) => {
         data.fundingSources = response.data.data;
       }
     );
+    getBudget({ activity_code: item.code }).then((response: AxiosResponse) => {
+      data.accounts = response.data.data;
+    });
   };
+
 
   const addPayable = () => {
     data.payables.push({ funding_source_id: "", gfs_code_id: "", amount: "" });
