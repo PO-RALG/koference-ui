@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { Invoice } from "../types";
-import { reactive, onMounted, computed } from "@vue/composition-api";
+import { reactive, onMounted, ref, computed } from "@vue/composition-api";
 import {
   get,
   create,
@@ -18,6 +18,7 @@ import { itemdefinitions } from "@/components/setup/invoice-item-definition/serv
 export const useInvoice = (): any => {
   const dataItems: Array<Invoice> = [];
   let invoiceData: Invoice;
+
   const HEADERS = [
     {
       text: "Item",
@@ -44,10 +45,17 @@ export const useInvoice = (): any => {
   ];
   const HEADERS_INVOICE_DETAILS = [
     {
-      text: "Item",
+      text: "No",
       align: "start",
       sortable: false,
-      value: "invoice_number",
+      value: "no",
+      width: "5%",
+    },
+    {
+      text: "Item Name",
+      align: "start",
+      sortable: false,
+      value: "item",
       width: "30%",
     },
 
@@ -60,14 +68,14 @@ export const useInvoice = (): any => {
     },
     {
       text: "Received Amount",
-      align: "end",
+      align: "start",
       sortable: false,
       value: "received_amount",
       width: "15%",
     },
     {
       text: "Pending Amount ",
-      align: "end",
+      align: "start",
       sortable: false,
       value: "balance_amount",
       width: "15%",
@@ -292,6 +300,30 @@ export const useInvoice = (): any => {
     });
   });
 
+  const newInvoiceItem: any = computed(() => {
+    return data.invoicedata.invoice_items.map((data, index) => ({
+      ...data,
+      index: ++index,
+    }));
+  });
+  // map: (data: any) => void;
+
+  const text = ref(newInvoiceItem);
+
+  const sumDebts = computed(() => {
+    return {
+      sumamount: text.value.reduce(function (sum, totalAmount) {
+        return sum + Number(totalAmount.amount);
+      }, 0),
+      sumamountReceived: text.value.reduce(function (sum, totalAmount) {
+        return sum + Number(totalAmount.received_amount);
+      }, 0),
+      sumamountPending: text.value.reduce(function (sum, totalAmount) {
+        return sum + Number(totalAmount.amount - totalAmount.received_amount);
+      }, 0),
+    };
+  });
+
   const cancelConfirmDialog = () => {
     data.formData = {} as Invoice;
     data.deletemodal = false;
@@ -414,5 +446,7 @@ export const useInvoice = (): any => {
     bankName,
     HEADERS_INVOICE_DETAILS,
     newInvoiceItems,
+    newInvoiceItem,
+    sumDebts,
   };
 };
