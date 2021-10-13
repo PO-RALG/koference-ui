@@ -102,7 +102,7 @@ export const usePaymentVoucher = (): any => {
     gfsCodes: [],
     fundingSources: [],
     accounts: [],
-    payables: [{funding_source_id:'',gfs_code_id:'',amount:'',}],
+    payables: [],
   });
 
   onMounted(() => {
@@ -116,14 +116,6 @@ export const usePaymentVoucher = (): any => {
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
     });
-  };
-
-  const searchItem = (itemName: PaymentVoucher) => {
-    if (itemName != null) {
-      search({ reference_no: itemName.reference_no }).then((response: AxiosResponse) => {
-        data.items = response.data.data.data;
-      });
-    }
   };
 
   const getData = (params: PaymentVoucher) => {
@@ -157,26 +149,41 @@ export const usePaymentVoucher = (): any => {
   };
 
   const save = () => {
-    if (data.formData.id) {
-      updateActivity(data.formData);
-    } else {
-      createActivity(data.formData);
+    const payableData = [];
+    const payableItems = data.payables;
+    for (let i = 0; i < payableItems.length; i++) {
+      const element = {
+        gl_account_id: payableItems[i].id,
+        amount: payableItems[i].amount,
+      };
+      payableData.push(element);
     }
+    data.formData.payables = payableData;
+    
+    createActivity(data.formData);
   };
 
   const openDialog = (formData?: PaymentVoucher) => {
     if (formData.id) {
       data.formData = formData;
       data.modalTitle = "Update";
-      data.searchTerm = "",
+      data.searchTerm = "";
       getSupplierData();
       getActivityData();
+      data.payables = [];
+      data.accounts = [];
+      data.fundingSources = [];
+      data.gfsCodes = [];
     } else {
       data.formData = {} as PaymentVoucher;
       data.modalTitle = "Create";
-      data.searchTerm = "",
+      data.searchTerm = "";
       getSupplierData();
       getActivityData();
+      data.payables = [];
+      data.accounts = [];
+      data.fundingSources = [];
+      data.gfsCodes = [];
     }
     data.modal = !data.modal;
   };
@@ -226,20 +233,7 @@ export const usePaymentVoucher = (): any => {
       }
     );
   };
-
-  const searchGfsCodes = (fund: FundSources) => {
-    data.fundSourceItem = fund;
-    console.log(data.fundSourceItem)
-    fundByActivityFundSource(data.activityItem.id,data.fundSourceItem.id).then(
-      (response: AxiosResponse) => {
-        data.gfsCodes = response.data.data;
-      }
-    );
-    getBudget({ activity_code: data.activityItem.code, fund_code: data.fundSourceItem.code }).then((response: AxiosResponse) => {
-      data.accounts = response.data.data;
-    });
-  };
-
+  
   const searchFundingSource = (item: Activity) => {
     data.activityItem = item
     fundByActivity(item.id).then(
@@ -252,9 +246,26 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  const searchGfsCodes = (fund: FundSources) => {
+    data.fundSourceItem = fund;
+    fundByActivityFundSource(data.activityItem.id,data.fundSourceItem.id).then(
+      (response: AxiosResponse) => {
+        data.gfsCodes = response.data.data;
+      }
+    );
+    getBudget({ activity_code: data.activityItem.code, fund_code: data.fundSourceItem.code }).then((response: AxiosResponse) => {
+      data.accounts = response.data.data;
+    });
+  };
 
-  const addPayable = () => {
-    data.payables.push({ funding_source_id: "", gfs_code_id: "", amount: "" });
+  const filterGfsCodes = (item: string) => {
+    getBudget({ activity_code: data.activityItem.code, fund_code: data.fundSourceItem.code, gfs_code: item}).then((response: AxiosResponse) => {
+      data.accounts = response.data.data;
+    });
+  };
+  
+  const addPayable = (account) => {
+    data.payables.push(account);
   };
 
   const removePayable = (index: number) => {
@@ -270,7 +281,6 @@ export const usePaymentVoucher = (): any => {
     save,
     remove,
     cancelConfirmDialog,
-    searchItem,
     getData,
     searchSuppliers,
     addPayable,
@@ -278,5 +288,6 @@ export const usePaymentVoucher = (): any => {
     searchActivities,
     searchGfsCodes,
     searchFundingSource,
+    filterGfsCodes,
   };
 };

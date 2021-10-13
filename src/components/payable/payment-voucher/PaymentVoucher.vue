@@ -94,101 +94,100 @@
                 </v-col>
               </v-row>
               <template>
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th></th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td colspan="2">
-                          <v-row>
-                            <v-col md="4" sm="12">
-                              <v-select
-                                :items="data.activities"
-                                item-text="name"
-                                label="Select Activity"
-                                @change="searchFundingSource($event)"
-                                required
-                              >
-                                <template v-slot:selection="{ item }"> {{ item.description }} ({{ item.sub_budget_class.description }})  </template>
-                                <template v-slot:item="{ item }"> {{ item.description }} ({{ item.sub_budget_class.description }})  </template>
-                                <template v-slot:prepend-item>
-                                  <v-list-item>
-                                    <v-list-item-content>
-                                      <v-text-field
-                                        v-model="data.searchTerm"
-                                        placeholder="Search"
-                                        @input="searchActivities"
-                                      ></v-text-field>
-                                    </v-list-item-content>
-                                  </v-list-item>
-                                  <v-divider></v-divider>
-                                </template>
-                              </v-select>
-                            </v-col>
-                            <v-col md="4" sm="12">
-                              <v-select
-                                :items="data.fundingSources"
-                                item-text="code"
-                                label="Select Funding Sources"
-                                @change="searchGfsCodes($event)"
-                                required
-                              >
-                                <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }}  </template>
-                                <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }}  </template>
-                              </v-select>
-                            </v-col>
-                            <v-col md="4" sm="12">
-                              <v-select
-                                :items="data.gfsCodes"
-                                item-value="id"
-                                item-text="name"
-                                label="Select GFS Code"
-                                required
-                              >
-                              </v-select>
-                            </v-col>
-                          </v-row>
-                        </td>
-                      </tr>
-                      <tr v-for="(account,i) in data.accounts"
-                        :key="i">
-                        <td class="py-2" @click="addPayable" colspan="2">
-                          {{account.code}}<br>
-                          <span style="color: teal">{{account.description}}</span><br>
-                          {{account.allocation}}
-                        </td>
-                      </tr>
-                      <tr
-                        v-for="(item,i) in data.payables"
-                        :key="i"
-                      >
-                        <td>
-                          <v-row>
-                            <v-col md="6" sm="12">
-                              <v-text-field v-model="item.amount" label="Amount"></v-text-field>
-                            </v-col>
-                            <v-col md="6" sm="12">
-                              <v-text-field v-model="item.amount" label="Amount"></v-text-field>
-                            </v-col>
-                          </v-row>
-                        </td>
-                        <td>
-                          <v-btn v-if="data.payables.length == i+1" color="green darken-1" text @click="addPayable">
-                            <v-icon>mdi-plus</v-icon>
-                          </v-btn>
-                          <v-btn v-if="data.payables.length > 1" color="red darken-1" text @click="removePayable(i)">
-                            <v-icon>mdi-minus</v-icon>
-                          </v-btn>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
+                <v-card>
+                  <v-simple-table>
+                    <template v-slot:default>
+                      <thead>
+                        <tr>
+                          <td colspan="2">
+                            <v-row>
+                              <v-col md="4" sm="12">
+                                <v-select
+                                  :items="data.activities"
+                                  item-text="name"
+                                  label="Select Activity"
+                                  @change="searchFundingSource($event)"
+                                  required
+                                >
+                                  <template v-slot:selection="{ item }"> {{ item.description }} ({{ item.sub_budget_class.description }})  </template>
+                                  <template v-slot:item="{ item }"> {{ item.description }} ({{ item.sub_budget_class.description }})  </template>
+                                  <template v-slot:prepend-item>
+                                    <v-list-item>
+                                      <v-list-item-content>
+                                        <v-text-field
+                                          v-model="data.searchTerm"
+                                          placeholder="Search"
+                                          @input="searchActivities"
+                                        ></v-text-field>
+                                      </v-list-item-content>
+                                    </v-list-item>
+                                    <v-divider></v-divider>
+                                  </template>
+                                </v-select>
+                              </v-col>
+                              <v-col md="4" sm="12">
+                                <v-select
+                                  :items="data.fundingSources"
+                                  item-text="code"
+                                  label="Select Funding Sources"
+                                  @change="searchGfsCodes($event)"
+                                  return-object
+                                >
+                                  <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }}  </template>
+                                  <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }}  </template>
+                                </v-select>
+                              </v-col>
+                              <v-col md="4" sm="12">
+                                <v-select
+                                  :items="data.gfsCodes"
+                                  item-value="code"
+                                  item-text="name"
+                                  label="Select GFS Code"
+                                  @change="filterGfsCodes($event)"
+                                >
+                                  <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.name }}  </template>
+                                  <template v-slot:item="{ item }"> {{ item.code }} - {{ item.name }}  </template>
+                                </v-select>
+                              </v-col>
+                            </v-row>
+                          </td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(account,i) in data.accounts"
+                          :key="i">
+                          <td class="py-2" @click="addPayable(account)" colspan="2">
+                            {{account.code}}<br>
+                            <span style="color: teal">{{account.description}}</span><br>
+                            {{account.allocation}}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+                </v-card>
+              </template>
+              <template>
+                <div class="pa-3 pt-7"
+                  v-for="(item,i) in data.payables"
+                  :key="i"
+                >
+                  <v-row>
+                    <v-col md="8" sm="12">
+                      {{item.code}}<br>
+                      <span style="color: teal">{{item.description}}</span><br>
+                      {{item.allocation}}
+                    </v-col>
+                    <v-col md="3" sm="12">
+                      <v-text-field v-model="item.amount" label="Amount"></v-text-field>
+                    </v-col>
+                    <v-col md="1" sm="12">
+                      <v-btn color="red darken-1" text @click="removePayable(i)">
+                        <v-icon>mdi-minus</v-icon>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </div>
               </template>
             </v-container>
           </v-form>
@@ -245,6 +244,7 @@ export default defineComponent({
       searchActivities,
       searchGfsCodes,
       searchFundingSource,
+      filterGfsCodes,
     } = usePaymentVoucher();
 
     return {
@@ -264,6 +264,7 @@ export default defineComponent({
       searchActivities,
       searchGfsCodes,
       searchFundingSource,
+      filterGfsCodes,
     };
   },
 });
