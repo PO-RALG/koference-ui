@@ -1,15 +1,7 @@
 import { AxiosResponse } from "axios";
 import { Invoice } from "../types";
 import { reactive, onMounted, ref, computed } from "@vue/composition-api";
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-  viewinvoice,
-  receiptcreate,
-} from "../services/invoice";
+import { get, create, update, destroy, search, viewinvoice, receiptcreate } from "../services/invoice";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import { customers } from "@/components/setup/customer/services/customer.service";
 import { bankaccounts } from "@/components/setup/bank-account/services/back-accounts.service";
@@ -195,8 +187,7 @@ export const useInvoice = (): any => {
   onMounted(() => {
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
@@ -218,11 +209,9 @@ export const useInvoice = (): any => {
 
   const searchCategory = (categoryName) => {
     if (categoryName != null) {
-      search({ invoice_number: categoryName.invoice_number }).then(
-        (response: AxiosResponse) => {
-          data.items = response.data.data.data;
-        }
-      );
+      search({ invoice_number: categoryName.invoice_number }).then((response: AxiosResponse) => {
+        data.items = response.data.data.data;
+      });
     } else {
       reloadData();
     }
@@ -230,8 +219,7 @@ export const useInvoice = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -401,7 +389,7 @@ export const useInvoice = (): any => {
     });
   };
 
-  const removeRow = (index: any) => {
+  const removeRow = (index: number) => {
     data.invoice_items.splice(index, 1);
   };
 

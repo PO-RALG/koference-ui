@@ -65,7 +65,7 @@
                     :items="data.roles"
                     :label="'Filter Roles'"
                     :title="'Add Roles'"
-                    :item-name="data.itemName"
+                    :item-name="'name'"
                     :selectedItems="selectedRoles"
                     @filterFunction="filterRoles"
                     v-model="data.selectedRoles"
@@ -110,6 +110,7 @@
                 </v-col>
               </v-row>
             </v-container>
+            <pre>{{ data.formData }}</pre>
           </v-form>
         </ModalBody>
       </template>
