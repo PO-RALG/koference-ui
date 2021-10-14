@@ -65,7 +65,7 @@ export const useMenuItems = (): any => {
   const TITLE = "Manage Menu Items";
 
   const initialize = () => {
-    get(TYPE, { per_page: 10, search: { filters } }).then((response: AxiosResponse) => {
+    get(TYPE, { per_page: 100, search: { filters } }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.items = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };

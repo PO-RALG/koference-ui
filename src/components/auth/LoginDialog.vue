@@ -7,8 +7,8 @@
     <template v-slot:body>
       <v-flex>
         <!-- <v-col cols="12" md="4" sm="12"> -->
-        <v-card-text class>
-          <v-alert color="warning" border="left" elevation="2" colored-border icon="mdi-alert-outline">
+        <v-card-text class="pa-6">
+          <v-alert width="100%" color="warning" border="left" elevation="2" colored-border icon="mdi-alert-outline">
             Please type in your password & email to login again
           </v-alert>
           <v-form ref="form" v-model="data.valid">
@@ -18,7 +18,7 @@
               v-model="data.email"
               v-bind:rules="data.emailRules"
               required
-              class="mr-3 ml-3"
+              class="mr-0 ml-0"
             ></v-text-field>
             <v-text-field
               prepend-inner-icon="mdi-key-variant"
@@ -27,7 +27,7 @@
               v-bind:rules="data.passwordRules"
               v-bind:type="'password'"
               required
-              class="mr-3 ml-3"
+              class="mr-0 ml-0"
             ></v-text-field>
           </v-form>
         </v-card-text>
@@ -35,9 +35,9 @@
     </template>
     <!-- login form end -->
     <template v-slot:footer>
-      <ModalFooter>
+      <ModalFooter class="mt-n8">
         <v-btn color="blue darken-1" :disabled="true" text @click="cancelDialog">Cancel</v-btn>
-        <v-btn color="primary" class="white--text" @click="login" :loading="data.loading">
+        <v-btn color="primary" class="white--text mr-2 mb-4" @click="login" :loading="data.loading">
           <v-icon left>mdi-login</v-icon>LOGIN
         </v-btn>
       </ModalFooter>

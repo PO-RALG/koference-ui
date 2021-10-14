@@ -36,14 +36,15 @@ export const useUser = (): any => {
     modal: false,
     items: dataItems,
     formData: userData,
-    rows: ["20", "50", "100"],
+    rows: ["10", "20", "100"],
     params: {
       total: 100,
       size: 10,
     },
     nameRules: [
       (v: string) => !!v || "Name is required",
-      (v: string) => (v && v.length <= 10) || "Name must be less than 10 characters",
+      (v: string) =>
+        (v && v.length <= 10) || "Name must be less than 10 characters",
     ],
     email: "",
     emailRules: [
@@ -57,8 +58,9 @@ export const useUser = (): any => {
   });
 
   const initialize = () => {
-    get({}).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -74,7 +76,9 @@ export const useUser = (): any => {
   };
 
   const save = () => {
-    const roles = data.formData.roles ? data.formData.roles.map((role: any) => role.id) : [];
+    const roles = data.formData.roles
+      ? data.formData.roles.map((role: any) => role.id)
+      : [];
     set(data.formData, "roles", roles);
     if (data.formData.id) {
       updateUser(data.formData);
@@ -209,13 +213,17 @@ export const useUser = (): any => {
   const loadFacilities = () => {
     const isFacilityUser = !!data.isFacilityUser;
     data.isFacilityUser = isFacilityUser;
-    getFacilities({ search: { location_id: data.location["id"] } }).then((response: AxiosResponse) => {
-      data.facilities = response.data.data.data;
-    });
+    getFacilities({ search: { location_id: data.location["id"] } }).then(
+      (response: AxiosResponse) => {
+        data.facilities = response.data.data.data;
+      }
+    );
   };
 
   const filterRoles = (term: string) => {
-    const result = data.roles.filter((item) => item.name.toLowerCase().includes(term.toLowerCase()));
+    const result = data.roles.filter((item) =>
+      item.name.toLowerCase().includes(term.toLowerCase())
+    );
     data.roles = result;
     return data.roles;
   };

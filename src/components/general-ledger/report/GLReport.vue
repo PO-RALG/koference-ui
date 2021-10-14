@@ -138,19 +138,19 @@
                 </v-select>
               </v-col>
             </v-row>
-            <v-row class="pr-5 pl-3 mt-n8">
-              <v-col cols="12" lg="12" md="12" sm="12">
-                <v-btn color="primary" height="50" @click="filterReport">
-                  <v-icon>mdi-filter</v-icon>
-                  Filter
-                </v-btn>
-              </v-col>
-            </v-row>
           </v-container>
         </ModalBody>
       </template>
       <template v-slot:footer>
-        <ModalFooter></ModalFooter>
+        <ModalFooter>
+          <div class="mt-n8 pb-4">
+            <v-btn color="blue darken-1" text @click="closeDialog">Cancel</v-btn>
+            <v-btn color="primary" @click="filterReport" class="mr-3">
+              <v-icon>mdi-filter</v-icon>
+              Filter Report
+            </v-btn>
+          </div>
+        </ModalFooter>
       </template>
     </Modal>
   </div>
