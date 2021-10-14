@@ -37,9 +37,6 @@
           <span>{{ item.date | format("DD/MM/YYYY") }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Voucher')">
-            mdi-pencil-box-outline
-          </v-icon>
           <v-icon @click="openConfirmDialog(item.id)" :disabled="cant('delete', 'Voucher')">
             mdi-trash-can-outline
           </v-icon>
@@ -56,7 +53,7 @@
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
-          <v-form>
+          <v-form v-model="data.valid">
             <v-container>
               <v-row class="pa-2">
                 <v-col cols="12" md="2">
@@ -94,8 +91,8 @@
                 </v-col>
               </v-row>
               <template>
-                <v-card>
-                  <v-simple-table>
+                <v-card elevation="1">
+                  <v-simple-table color="blue lighten-4">
                     <template v-slot:default>
                       <thead>
                         <tr>
@@ -179,7 +176,11 @@
                       {{item.allocation}}
                     </v-col>
                     <v-col md="3" sm="12">
-                      <v-text-field v-model="item.amount" label="Amount"></v-text-field>
+                      <v-text-field
+                        type="number"
+                        :rules="[maxRules(item.allocation - item.amount)]"
+                        v-model="item.amount"
+                        label="Amount"></v-text-field>
                     </v-col>
                     <v-col md="1" sm="12">
                       <v-btn color="red darken-1" text @click="removePayable(i)">
@@ -196,7 +197,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save">
+          <v-btn color="green darken-1" text @click="save" :disabled="!data.valid">
             {{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -232,7 +233,6 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       openConfirmDialog,
-      updatePaymentVoucher,
       save,
       remove,
       cancelConfirmDialog,
@@ -245,6 +245,7 @@ export default defineComponent({
       searchGfsCodes,
       searchFundingSource,
       filterGfsCodes,
+      maxRules,
     } = usePaymentVoucher();
 
     return {
@@ -252,7 +253,6 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       openConfirmDialog,
-      updatePaymentVoucher,
       save,
       remove,
       cancelConfirmDialog,
@@ -265,6 +265,7 @@ export default defineComponent({
       searchGfsCodes,
       searchFundingSource,
       filterGfsCodes,
+      maxRules,
     };
   },
 });

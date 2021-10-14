@@ -5,3 +5,9 @@ export interface PaymentVoucher {
   description: string;
   payables: any[];
 }
+export interface Account {
+  id: number;
+  code: string;
+  description: string;
+  amount: number;
+}

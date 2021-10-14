@@ -33,8 +33,9 @@ export const useFundAllocation = (): any => {
   });
 
   const maxRules = (propertyType: number) => {
-    return (v: number) => 
-    (v && v <= propertyType) || `Amount must be less or equal to ${propertyType}`;
+    return (v: number) =>
+      (v && v <= propertyType) ||
+      `Amount must be less or equal to ${propertyType}`;
   };
 
   const getTableData = () => {
@@ -95,7 +96,9 @@ export const useFundAllocation = (): any => {
     if (amount != null) {
       const allocatedArray = data.items;
       const sum_allocated = allocatedArray.reduce((sum: number, b: Budget) => {
-        const allocation_amount = b.allocation_amount ? parseFloat(b.allocation_amount) : 0;
+        const allocation_amount = b.allocation_amount
+          ? parseFloat(b.allocation_amount)
+          : 0;
         const allocation = b.allocation ? parseFloat(b.allocation) : 0;
         return sum + allocation_amount + allocation;
       }, 0);

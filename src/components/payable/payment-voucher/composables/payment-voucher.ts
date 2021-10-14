@@ -1,11 +1,17 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, update, destroy, search, fundByActivity, fundByActivityFundSource } from "../services/payment-voucher.service";
-import { PaymentVoucher } from "../types/PaymentVoucher";
-import { get as getSupplier } from "@/components/payable/supplier/services/supplier.service"
-import { get as getActivity } from "@/components/planning/activity/services/activity.service"
-import { getBudget } from "@/components/payable/fund-allocation/services/fund-allocation.service"
+import {
+  get,
+  create,
+  destroy,
+  fundByActivity,
+  fundByActivityFundSource,
+} from "../services/payment-voucher.service";
+import { PaymentVoucher, Account } from "../types/PaymentVoucher";
+import { get as getSupplier } from "@/components/payable/supplier/services/supplier.service";
+import { get as getActivity } from "@/components/planning/activity/services/activity.service";
+import { getBudget } from "@/components/payable/fund-allocation/services/fund-allocation.service";
 import { Activity } from "@/components/planning/activity/types/Activity";
 import { FundSources } from "@/components/coa/funding-source/types/index";
 
@@ -17,7 +23,7 @@ export const usePaymentVoucher = (): any => {
 
   const data = reactive({
     title: "Payment Vouchers",
-    valid: true,
+    valid: false,
     isOpen: false,
     node: null,
     response: {},
@@ -111,7 +117,8 @@ export const usePaymentVoucher = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
@@ -159,40 +166,21 @@ export const usePaymentVoucher = (): any => {
       payableData.push(element);
     }
     data.formData.payables = payableData;
-    
+
     createActivity(data.formData);
   };
 
-  const openDialog = (formData?: PaymentVoucher) => {
-    if (formData.id) {
-      data.formData = formData;
-      data.modalTitle = "Update";
-      data.searchTerm = "";
-      getSupplierData();
-      getActivityData();
-      data.payables = [];
-      data.accounts = [];
-      data.fundingSources = [];
-      data.gfsCodes = [];
-    } else {
-      data.formData = {} as PaymentVoucher;
-      data.modalTitle = "Create";
-      data.searchTerm = "";
-      getSupplierData();
-      getActivityData();
-      data.payables = [];
-      data.accounts = [];
-      data.fundingSources = [];
-      data.gfsCodes = [];
-    }
+  const openDialog = () => {
+    data.formData = {} as PaymentVoucher;
+    data.modalTitle = "Create";
+    data.searchTerm = "";
+    getSupplierData();
+    getActivityData();
+    data.payables = [];
+    data.accounts = [];
+    data.fundingSources = [];
+    data.gfsCodes = [];
     data.modal = !data.modal;
-  };
-
-  const updateActivity = (data: PaymentVoucher) => {
-    update(data).then(() => {
-      cancelDialog();
-      getTableData();
-    });
   };
 
   const createActivity = (data: PaymentVoucher) => {
@@ -203,11 +191,9 @@ export const usePaymentVoucher = (): any => {
   };
 
   const getSupplierData = () => {
-    getSupplier({ per_page: 10 }).then(
-      (response: AxiosResponse) => {
-        data.suppliers = response.data.data.data;
-      }
-    );
+    getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
+      data.suppliers = response.data.data.data;
+    });
   };
 
   const searchSuppliers = (item: string) => {
@@ -233,14 +219,13 @@ export const usePaymentVoucher = (): any => {
       }
     );
   };
-  
+
   const searchFundingSource = (item: Activity) => {
-    data.activityItem = item
-    fundByActivity(item.id).then(
-      (response: AxiosResponse) => {
-        data.fundingSources = response.data.data;
-      }
-    );
+    data.activityItem = item;
+    fundByActivity(item.id).then((response: AxiosResponse) => {
+      data.fundingSources = response.data.data;
+    });
+
     getBudget({ activity_code: item.code }).then((response: AxiosResponse) => {
       data.accounts = response.data.data;
     });
@@ -248,23 +233,36 @@ export const usePaymentVoucher = (): any => {
 
   const searchGfsCodes = (fund: FundSources) => {
     data.fundSourceItem = fund;
-    fundByActivityFundSource(data.activityItem.id,data.fundSourceItem.id).then(
+    fundByActivityFundSource(data.activityItem.id, data.fundSourceItem.id).then(
       (response: AxiosResponse) => {
         data.gfsCodes = response.data.data;
       }
     );
-    getBudget({ activity_code: data.activityItem.code, fund_code: data.fundSourceItem.code }).then((response: AxiosResponse) => {
+    getBudget({
+      activity_code: data.activityItem.code,
+      fund_code: data.fundSourceItem.code,
+    }).then((response: AxiosResponse) => {
       data.accounts = response.data.data;
     });
   };
 
   const filterGfsCodes = (item: string) => {
-    getBudget({ activity_code: data.activityItem.code, fund_code: data.fundSourceItem.code, gfs_code: item}).then((response: AxiosResponse) => {
+    getBudget({
+      activity_code: data.activityItem.code,
+      fund_code: data.fundSourceItem.code,
+      gfs_code: item,
+    }).then((response: AxiosResponse) => {
       data.accounts = response.data.data;
     });
   };
-  
-  const addPayable = (account) => {
+
+  const maxRules = (propertyType: number) => {
+    return (v: number) =>
+      (v && v <= propertyType) ||
+      `Amount must be less or equal to ${propertyType}`;
+  };
+
+  const addPayable = (account: Account) => {
     data.payables.push(account);
   };
 
@@ -277,7 +275,6 @@ export const usePaymentVoucher = (): any => {
     openDialog,
     cancelDialog,
     openConfirmDialog,
-    updateActivity,
     save,
     remove,
     cancelConfirmDialog,
@@ -289,5 +286,6 @@ export const usePaymentVoucher = (): any => {
     searchGfsCodes,
     searchFundingSource,
     filterGfsCodes,
+    maxRules,
   };
 };
