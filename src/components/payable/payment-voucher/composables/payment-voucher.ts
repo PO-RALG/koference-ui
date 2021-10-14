@@ -263,7 +263,10 @@ export const usePaymentVoucher = (): any => {
   };
 
   const addPayable = (account: Account) => {
-    data.payables.push(account);
+    account.balance = account.allocation - account.totalExpenditure;
+    if (!data.payables.includes(account)) {
+      data.payables.push(account);
+    }
   };
 
   const removePayable = (index: number) => {

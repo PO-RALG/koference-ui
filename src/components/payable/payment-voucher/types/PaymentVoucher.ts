@@ -10,4 +10,7 @@ export interface Account {
   code: string;
   description: string;
   amount: number;
+  allocation: number;
+  totalExpenditure: number;
+  balance: number;
 }

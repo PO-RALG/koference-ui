@@ -3,7 +3,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Voucher')">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('create', 'Voucher')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -37,12 +41,19 @@
           <span>{{ item.date | format("DD/MM/YYYY") }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon @click="openConfirmDialog(item.id)" :disabled="cant('delete', 'Voucher')">
+          <v-icon
+            @click="openConfirmDialog(item.id)"
+            :disabled="cant('delete', 'Voucher')"
+          >
             mdi-trash-can-outline
           </v-icon>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -55,7 +66,7 @@
         <ModalBody v-if="data.formData">
           <v-form v-model="data.valid">
             <v-container>
-              <v-row class="pa-2">
+              <v-row class="pa-2 pb-5">
                 <v-col cols="12" md="2">
                   <DatePicker
                     :label="'Date'"
@@ -87,11 +98,14 @@
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="6" sm="12">
-                  <v-text-field v-model="data.formData.description" label="Description"></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.description"
+                    label="Description"
+                  ></v-text-field>
                 </v-col>
               </v-row>
               <template>
-                <v-card elevation="1">
+                <v-card elevation="2" class="pb-5">
                   <v-simple-table color="blue lighten-4">
                     <template v-slot:default>
                       <thead>
@@ -106,8 +120,16 @@
                                   @change="searchFundingSource($event)"
                                   required
                                 >
-                                  <template v-slot:selection="{ item }"> {{ item.description }} ({{ item.sub_budget_class.description }})  </template>
-                                  <template v-slot:item="{ item }"> {{ item.description }} ({{ item.sub_budget_class.description }})  </template>
+                                  <template v-slot:selection="{ item }">
+                                    {{ item.description }} ({{
+                                      item.sub_budget_class.description
+                                    }})
+                                  </template>
+                                  <template v-slot:item="{ item }">
+                                    {{ item.description }} ({{
+                                      item.sub_budget_class.description
+                                    }})
+                                  </template>
                                   <template v-slot:prepend-item>
                                     <v-list-item>
                                       <v-list-item-content>
@@ -130,8 +152,12 @@
                                   @change="searchGfsCodes($event)"
                                   return-object
                                 >
-                                  <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }}  </template>
-                                  <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }}  </template>
+                                  <template v-slot:selection="{ item }">
+                                    {{ item.code }} - {{ item.description }}
+                                  </template>
+                                  <template v-slot:item="{ item }">
+                                    {{ item.code }} - {{ item.description }}
+                                  </template>
                                 </v-select>
                               </v-col>
                               <v-col md="4" sm="12">
@@ -142,8 +168,12 @@
                                   label="Select GFS Code"
                                   @change="filterGfsCodes($event)"
                                 >
-                                  <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.name }}  </template>
-                                  <template v-slot:item="{ item }"> {{ item.code }} - {{ item.name }}  </template>
+                                  <template v-slot:selection="{ item }">
+                                    {{ item.code }} - {{ item.name }}
+                                  </template>
+                                  <template v-slot:item="{ item }">
+                                    {{ item.code }} - {{ item.name }}
+                                  </template>
                                 </v-select>
                               </v-col>
                             </v-row>
@@ -151,12 +181,23 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="(account,i) in data.accounts"
-                          :key="i">
-                          <td class="py-2" @click="addPayable(account)" colspan="2">
-                            {{account.code}}<br>
-                            <span style="color: teal">{{account.description}}</span><br>
-                            {{account.allocation}}
+                        <tr v-for="(account, i) in data.accounts" :key="i">
+                          <td
+                            class="py-2"
+                            @click="addPayable(account)"
+                            colspan="2"
+                          >
+                            <span>{{ account.code }}</span>
+                            <br />
+                            <span style="color: teal">
+                              {{ account.description }}
+                            </span>
+                            <br />
+                            <span>
+                              {{
+                                account.allocation - account.totalExpenditure
+                              }}
+                            </span>
                           </td>
                         </tr>
                       </tbody>
@@ -165,25 +206,35 @@
                 </v-card>
               </template>
               <template>
-                <div class="pa-3 pt-7"
-                  v-for="(item,i) in data.payables"
+                <div
+                  class="pa-3 pt-7"
+                  v-for="(item, i) in data.payables"
                   :key="i"
                 >
                   <v-row>
                     <v-col md="8" sm="12">
-                      {{item.code}}<br>
-                      <span style="color: teal">{{item.description}}</span><br>
-                      {{item.allocation}}
+                      <span class="text-lg-body-1">{{ item.code }}</span>
+                      <br />
+                      <span style="color: teal">{{ item.description }}</span>
+                      <br />
+                      <span class="text--primary">{{ item.balance }}</span>
                     </v-col>
                     <v-col md="3" sm="12">
                       <v-text-field
+                        :hint="'Available amount: ' + item.balance"
+                        persistent-hint
                         type="number"
-                        :rules="[maxRules(item.allocation - item.amount)]"
+                        :rules="[maxRules(item.balance)]"
                         v-model="item.amount"
-                        label="Amount"></v-text-field>
+                        label="Amount"
+                      ></v-text-field>
                     </v-col>
                     <v-col md="1" sm="12">
-                      <v-btn color="red darken-1" text @click="removePayable(i)">
+                      <v-btn
+                        color="red darken-1"
+                        text
+                        @click="removePayable(i)"
+                      >
                         <v-icon>mdi-minus</v-icon>
                       </v-btn>
                     </v-col>
@@ -196,8 +247,15 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save" :disabled="!data.valid">
+          <v-btn color="red darken-1" text @click="cancelDialog">
+            Cancel
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="save"
+            :disabled="!data.valid"
+          >
             {{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -213,7 +271,9 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog"> Cancel </v-btn>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Cancel
+          </v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -246,6 +306,7 @@ export default defineComponent({
       searchFundingSource,
       filterGfsCodes,
       maxRules,
+      resetBudget,
     } = usePaymentVoucher();
 
     return {
@@ -266,6 +327,7 @@ export default defineComponent({
       searchFundingSource,
       filterGfsCodes,
       maxRules,
+      resetBudget,
     };
   },
 });
