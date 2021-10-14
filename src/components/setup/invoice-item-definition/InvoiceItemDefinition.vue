@@ -124,7 +124,7 @@
                   <v-autocomplete
                     v-model="data.formData.gfs_code_id"
                     label="Gfs Codes"
-                    :items="data.gfscodes"
+                    :items="gfsName"
                     :item-text="'fullName'"
                     item-value="id"
                     :item-divider="true"
@@ -136,7 +136,7 @@
                   <v-autocomplete
                     v-model="data.formData.funding_source_id"
                     label="Funding Sources"
-                    :items="data.fundingsources"
+                    :items="fundingsourceName"
                     :item-text="'sourceName'"
                     item-value="id"
                     :item-divider="true"
