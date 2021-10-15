@@ -54,12 +54,6 @@ export const usePaymentVoucher = (): any => {
         value: "bank_account",
       },
       {
-        text: "Financial Year",
-        align: "start",
-        sortable: false,
-        value: "financial_year.name",
-      },
-      {
         text: "Amount",
         align: "start",
         sortable: false,

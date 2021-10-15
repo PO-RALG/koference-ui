@@ -35,9 +35,11 @@ import { invoiceDebtorsRoutes } from "@/components/invoice-debtors";
 import { jvRoutes } from "@/components/general-ledger/journal-voucher";
 import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
 import { paymentVoucherRoutes } from "@/components/payable/payment-voucher";
+import { paymentRoutes } from "@/components/payable/payment";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+
 
 
 Vue.use(VueRouter);
@@ -94,6 +96,7 @@ const routes: Array<RouteConfig> = [
       ...jvRoutes,
       ...fundAllocationRoutes,
       ...paymentVoucherRoutes,
+      ...paymentRoutes,
     ],
   },
 ];
