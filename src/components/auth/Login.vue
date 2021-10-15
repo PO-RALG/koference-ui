@@ -7,15 +7,22 @@
             <v-card height="fit" class="elevation-8 pa-0">
               <v-row dense class="mr-0 ml-0" v-if="data.slides.length > 0">
                 <!-- class="d-none d-md-flex d-lg-none d-none d-lg-flex d-xl-none d-none " -->
-                <v-flex grow md6>
-                  <v-flex class="d-none d-md-flex d-lg-none d-none d-lg-flex">
-                    <v-carousel cycle hide-delimiters interval="10000" height="100%" light>
-                      <v-carousel-item v-for="(item, i) in data.slides" :key="i" :src="item.src"></v-carousel-item>
-                    </v-carousel>
-                  </v-flex>
-                </v-flex>
+                <v-col md="6" cols="12" sm="12" class="pa-0">
+                  <v-carousel
+                    cycle
+                    hide-delimiters
+                    interval="10000"
+                    height="100%"
+                    light>
+                    <v-carousel-item
+                      v-for="(item, i) in data.slides"
+                      :key="i"
+                      :src="item.src">
+                    </v-carousel-item>
+                  </v-carousel>
+                </v-col>
                 <!-- login form start -->
-                <v-flex md6 sm12>
+                <v-col md="6" cols="12" sm="12">
                   <!-- <v-col cols="12" md="4" sm="12"> -->
                   <v-card-text class>
                     <img :src="data.coat" class="login-logo" />
@@ -63,7 +70,7 @@
                       <v-icon left>mdi-login</v-icon>LOGIN
                     </v-btn>
                   </v-card-actions>
-                </v-flex>
+                </v-col>
                 <!-- login form end -->
               </v-row>
             </v-card>
@@ -136,7 +143,7 @@ export default Vue.extend({
 });
 </script>
 
-<style>
+<style scoped>
 .coat {
   width: 100px;
   height: 100px;
