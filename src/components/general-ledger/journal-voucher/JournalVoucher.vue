@@ -46,15 +46,15 @@
                   </tr>
                 </v-col>
                 <v-col class="pt-2 invoice-table" cols="12" md="12">
-                  <v-data-table :headers="HEADERS" :items="data.jv_items" disable-pagination hide-default-footer>
+                  <v-data-table :headers="HEADERS" :items="data.lines" disable-pagination hide-default-footer>
                     <template v-slot:body>
-                      <tr v-for="(item, index) in data.jv.jv_items" :key="index" class="invoice-tr">
+                      <tr v-for="(item, index) in data.jv.lines" :key="index" class="invoice-tr">
                         <td>
                           <v-select
                             :items="accounts"
                             :item-text="'code'"
                             v-model="item.account"
-                            :name="`data.jv.jv_items[${index}][account]`"
+                            :name="`data.jv.lines[${index}][account]`"
                             label="Select GL Account"
                             item-value="code"
                             full-width
@@ -70,8 +70,9 @@
                             hide-details
                             outlined
                             type="number"
-                            v-model="item.debit"
-                            :name="`data.jv.jv_items[${index}][debit]`"
+                            @blur="checkDrAmount(`${index}`)"
+                            v-model="item.dr_amount"
+                            :name="`data.jv.lines[${index}][dr_amount]`"
                           >
                           </v-text-field>
                         </td>
@@ -81,8 +82,9 @@
                             hide-details
                             outlined
                             type="number"
-                            v-model="item.credit"
-                            :name="`data.jv.jv_items[${index}][credit]`"
+                            @blur="checkCrAmount(`${index}`)"
+                            v-model="item.cr_amount"
+                            :name="`data.jv.lines[${index}][cr_amount]`"
                           >
                           </v-text-field>
                         </td>
@@ -91,7 +93,7 @@
                             color="blue darken-1"
                             small
                             text
-                            v-if="index || (!index && data.jv.jv_items.length > 1)"
+                            v-if="index || (!index && data.jv.lines.length > 1)"
                             @click="removeRow(index)"
                           >
                             <v-icon small color="red"> mdi-minus-circle </v-icon>
@@ -101,7 +103,7 @@
                             color="blue darken-1"
                             text
                             @click="addRow"
-                            v-if="index == data.jv.jv_items.length - 1"
+                            v-if="index == data.jv.lines.length - 1"
                           >
                             <v-icon small color="success"> mdi-plus-circle </v-icon>
                           </v-btn>
@@ -145,6 +147,8 @@ export default defineComponent({
       removeRow,
       HEADERS,
       accounts,
+      checkCrAmount,
+      checkDrAmount,
     } = useJv();
 
     return {
@@ -157,6 +161,8 @@ export default defineComponent({
       removeRow,
       HEADERS,
       accounts,
+      checkCrAmount,
+      checkDrAmount,
     };
   },
 });

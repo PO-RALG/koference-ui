@@ -94,7 +94,7 @@
                     :items="data.ACCOUNT_TYPES"
                     item-value="name"
                     label="Select Account Type"
-                  >
+                    >
                   </v-select>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
