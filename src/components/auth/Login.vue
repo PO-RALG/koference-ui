@@ -4,18 +4,12 @@
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
           <v-col cols="8" sm="8" md="7">
-            <v-card height="fit" class="elevation-5 pa-0">
+            <v-card height="fit" class="elevation-8 pa-0">
               <v-row dense class="mr-0 ml-0" v-if="data.slides.length > 0">
                 <!-- class="d-none d-md-flex d-lg-none d-none d-lg-flex d-xl-none d-none " -->
                 <v-flex grow md6>
                   <v-flex class="d-none d-md-flex d-lg-none d-none d-lg-flex">
-                    <v-carousel
-                      cycle
-                      hide-delimiters
-                      interval="10000"
-                      height="100%"
-                      light
-                    >
+                    <v-carousel cycle hide-delimiters interval="10000" height="100%" light>
                       <v-carousel-item v-for="(item, i) in data.slides" :key="i" :src="item.src"></v-carousel-item>
                     </v-carousel>
                   </v-flex>
