@@ -56,11 +56,11 @@ export const useJv = (): any => {
       date: null,
       descriptions: null,
       facility_id: null,
-      jv_items: [
+      lines: [
         {
           account: "",
-          debit: "",
-          credit: "",
+          dr_amount: 0,
+          cr_amount: 0,
         },
       ],
     },
@@ -98,15 +98,15 @@ export const useJv = (): any => {
   };
 
   const addRow = () => {
-    data.jv.jv_items.push({
+    data.jv.lines.push({
       account: "",
-      debit: "",
-      credit: "",
+      dr_amount: 0,
+      cr_amount: 0,
     });
   };
 
   const removeRow = (index: number) => {
-    data.jv.jv_items.splice(index, 1);
+    data.jv.lines.splice(index, 1);
   };
 
   const save = () => {
@@ -122,6 +122,14 @@ export const useJv = (): any => {
     return data.accounts.filter((entry) => entry.active === true);
   });
 
+  const checkDrAmount = (index: number) => {
+    data.jv.lines[index]["cr_amount"] = 0;
+  };
+
+  const checkCrAmount = (index: number) => {
+    data.jv.lines[index]["dr_amount"] = 0;
+  };
+
   return {
     data,
     accounts,
@@ -133,5 +141,7 @@ export const useJv = (): any => {
     addRow,
     removeRow,
     currentUser,
+    checkCrAmount,
+    checkDrAmount,
   };
 };

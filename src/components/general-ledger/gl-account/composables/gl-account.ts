@@ -1,14 +1,24 @@
 import { AxiosResponse } from "axios";
 import { reactive, onMounted } from "@vue/composition-api";
-import { get, toggleStatus as toggle } from "../services/gl.account.service";
+import { useRoute } from "vue2-helpers/vue-router";
+import { get, toggleStatus as toggle, create } from "../services/gl.account.service";
 
 export const useGLAccount = (): any => {
+
+  const route = useRoute();
+
   const data = reactive({
     items: [],
     title: "Manage GL Accounts",
     activateDialog: false,
     itemID: null,
     dialogTitle: "",
+    modal: false,
+    modalTitle: "Create",
+    formData:{
+      code: "",
+      facility_id: null,
+    },
   });
 
   const toggleStatus = () => {
@@ -39,10 +49,32 @@ export const useGLAccount = (): any => {
     });
   };
 
+  const openDialog = () => {
+    if (route.query.facility_id) {
+      data.formData.facility_id = route.query.facility_id;
+    }
+    data.modal = !data.modal;
+  };
+
+  const cancelDialog = () => {
+    data.modal = !data.modal;
+  };
+
+  const save = () => {
+    create(data.formData).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        cancelDialog();
+      }
+    });
+  };
+
   return {
     data,
     toggleStatus,
     openActivationDialog,
     cancelActivationDialog,
+    openDialog,
+    save,
+    cancelDialog,
   };
 };
