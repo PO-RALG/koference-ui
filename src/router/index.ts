@@ -33,9 +33,12 @@ import { glTransactionRoutes } from "@/components/general-ledger/transaction";
 import { glReportRoutes } from "@/components/general-ledger/report";
 import { invoiceDebtorsRoutes } from "@/components/invoice-debtors";
 import { jvRoutes } from "@/components/general-ledger/journal-voucher";
+import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
+import { paymentVoucherRoutes } from "@/components/payable/payment-voucher";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+
 
 Vue.use(VueRouter);
 
@@ -89,6 +92,8 @@ const routes: Array<RouteConfig> = [
       ...glReportRoutes,
       ...invoiceDebtorsRoutes,
       ...jvRoutes,
+      ...fundAllocationRoutes,
+      ...paymentVoucherRoutes,
     ],
   },
 ];

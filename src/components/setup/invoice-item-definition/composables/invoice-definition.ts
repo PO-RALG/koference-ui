@@ -1,7 +1,14 @@
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, update, destroy, search, activation } from "../services/invoice-item-definition";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+  activation,
+} from "../services/invoice-item-definition";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import { fundingsources } from "@/components/coa/funding-source/services/funding-sources";
 import { ManageInvoiceItemDefinition } from "../types/";
@@ -52,7 +59,8 @@ export const useInvoiceDefinition = (): any => {
 
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
@@ -66,6 +74,20 @@ export const useInvoiceDefinition = (): any => {
       data.fundingsources = response.data.data.data;
     });
   };
+
+  const gfsName = computed(() => {
+    return data.gfscodes.map((gfsItem) => {
+      gfsItem.fullName = `${gfsItem.code} - ${gfsItem.name} `;
+      return gfsItem;
+    });
+  });
+
+  const fundingsourceName = computed(() => {
+    return data.fundingsources.map((fundingsourceItem) => {
+      fundingsourceItem.sourceName = `${fundingsourceItem.code} - ${fundingsourceItem.description} `;
+      return fundingsourceItem;
+    });
+  });
 
   const setActivation = (item) => {
     activation(item).then((response: any) => {
@@ -89,7 +111,8 @@ export const useInvoiceDefinition = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -183,5 +206,7 @@ export const useInvoiceDefinition = (): any => {
     cancelConfirmDialog,
     searchCategory,
     setActivation,
+    gfsName,
+    fundingsourceName,
   };
 };

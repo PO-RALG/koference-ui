@@ -285,17 +285,16 @@ exports.useInvoice = function () {
     var newInvoiceItem = composition_api_1.computed(function () {
         return data.invoicedata.invoice_items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); });
     });
-    // map: (data: any) => void;
-    var text = composition_api_1.ref(newInvoiceItem);
+    var invoicedAmount = composition_api_1.ref(newInvoiceItem);
     var sumDebts = composition_api_1.computed(function () {
         return {
-            sumamount: text.value.reduce(function (sum, totalAmount) {
+            sumamount: invoicedAmount.value.reduce(function (sum, totalAmount) {
                 return sum + Number(totalAmount.amount);
             }, 0),
-            sumamountReceived: text.value.reduce(function (sum, totalAmount) {
+            sumamountReceived: invoicedAmount.value.reduce(function (sum, totalAmount) {
                 return sum + Number(totalAmount.received_amount);
             }, 0),
-            sumamountPending: text.value.reduce(function (sum, totalAmount) {
+            sumamountPending: invoicedAmount.value.reduce(function (sum, totalAmount) {
                 return sum + Number(totalAmount.amount - totalAmount.received_amount);
             }, 0)
         };
