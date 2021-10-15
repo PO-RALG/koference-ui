@@ -30,7 +30,7 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="12" sm="12">
-                  <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
+                  <v-text-field v-model="data.formData.code" label="Account Code" required></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -60,15 +60,8 @@ export default defineComponent({
       { text: "Actions", value: "actions", sortable: false },
     ];
 
-    const {
-      data,
-      toggleStatus,
-      openActivationDialog,
-      cancelActivationDialog,
-      openDialog,
-      cancelDialog,
-      save,
-    } = useGLAccount();
+    const { data, toggleStatus, openActivationDialog, cancelActivationDialog, openDialog, cancelDialog, save } =
+      useGLAccount();
 
     return {
       HEADERS,
