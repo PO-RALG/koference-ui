@@ -78,6 +78,8 @@
                   <v-select
                     v-model="data.formData.bank_account_id"
                     :items="data.bankAccounts"
+                    item-text="name"
+                    item-value="id"
                     label="Select Bank Account"
                     required
                   >
@@ -104,7 +106,8 @@
                     :items="data.paymentVouchers"
                     item-text="reference_no"
                     label="Select PV"
-                    required
+                    @change="setPayableItems($event)"
+                    return-object
                   >
                   </v-select>
                 </v-col>
@@ -116,141 +119,39 @@
                 </v-col>
               </v-row>
               <template>
-                <v-card elevation="2" class="pb-5">
-                  <v-simple-table color="blue lighten-4">
-                    <template v-slot:default>
-                      <thead>
-                        <tr>
-                          <td colspan="2">
-                            <v-row>
-                              <v-col md="4" sm="12">
-                                <v-select
-                                  :items="data.activities"
-                                  item-text="name"
-                                  label="Select Activity"
-                                  @change="searchFundingSource($event)"
-                                  required
-                                >
-                                  <template v-slot:selection="{ item }">
-                                    {{ item.description }} ({{
-                                      item.sub_budget_class.description
-                                    }})
-                                  </template>
-                                  <template v-slot:item="{ item }">
-                                    {{ item.description }} ({{
-                                      item.sub_budget_class.description
-                                    }})
-                                  </template>
-                                  <template v-slot:prepend-item>
-                                    <v-list-item>
-                                      <v-list-item-content>
-                                        <v-text-field
-                                          v-model="data.searchTerm"
-                                          placeholder="Search"
-                                          @input="searchActivities"
-                                        ></v-text-field>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-divider></v-divider>
-                                  </template>
-                                </v-select>
-                              </v-col>
-                              <v-col md="4" sm="12">
-                                <v-select
-                                  :items="data.fundingSources"
-                                  item-text="code"
-                                  label="Select Funding Sources"
-                                  @change="searchGfsCodes($event)"
-                                  return-object
-                                >
-                                  <template v-slot:selection="{ item }">
-                                    {{ item.code }} - {{ item.description }}
-                                  </template>
-                                  <template v-slot:item="{ item }">
-                                    {{ item.code }} - {{ item.description }}
-                                  </template>
-                                </v-select>
-                              </v-col>
-                              <v-col md="4" sm="12">
-                                <v-select
-                                  :items="data.gfsCodes"
-                                  item-value="code"
-                                  item-text="name"
-                                  label="Select GFS Code"
-                                  @change="filterGfsCodes($event)"
-                                >
-                                  <template v-slot:selection="{ item }">
-                                    {{ item.code }} - {{ item.name }}
-                                  </template>
-                                  <template v-slot:item="{ item }">
-                                    {{ item.code }} - {{ item.name }}
-                                  </template>
-                                </v-select>
-                              </v-col>
-                            </v-row>
-                          </td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(account, i) in data.accounts" :key="i">
-                          <td
-                            class="py-2"
-                            @click="addPayable(account)"
-                            colspan="2"
+                <v-simple-table color="blue lighten-4">
+                  <template v-slot:default>
+                    <tbody>
+                      <tr v-for="(payable, i) in data.payables" :key="i">
+                        <td>
+                          <v-select
+                            v-model="payable.payable_id"
+                            :items="data.payableItems"
+                            item-text="description"
+                            label="Select Item"
+                            required
                           >
-                            <span>{{ account.code }}</span>
-                            <br />
-                            <span style="color: teal">
-                              {{ account.description }}
-                            </span>
-                            <br />
-                            <span>
-                              {{
-                                account.allocation - account.totalExpenditure
-                              }}
-                            </span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </template>
-                  </v-simple-table>
-                </v-card>
-              </template>
-              <template>
-                <div
-                  class="pa-3 pt-7"
-                  v-for="(item, i) in data.payables"
-                  :key="i"
-                >
-                  <v-row>
-                    <v-col md="8" sm="12">
-                      <span class="text-lg-body-1">{{ item.code }}</span>
-                      <br />
-                      <span style="color: teal">{{ item.description }}</span>
-                      <br />
-                      <span class="text--primary">{{ item.balance }}</span>
-                    </v-col>
-                    <v-col md="3" sm="12">
-                      <v-text-field
-                        :hint="'Available amount: ' + item.balance"
-                        persistent-hint
-                        type="number"
-                        :rules="[maxRules(item.balance)]"
-                        v-model="item.amount"
-                        label="Amount"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col md="1" sm="12">
-                      <v-btn
-                        color="red darken-1"
-                        text
-                        @click="removePayable(i)"
-                      >
-                        <v-icon>mdi-minus</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </div>
+                          </v-select>
+                        </td>
+                        <td>
+                          <v-text-field
+                            type="number"
+                            v-model="payable.amount"
+                            label="Amount"
+                          ></v-text-field>
+                        </td>
+                        <td>
+                          <v-btn v-if="data.payables.length == i+1" text @click="addPayable">
+                            <v-icon color="green darken-1">mdi-plus-circle</v-icon>
+                          </v-btn>
+                          <v-btn v-if="data.payables.length > 1" text @click="removePayable(i)">
+                            <v-icon color="red darken-1">mdi-minus-circle</v-icon>
+                          </v-btn>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
               </template>
             </v-container>
           </v-form>
@@ -309,15 +210,9 @@ export default defineComponent({
       cancelConfirmDialog,
       searchItem,
       getData,
-      searchSuppliers,
       addPayable,
       removePayable,
-      searchActivities,
-      searchGfsCodes,
-      searchFundingSource,
-      filterGfsCodes,
-      maxRules,
-      resetBudget,
+      setPayableItems
     } = usePayment();
 
     return {
@@ -330,15 +225,9 @@ export default defineComponent({
       cancelConfirmDialog,
       searchItem,
       getData,
-      searchSuppliers,
       addPayable,
       removePayable,
-      searchActivities,
-      searchGfsCodes,
-      searchFundingSource,
-      filterGfsCodes,
-      maxRules,
-      resetBudget,
+      setPayableItems
     };
   },
 });

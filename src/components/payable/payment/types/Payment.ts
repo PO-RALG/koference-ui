@@ -3,5 +3,5 @@ export interface Payment {
   date: string;
   supplier_id: number;
   description: string;
-  payables: any[];
+  items: any[];
 }

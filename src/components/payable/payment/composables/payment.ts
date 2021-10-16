@@ -82,9 +82,8 @@ export const usePayment = (): any => {
     chequeTypes: ["Open","Closed"],
     bankAccounts: [],
     paymentVouchers: [],
-    fundingSources: [],
-    accounts: [],
-    payables: [],
+    payableItems: [],
+    payables: [{payable_id: '', amount: 0}],
   });
 
   onMounted(() => {
@@ -136,14 +135,14 @@ export const usePayment = (): any => {
     const payableItems = data.payables;
     for (let i = 0; i < payableItems.length; i++) {
       const element = {
-        gl_account_id: payableItems[i].id,
+        payable_id: payableItems[i].payable_id,
         amount: payableItems[i].amount,
       };
       payableData.push(element);
     }
-    data.formData.payables = payableData;
+    data.formData.items = payableData;
 
-    createActivity(data.formData);
+    createPayment(data.formData);
   };
 
   const openDialog = () => {
@@ -155,7 +154,7 @@ export const usePayment = (): any => {
     data.modal = !data.modal;
   };
 
-  const createActivity = (data: Payment) => {
+  const createPayment = (data: Payment) => {
     create(data).then(() => {
       cancelDialog();
       getTableData();
@@ -180,6 +179,18 @@ export const usePayment = (): any => {
       `Amount must be less or equal to ${propertyType}`;
   };
 
+  const addPayable = () => {
+    data.payables.push({ payable_id: "", amount: 0 });
+  };
+
+  const removePayable = (index: number) => {
+    data.payables.splice(index, 1);
+  };
+
+  const setPayableItems = (itemData) => {
+    data.payableItems = itemData.payables;
+  }
+
   return {
     data,
     openDialog,
@@ -190,5 +201,8 @@ export const usePayment = (): any => {
     cancelConfirmDialog,
     getData,
     maxRules,
+    addPayable,
+    removePayable,
+    setPayableItems,
   };
 };
