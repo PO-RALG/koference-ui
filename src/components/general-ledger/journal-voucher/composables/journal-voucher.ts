@@ -123,11 +123,19 @@ export const useJv = (): any => {
   });
 
   const checkDrAmount = (index: number) => {
-    data.jv.lines[index]["cr_amount"] = 0;
+    if (data.jv.lines[index]["dr_amount"] === 0) {
+      return
+    } else {
+      data.jv.lines[index]["cr_amount"] = 0;
+    }
   };
 
   const checkCrAmount = (index: number) => {
-    data.jv.lines[index]["dr_amount"] = 0;
+    if (data.jv.lines[index]["cr_amount"] === 0) {
+      return;
+    } else {
+      data.jv.lines[index]["dr_amount"] = 0;
+    }
   };
 
   return {

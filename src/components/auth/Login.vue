@@ -8,17 +8,8 @@
               <v-row dense class="mr-0 ml-0" v-if="data.slides.length > 0">
                 <!-- class="d-none d-md-flex d-lg-none d-none d-lg-flex d-xl-none d-none " -->
                 <v-col md="6" cols="12" sm="12" class="pa-0">
-                  <v-carousel
-                    cycle
-                    hide-delimiters
-                    interval="10000"
-                    height="100%"
-                    light>
-                    <v-carousel-item
-                      v-for="(item, i) in data.slides"
-                      :key="i"
-                      :src="item.src">
-                    </v-carousel-item>
+                  <v-carousel cycle hide-delimiters interval="10000" height="100%" light>
+                    <v-carousel-item v-for="(item, i) in data.slides" :key="i" :src="item.src"> </v-carousel-item>
                   </v-carousel>
                 </v-col>
                 <!-- login form start -->
@@ -63,7 +54,7 @@
                       ></v-text-field>
                     </v-form>
                   </v-card-text>
-                  <v-card-actions class="mr-3 ml-3 pr-6 pl-6 pt-0">
+                  <v-card-actions class="mr-3 ml-3 pr-6 pl-6 mt-n8">
                     <small class="text-center mt-3"> <a href="#">FOGOT PASSWORD?</a></small>
                     <v-spacer></v-spacer>
                     <v-btn color="primary" class="white--text" @click="login" :loading="data.loading">
