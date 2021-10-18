@@ -33,10 +33,10 @@
           </thead>
           <tbody v-for="(entry, index) in data.entries" :key="index">
             <tr class="ledger-header">
-              <th colspan="5" class="account-th">{{ entry.account }} - {{ entry.account_description }}</th>
+              <th{{ item.id }} colspan="5" class="account-th">{{ entry.account }} - {{ entry.account_description }}</th>
             </tr>
             <tr v-for="(trx, idx) in entry.transactions" :key="idx">
-              <td>{{ trx.apply_date | format("MM/DD/YYYY") }}</td>
+              <td>{{ trx.apply_datedata |  format("MM/DD/YYYY") }}</td>
               <td>{{ trx.description }}</td>
               <td>{{ trx.account }}</td>
               <td>{{ trx.dr | toCurrency }}</td>
