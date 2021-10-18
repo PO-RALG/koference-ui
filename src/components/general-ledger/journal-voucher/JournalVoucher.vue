@@ -16,7 +16,7 @@
         item-key="id"
         :expanded.sync="data.expanded"
         show-expand
-        >
+      >
         <template v-slot:[`item.date`]="{ item }">
           <span>{{ item.date | format("DD/MM/YYYY") }}</span>
         </template>
@@ -26,12 +26,7 @@
         <template v-slot:[`expanded-item`]="{ item }">
           <td :colspan="5" class="pa-2">
             <v-card outlined flat width="100%" max-width="100%">
-              <v-data-table
-                :headers="ITEM_HEADERS"
-                :items="item.lines"
-                hide-default-footer
-                dense
-                >
+              <v-data-table :headers="ITEM_HEADERS" :items="item.lines" hide-default-footer dense>
                 <template v-slot:[`item.dr_amount`]="{ item }">
                   <span>{{ item.dr_amount | toCurrency }}</span>
                 </template>
@@ -45,117 +40,117 @@
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="1200">
-    <template v-slot:header>
-      <ModalHeader :title="`Create Journal Voucher`" />
-    </template>
-    <template v-slot:body>
-      <ModalBody>
-      <v-form ref="form" v-model="data.valid">
-        <v-container>
-          <v-row class="pa-3">
-            <v-col cols="12" lg="4" md="4" sm="12">
-              <DatePicker :label="'JV Date'" v-model="data.jv.date" />
-            </v-col>
-            <v-col cols="12" lg="8" md="8" sm="12">
-              <v-text-field label="Description" outlined v-model="data.jv.descriptions"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row class="pa-3 mt-n12">
-            <v-col class="pt-2" cols="12" md="12">
-              <tr class="heading blue-grey lighten-5">
-                <td colspan="3">
-                  Add Journal Voucher Item {{ " " }}{{ "by pressing" }}
-                  <v-icon small color="success"> mdi-plus-circle </v-icon>
-                  {{ " " }} {{ "or" }} {{ "remove by pressing " }}{{ " " }}
-                  <v-icon small color="red"> mdi-minus-circle </v-icon>{{ " " }}{{ "sign in the right" }}
-                  {{ " " }}
-                  <v-icon color=""> mdi-arrow-right-bold </v-icon>
-                </td>
-              </tr>
-            </v-col>
-            <v-col class="pt-2 invoice-table" cols="12" md="12">
-              <v-data-table :headers="HEADERS" :items="data.lines" disable-pagination hide-default-footer>
-                <template v-slot:body>
-                  <tr v-for="(item, index) in data.jv.lines" :key="index" class="invoice-tr">
-                    <td>
-                      <v-select
-                        :items="accounts"
-                        :item-text="'code'"
-                        v-model="item.account"
-                        :name="`data.jv.lines[${index}][account]`"
-                        label="Select GL Account"
-                        item-value="code"
-                        full-width
-                        dense
-                        outlined
-                        item-disabled="disabled"
-                        hide-details
-                        ></v-select>
-                    </td>
-
-                    <td class="invoice-td">
-                      <v-text-field
-                        dense
-                        hide-details
-                        outlined
-                        type="number"
-                        @blur="checkDrAmount(`${index}`)"
-                        v-model="item.dr_amount"
-                        :name="`data.jv.lines[${index}][dr_amount]`"
-                        >
-                      </v-text-field>
-                    </td>
-                    <td class="invoice-td">
-                      <v-text-field
-                        dense
-                        hide-details
-                        outlined
-                        type="number"
-                        @blur="checkCrAmount(`${index}`)"
-                        v-model="item.cr_amount"
-                        :name="`data.jv.lines[${index}][cr_amount]`"
-                        >
-                      </v-text-field>
-                    </td>
-                    <td>
-                      <v-btn
-                        color="blue darken-1"
-                        small
-                        text
-                        v-if="index || (!index && data.jv.lines.length > 1)"
-                        @click="removeRow(index)"
-                        >
-                        <v-icon small color="red"> mdi-minus-circle </v-icon>
-                      </v-btn>
-                      <v-btn
-                        small
-                        color="blue darken-1"
-                        text
-                        @click="addRow"
-                        v-if="index == data.jv.lines.length - 1"
-                        >
-                        <v-icon small color="success"> mdi-plus-circle </v-icon>
-                      </v-btn>
+      <template v-slot:header>
+        <ModalHeader :title="`Create Journal Voucher`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-form ref="form" v-model="data.valid">
+            <v-container>
+              <v-row class="pa-3">
+                <v-col cols="12" lg="4" md="4" sm="12">
+                  <DatePicker :label="'JV Date'" v-model="data.jv.date" />
+                </v-col>
+                <v-col cols="12" lg="8" md="8" sm="12">
+                  <v-text-field label="Description" outlined v-model="data.jv.descriptions"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row class="pa-3 mt-n12">
+                <v-col class="pt-2" cols="12" md="12">
+                  <tr class="heading blue-grey lighten-5">
+                    <td colspan="3">
+                      Add Journal Voucher Item {{ " " }}{{ "by pressing" }}
+                      <v-icon small color="success"> mdi-plus-circle </v-icon>
+                      {{ " " }} {{ "or" }} {{ "remove by pressing " }}{{ " " }}
+                      <v-icon small color="red"> mdi-minus-circle </v-icon>{{ " " }}{{ "sign in the right" }}
+                      {{ " " }}
+                      <v-icon color=""> mdi-arrow-right-bold </v-icon>
                     </td>
                   </tr>
-                </template>
-                <template v-slot:[`item.icon`]="{ item }">
-                  <v-icon class="mr-2">{{ item.icon }}</v-icon>
-                </template>
-              </v-data-table>
-            </v-col>
-          </v-row>
-        </v-container>
-        <!--<pre>{{ data.jv }}</pre>-->
-      </v-form>
-      </ModalBody>
-    </template>
-    <template v-slot:footer>
-      <ModalFooter>
-      <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-      <v-btn color="blue darken-1" text @click="save">Create</v-btn>
-      </ModalFooter>
-    </template>
+                </v-col>
+                <v-col class="pt-2 invoice-table" cols="12" md="12">
+                  <v-data-table :headers="HEADERS" :items="data.lines" disable-pagination hide-default-footer>
+                    <template v-slot:body>
+                      <tr v-for="(item, index) in data.jv.lines" :key="index" class="invoice-tr">
+                        <td>
+                          <v-select
+                            :items="accounts"
+                            :item-text="'code'"
+                            v-model="item.account"
+                            :name="`data.jv.lines[${index}][account]`"
+                            label="Select GL Account"
+                            item-value="code"
+                            full-width
+                            dense
+                            outlined
+                            item-disabled="disabled"
+                            hide-details
+                          ></v-select>
+                        </td>
+
+                        <td class="invoice-td">
+                          <v-text-field
+                            dense
+                            hide-details
+                            outlined
+                            type="number"
+                            @blur="checkDrAmount(`${index}`)"
+                            v-model="item.dr_amount"
+                            :name="`data.jv.lines[${index}][dr_amount]`"
+                          >
+                          </v-text-field>
+                        </td>
+                        <td class="invoice-td">
+                          <v-text-field
+                            dense
+                            hide-details
+                            outlined
+                            type="number"
+                            @blur="checkCrAmount(`${index}`)"
+                            v-model="item.cr_amount"
+                            :name="`data.jv.lines[${index}][cr_amount]`"
+                          >
+                          </v-text-field>
+                        </td>
+                        <td>
+                          <v-btn
+                            color="blue darken-1"
+                            small
+                            text
+                            v-if="index || (!index && data.jv.lines.length > 1)"
+                            @click="removeRow(index)"
+                          >
+                            <v-icon small color="red"> mdi-minus-circle </v-icon>
+                          </v-btn>
+                          <v-btn
+                            small
+                            color="blue darken-1"
+                            text
+                            @click="addRow"
+                            v-if="index == data.jv.lines.length - 1"
+                          >
+                            <v-icon small color="success"> mdi-plus-circle </v-icon>
+                          </v-btn>
+                        </td>
+                      </tr>
+                    </template>
+                    <template v-slot:[`item.icon`]="{ item }">
+                      <v-icon class="mr-2">{{ item.icon }}</v-icon>
+                    </template>
+                  </v-data-table>
+                </v-col>
+              </v-row>
+            </v-container>
+            <!--<pre>{{ data.jv }}</pre>-->
+          </v-form>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="save">Create</v-btn>
+        </ModalFooter>
+      </template>
     </Modal>
   </div>
 </template>
