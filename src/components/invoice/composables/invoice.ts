@@ -277,7 +277,6 @@ export const useInvoice = (): any => {
     data.customer = [invoiceData]; //mapping customer in autocomplete field
     data.invoicereceip.customer_id = invoiceData; //mapping customer in autocomplete for two way binding
     data.invoicereceip.invoice_id = invoiceData.id;
-    data.invoicereceip.description = invoiceData.description;
     data.invoicereceip.invoice_number = invoiceData.invoice_number;
 
     if (data.invoicedata.invoice_items) {
