@@ -56,12 +56,21 @@ export default defineComponent({
     const HEADERS = [
       { text: "Account Type", value: "gl_account_type" },
       { text: "Account", value: "code" },
+      { text: "Nature", value: "nature" },
+      { text: "Nature", value: "nature" },
       { text: "Status", align: "start", sortable: false, value: "active" },
       { text: "Actions", value: "actions", sortable: false },
     ];
 
-    const { data, toggleStatus, openActivationDialog, cancelActivationDialog, openDialog, cancelDialog, save } =
-      useGLAccount();
+    const {
+      data,
+      toggleStatus,
+      openActivationDialog,
+      cancelActivationDialog,
+      openDialog,
+      cancelDialog,
+      save
+    } = useGLAccount();
 
     return {
       HEADERS,
