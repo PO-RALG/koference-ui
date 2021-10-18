@@ -8,11 +8,34 @@
         Add New
       </v-btn>
     </v-card-actions>
-
     <v-card>
-      <v-data-table :headers="data.headers" :items="data.items" hide-default-footer class="elevation-1">
-        <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+      <v-data-table
+        :headers="headers"
+        :items="data.items"
+        :single-expand="data.singleExpand"
+        item-key="id"
+        :expanded.sync="data.expanded"
+        show-expand
+      >
+        <template v-slot:[`item.date`]="{ item }">
+          <span>{{ item.date | format("DD/MM/YYYY") }}</span>
+        </template>
+        <template v-slot:[`item.amount`]="{ item }">
+          <span>{{ item.amount | toCurrency }}</span>
+        </template>
+        <template v-slot:[`expanded-item`]="{ item }">
+          <td :colspan="5" class="pa-2">
+            <v-card outlined flat width="100%" max-width="100%">
+              <v-data-table :headers="ITEM_HEADERS" :items="item.lines" hide-default-footer dense>
+                <template v-slot:[`item.dr_amount`]="{ item }">
+                  <span>{{ item.dr_amount | toCurrency }}</span>
+                </template>
+                <template v-slot:[`item.cr_amount`]="{ item }">
+                  <span>{{ item.cr_amount | toCurrency }}</span>
+                </template>
+              </v-data-table>
+            </v-card>
+          </td>
         </template>
       </v-data-table>
     </v-card>
@@ -46,20 +69,21 @@
                   </tr>
                 </v-col>
                 <v-col class="pt-2 invoice-table" cols="12" md="12">
-                  <v-data-table :headers="HEADERS" :items="data.jv_items" disable-pagination hide-default-footer>
+                  <v-data-table :headers="HEADERS" :items="data.lines" disable-pagination hide-default-footer>
                     <template v-slot:body>
-                      <tr v-for="(item, index) in data.jv.jv_items" :key="index" class="invoice-tr">
+                      <tr v-for="(item, index) in data.jv.lines" :key="index" class="invoice-tr">
                         <td>
                           <v-select
                             :items="accounts"
                             :item-text="'code'"
                             v-model="item.account"
-                            :name="`data.jv.jv_items[${index}][account]`"
+                            :name="`data.jv.lines[${index}][account]`"
                             label="Select GL Account"
                             item-value="code"
                             full-width
                             dense
                             outlined
+                            item-disabled="disabled"
                             hide-details
                           ></v-select>
                         </td>
@@ -70,8 +94,9 @@
                             hide-details
                             outlined
                             type="number"
-                            v-model="item.debit"
-                            :name="`data.jv.jv_items[${index}][debit]`"
+                            @blur="checkDrAmount(`${index}`)"
+                            v-model="item.dr_amount"
+                            :name="`data.jv.lines[${index}][dr_amount]`"
                           >
                           </v-text-field>
                         </td>
@@ -81,8 +106,9 @@
                             hide-details
                             outlined
                             type="number"
-                            v-model="item.credit"
-                            :name="`data.jv.jv_items[${index}][credit]`"
+                            @blur="checkCrAmount(`${index}`)"
+                            v-model="item.cr_amount"
+                            :name="`data.jv.lines[${index}][cr_amount]`"
                           >
                           </v-text-field>
                         </td>
@@ -91,7 +117,7 @@
                             color="blue darken-1"
                             small
                             text
-                            v-if="index || (!index && data.jv.jv_items.length > 1)"
+                            v-if="index || (!index && data.jv.lines.length > 1)"
                             @click="removeRow(index)"
                           >
                             <v-icon small color="red"> mdi-minus-circle </v-icon>
@@ -101,7 +127,7 @@
                             color="blue darken-1"
                             text
                             @click="addRow"
-                            v-if="index == data.jv.jv_items.length - 1"
+                            v-if="index == data.jv.lines.length - 1"
                           >
                             <v-icon small color="success"> mdi-plus-circle </v-icon>
                           </v-btn>
@@ -145,10 +171,29 @@ export default defineComponent({
       removeRow,
       HEADERS,
       accounts,
+      checkCrAmount,
+      checkDrAmount,
+      refillAccounts,
+      total,
     } = useJv();
+
+    const headers = [
+      { text: "Number", value: "number" },
+      { text: "Date", value: "date" },
+      { text: "Description", value: "descriptions" },
+      { text: "Amount", value: "amount" },
+    ];
+
+    const ITEM_HEADERS = [
+      { text: "ACCOUNT", value: "account" },
+      { text: "DR", value: "dr_amount" },
+      { text: "CR", value: "cr_amount" },
+    ];
 
     return {
       data,
+      headers,
+      ITEM_HEADERS,
       openDialog,
       getData,
       save,
@@ -157,6 +202,10 @@ export default defineComponent({
       removeRow,
       HEADERS,
       accounts,
+      checkCrAmount,
+      checkDrAmount,
+      refillAccounts,
+      total,
     };
   },
 });
@@ -286,5 +335,9 @@ input[type="number"]::-webkit-inner-spin-button {
 // remove elipsis from select menu
 .v-select.v-text-field input {
   width: 64px !important;
+}
+
+.ledger-summary {
+  background: #eeeeee;
 }
 </style>

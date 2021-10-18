@@ -6,7 +6,7 @@ import { Supplier } from "../types/Supplier";
 
 export const useSupplier = (): any => {
   const dataItems: Array<Supplier> = [];
-  const activityData = {} as Supplier;
+  const supplyData = {} as Supplier;
 
   const data = reactive({
     title: "Suppliers",
@@ -68,7 +68,7 @@ export const useSupplier = (): any => {
     deletemodal: false,
     items: dataItems,
     itemsToFilter: [],
-    formData: activityData,
+    formData: supplyData,
     params: {
       total: 100,
       size: 10,
@@ -131,9 +131,9 @@ export const useSupplier = (): any => {
 
   const save = () => {
     if (data.formData.id) {
-      updateActivity(data.formData);
+      updateSupply(data.formData);
     } else {
-      createActivity(data.formData);
+      createSupply(data.formData);
     }
   };
 
@@ -148,14 +148,14 @@ export const useSupplier = (): any => {
     data.modal = !data.modal;
   };
 
-  const updateActivity = (data: Supplier) => {
+  const updateSupply = (data: Supplier) => {
     update(data).then(() => {
       cancelDialog();
       getTableData();
     });
   };
 
-  const createActivity = (data: Supplier) => {
+  const createSupply = (data: Supplier) => {
     create(data).then(() => {
       cancelDialog();
       getTableData();
@@ -167,7 +167,7 @@ export const useSupplier = (): any => {
     openDialog,
     cancelDialog,
     openConfirmDialog,
-    updateActivity,
+    updateSupply,
     save,
     remove,
     cancelConfirmDialog,

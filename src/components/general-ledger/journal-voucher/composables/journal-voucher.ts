@@ -9,6 +9,7 @@ const { useState } = createNamespacedHelpers("Auth");
 
 export const useJv = (): any => {
   const { currentUser } = useState(["currentUser"]);
+
   const HEADERS = [
     {
       text: "ACCOUNT",
@@ -56,11 +57,11 @@ export const useJv = (): any => {
       date: null,
       descriptions: null,
       facility_id: null,
-      jv_items: [
+      lines: [
         {
           account: "",
-          debit: "",
-          credit: "",
+          dr_amount: 0,
+          cr_amount: 0,
         },
       ],
     },
@@ -98,15 +99,15 @@ export const useJv = (): any => {
   };
 
   const addRow = () => {
-    data.jv.jv_items.push({
+    data.jv.lines.push({
       account: "",
-      debit: "",
-      credit: "",
+      dr_amount: 0,
+      cr_amount: 0,
     });
   };
 
   const removeRow = (index: number) => {
-    data.jv.jv_items.splice(index, 1);
+    data.jv.lines.splice(index, 1);
   };
 
   const save = () => {
@@ -119,8 +120,52 @@ export const useJv = (): any => {
   };
 
   const accounts = computed(() => {
-    return data.accounts.filter((entry) => entry.active === true);
+    return data.accounts;
   });
+
+  const checkDrAmount = (index: number) => {
+    if (data.jv.lines[index]["dr_amount"] === 0) {
+      return;
+    } else {
+      data.jv.lines[index]["cr_amount"] = 0;
+    }
+  };
+
+  const checkCrAmount = (index: number) => {
+    if (data.jv.lines[index]["cr_amount"] === 0) {
+      return;
+    } else {
+      data.jv.lines[index]["dr_amount"] = 0;
+    }
+  };
+
+  const refillAccounts = (entry) => {
+    data.accounts = data.accounts.map((item) => {
+      if (item.code === entry) {
+        item.disabled = true;
+        return {
+          ...item,
+        };
+      }
+    });
+  };
+
+  const getDebitBalance = (lines: Array<any>) => {
+    return lines.reduce((acc, line) => acc + line.dr_amount, 0);
+  };
+
+  const getCreditBalance = (lines: Array<any>) => {
+    return lines.reduce((acc, line) => acc + line.cr_amount, 0);
+  };
+
+  const total = (lines: Array<any>, TYPE: string) => {
+    switch (TYPE) {
+      case "DR":
+        return getDebitBalance(lines);
+      case "CR":
+        return getCreditBalance(lines);
+    }
+  };
 
   return {
     data,
@@ -133,5 +178,9 @@ export const useJv = (): any => {
     addRow,
     removeRow,
     currentUser,
+    checkCrAmount,
+    checkDrAmount,
+    refillAccounts,
+    total,
   };
 };

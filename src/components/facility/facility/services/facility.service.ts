@@ -25,7 +25,6 @@ const update = async (payload: any) => {
 };
 
 const destroy = async (payload: any) => {
-  console.log("payload", payload);
   return await axios.delete(`/api/v1/facilities/` + payload);
 };
 

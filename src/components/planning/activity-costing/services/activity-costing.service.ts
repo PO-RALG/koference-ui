@@ -23,7 +23,6 @@ const update = async (payload: any) => {
   return await axios.put(`/api/v1/activity-costings/` + payload.id, payload);
 };
 const destroy = async (payload: any) => {
-  console.log("payload", payload);
   return await axios.delete(`/api/v1/activity-costings/` + payload);
 };
 
