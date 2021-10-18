@@ -9,36 +9,40 @@
       </v-btn>
     </v-card-actions>
     <v-card>
-      <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr class="top-tr">
-              <th class="text-left">DATE</th>
-              <th class="text-left">ACCOUNT #</th>
-              <th class="text-left">DEBIT AMOUNT</th>
-              <th class="text-left">CREDIT AMOUNT</th>
-            </tr>
-          </thead>
-          <tbody tr v-for="(item, index) in data.items" :key="index">
-            <tr v-for="(line, idx) in item.lines" :key="idx">
-              <td>{{ item.date |  format("MM/DD/YYYY") }}</td>
-              <td>{{ line.account }}</td>
-              <td>{{ line.dr_amount | toCurrency }}</td>
-              <td>{{ line.cr_amount | toCurrency }}</td>
-            </tr>
-            <tr class="ledger-summary">
-              <td class="account"></td>
-              <td class="sub_total" style="text-align: right">
-              </td>
-              <td class="total_dr" style="text-align: left">
-              </td>
-              <td class="total_cr" style="text-align: left">
-              </td>
-            </tr>
-          </tbody>
+      <v-data-table
+        :headers="headers"
+        :items="data.items"
+        :single-expand="data.singleExpand"
+        item-key="id"
+        :expanded.sync="data.expanded"
+        show-expand
+        >
+        <template v-slot:[`item.date`]="{ item }">
+          <span>{{ item.date | format("DD/MM/YYYY") }}</span>
         </template>
-      </v-simple-table>
-
+        <template v-slot:[`item.amount`]="{ item }">
+          <span>{{ item.amount | toCurrency }}</span>
+        </template>
+        <template v-slot:[`expanded-item`]="{ item }">
+          <td :colspan="5" class="pa-2">
+            <v-card outlined flat width="100%" max-width="100%">
+              <v-data-table
+                :headers="ITEM_HEADERS"
+                :items="item.lines"
+                hide-default-footer
+                dense
+                >
+                <template v-slot:[`item.dr_amount`]="{ item }">
+                  <span>{{ item.dr_amount | toCurrency }}</span>
+                </template>
+                <template v-slot:[`item.cr_amount`]="{ item }">
+                  <span>{{ item.cr_amount | toCurrency }}</span>
+                </template>
+              </v-data-table>
+            </v-card>
+          </td>
+        </template>
+      </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="1200">
     <template v-slot:header>
@@ -85,7 +89,6 @@
                         dense
                         outlined
                         item-disabled="disabled"
-                        @change="refillAccounts($event)"
                         hide-details
                         ></v-select>
                     </td>
@@ -179,8 +182,23 @@ export default defineComponent({
       total,
     } = useJv();
 
+    const headers = [
+      { text: "Number", value: "number" },
+      { text: "Date", value: "date" },
+      { text: "Description", value: "descriptions" },
+      { text: "Amount", value: "amount" },
+    ];
+
+    const ITEM_HEADERS = [
+      { text: "ACCOUNT", value: "account" },
+      { text: "DR", value: "dr_amount" },
+      { text: "CR", value: "cr_amount" },
+    ];
+
     return {
       data,
+      headers,
+      ITEM_HEADERS,
       openDialog,
       getData,
       save,

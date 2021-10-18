@@ -120,12 +120,7 @@ export const useJv = (): any => {
   };
 
   const accounts = computed(() => {
-    return data.accounts.map((acc) => {
-      acc.disabled = false;
-      return {
-        ...acc,
-      };
-    });
+    return data.accounts;
   });
 
   const checkDrAmount = (index: number) => {
@@ -157,11 +152,11 @@ export const useJv = (): any => {
 
   const getDebitBalance = (lines: Array<any>) => {
     return lines.reduce((acc, line) => acc + line.dr_amount, 0);
-  }
+  };
 
-  const getCreditBalance = (lines: Array<any>) =>  {
+  const getCreditBalance = (lines: Array<any>) => {
     return lines.reduce((acc, line) => acc + line.cr_amount, 0);
-  }
+  };
 
   const total = (lines: Array<any>, TYPE: string) => {
     switch (TYPE) {
@@ -170,7 +165,7 @@ export const useJv = (): any => {
       case "CR":
         return getCreditBalance(lines);
     }
-  }
+  };
 
   return {
     data,
