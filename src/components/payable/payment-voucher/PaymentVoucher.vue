@@ -231,11 +231,10 @@
                     </v-col>
                     <v-col md="1" sm="12">
                       <v-btn
-                        color="red darken-1"
                         text
                         @click="removePayable(i)"
                       >
-                        <v-icon>mdi-minus</v-icon>
+                        <v-icon color="red darken-1">mdi-minus-circle</v-icon>
                       </v-btn>
                     </v-col>
                   </v-row>

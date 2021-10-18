@@ -6,7 +6,8 @@ import {
   create,
   destroy,
 } from "../services/payment.service";
-import { Payment } from "../types/Payment";
+import { Payment, ItemPlayLoad} from "../types/Payment";
+import { PaymentVoucher} from "@/components/payable/payment-voucher/types/PaymentVoucher";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
 import { get as getPaymentVouchers } from "@/components/payable/payment-voucher/services/payment-voucher.service";
 import { FundSources } from "@/components/coa/funding-source/types/index";
@@ -83,7 +84,7 @@ export const usePayment = (): any => {
     bankAccounts: [],
     paymentVouchers: [],
     payableItems: [],
-    payables: [{payable_id: '', amount: 0}],
+    payables: [{payable_id: '', required_amount: 0, amount: 0}],
   });
 
   onMounted(() => {
@@ -180,15 +181,31 @@ export const usePayment = (): any => {
   };
 
   const addPayable = () => {
-    data.payables.push({ payable_id: "", amount: 0 });
+    data.payables.push({ payable_id: "", required_amount: 0, amount: 0 });
   };
 
   const removePayable = (index: number) => {
     data.payables.splice(index, 1);
   };
 
-  const setPayableItems = (itemData) => {
-    data.payableItems = itemData.payables;
+  const setPayableItems = (id: number) => {
+    const pvData = data.paymentVouchers
+    for (let i = 0; i < pvData.length; i++) {
+      const element = pvData[i];
+      if (element.id === id) {
+        return data.payableItems = element.payables;
+      }
+    }
+  }
+
+  const setAmount = (id: number, index: number) => {
+    const payableData = data.payableItems;
+    for (let i = 0; i < payableData.length; i++) {
+      const element = payableData[i];
+      if (element.id === id) {
+        return data.payables[index].required_amount = element.amount *1;
+      }
+    }
   }
 
   return {
@@ -204,5 +221,6 @@ export const usePayment = (): any => {
     addPayable,
     removePayable,
     setPayableItems,
+    setAmount,
   };
 };

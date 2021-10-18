@@ -105,9 +105,9 @@
                     v-model="data.formData.voucher_id"
                     :items="data.paymentVouchers"
                     item-text="reference_no"
+                    item-value="id"
                     label="Select PV"
                     @change="setPayableItems($event)"
-                    return-object
                   >
                   </v-select>
                 </v-col>
@@ -119,33 +119,52 @@
                 </v-col>
               </v-row>
               <template>
-                <v-simple-table color="blue lighten-4">
+                <v-simple-table >
                   <template v-slot:default>
-                    <tbody>
+                    <tbody outlined>
                       <tr v-for="(payable, i) in data.payables" :key="i">
                         <td>
                           <v-select
+                            class="pt-5"
+                            outlined
+                            dense
                             v-model="payable.payable_id"
                             :items="data.payableItems"
                             item-text="description"
+                            item-value="id"
                             label="Select Item"
-                            required
+                            @change="setAmount($event,i)"
                           >
                           </v-select>
                         </td>
                         <td>
                           <v-text-field
+                            class="pt-5"
+                            outlined
+                            dense
                             type="number"
-                            v-model="payable.amount"
+                            v-model="payable.required_amount"
                             label="Amount"
+                            disabled
                           ></v-text-field>
                         </td>
                         <td>
-                          <v-btn v-if="data.payables.length == i+1" text @click="addPayable">
-                            <v-icon color="green darken-1">mdi-plus-circle</v-icon>
-                          </v-btn>
+                          <v-text-field
+                            class="pt-5"
+                            outlined
+                            dense
+                            type="number"
+                            v-model="payable.amount"
+                            label="Amount paid"
+                            :rules="[maxRules(payable.required_amount)]"
+                          ></v-text-field>
+                        </td>
+                        <td>
                           <v-btn v-if="data.payables.length > 1" text @click="removePayable(i)">
                             <v-icon color="red darken-1">mdi-minus-circle</v-icon>
+                          </v-btn>
+                          <v-btn v-if="data.payables.length == i+1" text @click="addPayable">
+                            <v-icon color="green darken-1">mdi-plus-circle</v-icon>
                           </v-btn>
                         </td>
                       </tr>
@@ -212,7 +231,9 @@ export default defineComponent({
       getData,
       addPayable,
       removePayable,
-      setPayableItems
+      setPayableItems,
+      setAmount,
+      maxRules,
     } = usePayment();
 
     return {
@@ -227,7 +248,9 @@ export default defineComponent({
       getData,
       addPayable,
       removePayable,
-      setPayableItems
+      setPayableItems,
+      setAmount,
+      maxRules,
     };
   },
 });

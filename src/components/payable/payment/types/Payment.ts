@@ -1,7 +1,17 @@
 export interface Payment {
   id: number;
   date: string;
-  supplier_id: number;
+  bank_account_id: number;
+  cheque_type: string;
+  cheque: string;
+  voucher_id: number;
   description: string;
   items: any[];
 }
+
+export interface ItemPlayLoad {
+  payable_id: number;
+  required_amount: number;
+  amount: number;
+}
+
