@@ -54,7 +54,7 @@ exports.useInvoiceDefinition = function () {
         });
         gfs_service_1.allgfscodes({ name: "Revenue" }).then(function (response) {
             console.log("all gfs data", response.data.data.data);
-            data.items = response.data.data.data;
+            data.gfscodes = response.data.data.data;
         });
         funding_sources_1.fundingsources({ per_page: 2000 }).then(function (response) {
             data.fundingsources = response.data.data.data;

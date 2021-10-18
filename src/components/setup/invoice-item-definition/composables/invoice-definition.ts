@@ -68,7 +68,7 @@ export const useInvoiceDefinition = (): any => {
 
     allgfscodes({ name: "Revenue" }).then((response: any) => {
       console.log("all gfs data", response.data.data.data);
-      data.items = response.data.data.data;
+      data.gfscodes = response.data.data.data;
     });
 
     fundingsources({ per_page: 2000 }).then((response: any) => {
