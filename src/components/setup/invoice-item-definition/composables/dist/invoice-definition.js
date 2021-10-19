@@ -8,6 +8,7 @@ var funding_sources_1 = require("@/components/coa/funding-source/services/fundin
 exports.useInvoiceDefinition = function () {
     var dataItems = [];
     var customerData;
+    var gfsCodeData;
     var data = composition_api_1.reactive({
         title: "Manage Invoice Item Definition",
         modalTitle: "",
@@ -39,7 +40,7 @@ exports.useInvoiceDefinition = function () {
         rows: ["10", "20", "50", "100"],
         itemtodelete: "",
         response: {},
-        gfscodes: [],
+        gfscodes: gfsCodeData,
         fundingsources: []
     });
     composition_api_1.onMounted(function () {
@@ -52,19 +53,21 @@ exports.useInvoiceDefinition = function () {
             data.items = response.data.data.data;
             data.itemsToFilter = response.data.data.data;
         });
-        gfs_service_1.allgfscodes({ name: "Revenue" }).then(function (response) {
+        gfs_service_1.allgfscodes({ code: "REVENUE" }).then(function (response) {
             console.log("all gfs data", response.data.data.data);
-            data.gfscodes = response.data.data.data;
+            data.gfscodes = response.data.data.data[0];
         });
         funding_sources_1.fundingsources({ per_page: 2000 }).then(function (response) {
             data.fundingsources = response.data.data.data;
         });
     };
     var gfsName = composition_api_1.computed(function () {
-        return data.gfscodes.map(function (gfsItem) {
-            gfsItem.fullName = gfsItem.code + " - " + gfsItem.name + " ";
-            return gfsItem;
-        });
+        return data.gfscodes
+            ? data.gfscodes.gfs_codes.map(function (gfsCodeItem) {
+                gfsCodeItem.fullName = gfsCodeItem.code + " - " + gfsCodeItem.name + " ";
+                return gfsCodeItem;
+            })
+            : [];
     });
     var fundingsourceName = composition_api_1.computed(function () {
         return data.fundingsources.map(function (fundingsourceItem) {
@@ -82,8 +85,8 @@ exports.useInvoiceDefinition = function () {
         console.log("argument", categoryName);
         if (categoryName != null) {
             invoice_item_definition_1.search({ name: categoryName.name }).then(function (response) {
-                console.log("response data", response.data.data);
-                data.items = response.data.data;
+                console.log("response data", response.data.data.data);
+                data.items = response.data.data.data;
             });
         }
         else {

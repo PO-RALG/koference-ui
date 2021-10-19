@@ -5,4 +5,5 @@ export interface GfsCategories {
   created_at: Date;
   updated_at: Date;
   deleted_at: Date;
+  gfs_codes: any;
 }

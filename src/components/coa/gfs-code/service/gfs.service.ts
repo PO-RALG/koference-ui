@@ -9,7 +9,7 @@ const gfscodes = async () => {
 };
 
 const allgfscodes = async (payload: any) => {
-  return await axios.get(`/api/v1/gfs-codes/`, {
+  return await axios.get(`/api/v1/gfs-categories/`, {
     params: {
       search: JSON.stringify(payload),
     },
