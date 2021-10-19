@@ -33,6 +33,7 @@ export const useUser = (): any => {
       { text: "Phone Number", value: "phone_number" },
       { text: "Name", align: "start", sortable: false, value: "fullName" },
       { text: "Email", value: "email" },
+      { text: "Roles", value: "roles" },
       { text: "Actions", value: "actions", sortable: false },
     ],
     modal: false,
@@ -81,15 +82,7 @@ export const useUser = (): any => {
 
   const cancelDialog = () => {
     data.formData = {} as User;
-    data.selectedRoles.forEach((role) => {
-      const idx = data.roles.map((i) => i.id).indexOf(role.id);
-      if (idx !== -1) {
-        data.selectedRoles.splice(idx, 1);
-        data.roles.push(role);
-        data.selectedRoles = [];
-      }
-    });
-
+    data.formData.roles = [];
     data.isFacilityUser = false;
     data.modal = !data.modal;
   };
@@ -248,8 +241,21 @@ export const useUser = (): any => {
     return data.roles;
   };
 
-  const onChangeList = ({ source, destination }) => {
-    data.roles = source;
+  const upsert = (array, item) => {
+    const idx = array.findIndex((_item: any) => _item.id === item.id);
+    if (idx > -1) {
+      array.splice(idx, 1);
+    } else {
+      array.push(item);
+    }
+    return array;
+  };
+
+  const onChangeList = ({ source, destination }): void => {
+    console.log(source, destination);
+    destination.forEach((item) => {
+      data.roles = upsert(source, item);
+    });
     data.formData.roles = destination;
   };
 

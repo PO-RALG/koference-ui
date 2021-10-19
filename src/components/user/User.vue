@@ -11,6 +11,7 @@
 
     <v-card>
       <v-data-table :headers="data.headers" :items="users" hide-default-footer class="elevation-1">
+        <template v-slot:[`item.roles`]="{ item }">{{ showRoles(item.roles) }} </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'User')">
             mdi-pencil-box-outline
@@ -161,9 +162,14 @@ export default defineComponent({
       onChangeList,
     } = useUser();
 
+    const showRoles = (roles) => {
+      return roles.map((r) => r.name);
+    };
+
     return {
       data,
 
+      showRoles,
       openDialog,
       cancelDialog,
       closeConfirmDialog,
