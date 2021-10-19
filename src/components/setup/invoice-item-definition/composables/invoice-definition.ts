@@ -66,7 +66,8 @@ export const useInvoiceDefinition = (): any => {
       data.itemsToFilter = response.data.data.data;
     });
 
-    allgfscodes({ per_page: 2000 }).then((response: any) => {
+    allgfscodes({ name: "Revenue" }).then((response: any) => {
+      console.log("all gfs data", response.data.data.data);
       data.gfscodes = response.data.data.data;
     });
 

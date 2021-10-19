@@ -12,7 +12,7 @@ export const useGfsCode = (): any => {
   const imageUrl: any = ref("");
 
   const data = reactive({
-    title: "Manage GfsCodes",
+    title: "Manage Gfs Codes",
     modalTitle: "",
     headers: [
       { text: "Name", align: "start", sortable: false, value: "name" },
@@ -40,7 +40,8 @@ export const useGfsCode = (): any => {
 
   onMounted(() => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
@@ -63,7 +64,8 @@ export const useGfsCode = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });

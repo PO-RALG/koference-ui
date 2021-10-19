@@ -59,7 +59,11 @@ exports.gfscodes = gfscodes;
 var allgfscodes = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gfs-codes", { params: payload })];
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gfs-codes/", {
+                    params: {
+                        search: JSON.stringify(payload)
+                    }
+                })];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -108,9 +112,7 @@ exports.update = update;
 var destroy = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                console.log("payload", payload);
-                return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/gfs-codes/" + payload)];
+            case 0: return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/gfs-codes/" + payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

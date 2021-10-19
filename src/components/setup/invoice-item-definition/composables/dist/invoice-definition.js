@@ -52,7 +52,8 @@ exports.useInvoiceDefinition = function () {
             data.items = response.data.data.data;
             data.itemsToFilter = response.data.data.data;
         });
-        gfs_service_1.allgfscodes({ per_page: 2000 }).then(function (response) {
+        gfs_service_1.allgfscodes({ name: "Revenue" }).then(function (response) {
+            console.log("all gfs data", response.data.data.data);
             data.gfscodes = response.data.data.data;
         });
         funding_sources_1.fundingsources({ per_page: 2000 }).then(function (response) {
