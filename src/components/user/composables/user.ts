@@ -243,16 +243,14 @@ export const useUser = (): any => {
   };
 
   const filterRoles = (term: string) => {
-    const result = data.roles.filter((item) => item.name.toLowerCase()
-     .includes(term.toLowerCase())
-    );
+    const result = data.roles.filter((item) => item.name.toLowerCase().includes(term.toLowerCase()));
     data.roles = result;
     return data.roles;
   };
 
   const onChangeList = ({ source, destination }) => {
     data.roles = source;
-    data.selectedRoles = destination;
+    data.formData.roles = destination;
   };
 
   return {

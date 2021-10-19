@@ -63,7 +63,7 @@
                   <DualMultiSelect
                     :source="data.roles"
                     :destination="data.selectedRoles"
-                    v-model="data.selectedRoles"
+                    v-model="data.formData.roles"
                     :label="'name'"
                     @onChangeList="onChangeList"
                   />
@@ -108,6 +108,7 @@
                 </v-col>
               </v-row>
             </v-container>
+            <!--<pre>{{ data.formData }}</pre>-->
           </v-form>
         </ModalBody>
       </template>
