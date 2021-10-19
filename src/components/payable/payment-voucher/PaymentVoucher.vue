@@ -105,7 +105,7 @@
                 </v-col>
               </v-row>
               <template>
-                <v-card elevation="2" class="pb-5">
+                <v-card elevation="2" class="mb-5 ">
                   <v-simple-table color="blue lighten-4">
                     <template v-slot:default>
                       <thead>
@@ -204,41 +204,46 @@
                     </template>
                   </v-simple-table>
                 </v-card>
-              </template>
-              <template>
-                <div
-                  class="pa-3 pt-7"
-                  v-for="(item, i) in data.payables"
-                  :key="i"
-                >
-                  <v-row>
-                    <v-col md="8" sm="12">
-                      <span class="text-lg-body-1">{{ item.code }}</span>
-                      <br />
-                      <span style="color: teal">{{ item.description }}</span>
-                      <br />
-                      <span class="text--primary">{{ item.balance }}</span>
-                    </v-col>
-                    <v-col md="3" sm="12">
-                      <v-text-field
-                        :hint="'Available amount: ' + item.balance"
-                        persistent-hint
-                        type="number"
-                        :rules="[maxRules(item.balance)]"
-                        v-model="item.amount"
-                        label="Amount"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col md="1" sm="12">
-                      <v-btn
-                        text
-                        @click="removePayable(i)"
-                      >
-                        <v-icon color="red darken-1">mdi-minus-circle</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </div>
+                <v-col cols="12" md="12" class="pa-3 pt-7 data-table">
+                  <v-data-table
+                    :headers="payableHeader"
+                    disable-pagination
+                    hide-default-footer
+                  >
+                    <template v-slot:body>
+                      <tbody>
+                        <tr v-for="(item, i) in data.payables" :key="i">
+                          <td class="pt-5 pb-2">
+                            <span class="text-lg-body-1">{{ item.code }}</span>
+                            <br />
+                            <span style="color: teal">{{ item.description }}</span>
+                            <br />
+                            <span class="text--primary">{{ item.balance }}</span>
+                          </td>
+                          <td class="pt-5 pb-2">
+                            <v-text-field
+                              dense
+                              outlined
+                              :hint="'Available amount: ' + item.balance"
+                              persistent-hint
+                              type="number"
+                              :rules="[maxRules(item.balance)]"
+                              v-model="item.amount"
+                            ></v-text-field>
+                          </td>
+                          <td>
+                            <v-btn
+                              text
+                              @click="removePayable(i)"
+                            >
+                              <v-icon color="red darken-1">mdi-minus-circle</v-icon>
+                            </v-btn>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-data-table>
+                </v-col>
               </template>
             </v-container>
           </v-form>
@@ -306,6 +311,7 @@ export default defineComponent({
       filterGfsCodes,
       maxRules,
       resetBudget,
+      payableHeader,
     } = usePaymentVoucher();
 
     return {
@@ -327,9 +333,39 @@ export default defineComponent({
       filterGfsCodes,
       maxRules,
       resetBudget,
+      payableHeader,
     };
   },
 });
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.data-table {
+  table {
+    border: 1px solid #cccc;
+    thead {
+      th {
+        border-right: 1px solid #ccc;
+        &:last-child {
+          border-right: none;
+        }
+        &:nth-last-child(2) {
+          border-right: none;
+        }
+      }
+    }
+    
+    tr {
+      border-right: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+    }
+    
+    td {
+      border-right: 1px solid #ccc;
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+}
+</style>

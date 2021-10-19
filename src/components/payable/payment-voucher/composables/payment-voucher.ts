@@ -267,6 +267,31 @@ export const usePaymentVoucher = (): any => {
     data.payables.splice(index, 1);
   };
 
+  const payableHeader = [
+    {
+      text: "Item",
+      align: "start",
+      sortable: false,
+      value: "invoice_number",
+      width: "70%",
+    },
+
+    {
+      text: "Amount",
+      align: "start",
+      sortable: false,
+      value: "amount",
+      width: "",
+    },
+    {
+      text: "",
+      align: "center",
+      sortable: false,
+      value: "",
+      width: "",
+    },
+  ];
+
   return {
     data,
     openDialog,
@@ -284,5 +309,6 @@ export const usePaymentVoucher = (): any => {
     searchFundingSource,
     filterGfsCodes,
     maxRules,
+    payableHeader,
   };
 };
