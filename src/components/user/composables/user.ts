@@ -16,6 +16,8 @@ export const useUser = (): any => {
     isOpen: false,
     selectedRoles: [],
     levels: [],
+    source: [],
+    destination: [],
     facilities: [],
     showFacility: false,
     isFacilityUser: false,
@@ -43,8 +45,7 @@ export const useUser = (): any => {
     },
     nameRules: [
       (v: string) => !!v || "Name is required",
-      (v: string) =>
-        (v && v.length <= 10) || "Name must be less than 10 characters",
+      (v: string) => (v && v.length <= 10) || "Name must be less than 10 characters",
     ],
     email: "",
     emailRules: [
@@ -59,26 +60,42 @@ export const useUser = (): any => {
 
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
     loadLevels();
     getNodes();
     loadRoles();
+    data.source = [
+      { label: "WHITE", code: "#FFFFFF" },
+      { label: "SILVER", code: "#C0C0C0" },
+      { label: "GRAY", code: "#808080" },
+    ];
+
+    data.destination = [
+      { label: "BLACK", code: "#000000" },
+      { label: "RED", code: "#FF0000" },
+    ];
   };
 
   const cancelDialog = () => {
     data.formData = {} as User;
+    data.selectedRoles.forEach((role) => {
+      const idx = data.roles.map((i) => i.id).indexOf(role.id);
+      if (idx !== -1) {
+        data.selectedRoles.splice(idx, 1);
+        data.roles.push(role);
+        data.selectedRoles = [];
+      }
+    });
+
     data.isFacilityUser = false;
     data.modal = !data.modal;
   };
 
   const save = () => {
-    const roles = data.formData.roles
-      ? data.formData.roles.map((role: any) => role.id)
-      : [];
+    const roles = data.formData.roles ? data.formData.roles.map((role: any) => role.id) : [];
     set(data.formData, "roles", roles);
     if (data.formData.id) {
       updateUser(data.formData);
@@ -205,27 +222,37 @@ export const useUser = (): any => {
     const level = data.levels.find((level) => level.id === location.level_id);
     if (level.code === "WARD" || level.code === "VILLAGE_MTAA") {
       data.showFacility = true;
+      checkForMoreClicks(level);
     } else {
       data.showFacility = false;
+    }
+  };
+
+  const checkForMoreClicks = (level) => {
+    if ((data.showFacility = true) && (level.code === "WARD" || level.code === "VILLAGE_MTAA")) {
+      loadFacilities();
     }
   };
 
   const loadFacilities = () => {
     const isFacilityUser = !!data.isFacilityUser;
     data.isFacilityUser = isFacilityUser;
-    getFacilities({ search: { location_id: data.location["id"] } }).then(
-      (response: AxiosResponse) => {
-        data.facilities = response.data.data.data;
-      }
-    );
+    getFacilities({ search: { location_id: data.location["id"] } }).then((response: AxiosResponse) => {
+      data.facilities = response.data.data.data;
+    });
   };
 
   const filterRoles = (term: string) => {
-    const result = data.roles.filter((item) =>
-      item.name.toLowerCase().includes(term.toLowerCase())
+    const result = data.roles.filter((item) => item.name.toLowerCase()
+     .includes(term.toLowerCase())
     );
     data.roles = result;
     return data.roles;
+  };
+
+  const onChangeList = ({ source, destination }) => {
+    data.roles = source;
+    data.selectedRoles = destination;
   };
 
   return {
@@ -237,6 +264,7 @@ export const useUser = (): any => {
     openConfirmDialog,
     filterRoles,
     selectedRoles,
+    onChangeList,
 
     loadLocationChildren,
     loadFacilities,

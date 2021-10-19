@@ -12,8 +12,7 @@
             v-for="(item, key) in source
               .map((item, idx) => ({ idx, ...item }))
               .filter((item) =>
-                item[label in item ? label : 'label'].toLowerCase()
-                .includes(data.searchSource.toLowerCase())
+                item[label in item ? label : 'label'].toLowerCase().includes(data.searchSource.toLowerCase())
               )"
             :key="key"
             @click="highlightSourceItem(item)"
@@ -24,26 +23,25 @@
           </option>
         </select>
       </v-col>
-      <v-col cols="12" lg="2" md="2" sm="12" class="pl-6 mt-n2">
+      <v-col cols="12" lg="2" md="2" sm="12">
         <div class="button-container">
+
           <!-- add items -->
-          <v-btn
-            color="primary"
-            :disabled="
-            data.itemsToDestination && data.itemsToDestination.length < 1
-            "
+          <v-btn color="primary"
+            :disabled="(data.itemsToDestination && data.itemsToDestination.length < 1)"
             small
-            @click="addItems"
-          >
+            @click="addItems">
             <v-icon>mdi-menu-right</v-icon>
           </v-btn>
 
           <!-- add all items -->
-          <v-btn color="primary"
+          <v-btn
+            color="primary"
             :disabled="source.length < 1"
             small
             class="remove-button"
-            @click="addAll">
+            @click="addAll"
+          >
             <v-icon>mdi-chevron-double-right</v-icon>
           </v-btn>
 
@@ -53,8 +51,7 @@
             small
             :disabled="data.itemsToSource && data.itemsToSource.length < 1"
             class="remove-button"
-            @click="removeItems"
-          >
+            @click="removeItems">
             <v-icon>mdi-menu-left</v-icon>
           </v-btn>
 
@@ -62,6 +59,7 @@
           <v-btn color="primary" small class="remove-button" @click="removeAll">
             <v-icon>mdi-chevron-double-left</v-icon>
           </v-btn>
+
         </div>
       </v-col>
       <v-col cols="12" lg="5" md="4" sm="12">
@@ -70,8 +68,7 @@
             v-for="(item, key) in destination
               .map((item, idx) => ({ idx, ...item }))
               .filter((item) =>
-                item[label in item ? label : 'label'].toLowerCase()
-                .includes(data.searchDestination.toLowerCase())
+                item[label in item ? label : 'label'].toLowerCase().includes(data.searchDestination.toLowerCase())
               )"
             :key="key"
             @click="highlightDestinationItem(item)"
@@ -88,14 +85,7 @@
 </template>
 
 <script lang="ts">
-import {
-  reactive,
-  PropType,
-  onMounted,
-  defineComponent
-} from "@vue/composition-api";
-
-import _ from "lodash";
+import { reactive, PropType, onMounted, defineComponent } from "@vue/composition-api";
 
 export default defineComponent({
   props: {
@@ -134,6 +124,22 @@ export default defineComponent({
 
     const highlightDestinationItem = (item) => {
       data.itemsToSource.push(item);
+    };
+
+    const refreshList = () => {
+      // remove all the items from the source that are in the destination
+      props.source.forEach((item) => {
+        const idx = props.destination.map((i) => i.id).indexOf(item.id);
+        if (idx !== -1) {
+          props.source.splice(idx, 1);
+        }
+      });
+
+      let source = [...props.source];
+      let destination = props.destination;
+      data.searchSource = "";
+      data.searchDestination = "";
+      context.emit("onChangeList", { source, destination });
     };
 
     const addItem = (item) => {
@@ -289,21 +295,9 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      // refreshList();
+      console.log("mounted");
+      //refreshList();
     });
-
-    const refreshList = () => {
-      console.log("refreshList");
-      props.destination.forEach((entry) => {
-        props.source = _.filter(props.source, { id: entry.id});
-      });
-
-      let source = [...props.source];
-      let destination = props.destination;
-      data.searchSource = "";
-      data.searchDestination = "";
-      context.emit("onChangeList", { source, destination });
-    };
 
     return {
       data,
@@ -356,7 +350,7 @@ select {
 
 .button-container {
   position: relative;
-  top: -5px;
+  top: 5px;
 }
 
 .v-text-field {
