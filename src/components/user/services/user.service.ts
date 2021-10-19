@@ -27,4 +27,9 @@ const deleteUser = async (id: number | string) => {
   return await axios.put(`${API}/${id}`);
 };
 
-export { get, find, create, update, deleteUser };
+const toggleActive = async (payload: any) => {
+  console.log("payload", payload);
+  return await axios.post(`${API}/${payload.id}/change-status`);
+};
+
+export { get, find, create, update, deleteUser, toggleActive };

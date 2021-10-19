@@ -12,6 +12,9 @@
     <v-card>
       <v-data-table :headers="data.headers" :items="users" hide-default-footer class="elevation-1">
         <template v-slot:[`item.roles`]="{ item }">{{ showRoles(item.roles) }} </template>
+        <template v-slot:[`item.activations`]="{ item }">
+          <v-switch :input-value="item.active" @click="openActivationDialog(item)" value></v-switch>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'User')">
             mdi-pencil-box-outline
@@ -130,6 +133,14 @@
       :isOpen="data.isOpen"
       :title="'Delete User'"
     />
+    <ConfirmDialog
+      @rejectFunction="closeConfirmDialog"
+      @acceptFunction="toggleStatus"
+      :message="`Are you sure you want to ${status} this user?`"
+      :data="data.item"
+      :isOpen="data.isOpen"
+      :title="`${status} User`"
+    />
   </div>
 </template>
 
@@ -146,7 +157,9 @@ export default defineComponent({
       cancelDialog,
       closeConfirmDialog,
       openConfirmDialog,
+      openActivationDialog,
       filterRoles,
+      toggleStatus,
       selectedRoles,
 
       loadLocationChildren,
@@ -160,6 +173,7 @@ export default defineComponent({
       save,
       deleteItem,
       onChangeList,
+      status,
     } = useUser();
 
     const showRoles = (roles) => {
@@ -174,6 +188,7 @@ export default defineComponent({
       cancelDialog,
       closeConfirmDialog,
       openConfirmDialog,
+      openActivationDialog,
       filterRoles,
       selectedRoles,
 
@@ -188,6 +203,8 @@ export default defineComponent({
       save,
       deleteItem,
       onChangeList,
+      toggleStatus,
+      status,
     };
   },
 });
