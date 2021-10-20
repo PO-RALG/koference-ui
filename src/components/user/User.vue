@@ -11,7 +11,21 @@
 
     <v-card>
       <v-data-table :headers="data.headers" :items="users" hide-default-footer class="elevation-1">
+        <template v-slot:[`item.roles`]="{ item }">{{ showRoles(item.roles) }} </template>
+        <template v-slot:[`item.activations`]="{ item }">
+          <v-switch :input-value="item.active" @click="openActivationDialog(item)" value></v-switch>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
+
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="resetPasswd(item)" :disabled="cant('edit', 'User')">
+                mdi-lock-reset
+              </v-icon>
+            </template>
+            <span>Reset Password</span>
+          </v-tooltip>
+
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'User')">
             mdi-pencil-box-outline
           </v-icon>
@@ -129,6 +143,14 @@
       :isOpen="data.isOpen"
       :title="'Delete User'"
     />
+    <ConfirmDialog
+      @rejectFunction="closeConfirmDialog"
+      @acceptFunction="toggleStatus"
+      :message="`Are you sure you want to ${status} this user?`"
+      :data="data.item"
+      :isOpen="data.isOpen"
+      :title="`${status} User`"
+    />
   </div>
 </template>
 
@@ -145,7 +167,9 @@ export default defineComponent({
       cancelDialog,
       closeConfirmDialog,
       openConfirmDialog,
+      openActivationDialog,
       filterRoles,
+      toggleStatus,
       selectedRoles,
 
       loadLocationChildren,
@@ -159,15 +183,23 @@ export default defineComponent({
       save,
       deleteItem,
       onChangeList,
+      status,
+      resetPasswd,
     } = useUser();
+
+    const showRoles = (roles) => {
+      return roles.map((r) => r.name);
+    };
 
     return {
       data,
 
+      showRoles,
       openDialog,
       cancelDialog,
       closeConfirmDialog,
       openConfirmDialog,
+      openActivationDialog,
       filterRoles,
       selectedRoles,
 
@@ -182,6 +214,9 @@ export default defineComponent({
       save,
       deleteItem,
       onChangeList,
+      toggleStatus,
+      status,
+      resetPasswd,
     };
   },
 });

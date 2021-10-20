@@ -1,6 +1,6 @@
 import { reactive, onMounted, set, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import { get, create, update, deleteUser } from "../services/user.service";
+import { get, create, update, deleteUser, toggleActive, resetPassword } from "../services/user.service";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getRoles } from "@/components/role/services/role-services";
 import { get as getLevels } from "@/components/admin-area/level/services/level-services";
@@ -13,10 +13,12 @@ export const useUser = (): any => {
   const data = reactive({
     title: "Manage Users",
     valid: true,
+    status: "",
     isOpen: false,
     selectedRoles: [],
     levels: [],
     source: [],
+    user: null,
     destination: [],
     facilities: [],
     showFacility: false,
@@ -33,6 +35,8 @@ export const useUser = (): any => {
       { text: "Phone Number", value: "phone_number" },
       { text: "Name", align: "start", sortable: false, value: "fullName" },
       { text: "Email", value: "email" },
+      { text: "Roles", value: "roles" },
+      { text: "Activation", value: "activations", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
     modal: false,
@@ -81,15 +85,7 @@ export const useUser = (): any => {
 
   const cancelDialog = () => {
     data.formData = {} as User;
-    data.selectedRoles.forEach((role) => {
-      const idx = data.roles.map((i) => i.id).indexOf(role.id);
-      if (idx !== -1) {
-        data.selectedRoles.splice(idx, 1);
-        data.roles.push(role);
-        data.selectedRoles = [];
-      }
-    });
-
+    data.formData.roles = [];
     data.isFacilityUser = false;
     data.modal = !data.modal;
   };
@@ -248,15 +244,53 @@ export const useUser = (): any => {
     return data.roles;
   };
 
-  const onChangeList = ({ source, destination }) => {
-    data.roles = source;
+  const upsert = (array, item) => {
+    const idx = array.findIndex((_item: any) => _item.id === item.id);
+    if (idx > -1) {
+      array.splice(idx, 1);
+    } else {
+      array.push(item);
+    }
+    return array;
+  };
+
+  const onChangeList = ({ source, destination }): void => {
+    console.log(source, destination);
+    destination.forEach((item) => {
+      data.roles = upsert(source, item);
+    });
     data.formData.roles = destination;
+  };
+
+  const status = computed(() => {
+    return data.user && data.user.active ? "De-Activate" : "Activate";
+  });
+
+  const resetPasswd = (user) => {
+    const payload = { user_id: user.id };
+    resetPassword(payload);
+  };
+
+  const toggleStatus = () => {
+    toggleActive(data.user).then((response) => {
+      if (response.status === 200) {
+        closeConfirmDialog();
+        initialize();
+      }
+    });
+  };
+
+  const openActivationDialog = (user: any) => {
+    data.user = user;
+    data.isOpen = true;
   };
 
   return {
     data,
+    openActivationDialog,
 
     openDialog,
+    toggleStatus,
     cancelDialog,
     closeConfirmDialog,
     openConfirmDialog,
@@ -274,5 +308,7 @@ export const useUser = (): any => {
     updateUser,
     save,
     deleteItem,
+    status,
+    resetPasswd,
   };
 };

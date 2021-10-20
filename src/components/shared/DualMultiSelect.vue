@@ -12,8 +12,7 @@
             v-for="(item, key) in source
               .map((item, idx) => ({ idx, ...item }))
               .filter((item) =>
-                item[label in item ? label : 'label'].toLowerCase()
-                .includes(data.searchSource.toLowerCase())
+                item[label in item ? label : 'label'].toLowerCase().includes(data.searchSource.toLowerCase())
               )"
             :key="key"
             @click="highlightSourceItem(item)"
@@ -29,9 +28,7 @@
           <!-- add items -->
           <v-btn
             color="primary"
-            :disabled="
-            data.itemsToDestination && data.itemsToDestination.length < 1
-            "
+            :disabled="data.itemsToDestination && data.itemsToDestination.length < 1"
             small
             @click="addItems"
           >
@@ -39,11 +36,7 @@
           </v-btn>
 
           <!-- add all items -->
-          <v-btn color="primary"
-            :disabled="source.length < 1"
-            small
-            class="remove-button"
-            @click="addAll">
+          <v-btn color="primary" :disabled="source.length < 1" small class="remove-button" @click="addAll">
             <v-icon>mdi-chevron-double-right</v-icon>
           </v-btn>
 
@@ -70,8 +63,7 @@
             v-for="(item, key) in destination
               .map((item, idx) => ({ idx, ...item }))
               .filter((item) =>
-                item[label in item ? label : 'label'].toLowerCase()
-                .includes(data.searchDestination.toLowerCase())
+                item[label in item ? label : 'label'].toLowerCase().includes(data.searchDestination.toLowerCase())
               )"
             :key="key"
             @click="highlightDestinationItem(item)"
@@ -88,12 +80,7 @@
 </template>
 
 <script lang="ts">
-import {
-  reactive,
-  PropType,
-  onMounted,
-  defineComponent
-} from "@vue/composition-api";
+import { reactive, PropType, onMounted, defineComponent } from "@vue/composition-api";
 
 import _ from "lodash";
 
@@ -289,13 +276,13 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      // refreshList();
+      //refreshList();
     });
 
     const refreshList = () => {
       console.log("refreshList");
       props.destination.forEach((entry) => {
-        props.source = _.filter(props.source, { id: entry.id});
+        props.source = _.filter(props.source, { id: entry.id });
       });
 
       let source = [...props.source];

@@ -54,8 +54,7 @@
                       ></v-text-field>
                     </v-form>
                   </v-card-text>
-                  <v-card-actions class="mr-3 ml-3 pr-6 pl-6 mt-n8">
-                    <small class="text-center mt-3"> <a href="#">FOGOT PASSWORD?</a></small>
+                  <v-card-actions class="mr-1 ml-3 pr-6 pl-6 mt-n8">
                     <v-spacer></v-spacer>
                     <v-btn color="primary" class="white--text" @click="login" :loading="data.loading">
                       <v-icon left>mdi-login</v-icon>LOGIN
