@@ -3,7 +3,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn
+        :disabled="cant('create', 'Invoice')"
+        color="primary"
+        @click="openDialog"
+      >
         <v-icon>mdi-plus</v-icon>
         Create Invoice
       </v-btn>
@@ -219,7 +223,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.invoicedetails" :width="1120">
+    <Modal :fullScreen="true" :modal="data.invoicedetails" :width="1120">
       <template v-slot:header>
         <ModalHeader :title="`Invoice Details`" />
       </template>
@@ -228,6 +232,7 @@
           <div class="invoice-box" v-if="data.invoicedata">
             <td class="title">
               <v-btn
+                v-show="can('create', 'Receipt')"
                 color="green darken-1"
                 text
                 @click="openInvoiceReceipt(data.invoicedata)"
@@ -237,6 +242,7 @@
                 ><v-icon> mdi-printer </v-icon> Print</v-btn
               > -->
               <v-btn
+                v-show="can('delete', 'Receipt')"
                 @click="deleteInvoiceItemdefinition(data.invoicedata.id)"
                 color="warning darken-1"
                 text
@@ -264,15 +270,13 @@
                   <br />
                 </v-layout>
                 <v-layout justify-center align="center ">
-                  <small>
-                    <strong>
-                      {{
-                        data.invoicedata.facility
-                          ? data.invoicedata.facility.name
-                          : ""
-                      }}
-                    </strong>
-                  </small>
+                  <strong>
+                    {{
+                      data.invoicedata.facility
+                        ? data.invoicedata.facility.name
+                        : ""
+                    }}
+                  </strong>
                 </v-layout>
                 <v-divider class="underline-title"></v-divider>
               </v-col>
@@ -457,7 +461,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.invoicereceipt" :width="1120">
+    <Modal :fullScreen="true" :modal="data.invoicereceipt" :width="1120">
       <template v-slot:header>
         <ModalHeader :title="`Create Invoice Receipt`" />
       </template>
@@ -592,7 +596,12 @@
           <v-btn color="red darken-1" text @click="cancelInvoiceReceipt"
             >Close</v-btn
           >
-          <v-btn color="green darken-1" text @click="createReceipt">
+          <v-btn
+            v-show="can('create', 'Receipt')"
+            color="green darken-1"
+            text
+            @click="createReceipt"
+          >
             Create</v-btn
           >
         </ModalFooter>
@@ -763,8 +772,8 @@ export default defineComponent({
   text-align: left;
 }
 .login-logo {
-  height: 12%;
-  width: 12%;
+  height: 170px;
+  width: 130px;
 }
 tbody tr:nth-of-type(odd) {
   background-color: none;
