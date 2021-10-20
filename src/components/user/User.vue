@@ -11,12 +11,10 @@
 
     <v-card>
       <v-data-table :headers="data.headers" :items="users" hide-default-footer class="elevation-1">
-        <template v-slot:[`item.roles`]="{ item }">{{ showRoles(item.roles) }} </template>
         <template v-slot:[`item.activations`]="{ item }">
           <v-switch :input-value="item.active" @click="openActivationDialog(item)" value></v-switch>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="resetPasswd(item)" :disabled="cant('edit', 'User')">
