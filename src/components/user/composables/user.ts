@@ -19,11 +19,14 @@ export const useUser = (): any => {
     levels: [],
     source: [],
     user: null,
+    confirmTitle: "",
     destination: [],
     facilities: [],
     showFacility: false,
     isFacilityUser: false,
     node: null,
+    action: "",
+    show: false,
     item: userData,
     itemName: "name",
     location: {},
@@ -104,13 +107,22 @@ export const useUser = (): any => {
     return data.items.map((user: any) => ({
       ...user,
       fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
-      roles: user.roles.map((r: any) =>
-        r.name ? `[ ${r.name} ]` : `[ NO ROLE ]`),
+      roles: user.roles.map((r: any) => (r.name ? `[ ${r.name} ]` : `[ NO ROLE ]`)),
     }));
   });
 
   const selectedRoles = computed(() => {
     return data.selectedRoles;
+  });
+
+  const message = computed(() => {
+    return data.action === "DELETE"
+      ? `Are you sure you want to ${data.status} this user?`
+      : `Are you sure you want to ${data.status} this user?`;
+  });
+
+  const confirmTitle = computed(() => {
+    return data.action === "DELETE" ? `Delete User` : `${data.status} User`;
   });
 
   const facilities = computed(() => {
@@ -164,13 +176,23 @@ export const useUser = (): any => {
   };
 
   const openConfirmDialog = (item: User) => {
+    data.status = "Delete";
     data.item = item;
+    data.user = item;
     data.isOpen = true;
+  };
+
+  const closeActivationDialog = () => {
+    data.item = null;
+    data.show = false;
+    data.status = null;
+    data.user = null;
   };
 
   const closeConfirmDialog = () => {
     data.item = {} as User;
     data.isOpen = false;
+    data.user = null;
   };
 
   const deleteItem = (item: number | string) => {
@@ -283,8 +305,9 @@ export const useUser = (): any => {
   };
 
   const openActivationDialog = (user: any) => {
+    data.status = user.active ? "De-Activate" : "Activate";
     data.user = user;
-    data.isOpen = true;
+    data.show = true;
   };
 
   return {
@@ -299,6 +322,7 @@ export const useUser = (): any => {
     filterRoles,
     selectedRoles,
     onChangeList,
+    confirmTitle,
 
     loadLocationChildren,
     loadFacilities,
@@ -306,6 +330,8 @@ export const useUser = (): any => {
     getData,
     users,
     facilities,
+    message,
+    closeActivationDialog,
 
     updateUser,
     save,

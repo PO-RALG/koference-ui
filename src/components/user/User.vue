@@ -27,7 +27,9 @@
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'User')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'User')"> mdi-trash-can-outline </v-icon>
+          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'User')">
+            mdi-trash-can-outline
+          </v-icon>
         </template>
         <template v-slot:footer>
           <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
@@ -136,18 +138,18 @@
     <ConfirmDialog
       @rejectFunction="closeConfirmDialog"
       @acceptFunction="deleteItem"
-      :message="'Are you sure you want to delete this user?'"
+      :message="message"
       :data="data.item"
       :isOpen="data.isOpen"
-      :title="'Delete User'"
+      :title="`Delete User`"
     />
     <ConfirmDialog
-      @rejectFunction="closeConfirmDialog"
+      @rejectFunction="closeActivationDialog"
       @acceptFunction="toggleStatus"
-      :message="`Are you sure you want to ${status} this user?`"
+      :message="message"
       :data="data.item"
-      :isOpen="data.isOpen"
-      :title="`${status} User`"
+      :isOpen="data.show"
+      :title="`${data.status} User`"
     />
   </div>
 </template>
@@ -164,6 +166,7 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       closeConfirmDialog,
+      closeActivationDialog,
       openConfirmDialog,
       openActivationDialog,
       filterRoles,
@@ -182,6 +185,8 @@ export default defineComponent({
       deleteItem,
       onChangeList,
       status,
+      confirmTitle,
+      message,
       resetPasswd,
     } = useUser();
 
@@ -191,11 +196,14 @@ export default defineComponent({
 
     return {
       data,
+      message,
+      confirmTitle,
 
       showRoles,
       openDialog,
       cancelDialog,
       closeConfirmDialog,
+      closeActivationDialog,
       openConfirmDialog,
       openActivationDialog,
       filterRoles,
