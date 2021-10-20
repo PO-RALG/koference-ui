@@ -270,15 +270,13 @@
                   <br />
                 </v-layout>
                 <v-layout justify-center align="center ">
-                  <small>
-                    <strong>
-                      {{
-                        data.invoicedata.facility
-                          ? data.invoicedata.facility.name
-                          : ""
-                      }}
-                    </strong>
-                  </small>
+                  <strong>
+                    {{
+                      data.invoicedata.facility
+                        ? data.invoicedata.facility.name
+                        : ""
+                    }}
+                  </strong>
                 </v-layout>
                 <v-divider class="underline-title"></v-divider>
               </v-col>
@@ -774,8 +772,8 @@ export default defineComponent({
   text-align: left;
 }
 .login-logo {
-  height: 10%;
-  width: 10%;
+  height: 170px;
+  width: 130px;
 }
 tbody tr:nth-of-type(odd) {
   background-color: none;
