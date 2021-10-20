@@ -119,58 +119,71 @@
                 </v-col>
               </v-row>
               <template>
-                <v-simple-table >
-                  <template v-slot:default>
-                    <tbody outlined>
-                      <tr v-for="(payable, i) in data.payables" :key="i">
-                        <td>
-                          <v-select
-                            class="pt-5"
-                            outlined
-                            dense
-                            v-model="payable.payable_id"
-                            :items="data.payableItems"
-                            item-text="description"
-                            item-value="id"
-                            label="Select Item"
-                            @change="setAmount($event,i)"
-                          >
-                          </v-select>
-                        </td>
-                        <td>
-                          <v-text-field
-                            class="pt-5"
-                            outlined
-                            dense
-                            type="number"
-                            v-model="payable.required_amount"
-                            label="Amount"
-                            disabled
-                          ></v-text-field>
-                        </td>
-                        <td>
-                          <v-text-field
-                            class="pt-5"
-                            outlined
-                            dense
-                            type="number"
-                            v-model="payable.amount"
-                            label="Amount paid"
-                            :rules="[maxRules(payable.required_amount)]"
-                          ></v-text-field>
-                        </td>
-                        <td>
-                          <v-btn v-if="data.payables.length > 1" text @click="removePayable(i)">
-                            <v-icon color="red darken-1">mdi-minus-circle</v-icon>
-                          </v-btn>
-                          <v-btn v-if="data.payables.length == i+1" text @click="addPayable">
-                            <v-icon color="green darken-1">mdi-plus-circle</v-icon>
-                          </v-btn>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
+                <v-col cols="12" md="12" class="data-table">
+                  <v-data-table
+                    :headers="payableHeader"
+                    disable-pagination
+                    hide-default-footer
+                  >
+                    <template v-slot:body>
+                      <tbody>
+                        <tr v-for="(payable, i) in data.payables" :key="i">
+                          <td>
+                            <v-select
+                              class="pt-3"
+                              outlined
+                              dense
+                              v-model="payable.payable_id"
+                              :items="data.payableItems"
+                              item-text="description"
+                              item-value="id"
+                              @change="setAmount($event,i)"
+                            >
+                            </v-select>
+                          </td>
+                          <td>
+                            <v-text-field
+                              class="pt-3"
+                              outlined
+                              dense
+                              type="number"
+                              v-model="payable.required_amount"
+                              disabled
+                            ></v-text-field>
+                          </td>
+                          <td>
+                            <v-text-field
+                              class="pt-3"
+                              outlined
+                              dense
+                              type="number"
+                              v-model="payable.paid_amount"
+                              disabled
+                            ></v-text-field>
+                          </td>
+                          <td>
+                            <v-text-field
+                              class="pt-3"
+                              outlined
+                              dense
+                              type="number"
+                              v-model="payable.amount"
+                              :rules="[maxRules(payable.required_amount)]"
+                            ></v-text-field>
+                          </td>
+                          <td>
+                            <v-btn v-if="data.payables.length > 1" text @click="removePayable(i)">
+                              <v-icon color="red darken-1">mdi-minus-circle</v-icon>
+                            </v-btn>
+                            <v-btn v-if="data.payables.length == i+1" text @click="addPayable">
+                              <v-icon color="green darken-1">mdi-plus-circle</v-icon>
+                            </v-btn>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-data-table>
+                </v-col>
               </template>
             </v-container>
           </v-form>
@@ -234,6 +247,7 @@ export default defineComponent({
       setPayableItems,
       setAmount,
       maxRules,
+      payableHeader,
     } = usePayment();
 
     return {
@@ -251,9 +265,39 @@ export default defineComponent({
       setPayableItems,
       setAmount,
       maxRules,
+      payableHeader,
     };
   },
 });
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.data-table {
+  table {
+    border: 1px solid #cccc;
+    thead {
+      th {
+        border-right: 1px solid #ccc;
+        &:last-child {
+          border-right: none;
+        }
+        &:nth-last-child(2) {
+          border-right: none;
+        }
+      }
+    }
+    
+    tr {
+      border-right: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+    }
+    
+    td {
+      border-right: 1px solid #ccc;
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+}
+</style>

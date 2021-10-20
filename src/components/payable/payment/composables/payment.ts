@@ -208,6 +208,41 @@ export const usePayment = (): any => {
     }
   }
 
+  const payableHeader = [
+    {
+      text: "Item",
+      align: "start",
+      sortable: false,
+      width: "50%",
+    },
+    {
+      text: "Amount",
+      align: "start",
+      sortable: false,
+      width: "",
+    },
+    {
+      text: "Paid amount",
+      align: "start",
+      sortable: false,
+      width: "",
+    },
+    {
+      text: "Payment",
+      align: "start",
+      sortable: false,
+      value: "",
+      width: "",
+    },
+    {
+      text: "",
+      align: "start",
+      sortable: false,
+      value: "",
+      width: "",
+    },
+  ];
+
   return {
     data,
     openDialog,
@@ -222,5 +257,6 @@ export const usePayment = (): any => {
     removePayable,
     setPayableItems,
     setAmount,
+    payableHeader,
   };
 };

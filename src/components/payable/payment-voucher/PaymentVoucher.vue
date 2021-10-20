@@ -105,14 +105,14 @@
                 </v-col>
               </v-row>
               <template>
-                <v-card elevation="2" class="mb-5 ">
+                <v-card elevation="2" class="mb-5 p-3">
                   <v-simple-table color="blue lighten-4">
                     <template v-slot:default>
                       <thead>
                         <tr>
-                          <td colspan="2">
+                          <td>
                             <v-row>
-                              <v-col md="4" sm="12">
+                              <v-col md="4" sm="12" cols="12">
                                 <v-select
                                   :items="data.activities"
                                   item-text="name"
@@ -144,7 +144,7 @@
                                   </template>
                                 </v-select>
                               </v-col>
-                              <v-col md="4" sm="12">
+                              <v-col md="4" sm="12" cols="12">
                                 <v-select
                                   :items="data.fundingSources"
                                   item-text="code"
@@ -160,7 +160,7 @@
                                   </template>
                                 </v-select>
                               </v-col>
-                              <v-col md="4" sm="12">
+                              <v-col md="4" sm="12" cols="12">
                                 <v-select
                                   :items="data.gfsCodes"
                                   item-value="code"
@@ -204,7 +204,7 @@
                     </template>
                   </v-simple-table>
                 </v-card>
-                <v-col cols="12" md="12" class="pa-3 pt-7 data-table">
+                <v-col cols="12" md="12" class="pb-3 pt-7 data-table" v-if="data.payables.length">
                   <v-data-table
                     :headers="payableHeader"
                     disable-pagination
