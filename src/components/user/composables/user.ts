@@ -1,6 +1,6 @@
 import { reactive, onMounted, set, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import { get, create, update, deleteUser, toggleActive } from "../services/user.service";
+import { get, create, update, deleteUser, toggleActive, resetPassword } from "../services/user.service";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getRoles } from "@/components/role/services/role-services";
 import { get as getLevels } from "@/components/admin-area/level/services/level-services";
@@ -263,11 +263,16 @@ export const useUser = (): any => {
   };
 
   const status = computed(() => {
-      return (data.user && data.user.active) ? "De-Activate" : "Activate";
+    return data.user && data.user.active ? "De-Activate" : "Activate";
   });
 
+  const resetPasswd = (user) => {
+    const payload = { user_id: user.id };
+    resetPassword(payload);
+  };
+
   const toggleStatus = () => {
-    toggleActive(data.user).then(response => {
+    toggleActive(data.user).then((response) => {
       if (response.status === 200) {
         closeConfirmDialog();
         initialize();
@@ -304,5 +309,6 @@ export const useUser = (): any => {
     save,
     deleteItem,
     status,
+    resetPasswd,
   };
 };

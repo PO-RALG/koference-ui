@@ -16,6 +16,16 @@
           <v-switch :input-value="item.active" @click="openActivationDialog(item)" value></v-switch>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
+
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="resetPasswd(item)" :disabled="cant('edit', 'User')">
+                mdi-lock-reset
+              </v-icon>
+            </template>
+            <span>Reset Password</span>
+          </v-tooltip>
+
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'User')">
             mdi-pencil-box-outline
           </v-icon>
@@ -174,6 +184,7 @@ export default defineComponent({
       deleteItem,
       onChangeList,
       status,
+      resetPasswd,
     } = useUser();
 
     const showRoles = (roles) => {
@@ -205,6 +216,7 @@ export default defineComponent({
       onChangeList,
       toggleStatus,
       status,
+      resetPasswd,
     };
   },
 });

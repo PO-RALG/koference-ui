@@ -32,4 +32,8 @@ const toggleActive = async (payload: any) => {
   return await axios.post(`${API}/${payload.id}/change-status`);
 };
 
-export { get, find, create, update, deleteUser, toggleActive };
+const resetPassword = async (payload: any) => {
+  return await axios.post(`${API}/reset-password`, payload);
+};
+
+export { get, find, create, update, deleteUser, toggleActive, resetPassword };
