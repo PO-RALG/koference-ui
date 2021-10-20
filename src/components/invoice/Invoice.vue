@@ -219,7 +219,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.invoicedetails" :width="1000">
+    <Modal :modal="data.invoicedetails" :width="1120">
       <template v-slot:header>
         <ModalHeader :title="`Invoice Details`" />
       </template>
@@ -233,9 +233,9 @@
                 @click="openInvoiceReceipt(data.invoicedata)"
                 ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
               >
-              <v-btn color="info darken-1" text @click="cancelInvoiceDialog"
+              <!-- <v-btn color="info darken-1" text @click="cancelInvoiceDialog"
                 ><v-icon> mdi-printer </v-icon> Print</v-btn
-              >
+              > -->
               <v-btn
                 @click="deleteInvoiceItemdefinition(data.invoicedata.id)"
                 color="warning darken-1"
@@ -249,10 +249,34 @@
             <table cellpadding="0" cellspacing="0">
               <v-col class="pa-9" cols="12" sm="12" md="12">
                 <v-layout justify-center>
-                  <img :src="data.coat" class="login-logo pt-5" /><br />
+                  <img :src="data.coat" class="login-logo pt-5" />
                 </v-layout>
+                <v-layout justify-center align="center">
+                  <strong>
+                    {{ "The United Republic of Tanzania" }}
+                  </strong>
+                  <br />
+                </v-layout>
+                <v-layout justify-center align="center">
+                  <strong>
+                    {{ data.invoicedata.location.name }}
+                  </strong>
+                  <br />
+                </v-layout>
+                <v-layout justify-center align="center ">
+                  <small>
+                    <strong>
+                      {{
+                        data.invoicedata.facility
+                          ? data.invoicedata.facility.name
+                          : ""
+                      }}
+                    </strong>
+                  </small>
+                </v-layout>
+                <v-divider class="underline-title"></v-divider>
               </v-col>
-              <v-row no-gutters class="pt-5">
+              <v-row no-gutters class="pt-0">
                 <v-col cols="12" sm="6" md="4">
                   <v-layout justify-left>
                     <v-card-actions>
@@ -298,7 +322,7 @@
                     }}<br />
                   </v-card>
                 </v-col>
-                <v-col cols="6" md="4" class="pl-8">
+                <v-col cols="6" md="4" class="pl-12">
                   <v-card flat class="pa-2">
                     <strong> Customer Name: </strong>
                     {{
@@ -404,6 +428,26 @@
                   </tr>
                 </template>
               </v-data-table>
+              <v-sheet class="text-capitalize pt-8">
+                <strong> Created By:</strong>
+                <em>
+                  {{
+                    data.invoicedata.user
+                      ? data.invoicedata.user.first_name
+                      : ""
+                  }}
+                  {{ " " }}
+                  {{
+                    data.invoicedata.user
+                      ? data.invoicedata.user.middle_name
+                      : ""
+                  }}
+                  {{ " " }}
+                  {{
+                    data.invoicedata.user ? data.invoicedata.user.last_name : ""
+                  }}
+                </em>
+              </v-sheet>
             </table>
           </div>
         </ModalBody>
@@ -413,7 +457,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.invoicereceipt" :width="1000">
+    <Modal :modal="data.invoicereceipt" :width="1120">
       <template v-slot:header>
         <ModalHeader :title="`Create Invoice Receipt`" />
       </template>
@@ -470,12 +514,6 @@
                 </v-col>
 
                 <v-col class="pt-2" cols="12" md="12"> </v-col>
-                <!-- <v-sheet class="pl-3">
-                  <v-sheet class="information grey lighten-3 text-capitalize">
-                    <strong> Description:</strong>
-                    {{ data.invoicereceip.description | capitalizeFirstLatter }}
-                  </v-sheet>
-                </v-sheet> -->
                 <v-col class="pt-2 invoice-table" cols="12" md="12">
                   <v-data-table
                     :headers="RECEIPTHEADERS"
@@ -632,8 +670,14 @@ export default defineComponent({
 <style lang="scss">
 #p1 {
   text-decoration: underline;
-  text-decoration-color: blue;
-  // text-decoration-style: double;
+  text-decoration-color: rgba(17, 0, 255, 0.74);
+  text-decoration-thickness: 2px;
+}
+
+.underline-title {
+  border: 1px dashed rgb(196, 17, 17);
+  width: 100%;
+  border-color: red;
 }
 .underline-amount {
   border-style: double none none;
@@ -643,7 +687,7 @@ export default defineComponent({
   border-block-color: rgb(17, 0, 255);
 }
 .invoice-box {
-  max-width: 1000;
+  max-width: 1100;
   margin: auto;
   padding: 2px;
   /* border: 1px solid #eee; */
@@ -719,8 +763,8 @@ export default defineComponent({
   text-align: left;
 }
 .login-logo {
-  height: 14%;
-  width: 14%;
+  height: 12%;
+  width: 12%;
 }
 tbody tr:nth-of-type(odd) {
   background-color: none;
