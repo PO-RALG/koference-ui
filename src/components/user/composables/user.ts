@@ -101,9 +101,11 @@ export const useUser = (): any => {
   };
 
   const users = computed(() => {
-    return data.items.map((user) => ({
+    return data.items.map((user: any) => ({
       ...user,
       fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
+      roles: user.roles.map((r: any) =>
+        r.name ? `[ ${r.name} ]` : `[ NO ROLE ]`),
     }));
   });
 
