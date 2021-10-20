@@ -6,6 +6,7 @@
     <Landing :user="currentUser" />
     <SnackBar />
     <LoginDialog />
+    <ChangePasswordDialog />
   </v-app>
 </template>
 
@@ -17,12 +18,14 @@ import axios from "axios";
 import Landing from "@/layouts/Landing.vue";
 import SnackBar from "@/components/shared/SnackBar.vue";
 import LoginDialog from "@/components/auth/LoginDialog.vue";
+import ChangePasswordDialog from "@/components/auth/ChangePasswordDialog.vue";
 
 export default defineComponent({
   components: {
     Landing,
     SnackBar,
     LoginDialog,
+    ChangePasswordDialog,
   },
   setup() {
     const data = reactive({

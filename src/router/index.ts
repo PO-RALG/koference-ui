@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from "vue-router";
 import VueRouteMiddleware from "vue-route-middleware";
 import store from "@/store";
 
+import { dashboardRoutes } from "@/components/dashboard";
 import { userRoutes } from "@/components/user";
 import { roleRoutes } from "@/components/role";
 import { gfsCodesRoutes } from "@/components/coa/gfs-code";
@@ -61,6 +62,7 @@ const routes: Array<RouteConfig> = [
       middleware: [setTitle, validateToken, setHeaders, auth],
     },
     children: [
+      ...dashboardRoutes,
       ...userRoutes,
       ...financialYearRoutes,
       ...gfsCodesRoutes,
