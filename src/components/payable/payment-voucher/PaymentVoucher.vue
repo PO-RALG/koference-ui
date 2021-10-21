@@ -37,8 +37,17 @@
             </v-col>
           </v-card-title>
         </template>
+        <template v-slot:[`item.reference_no`]="{ item }">
+          <span>{{ item.reference_no}}</span>
+        </template>
         <template v-slot:[`item.date`]="{ item }">
           <span>{{ item.date | format("DD/MM/YYYY") }}</span>
+        </template>
+        <template v-slot:[`item.amount`]="{ item }">
+          {{ item.amount | toCurrency() }}
+        </template>
+        <template v-slot:[`item.amount_paid`]="{ item }">
+          {{ item.amount_paid | toCurrency() }}
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon
@@ -195,7 +204,7 @@
                             <br />
                             <span>
                               {{
-                                account.allocation - account.totalExpenditure
+                                (account.allocation - account.totalExpenditure) | toCurrency()
                               }}
                             </span>
                           </td>
@@ -218,7 +227,7 @@
                             <br />
                             <span style="color: teal">{{ item.description }}</span>
                             <br />
-                            <span class="text--primary">{{ item.balance }}</span>
+                            <span class="text--primary">{{ item.balance | toCurrency() }}</span>
                           </td>
                           <td class="pt-5 pb-2">
                             <v-text-field

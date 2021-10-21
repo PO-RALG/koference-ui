@@ -12,6 +12,8 @@ export interface Payment {
 export interface ItemPlayLoad {
   payable_id: number;
   required_amount: number;
+  paid_amount: number;
   amount: number;
+  balance: number;
 }
 

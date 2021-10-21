@@ -26,40 +26,34 @@ export const usePayment = (): any => {
     modalTitle: "",
     headers: [
       {
+        text: "PV #",
+        align: "start",
+        sortable: false,
+        value: "voucher",
+      },
+      {
         text: "Date",
         align: "start",
         sortable: false,
         value: "payment_date",
       },
       {
-        text: "PV",
+        text: "Amount",
         align: "start",
         sortable: false,
-        value: "voucher",
+        value: "amount",
       },
       {
-        text: "Cheque Type",
+        text: "Payee",
         align: "start",
         sortable: false,
-        value: "cheque_type",
-      },
-      {
-        text: "Cheque",
-        align: "start",
-        sortable: false,
-        value: "cheque",
+        value: "payee",
       },
       {
         text: "Bank Account",
         align: "start",
         sortable: false,
         value: "bank_account",
-      },
-      {
-        text: "Description",
-        align: "start",
-        sortable: false,
-        value: "description",
       },
       {
         text: "Actions",
@@ -84,7 +78,10 @@ export const usePayment = (): any => {
     bankAccounts: [],
     paymentVouchers: [],
     payableItems: [],
-    payables: [{payable_id: '', required_amount: 0, amount: 0}],
+    payables: [{payable_id: '', required_amount: 0, amount: 0, paid_amount: 0, balance: 0}],
+    coat: "/coat_of_arms.svg.png",
+    paymentVoucherModal: false,
+    pvDetails:{}
   });
 
   onMounted(() => {
@@ -109,7 +106,12 @@ export const usePayment = (): any => {
     });
   };
 
-  const openConfirmDialog = (deleteId: string) => {
+  const openRequestReversalDialog = (deleteId: string) => {
+    data.deletemodal = !data.modal;
+    data.itemtodelete = deleteId;
+  };
+
+  const openHistoryDialog = (deleteId: string) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
   };
@@ -181,7 +183,7 @@ export const usePayment = (): any => {
   };
 
   const addPayable = () => {
-    data.payables.push({ payable_id: "", required_amount: 0, amount: 0 });
+    data.payables.push({ payable_id: "", required_amount: 0, amount: 0, paid_amount: 0, balance: 0 });
   };
 
   const removePayable = (index: number) => {
@@ -203,7 +205,10 @@ export const usePayment = (): any => {
     for (let i = 0; i < payableData.length; i++) {
       const element = payableData[i];
       if (element.id === id) {
-        return data.payables[index].required_amount = element.amount *1;
+        data.payables[index].required_amount = Number(element.amount);
+        data.payables[index].paid_amount = Number(element.paid_amount);
+        data.payables[index].balance = Number(element.amount) - Number(element.paid_amount);
+        return data.payables;
       }
     }
   }
@@ -243,11 +248,17 @@ export const usePayment = (): any => {
     },
   ];
 
+  const previewPaymentVoucher =  (paymentVoucherData) => {
+    data.pvDetails = paymentVoucherData;
+    data.modalTitle = "Payment Voucher";
+    data.paymentVoucherModal = !data.paymentVoucherModal;
+  };
+
   return {
     data,
     openDialog,
     cancelDialog,
-    openConfirmDialog,
+    openRequestReversalDialog,
     save,
     remove,
     cancelConfirmDialog,
@@ -258,5 +269,7 @@ export const usePayment = (): any => {
     setPayableItems,
     setAmount,
     payableHeader,
+    openHistoryDialog,
+    previewPaymentVoucher,
   };
 };

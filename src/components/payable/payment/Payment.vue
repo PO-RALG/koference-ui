@@ -37,15 +37,33 @@
             </v-col>
           </v-card-title>
         </template>
-        <template v-slot:[`item.date`]="{ item }">
-          <span>{{ item.date | format("DD/MM/YYYY") }}</span>
+        <template v-slot:[`item.payment_date`]="{ item }">
+          <span>{{ item.payment_date | format("DD/MM/YYYY") }}</span>
+        </template>
+        <template v-slot:[`item.bank_account`]="{ item }">
+          <span>{{ item.bank_account.number }}({{ item.bank_account.name }})</span>
+        </template>
+        <template v-slot:[`item.voucher`]="{ item }">
+          <span>
+            <v-list-item exact light @click="previewPaymentVoucher(item)">
+              {{item.voucher.reference_no}}</v-list-item>
+          </span>
+        </template>
+        <template v-slot:[`item.amount`]="{ item }">
+          {{ item.amount | toCurrency() }}
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon
-            @click="openConfirmDialog(item.id)"
+            @click="openRequestReversalDialog(item.id)"
             :disabled="cant('delete', 'Payment')"
           >
-            mdi-trash-can-outline
+            mdi-undo
+          </v-icon>
+          <v-icon
+            @click="openHistoryDialog(item.id)"
+            :disabled="cant('delete', 'Payment')"
+          >
+            mdi-update
           </v-icon>
         </template>
         <template v-slot:footer>
@@ -142,24 +160,10 @@
                             </v-select>
                           </td>
                           <td>
-                            <v-text-field
-                              class="pt-3"
-                              outlined
-                              dense
-                              type="number"
-                              v-model="payable.required_amount"
-                              disabled
-                            ></v-text-field>
+                            {{payable.required_amount | toCurrency()}}
                           </td>
                           <td>
-                            <v-text-field
-                              class="pt-3"
-                              outlined
-                              dense
-                              type="number"
-                              v-model="payable.paid_amount"
-                              disabled
-                            ></v-text-field>
+                            {{payable.paid_amount | toCurrency()}}
                           </td>
                           <td>
                             <v-text-field
@@ -168,7 +172,7 @@
                               dense
                               type="number"
                               v-model="payable.amount"
-                              :rules="[maxRules(payable.required_amount)]"
+                              :rules="[maxRules(payable.balance)]"
                             ></v-text-field>
                           </td>
                           <td>
@@ -222,6 +226,161 @@
         </ModalFooter>
       </template>
     </Modal>
+
+    <Modal :modal="data.paymentVoucherModal" :width="1000">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <div class="invoice-box" v-if="data.pvDetails">
+            <table width="100%">
+              <tr class="top">
+                <td width="30%">
+                  <img :src="data.coat" height="180px" class="login-logo pt-5" /><br />
+                  <!-- <table>
+                    <tr>
+                      <td class="title">
+                        <v-btn
+                          color="green darken-1"
+                          text
+                          @click="openInvoiceReceipt(data.invoicedata)"
+                          ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
+                        >
+                        <v-btn
+                          color="info darken-1"
+                          text
+                          @click="cancelInvoiceDialog"
+                          ><v-icon> mdi-printer </v-icon> Print</v-btn
+                        >
+                        <v-btn
+                          @click="
+                            deleteInvoiceItemdefinition(data.invoicedata.id)
+                          "
+                          color="warning darken-1"
+                          text
+                          ><v-icon>mdi-arrow-u-left-top-bold</v-icon>
+                          Cancel</v-btn
+                        >
+                        <v-btn
+                          color="red darken-1"
+                          text
+                          @click="cancelInvoiceDialog"
+                          >Close</v-btn
+                        >
+                      </td>
+
+                      <td>
+                        <strong>
+                          Invoice #:{{
+                            data.invoicedata
+                              ? data.invoicedata.invoice_number
+                              : ""
+                          }}</strong
+                        ><br />
+                        Created:
+                        {{
+                          data.invoicedata
+                            ? data.invoicedata.date
+                            : "" | format
+                        }}<br />
+                      </td>
+                    </tr>
+                  </table> -->
+                </td>
+                <td class="d-flex justify-end">
+                  <span class="text-h6 text-right">
+                    THE UNITED REPUBLIC OF TANZANIA <br />
+                  REGIONAL ADMIN AND LOCAL GOVERNMENT <br />
+                  REGION <br />
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td width="100%" colspan="3" class="d-flex justify-center"><span class="text-center">PAYMENT VOUCHER</span></td>
+              </tr>
+
+              <!-- <v-data-table
+                :headers="HEADERS_INVOICE_DETAILS"
+                :items="newInvoiceItem"
+                disable-pagination
+                hide-default-footer
+              >
+                <template v-slot:[`item.no`]="{ index }">
+                  <tr class="text--bold">
+                    {{
+                      index + 1
+                    }}
+                  </tr>
+                </template>
+                <template v-slot:[`item.item`]="{ item }">
+                  <tr class="text--bold">
+                    {{
+                      item.definition.name
+                    }}
+                  </tr>
+                </template>
+                <template v-slot:[`item.received_amount`]="{ item }">
+                  <tr class="text--bold">
+                    {{
+                      item.received_amount | toCurrency()
+                    }}
+                  </tr>
+                </template>
+                <template v-slot:[`item.amount`]="{ item }">
+                  <tr class="text--bold">
+                    {{
+                      item.amount | toCurrency()
+                    }}
+                  </tr>
+                </template>
+                <template v-slot:[`item.balance_amount`]="{ item }">
+                  <tr class="text--bold">
+                    {{
+                      (item.amount - item.received_amount) | toCurrency()
+                    }}
+                  </tr>
+                </template>
+
+                <template v-slot:[`body.append`]="{ headers }">
+                  <tr>
+                    <th
+                      class="grey lighten-5"
+                      v-for="(header, i) in headers"
+                      :key="i"
+                    >
+                      <div v-if="header.value == 'no'">
+                        <h2>
+                          {{ "TOTAL" }}
+                        </h2>
+                      </div>
+                      <span v-if="header.value == 'amount'">
+                        <h2 class="underline-amount">
+                          {{ sumDebts.sumamount | toCurrency() }}
+                        </h2>
+                      </span>
+                      <span v-if="header.value == 'received_amount'">
+                        <h2 class="underline-amount">
+                          {{ sumDebts.sumamountReceived | toCurrency() }}
+                        </h2>
+                      </span>
+                      <span v-if="header.value == 'balance_amount'">
+                        <h2 class="underline-amount">
+                          {{ sumDebts.sumamountPending | toCurrency() }}
+                        </h2>
+                      </span>
+                    </th>
+                  </tr>
+                </template>
+              </v-data-table> -->
+            </table>
+          </div>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter> </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -236,7 +395,7 @@ export default defineComponent({
       data,
       openDialog,
       cancelDialog,
-      openConfirmDialog,
+      openRequestReversalDialog,
       save,
       remove,
       cancelConfirmDialog,
@@ -248,13 +407,15 @@ export default defineComponent({
       setAmount,
       maxRules,
       payableHeader,
+      openHistoryDialog,
+      previewPaymentVoucher,
     } = usePayment();
 
     return {
       data,
       openDialog,
       cancelDialog,
-      openConfirmDialog,
+      openRequestReversalDialog,
       save,
       remove,
       cancelConfirmDialog,
@@ -266,6 +427,8 @@ export default defineComponent({
       setAmount,
       maxRules,
       payableHeader,
+      openHistoryDialog,
+      previewPaymentVoucher,
     };
   },
 });

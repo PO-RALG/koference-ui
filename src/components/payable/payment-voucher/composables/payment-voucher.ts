@@ -30,28 +30,22 @@ export const usePaymentVoucher = (): any => {
     modalTitle: "",
     headers: [
       {
-        text: "Date",
-        align: "start",
-        sortable: false,
-        value: "date",
-      },
-      {
         text: "Reference Number",
         align: "start",
         sortable: false,
         value: "reference_no",
       },
       {
+        text: "Date",
+        align: "start",
+        sortable: false,
+        value: "date",
+      },
+      {
         text: "Supplier",
         align: "start",
         sortable: false,
         value: "supplier.name",
-      },
-      {
-        text: "Bank Account",
-        align: "start",
-        sortable: false,
-        value: "bank_account",
       },
       {
         text: "Amount",
