@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="login-application-container">
+    <SnackBar />
     <Loader />
     <router-view></router-view>
   </div>
@@ -7,8 +8,13 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
+import SnackBar from "@/components/shared/SnackBar.vue";
 
-export default defineComponent({});
+export default defineComponent({
+  components: {
+    SnackBar,
+  }
+});
 </script>
 
 <style>

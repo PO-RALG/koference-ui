@@ -90,4 +90,7 @@ ul {
 .v-sheet.v-snack__wrapper {
   border-radius: 0;
 }
+.v-application ul {
+  padding-left: 0 !important;
+}
 </style>
