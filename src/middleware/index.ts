@@ -98,8 +98,7 @@ const auth = async (to, _, next) => {
 };
 
 const forcePasswordChange = async (next, user) => {
-  const currentUser = await getCurrentUser();
-  const token = currentUser ? currentUser.token : null;
+  const token = user ? user.token : null;
   const { exp } = VueJwtDecode.decode(token);
 
   if (Date.now() >= exp * 1000) {
