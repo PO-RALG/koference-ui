@@ -2,19 +2,12 @@
   <v-container>
     <v-row>
       <v-col cols="12" lg="5" md="4" sm="12" class="mt-2 mb-n4">
-        <v-text-field
-          :label="`filter ${modelName} by ${label}...`"
-          type="text"
-          v-model="data.searchSource">
+        <v-text-field :label="`filter ${modelName} by ${label}...`" type="text" v-model="data.searchSource">
         </v-text-field>
       </v-col>
-      <v-col cols="12" lg="2" md="2" sm="12" class="pl-6">
-      </v-col>
+      <v-col cols="12" lg="2" md="2" sm="12" class="pl-6"> </v-col>
       <v-col cols="12" lg="5" md="4" sm="12" class="mt-2 mb-n4">
-        <v-text-field
-          :label="`filter ${modelName} by ${label}...`"
-          type="text"
-          v-model="data.searchDestination">
+        <v-text-field :label="`filter ${modelName} by ${label}...`" type="text" v-model="data.searchDestination">
         </v-text-field>
       </v-col>
     </v-row>
@@ -24,7 +17,9 @@
           <option
             v-for="(item, key) in source
               .map((item, idx) => ({ idx, ...item }))
-              .filter((item) => item[label in item ? label : 'label'])"
+              .filter((item) =>
+                item[label in item ? label : 'label'].toLowerCase().includes(data.searchSource.toLowerCase())
+              )"
             :key="key"
             @click="highlightSourceItem(item)"
             @dblclick="addItem(item)"
@@ -73,7 +68,9 @@
           <option
             v-for="(item, key) in destination
               .map((item, idx) => ({ idx, ...item }))
-              .filter((item) => item[label in item ? label : 'label'])"
+              .filter((item) =>
+                item[label in item ? label : 'label'].toLowerCase().includes(data.searchDestination.toLowerCase())
+              )"
             :key="key"
             @click="highlightDestinationItem(item)"
             @dblclick="removeItem(item)"
@@ -117,7 +114,7 @@ export default defineComponent({
       type: String,
       required: false,
       default: "roles",
-    }
+    },
   },
 
   setup(props, context) {
