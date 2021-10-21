@@ -43,7 +43,7 @@ export const useUser = (): any => {
       { text: "Phone Number", value: "phone_number" },
       { text: "Name", align: "start", sortable: false, value: "fullName" },
       { text: "Email", value: "email" },
-      { text: "Roles", value: "roles" },
+      { text: "Roles", value: "displayRoles" },
       { text: "Activation", value: "activations", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
@@ -113,7 +113,7 @@ export const useUser = (): any => {
     return data.items.map((user: any) => ({
       ...user,
       fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
-      roles: user.roles.map((r: any) => (r.name ? `[ ${r.name} ]` : `[ NO ROLE ]`)),
+      displayRoles: user.roles.map((r: any) => (r.name ? `[ ${r.name} ]` : `[ NO ROLE ]`)),
     }));
   });
 
