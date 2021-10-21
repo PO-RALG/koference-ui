@@ -1,8 +1,21 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" lg="12" md="12" sm="12">
-        <v-text-field :label="label" type="text" v-model="data.search" required> </v-text-field>
+      <v-col cols="12" lg="5" md="4" sm="12" class="mt-2 mb-n4">
+        <v-text-field
+          :label="`filter ${modelName} by ${label}...`"
+          type="text"
+          v-model="data.searchSource">
+        </v-text-field>
+      </v-col>
+      <v-col cols="12" lg="2" md="2" sm="12" class="pl-6">
+      </v-col>
+      <v-col cols="12" lg="5" md="4" sm="12" class="mt-2 mb-n4">
+        <v-text-field
+          :label="`filter ${modelName} by ${label}...`"
+          type="text"
+          v-model="data.searchDestination">
+        </v-text-field>
       </v-col>
     </v-row>
     <v-row>
@@ -74,7 +87,6 @@
           </option>
         </select>
       </v-col>
-      <v-col></v-col>
     </v-row>
   </v-container>
 </template>
@@ -105,6 +117,11 @@ export default defineComponent({
       type: String,
       required: false,
     },
+    modelName: {
+      type: String,
+      required: false,
+      default: "roles",
+    }
   },
 
   setup(props, context) {

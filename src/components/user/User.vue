@@ -16,7 +16,8 @@
             :input-value="item.active"
             @click="openActivationDialog(item)"
             :disabled="cant('activateDeactivate', 'User') || item.id === data.currentUser.id"
-            value>
+            value
+          >
           </v-switch>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
@@ -87,6 +88,7 @@
                     :destination="data.selectedRoles"
                     v-model="data.formData.roles"
                     :label="'name'"
+                    :modelName="'roles'"
                     @onChangeList="onChangeList"
                   />
                 </v-col>
