@@ -164,7 +164,6 @@ export const useUser = (): any => {
 
   const updateUser = (data: User) => {
     update(data).then((response: AxiosResponse) => {
-      console.log(response.status);
       if (response.status === 200) {
         cancelDialog();
         initialize();
@@ -204,7 +203,6 @@ export const useUser = (): any => {
   const deleteItem = (item: number | string) => {
     const payload = item;
     deleteUser(payload).then((response: AxiosResponse) => {
-      console.log(response);
       initialize();
     });
     data.item = {} as User;
@@ -285,7 +283,6 @@ export const useUser = (): any => {
   };
 
   const onChangeList = ({ source, destination }): void => {
-    console.log(source, destination);
     destination.forEach((item) => {
       data.roles = upsert(source, item);
     });

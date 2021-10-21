@@ -11,9 +11,7 @@
           <option
             v-for="(item, key) in source
               .map((item, idx) => ({ idx, ...item }))
-              .filter((item) =>
-                item[label in item ? label : 'label'].toLowerCase().includes(data.searchSource.toLowerCase())
-              )"
+              .filter((item) => item[label in item ? label : 'label'])"
             :key="key"
             @click="highlightSourceItem(item)"
             @dblclick="addItem(item)"
@@ -62,9 +60,7 @@
           <option
             v-for="(item, key) in destination
               .map((item, idx) => ({ idx, ...item }))
-              .filter((item) =>
-                item[label in item ? label : 'label'].toLowerCase().includes(data.searchDestination.toLowerCase())
-              )"
+              .filter((item) => item[label in item ? label : 'label'])"
             :key="key"
             @click="highlightDestinationItem(item)"
             @dblclick="removeItem(item)"
