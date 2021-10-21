@@ -7,11 +7,16 @@ import { get as getLevels } from "@/components/admin-area/level/services/level-s
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
 import { User } from "../types/User";
 
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+const { useState } = createNamespacedHelpers("Auth");
+
 export const useUser = (): any => {
+  const { currentUser } = useState(["currentUser"]);
   const dataItems: Array<User> = [];
   const userData = {} as User;
   const data = reactive({
     title: "Manage Users",
+    currentUser: null,
     valid: true,
     status: "",
     isOpen: false,
@@ -74,6 +79,7 @@ export const useUser = (): any => {
     loadLevels();
     getNodes();
     loadRoles();
+    data.currentUser = currentUser;
     data.source = [
       { label: "WHITE", code: "#FFFFFF" },
       { label: "SILVER", code: "#C0C0C0" },

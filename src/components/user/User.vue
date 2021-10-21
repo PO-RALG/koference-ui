@@ -12,7 +12,12 @@
     <v-card>
       <v-data-table :headers="data.headers" :items="users" hide-default-footer class="elevation-1">
         <template v-slot:[`item.activations`]="{ item }">
-          <v-switch :input-value="item.active" @click="openActivationDialog(item)" value></v-switch>
+          <v-switch
+            :input-value="item.active"
+            @click="openActivationDialog(item)"
+            :disabled="cant('activateDeactivate', 'User') || item.id === data.currentUser.id"
+            value>
+          </v-switch>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip top>
@@ -27,7 +32,10 @@
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'User')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'User')">
+          <v-icon
+            @click="openConfirmDialog(item)"
+            :disabled="cant('delete', 'User') || item.id === data.currentUser.id"
+          >
             mdi-trash-can-outline
           </v-icon>
         </template>
