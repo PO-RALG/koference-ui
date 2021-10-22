@@ -7,7 +7,7 @@ import {
   destroy,
 } from "../services/payment.service";
 import { Payment, ItemPlayLoad} from "../types/Payment";
-import { PaymentVoucher} from "@/components/payable/payment-voucher/types/PaymentVoucher";
+import { find as findPaymentVoucher} from "@/components/payable/payment-voucher/services/payment-voucher.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
 import { get as getPaymentVouchers } from "@/components/payable/payment-voucher/services/payment-voucher.service";
 import { FundSources } from "@/components/coa/funding-source/types/index";
@@ -120,7 +120,7 @@ export const usePayment = (): any => {
     data.formData = {} as Payment;
     data.modal = !data.modal;
   };
-
+  
   const cancelConfirmDialog = () => {
     data.formData = {} as Payment;
     data.deletemodal = false;
@@ -248,10 +248,19 @@ export const usePayment = (): any => {
     },
   ];
 
-  const previewPaymentVoucher =  (paymentVoucherData) => {
-    data.pvDetails = paymentVoucherData;
-    data.modalTitle = "Payment Voucher";
+  const previewPaymentVoucher =  (id: number) => {
+    findPaymentVoucher(id).then((response: AxiosResponse) => {
+      data.pvDetails = response.data.data;
+      data.paymentVoucherModal = !data.paymentVoucherModal;
+    });
+  };
+
+  const cancelPreviewDialog = () => {
     data.paymentVoucherModal = !data.paymentVoucherModal;
+  };
+
+  const printPaymentVoucher = () => {
+    const payment_voucher_id = data.pvDetails;
   };
 
   return {
@@ -271,5 +280,7 @@ export const usePayment = (): any => {
     payableHeader,
     openHistoryDialog,
     previewPaymentVoucher,
+    cancelPreviewDialog,
+    printPaymentVoucher,
   };
 };

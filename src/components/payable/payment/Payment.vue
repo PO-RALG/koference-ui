@@ -45,7 +45,7 @@
         </template>
         <template v-slot:[`item.voucher`]="{ item }">
           <span>
-            <v-list-item exact light @click="previewPaymentVoucher(item)">
+            <v-list-item exact light @click="previewPaymentVoucher(item.voucher.id)">
               {{item.voucher.reference_no}}</v-list-item>
           </span>
         </template>
@@ -229,75 +229,32 @@
 
     <Modal :modal="data.paymentVoucherModal" :width="1000">
       <template v-slot:header>
-        <ModalHeader :title="data.modalTitle" />
+        <ModalHeader :title="`Payment Voucher`" />
       </template>
       <template v-slot:body>
         <ModalBody>
           <div class="invoice-box" v-if="data.pvDetails">
+            <v-col class="d-flex justify-center">
+              <div class="text-h6 text-center">
+                THE UNITED REPUBLIC OF TANZANIA <br />
+                REGIONAL ADMIN AND LOCAL GOVERNMENT <br />
+                REGION <br />
+              </div>
+            </v-col>
+            <v-col class="d-flex justify-center">
+              <div class="text-subtitle-1 font-weight-bold">PAYMENT VOUCHER</div>
+            </v-col>
             <table width="100%">
               <tr class="top">
-                <td width="30%">
-                  <img :src="data.coat" height="180px" class="login-logo pt-5" /><br />
-                  <!-- <table>
-                    <tr>
-                      <td class="title">
-                        <v-btn
-                          color="green darken-1"
-                          text
-                          @click="openInvoiceReceipt(data.invoicedata)"
-                          ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
-                        >
-                        <v-btn
-                          color="info darken-1"
-                          text
-                          @click="cancelInvoiceDialog"
-                          ><v-icon> mdi-printer </v-icon> Print</v-btn
-                        >
-                        <v-btn
-                          @click="
-                            deleteInvoiceItemdefinition(data.invoicedata.id)
-                          "
-                          color="warning darken-1"
-                          text
-                          ><v-icon>mdi-arrow-u-left-top-bold</v-icon>
-                          Cancel</v-btn
-                        >
-                        <v-btn
-                          color="red darken-1"
-                          text
-                          @click="cancelInvoiceDialog"
-                          >Close</v-btn
-                        >
-                      </td>
-
-                      <td>
-                        <strong>
-                          Invoice #:{{
-                            data.invoicedata
-                              ? data.invoicedata.invoice_number
-                              : ""
-                          }}</strong
-                        ><br />
-                        Created:
-                        {{
-                          data.invoicedata
-                            ? data.invoicedata.date
-                            : "" | format
-                        }}<br />
-                      </td>
-                    </tr>
-                  </table> -->
+                <td>
+                  <span>STATION NO: ............</span>
                 </td>
                 <td class="d-flex justify-end">
-                  <span class="text-h6 text-right">
-                    THE UNITED REPUBLIC OF TANZANIA <br />
-                  REGIONAL ADMIN AND LOCAL GOVERNMENT <br />
-                  REGION <br />
-                  </span>
+                  <span>REF NO: </span><span class="font-weight-bold">{{data.pvDetails.reference_no}}</span>
                 </td>
               </tr>
               <tr>
-                <td width="100%" colspan="3" class="d-flex justify-center"><span class="text-center">PAYMENT VOUCHER</span></td>
+                <td width="100%" colspan="3" class="d-flex justify-center"></td>
               </tr>
 
               <!-- <v-data-table
@@ -378,7 +335,19 @@
         </ModalBody>
       </template>
       <template v-slot:footer>
-        <ModalFooter> </ModalFooter>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelPreviewDialog">
+            Cancel
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="printPaymentVoucher"
+            :disabled="!data.valid"
+          >
+            Print
+          </v-btn>
+        </ModalFooter>
       </template>
     </Modal>
   </div>
@@ -409,6 +378,8 @@ export default defineComponent({
       payableHeader,
       openHistoryDialog,
       previewPaymentVoucher,
+      cancelPreviewDialog,
+      printPaymentVoucher,
     } = usePayment();
 
     return {
@@ -429,6 +400,8 @@ export default defineComponent({
       payableHeader,
       openHistoryDialog,
       previewPaymentVoucher,
+      cancelPreviewDialog,
+      printPaymentVoucher,
     };
   },
 });
