@@ -3,7 +3,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn
+        :disabled="cant('create', 'Invoice')"
+        color="primary"
+        @click="openDialog"
+      >
         <v-icon>mdi-plus</v-icon>
         Create Invoice
       </v-btn>
@@ -51,9 +55,11 @@
           {{ item.received_amount | toCurrency() }}
         </template>
         <template v-slot:[`item.invoice_number`]="{ item }">
-          <v-list-item exact light @click="previewInvoice(item)">{{
-            item.invoice_number
-          }}</v-list-item>
+          <v-list-item id="p1" exact light @click="previewInvoice(item)"
+            ><h3>
+              {{ item.invoice_number }}
+            </h3></v-list-item
+          >
         </template>
         <template v-slot:[`item.pending`]="{ item }">
           {{ (item.amount - item.received_amount) | toCurrency() }}
@@ -217,128 +223,137 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.invoicedetails" :width="1000">
+    <Modal :fullScreen="true" :modal="data.invoicedetails" :width="1120">
       <template v-slot:header>
         <ModalHeader :title="`Invoice Details`" />
       </template>
       <template v-slot:body>
         <ModalBody>
           <div class="invoice-box" v-if="data.invoicedata">
+            <td class="title">
+              <v-btn
+                v-show="can('create', 'Receipt')"
+                color="green darken-1"
+                text
+                @click="openInvoiceReceipt(data.invoicedata)"
+                ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
+              >
+              <!-- <v-btn color="info darken-1" text @click="cancelInvoiceDialog"
+                ><v-icon> mdi-printer </v-icon> Print</v-btn
+              > -->
+              <v-btn
+                v-show="can('delete', 'Receipt')"
+                @click="deleteInvoiceItemdefinition(data.invoicedata.id)"
+                color="warning darken-1"
+                text
+                ><v-icon>mdi-arrow-u-left-top-bold</v-icon> Cancel</v-btn
+              >
+              <v-btn color="red darken-1" text @click="cancelInvoiceDialog"
+                >Close</v-btn
+              >
+            </td>
             <table cellpadding="0" cellspacing="0">
-              <tr class="top">
-                <td colspan="4">
-                  <table>
-                    <tr>
-                      <td class="title">
-                        <v-btn
-                          color="green darken-1"
-                          text
-                          @click="openInvoiceReceipt(data.invoicedata)"
-                          ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
-                        >
-                        <v-btn
-                          color="info darken-1"
-                          text
-                          @click="cancelInvoiceDialog"
-                          ><v-icon> mdi-printer </v-icon> Print</v-btn
-                        >
-                        <v-btn
-                          @click="
-                            deleteInvoiceItemdefinition(data.invoicedata.id)
-                          "
-                          color="warning darken-1"
-                          text
-                          ><v-icon>mdi-arrow-u-left-top-bold</v-icon>
-                          Cancel</v-btn
-                        >
-                        <v-btn
-                          color="red darken-1"
-                          text
-                          @click="cancelInvoiceDialog"
-                          >Close</v-btn
-                        >
-                      </td>
-
-                      <td>
-                        <strong>
-                          Invoice #:{{
-                            data.invoicedata
-                              ? data.invoicedata.invoice_number
+              <v-col class="pa-9" cols="12" sm="12" md="12">
+                <v-layout justify-center>
+                  <img :src="data.coat" class="login-logo pt-5" />
+                </v-layout>
+                <v-layout justify-center align="center">
+                  <strong>
+                    {{ "The United Republic of Tanzania" }}
+                  </strong>
+                  <br />
+                </v-layout>
+                <v-layout justify-center align="center">
+                  <strong>
+                    {{ data.invoicedata.location.name }}
+                  </strong>
+                  <br />
+                </v-layout>
+                <v-layout justify-center align="center ">
+                  <strong>
+                    {{
+                      data.invoicedata.facility
+                        ? data.invoicedata.facility.name
+                        : ""
+                    }}
+                  </strong>
+                </v-layout>
+                <v-divider class="underline-title"></v-divider>
+              </v-col>
+              <v-row no-gutters class="pt-0">
+                <v-col cols="12" sm="6" md="4">
+                  <v-layout justify-left>
+                    <v-card-actions>
+                      <div class="text-xs-center">
+                        <v-card flat class="pl-2">
+                          <strong> Facility Name: </strong>
+                          {{
+                            data.invoicedata.facility
+                              ? data.invoicedata.facility.name
                               : ""
-                          }}</strong
-                        ><br />
-                        Created:
-                        {{
-                          data.invoicedata
-                            ? data.invoicedata.date
-                            : "" | format
-                        }}<br />
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-
-              <tr class="information">
-                <td colspan="4">
-                  <table>
-                    <tr v-if="data.invoicedata">
-                      <td>
-                        <img :src="data.coat" class="login-logo pt-5" /><br />
-                        <strong> Facility Name: </strong>
-                        {{
-                          data.invoicedata.facility
-                            ? data.invoicedata.facility.name
-                            : ""
-                        }}<br />
-                        Address:
-                        {{
-                          data.invoicedata.facility
-                            ? data.invoicedata.facility.postal_address
-                            : ""
-                        }}<br />
-                        Email:
-                        {{
-                          data.invoicedata.facility
-                            ? data.invoicedata.facility.email
-                            : ""
-                        }}<br />
-                        Phone:{{
-                          data.invoicedata.facility
-                            ? data.invoicedata.facility.phone_number
-                            : ""
-                        }}
-                      </td>
-
-                      <td>
-                        <strong> Customer Name: </strong>
-                        {{
-                          data.invoicedata.customer
-                            ? data.invoicedata.customer.name
-                            : ""
-                        }}<br />
-                        Address:{{
-                          data.invoicedata.customer
-                            ? data.invoicedata.customer.address
-                            : ""
-                        }}<br />
-                        Email:{{
-                          data.invoicedata.customer
-                            ? data.invoicedata.customer.email
-                            : ""
-                        }}<br />
-                        Phone:{{
-                          data.invoicedata.customer
-                            ? data.invoicedata.customer.phone
-                            : ""
-                        }}<br />
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
+                          }}<br />
+                          Address:
+                          {{
+                            data.invoicedata.facility
+                              ? data.invoicedata.facility.postal_address
+                              : ""
+                          }}<br />
+                          Email:
+                          {{
+                            data.invoicedata.facility
+                              ? data.invoicedata.facility.email
+                              : ""
+                          }}<br />
+                          Phone:{{
+                            data.invoicedata.facility
+                              ? data.invoicedata.facility.phone_number
+                              : ""
+                          }}
+                        </v-card>
+                      </div>
+                    </v-card-actions>
+                  </v-layout>
+                </v-col>
+                <v-col cols="6" md="4" class="pl-9">
+                  <v-card flat class="pa-2">
+                    <strong>
+                      Invoice #:{{
+                        data.invoicedata ? data.invoicedata.invoice_number : ""
+                      }}</strong
+                    ><br />
+                    Created:
+                    {{ data.invoicedata ? data.invoicedata.date : "" | format
+                    }}<br />
+                  </v-card>
+                </v-col>
+                <v-col cols="6" md="4" class="pl-12">
+                  <v-card flat class="pa-2">
+                    <strong> Customer Name: </strong>
+                    {{
+                      data.invoicedata.customer
+                        ? data.invoicedata.customer.name
+                        : ""
+                    }}<br />
+                    Address:{{
+                      data.invoicedata.customer
+                        ? data.invoicedata.customer.address
+                        : ""
+                    }}<br />
+                    Email:{{
+                      data.invoicedata.customer
+                        ? data.invoicedata.customer.email
+                        : ""
+                    }}<br />
+                    Phone:{{
+                      data.invoicedata.customer
+                        ? data.invoicedata.customer.phone
+                        : ""
+                    }}<br />
+                  </v-card>
+                </v-col>
+              </v-row>
               <v-sheet class="pl-3">
-                <v-sheet class="information grey lighten-3 text-capitalize">
+                <v-sheet class="information green lighten-5 text-capitalize">
                   <strong> Description:</strong>
                   {{ data.invoicedata.description | capitalizeFirstLatter }}
                 </v-sheet>
@@ -417,6 +432,26 @@
                   </tr>
                 </template>
               </v-data-table>
+              <v-sheet class="text-capitalize pt-8">
+                <strong> Created By:</strong>
+                <em>
+                  {{
+                    data.invoicedata.user
+                      ? data.invoicedata.user.first_name
+                      : ""
+                  }}
+                  {{ " " }}
+                  {{
+                    data.invoicedata.user
+                      ? data.invoicedata.user.middle_name
+                      : ""
+                  }}
+                  {{ " " }}
+                  {{
+                    data.invoicedata.user ? data.invoicedata.user.last_name : ""
+                  }}
+                </em>
+              </v-sheet>
             </table>
           </div>
         </ModalBody>
@@ -426,7 +461,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.invoicereceipt" :width="1000">
+    <Modal :fullScreen="true" :modal="data.invoicereceipt" :width="1120">
       <template v-slot:header>
         <ModalHeader :title="`Create Invoice Receipt`" />
       </template>
@@ -483,12 +518,6 @@
                 </v-col>
 
                 <v-col class="pt-2" cols="12" md="12"> </v-col>
-                <!-- <v-sheet class="pl-3">
-                  <v-sheet class="information grey lighten-3 text-capitalize">
-                    <strong> Description:</strong>
-                    {{ data.invoicereceip.description | capitalizeFirstLatter }}
-                  </v-sheet>
-                </v-sheet> -->
                 <v-col class="pt-2 invoice-table" cols="12" md="12">
                   <v-data-table
                     :headers="RECEIPTHEADERS"
@@ -567,7 +596,12 @@
           <v-btn color="red darken-1" text @click="cancelInvoiceReceipt"
             >Close</v-btn
           >
-          <v-btn color="green darken-1" text @click="createReceipt">
+          <v-btn
+            v-show="can('create', 'Receipt')"
+            color="green darken-1"
+            text
+            @click="createReceipt"
+          >
             Create</v-btn
           >
         </ModalFooter>
@@ -643,11 +677,26 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+#p1 {
+  text-decoration: underline;
+  text-decoration-color: rgba(17, 0, 255, 0.74);
+  text-decoration-thickness: 2px;
+}
+
+.underline-title {
+  border: 1px dashed rgb(196, 17, 17);
+  width: 100%;
+  border-color: red;
+}
 .underline-amount {
   border-style: double none none;
 }
+.underline-invoice-number {
+  border-style: none none double;
+  border-block-color: rgb(17, 0, 255);
+}
 .invoice-box {
-  max-width: 1000px;
+  max-width: 1100;
   margin: auto;
   padding: 2px;
   /* border: 1px solid #eee; */
@@ -723,8 +772,8 @@ export default defineComponent({
   text-align: left;
 }
 .login-logo {
-  height: 14%;
-  width: 14%;
+  height: 170px;
+  width: 130px;
 }
 tbody tr:nth-of-type(odd) {
   background-color: none;

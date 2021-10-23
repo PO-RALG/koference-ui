@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from "vue-router";
 import VueRouteMiddleware from "vue-route-middleware";
 import store from "@/store";
 
+import { dashboardRoutes } from "@/components/dashboard";
 import { userRoutes } from "@/components/user";
 import { roleRoutes } from "@/components/role";
 import { gfsCodesRoutes } from "@/components/coa/gfs-code";
@@ -35,12 +36,11 @@ import { invoiceDebtorsRoutes } from "@/components/invoice-debtors";
 import { jvRoutes } from "@/components/general-ledger/journal-voucher";
 import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
 import { paymentVoucherRoutes } from "@/components/payable/payment-voucher";
+import { notFoundRoute } from "@/components/404";
 import { paymentRoutes } from "@/components/payable/payment";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
-
-
 
 Vue.use(VueRouter);
 
@@ -63,6 +63,7 @@ const routes: Array<RouteConfig> = [
       middleware: [setTitle, validateToken, setHeaders, auth],
     },
     children: [
+      ...dashboardRoutes,
       ...userRoutes,
       ...financialYearRoutes,
       ...gfsCodesRoutes,
@@ -96,6 +97,7 @@ const routes: Array<RouteConfig> = [
       ...jvRoutes,
       ...fundAllocationRoutes,
       ...paymentVoucherRoutes,
+      ...notFoundRoute,
       ...paymentRoutes,
     ],
   },

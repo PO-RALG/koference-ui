@@ -56,6 +56,8 @@ export default defineComponent({
     const HEADERS = [
       { text: "Account Type", value: "gl_account_type" },
       { text: "Account", value: "code" },
+      { text: "Nature", value: "nature" },
+      { text: "Type", value: "type" },
       { text: "Status", align: "start", sortable: false, value: "active" },
       { text: "Actions", value: "actions", sortable: false },
     ];

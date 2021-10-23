@@ -8,11 +8,34 @@
         Add New
       </v-btn>
     </v-card-actions>
-
     <v-card>
-      <v-data-table :headers="data.headers" :items="data.items" hide-default-footer class="elevation-1">
-        <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+      <v-data-table
+        :headers="headers"
+        :items="data.items"
+        :single-expand="data.singleExpand"
+        item-key="id"
+        :expanded.sync="data.expanded"
+        show-expand
+      >
+        <template v-slot:[`item.date`]="{ item }">
+          <span>{{ item.date | format("DD/MM/YYYY") }}</span>
+        </template>
+        <template v-slot:[`item.amount`]="{ item }">
+          <span>{{ item.amount | toCurrency }}</span>
+        </template>
+        <template v-slot:[`expanded-item`]="{ item }">
+          <td :colspan="5" class="pa-2">
+            <v-card outlined flat width="100%" max-width="100%">
+              <v-data-table :headers="ITEM_HEADERS" :items="item.lines" hide-default-footer dense>
+                <template v-slot:[`item.dr_amount`]="{ item }">
+                  <span>{{ item.dr_amount | toCurrency }}</span>
+                </template>
+                <template v-slot:[`item.cr_amount`]="{ item }">
+                  <span>{{ item.cr_amount | toCurrency }}</span>
+                </template>
+              </v-data-table>
+            </v-card>
+          </td>
         </template>
       </v-data-table>
     </v-card>
@@ -60,6 +83,7 @@
                             full-width
                             dense
                             outlined
+                            item-disabled="disabled"
                             hide-details
                           ></v-select>
                         </td>
@@ -149,10 +173,27 @@ export default defineComponent({
       accounts,
       checkCrAmount,
       checkDrAmount,
+      refillAccounts,
+      total,
     } = useJv();
+
+    const headers = [
+      { text: "Number", value: "number" },
+      { text: "Date", value: "date" },
+      { text: "Description", value: "descriptions" },
+      { text: "Amount", value: "amount" },
+    ];
+
+    const ITEM_HEADERS = [
+      { text: "ACCOUNT", value: "account" },
+      { text: "DR", value: "dr_amount" },
+      { text: "CR", value: "cr_amount" },
+    ];
 
     return {
       data,
+      headers,
+      ITEM_HEADERS,
       openDialog,
       getData,
       save,
@@ -163,6 +204,8 @@ export default defineComponent({
       accounts,
       checkCrAmount,
       checkDrAmount,
+      refillAccounts,
+      total,
     };
   },
 });
@@ -292,5 +335,9 @@ input[type="number"]::-webkit-inner-spin-button {
 // remove elipsis from select menu
 .v-select.v-text-field input {
   width: 64px !important;
+}
+
+.ledger-summary {
+  background: #eeeeee;
 }
 </style>

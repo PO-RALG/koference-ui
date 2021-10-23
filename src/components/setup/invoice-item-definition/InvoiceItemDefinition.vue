@@ -120,6 +120,7 @@
                     required
                   ></v-text-field>
                 </v-col>
+                <pre></pre>
                 <v-col cols="12" md="6">
                   <v-autocomplete
                     v-model="data.formData.gfs_code_id"

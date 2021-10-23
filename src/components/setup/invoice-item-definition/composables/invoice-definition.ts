@@ -12,10 +12,12 @@ import {
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import { fundingsources } from "@/components/coa/funding-source/services/funding-sources";
 import { ManageInvoiceItemDefinition } from "../types/";
+import { GfsCategories } from "../../../../components/coa/gfs-category/types/index";
 
 export const useInvoiceDefinition = (): any => {
   const dataItems: Array<ManageInvoiceItemDefinition> = [];
   let customerData: ManageInvoiceItemDefinition;
+  let gfsCodeData: GfsCategories;
 
   const data = reactive({
     title: "Manage Invoice Item Definition",
@@ -49,7 +51,7 @@ export const useInvoiceDefinition = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},
-    gfscodes: [],
+    gfscodes: gfsCodeData,
     fundingsources: [],
   });
 
@@ -66,8 +68,9 @@ export const useInvoiceDefinition = (): any => {
       data.itemsToFilter = response.data.data.data;
     });
 
-    allgfscodes({ per_page: 2000 }).then((response: any) => {
-      data.gfscodes = response.data.data.data;
+    allgfscodes({ code: "REVENUE" }).then((response: any) => {
+      console.log("all gfs data", response.data.data.data);
+      data.gfscodes = response.data.data.data[0];
     });
 
     fundingsources({ per_page: 2000 }).then((response: any) => {
@@ -76,10 +79,12 @@ export const useInvoiceDefinition = (): any => {
   };
 
   const gfsName = computed(() => {
-    return data.gfscodes.map((gfsItem) => {
-      gfsItem.fullName = `${gfsItem.code} - ${gfsItem.name} `;
-      return gfsItem;
-    });
+    return data.gfscodes
+      ? data.gfscodes.gfs_codes.map((gfsCodeItem) => {
+          gfsCodeItem.fullName = `${gfsCodeItem.code} - ${gfsCodeItem.name} `;
+          return gfsCodeItem;
+        })
+      : [];
   });
 
   const fundingsourceName = computed(() => {
@@ -101,8 +106,8 @@ export const useInvoiceDefinition = (): any => {
 
     if (categoryName != null) {
       search({ name: categoryName.name }).then((response: any) => {
-        console.log("response data", response.data.data);
-        data.items = response.data.data;
+        console.log("response data", response.data.data.data);
+        data.items = response.data.data.data;
       });
     } else {
       reloadData();
