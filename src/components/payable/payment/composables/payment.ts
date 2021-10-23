@@ -1,13 +1,9 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import {
-  get,
-  create,
-  destroy,
-} from "../services/payment.service";
-import { Payment, ItemPlayLoad} from "../types/Payment";
-import { find as findPaymentVoucher} from "@/components/payable/payment-voucher/services/payment-voucher.service";
+import { get, create, destroy } from "../services/payment.service";
+import { Payment } from "../types/Payment";
+import { find as findPaymentVoucher } from "@/components/payable/payment-voucher/services/payment-voucher.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
 import { get as getPaymentVouchers } from "@/components/payable/payment-voucher/services/payment-voucher.service";
 import { FundSources } from "@/components/coa/funding-source/types/index";
@@ -74,14 +70,22 @@ export const usePayment = (): any => {
     itemtodelete: "",
     searchTerm: "",
     fundSourceItem: fundSourceItem,
-    chequeTypes: ["Open","Closed"],
+    chequeTypes: ["Open", "Closed"],
     bankAccounts: [],
     paymentVouchers: [],
     payableItems: [],
-    payables: [{payable_id: '', required_amount: 0, amount: 0, paid_amount: 0, balance: 0}],
+    payables: [
+      {
+        payable_id: "",
+        required_amount: 0,
+        amount: 0,
+        paid_amount: 0,
+        balance: 0,
+      },
+    ],
     coat: "/coat_of_arms.svg.png",
     paymentVoucherModal: false,
-    pvDetails:{}
+    pvDetails: {},
   });
 
   onMounted(() => {
@@ -120,7 +124,7 @@ export const usePayment = (): any => {
     data.formData = {} as Payment;
     data.modal = !data.modal;
   };
-  
+
   const cancelConfirmDialog = () => {
     data.formData = {} as Payment;
     data.deletemodal = false;
@@ -169,7 +173,7 @@ export const usePayment = (): any => {
       data.bankAccounts = response.data.data.data;
     });
   };
-  
+
   const getPaymentVoucherData = () => {
     getPaymentVouchers({ per_page: 10 }).then((response: AxiosResponse) => {
       data.paymentVouchers = response.data.data.data;
@@ -183,7 +187,13 @@ export const usePayment = (): any => {
   };
 
   const addPayable = () => {
-    data.payables.push({ payable_id: "", required_amount: 0, amount: 0, paid_amount: 0, balance: 0 });
+    data.payables.push({
+      payable_id: "",
+      required_amount: 0,
+      amount: 0,
+      paid_amount: 0,
+      balance: 0,
+    });
   };
 
   const removePayable = (index: number) => {
@@ -191,14 +201,14 @@ export const usePayment = (): any => {
   };
 
   const setPayableItems = (id: number) => {
-    const pvData = data.paymentVouchers
+    const pvData = data.paymentVouchers;
     for (let i = 0; i < pvData.length; i++) {
       const element = pvData[i];
       if (element.id === id) {
-        return data.payableItems = element.payables;
+        return (data.payableItems = element.payables);
       }
     }
-  }
+  };
 
   const setAmount = (id: number, index: number) => {
     const payableData = data.payableItems;
@@ -207,11 +217,12 @@ export const usePayment = (): any => {
       if (element.id === id) {
         data.payables[index].required_amount = Number(element.amount);
         data.payables[index].paid_amount = Number(element.paid_amount);
-        data.payables[index].balance = Number(element.amount) - Number(element.paid_amount);
+        data.payables[index].balance =
+          Number(element.amount) - Number(element.paid_amount);
         return data.payables;
       }
     }
-  }
+  };
 
   const payableHeader = [
     {
@@ -248,7 +259,7 @@ export const usePayment = (): any => {
     },
   ];
 
-  const previewPaymentVoucher =  (id: number) => {
+  const previewPaymentVoucher = (id: number) => {
     findPaymentVoucher(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
       data.paymentVoucherModal = !data.paymentVoucherModal;
@@ -259,8 +270,11 @@ export const usePayment = (): any => {
     data.paymentVoucherModal = !data.paymentVoucherModal;
   };
 
-  const printPaymentVoucher = () => {
-    const payment_voucher_id = data.pvDetails;
+  const printPaymentVoucher = (id: number) => {
+    findPaymentVoucher(id).then((response: AxiosResponse) => {
+      data.pvDetails = response.data.data;
+      data.paymentVoucherModal = !data.paymentVoucherModal;
+    });
   };
 
   return {

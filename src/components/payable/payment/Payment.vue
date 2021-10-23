@@ -41,12 +41,19 @@
           <span>{{ item.payment_date | format("DD/MM/YYYY") }}</span>
         </template>
         <template v-slot:[`item.bank_account`]="{ item }">
-          <span>{{ item.bank_account.number }}({{ item.bank_account.name }})</span>
+          <span>
+            {{ item.bank_account.number }}({{ item.bank_account.name }})
+          </span>
         </template>
         <template v-slot:[`item.voucher`]="{ item }">
           <span>
-            <v-list-item exact light @click="previewPaymentVoucher(item.voucher.id)">
-              {{item.voucher.reference_no}}</v-list-item>
+            <v-list-item
+              exact
+              light
+              @click="previewPaymentVoucher(item.voucher.id)"
+            >
+              {{ item.voucher.reference_no }}
+            </v-list-item>
           </span>
         </template>
         <template v-slot:[`item.amount`]="{ item }">
@@ -155,15 +162,15 @@
                               :items="data.payableItems"
                               item-text="description"
                               item-value="id"
-                              @change="setAmount($event,i)"
+                              @change="setAmount($event, i)"
                             >
                             </v-select>
                           </td>
                           <td>
-                            {{payable.required_amount | toCurrency()}}
+                            {{ payable.required_amount | toCurrency() }}
                           </td>
                           <td>
-                            {{payable.paid_amount | toCurrency()}}
+                            {{ payable.paid_amount | toCurrency() }}
                           </td>
                           <td>
                             <v-text-field
@@ -176,11 +183,23 @@
                             ></v-text-field>
                           </td>
                           <td>
-                            <v-btn v-if="data.payables.length > 1" text @click="removePayable(i)">
-                              <v-icon color="red darken-1">mdi-minus-circle</v-icon>
+                            <v-btn
+                              v-if="data.payables.length > 1"
+                              text
+                              @click="removePayable(i)"
+                            >
+                              <v-icon color="red darken-1">
+                                mdi-minus-circle
+                              </v-icon>
                             </v-btn>
-                            <v-btn v-if="data.payables.length == i+1" text @click="addPayable">
-                              <v-icon color="green darken-1">mdi-plus-circle</v-icon>
+                            <v-btn
+                              v-if="data.payables.length == i + 1"
+                              text
+                              @click="addPayable"
+                            >
+                              <v-icon color="green darken-1">
+                                mdi-plus-circle
+                              </v-icon>
                             </v-btn>
                           </td>
                         </tr>
@@ -242,94 +261,58 @@
               </div>
             </v-col>
             <v-col class="d-flex justify-center">
-              <div class="text-subtitle-1 font-weight-bold">PAYMENT VOUCHER</div>
+              <div class="text-subtitle-1 font-weight-bold">
+                PAYMENT VOUCHER
+              </div>
             </v-col>
             <table width="100%">
               <tr class="top">
                 <td>
                   <span>STATION NO: ............</span>
                 </td>
-                <td class="d-flex justify-end">
-                  <span>REF NO: </span><span class="font-weight-bold">{{data.pvDetails.reference_no}}</span>
+                <td class="text-right">
+                  <span>REF NO: </span>
+                  <span class="font-weight-bold">
+                    {{ data.pvDetails.reference_no }}
+                  </span>
                 </td>
               </tr>
               <tr>
-                <td width="100%" colspan="3" class="d-flex justify-center"></td>
+                <td class="text-left">
+                  <span class="font-weight-bold">Payee's name: </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                  <span class="font-weight-bold">Payee's name: </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                  <span class="font-weight-bold">Payee #: </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                  <span class="font-weight-bold">Address: </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                  <span class="font-weight-bold">VRN: </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                </td>
+                <td class="text-right">
+                  <span class="font-weight-bold">Apply date: </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                  <span class="font-weight-bold">Reference No: </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                  <span class="font-weight-bold">SBC: </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                  <span class="font-weight-bold">Terms of: </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                  <span class="font-weight-bold">Payment: </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                </td>
               </tr>
-
-              <!-- <v-data-table
-                :headers="HEADERS_INVOICE_DETAILS"
-                :items="newInvoiceItem"
-                disable-pagination
-                hide-default-footer
-              >
-                <template v-slot:[`item.no`]="{ index }">
-                  <tr class="text--bold">
-                    {{
-                      index + 1
-                    }}
-                  </tr>
-                </template>
-                <template v-slot:[`item.item`]="{ item }">
-                  <tr class="text--bold">
-                    {{
-                      item.definition.name
-                    }}
-                  </tr>
-                </template>
-                <template v-slot:[`item.received_amount`]="{ item }">
-                  <tr class="text--bold">
-                    {{
-                      item.received_amount | toCurrency()
-                    }}
-                  </tr>
-                </template>
-                <template v-slot:[`item.amount`]="{ item }">
-                  <tr class="text--bold">
-                    {{
-                      item.amount | toCurrency()
-                    }}
-                  </tr>
-                </template>
-                <template v-slot:[`item.balance_amount`]="{ item }">
-                  <tr class="text--bold">
-                    {{
-                      (item.amount - item.received_amount) | toCurrency()
-                    }}
-                  </tr>
-                </template>
-
-                <template v-slot:[`body.append`]="{ headers }">
-                  <tr>
-                    <th
-                      class="grey lighten-5"
-                      v-for="(header, i) in headers"
-                      :key="i"
-                    >
-                      <div v-if="header.value == 'no'">
-                        <h2>
-                          {{ "TOTAL" }}
-                        </h2>
-                      </div>
-                      <span v-if="header.value == 'amount'">
-                        <h2 class="underline-amount">
-                          {{ sumDebts.sumamount | toCurrency() }}
-                        </h2>
-                      </span>
-                      <span v-if="header.value == 'received_amount'">
-                        <h2 class="underline-amount">
-                          {{ sumDebts.sumamountReceived | toCurrency() }}
-                        </h2>
-                      </span>
-                      <span v-if="header.value == 'balance_amount'">
-                        <h2 class="underline-amount">
-                          {{ sumDebts.sumamountPending | toCurrency() }}
-                        </h2>
-                      </span>
-                    </th>
-                  </tr>
-                </template>
-              </v-data-table> -->
+              <tr pt="5">
+                <td colspan="2">
+                  <span class="font-weight-bold">
+                    Payment in respective of:
+                  </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                  <span class="font-weight-bold">To be paid from: </span>
+                  {{ data.pvDetails.reference_no }}<br />
+                </td>
+              </tr>
             </table>
           </div>
         </ModalBody>
@@ -342,7 +325,7 @@
           <v-btn
             color="green darken-1"
             text
-            @click="printPaymentVoucher"
+            @click="printPaymentVoucher(data.pvDetails.id)"
             :disabled="!data.valid"
           >
             Print
@@ -422,12 +405,10 @@ export default defineComponent({
         }
       }
     }
-    
     tr {
       border-right: 1px solid #ccc;
       border-bottom: 1px solid #ccc;
     }
-    
     td {
       border-right: 1px solid #ccc;
       &:last-child {
