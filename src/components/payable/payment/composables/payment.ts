@@ -85,7 +85,7 @@ export const usePayment = (): any => {
     ],
     coat: "/coat_of_arms.svg.png",
     paymentVoucherModal: false,
-    pvDetails: {},
+    pvDetails: {printDate:""},
   });
 
   onMounted(() => {
@@ -262,6 +262,7 @@ export const usePayment = (): any => {
   const previewPaymentVoucher = (id: number) => {
     findPaymentVoucher(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
+      data.pvDetails.printDate = Date();
       data.paymentVoucherModal = !data.paymentVoucherModal;
     });
   };
@@ -276,6 +277,34 @@ export const usePayment = (): any => {
       data.paymentVoucherModal = !data.paymentVoucherModal;
     });
   };
+
+  const payablePrintHeader = [
+    {
+      text: "Account code",
+      align: "start",
+      sortable: false,
+      width: "60%",
+    },
+    {
+      text: "Fund source",
+      align: "start",
+      sortable: false,
+      width: "",
+    },
+    {
+      text: "Account description",
+      align: "start",
+      sortable: false,
+      width: "",
+    },
+    {
+      text: "Amount",
+      align: "end",
+      sortable: false,
+      value: "",
+      width: "",
+    },
+  ];
 
   return {
     data,
@@ -296,5 +325,6 @@ export const usePayment = (): any => {
     previewPaymentVoucher,
     cancelPreviewDialog,
     printPaymentVoucher,
+    payablePrintHeader,
   };
 };
