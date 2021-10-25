@@ -97,8 +97,8 @@ const routes: Array<RouteConfig> = [
       ...jvRoutes,
       ...fundAllocationRoutes,
       ...paymentVoucherRoutes,
-      ...notFoundRoute,
       ...paymentRoutes,
+      ...notFoundRoute,
     ],
   },
 ];
