@@ -48,6 +48,7 @@
         <template v-slot:[`item.voucher`]="{ item }">
           <span>
             <v-list-item
+              class="text-link"
               exact
               light
               @click="previewPaymentVoucher(item.voucher.id)"
@@ -60,18 +61,32 @@
           {{ item.amount | toCurrency() }}
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon
-            @click="openRequestReversalDialog(item.id)"
-            :disabled="cant('delete', 'Payment')"
-          >
-            mdi-undo
-          </v-icon>
-          <v-icon
-            @click="openHistoryDialog(item.id)"
-            :disabled="cant('delete', 'Payment')"
-          >
-            mdi-update
-          </v-icon>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                @click="openRequestReversalDialog(item.id)"
+                :disabled="cant('delete', 'Payment')"
+              >
+                mdi-undo
+              </v-icon>
+            </template>
+            <span>Reverse Payment</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                @click="openHistoryDialog(item.id)"
+                :disabled="cant('delete', 'Payment')"
+              >
+                mdi-update
+              </v-icon>
+            </template>
+            <span>View  History for the approval requests and responses</span>
+          </v-tooltip>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -246,7 +261,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.paymentVoucherModal" :width="1260">
+    <Modal :fullScreen="true" :modal="data.paymentVoucherModal" :width="1260">
       <template v-slot:header>
         <ModalHeader :title="`Payment Voucher`" />
       </template>
@@ -255,10 +270,11 @@
           <div class="" v-if="data.pvDetails">
             <v-col class="d-flex justify-center">
               <div class="font-weight-bold text-center">
-                THE UNITED REPUBLIC OF TANZANIA <br />
-                REGIONAL ADMIN AND LOCAL GOVERNMENT <br />
-                REGION <br />
-                FACILITY <br />
+                <img :src="data.coat" class="login-logo pt-5" /><br />  
+                The United Republic of Tanzania <br />
+                President's Office Regional Administration and Local Government <br />
+                {{data.pvDetails.council.name}} <br />
+                {{data.pvDetails.facility.name }} {{data.pvDetails.facility.facility_type.name }}<br />
               </div>
             </v-col>
             <v-col class="d-flex justify-center">
@@ -269,11 +285,11 @@
             <v-col>
               <table width="100%">
                 <tr>
-                  <td>
+                  <td class="pb-5">
                     <span>STATION NO: ............</span>
                   </td>
-                  <td class="text-right">
-                    <span>REF NO: </span>
+                  <td class="text-right pb-7">
+                    <span>PV NO: </span>
                     <span class="font-weight-bold">
                       {{ data.pvDetails.reference_no }}
                     </span>
@@ -282,13 +298,13 @@
                 <tr>
                   <td class="text-left">
                     <span class="font-weight-bold">Payee's name: </span>
-                    {{ data.pvDetails.reference_no }}<br />
-                    <span class="font-weight-bold">Payee #: </span>
-                    {{ data.pvDetails.reference_no }}<br />
+                    {{ data.pvDetails.supplier.name }}<br />
+                    <span class="font-weight-bold">Mobile #: </span>
+                    {{ data.pvDetails.supplier.phone }}<br />
                     <span class="font-weight-bold">Address: </span>
-                    {{ data.pvDetails.reference_no }}<br />
-                    <span class="font-weight-bold">VRN: </span>
-                    {{ data.pvDetails.reference_no }}<br />
+                    {{ data.pvDetails.supplier.address }}<br />
+                    <span class="font-weight-bold">TIN: </span>
+                    {{ data.pvDetails.supplier.tin }}<br />
                   </td>
                   <td class="text-right">
                     <span class="font-weight-bold">Apply date: </span>
@@ -306,7 +322,7 @@
                     <span class="font-weight-bold">
                       Payment in respective of:
                     </span>
-                    {{ data.pvDetails.reference_no }}<br />
+                    {{ data.pvDetails.description }}<br />
                     <span class="font-weight-bold">To be paid from: </span>
                     {{ data.pvDetails.reference_no }}<br />
                   </td>
@@ -323,13 +339,13 @@
                   <tbody>
                     <tr v-for="(payable, i) in data.pvDetails.payables" :key="i">
                       <td>{{payable.gl_account}}</td>
+                      <td>{{payable.funding_source.description}}</td>
                       <td>{{payable.description}}</td>
-                      <td>{{payable.description}}</td>
-                      <td class="text-right">{{payable.amount}}</td>
+                      <td class="text-right">{{payable.amount | toCurrency()}}</td>
                     </tr>
-                    <tr>
+                    <tr class="grey lighten-2">
                       <th colspan="3" class="text-right">NET AMOUNT</th>
-                      <th class="text-right">{{data.pvDetails.amount}}</th>
+                      <th class="text-right">{{data.pvDetails.amount | toCurrency()}}</th>
                     </tr>
                   </tbody>
                 </template>
@@ -345,7 +361,7 @@
                     <td colspan="4">
                       Certify that the above sum of shillings (in words)
                        <span class="font-weight-bold">
-                         TWO HUNDRED FIFTY EIGHT THOUSAND THREE HUNDRED SHILLINGS ONLY
+                         {{convert(data.pvDetails.amount * 1)}} only
                         </span> 
                        is correctly payable to the above-named person and that the rates of payment/price(s) is/are in accordance with Regulations/the Terms of the Contract and the funds are available under the Sub-Vote/Cost Centre and Item quoted above to meet this payment.
                     </td>
@@ -384,7 +400,7 @@
                 <tbody>
                   <tr>
                     <th class="text-left">Facility Financial Accounting and Reporting System</th>
-                    <th class="text-right">Printed on: {{data.pvDetails.printDate | format("DD/MM/YYYY H:m:s")}}</th>
+                    <th class="text-right">Printed on: {{data.pvDetails.printDate | format("DD/MM/YYYY H:mm:ss")}}</th>
                   </tr>
                 </tbody>
               </table>
@@ -401,7 +417,6 @@
             color="green darken-1"
             text
             @click="printPaymentVoucher(data.pvDetails.id)"
-            :disabled="!data.valid"
           >
             Print
           </v-btn>
@@ -439,6 +454,7 @@ export default defineComponent({
       cancelPreviewDialog,
       printPaymentVoucher,
       payablePrintHeader,
+      convert,
     } = usePayment();
 
     return {
@@ -462,6 +478,7 @@ export default defineComponent({
       cancelPreviewDialog,
       printPaymentVoucher,
       payablePrintHeader,
+      convert,
     };
   },
 });
@@ -493,5 +510,12 @@ export default defineComponent({
       }
     }
   }
+}
+.login-logo {
+  height: 170px;
+  width: 130px;
+}
+.text-link{
+  color: #1976d2 !important;
 }
 </style>

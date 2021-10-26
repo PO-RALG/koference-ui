@@ -85,7 +85,7 @@ export const usePayment = (): any => {
     ],
     coat: "/coat_of_arms.svg.png",
     paymentVoucherModal: false,
-    pvDetails: {printDate:""},
+    pvDetails: { printDate: "" },
   });
 
   onMounted(() => {
@@ -111,13 +111,11 @@ export const usePayment = (): any => {
   };
 
   const openRequestReversalDialog = (deleteId: string) => {
-    data.deletemodal = !data.modal;
-    data.itemtodelete = deleteId;
+    console.log(deleteId);
   };
 
   const openHistoryDialog = (deleteId: string) => {
-    data.deletemodal = !data.modal;
-    data.itemtodelete = deleteId;
+    console.log(deleteId);
   };
 
   const cancelDialog = () => {
@@ -306,6 +304,88 @@ export const usePayment = (): any => {
     },
   ];
 
+  const ones = [
+    "",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+  ];
+  const tens = [
+    "",
+    "",
+    "twenty",
+    "thirty",
+    "forty",
+    "fifty",
+    "sixty",
+    "seventy",
+    "eighty",
+    "ninety",
+  ];
+  const teens = [
+    "ten",
+    "eleven",
+    "twelve",
+    "thirteen",
+    "fourteen",
+    "fifteen",
+    "sixteen",
+    "seventeen",
+    "eighteen",
+    "nineteen",
+  ];
+
+  const convertMillions = (num: number) => {
+    if (num >= 1000000) {
+      return (
+        convertMillions(Math.floor(num / 1000000)) +
+        " million " +
+        convertThousands(num % 1000000)
+      );
+    } else {
+      return convertThousands(num);
+    }
+  };
+
+  const convertThousands = (num: number) => {
+    if (num >= 1000) {
+      return (
+        convertHundreds(Math.floor(num / 1000)) +
+        " thousand " +
+        convertHundreds(num % 1000)
+      );
+    } else {
+      return convertHundreds(num);
+    }
+  };
+
+  const convertHundreds = (num: number) => {
+    if (num > 99) {
+      return ones[Math.floor(num / 100)] + " hundred " + convertTens(num % 100);
+    } else {
+      return convertTens(num);
+    }
+  };
+
+  const convertTens = (num: number) => {
+    if (num < 10) return ones[num];
+    else if (num >= 10 && num < 20) return teens[num - 10];
+    else {
+      return tens[Math.floor(num / 10)] + " " + ones[num % 10];
+    }
+  };
+
+  const convert = (num: number) => {
+    if (num == 0) return "zero";
+    else return convertMillions(num);
+  };
+
   return {
     data,
     openDialog,
@@ -326,5 +406,6 @@ export const usePayment = (): any => {
     cancelPreviewDialog,
     printPaymentVoucher,
     payablePrintHeader,
+    convert,
   };
 };

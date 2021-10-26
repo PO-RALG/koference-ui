@@ -1,7 +1,14 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, update, destroy, search } from "../services/supplier.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+  activation
+} from "../services/supplier.service";
 import { Supplier } from "../types/Supplier";
 
 export const useSupplier = (): any => {
@@ -59,6 +66,12 @@ export const useSupplier = (): any => {
         value: "bank_account_number",
       },
       {
+        text: "Activation",
+        align: "start",
+        sortable: false,
+        value: "activations",
+      },
+      {
         text: "Actions",
         value: "actions",
         sortable: false,
@@ -84,7 +97,8 @@ export const useSupplier = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+       response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
@@ -131,9 +145,9 @@ export const useSupplier = (): any => {
 
   const save = () => {
     if (data.formData.id) {
-      updateSupply(data.formData);
+      updateSupplier(data.formData);
     } else {
-      createSupply(data.formData);
+      createSupplier(data.formData);
     }
   };
 
@@ -148,16 +162,22 @@ export const useSupplier = (): any => {
     data.modal = !data.modal;
   };
 
-  const updateSupply = (data: Supplier) => {
+  const updateSupplier = (data: Supplier) => {
     update(data).then(() => {
       cancelDialog();
       getTableData();
     });
   };
 
-  const createSupply = (data: Supplier) => {
+  const createSupplier = (data: Supplier) => {
     create(data).then(() => {
       cancelDialog();
+      getTableData();
+    });
+  };
+
+  const setActivation = (item: string) => {
+    activation(item).then(() => {
       getTableData();
     });
   };
@@ -167,11 +187,12 @@ export const useSupplier = (): any => {
     openDialog,
     cancelDialog,
     openConfirmDialog,
-    updateSupply,
+    updateSupplier,
     save,
     remove,
     cancelConfirmDialog,
     searchItem,
     getData,
+    setActivation,
   };
 };
