@@ -1,5 +1,6 @@
 import { reactive, set, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
+import router from "@/router";
 import { get, create, update, destroy, search } from "../services/facility.service";
 
 import { Facility } from "../types/Facility";
@@ -217,7 +218,12 @@ export const useFacility = (): any => {
     });
   };
 
+  const navigateToFacility = (facility: any) => {
+    router.push({ path: `/manage-facilities?facility_id=${facility.id}` });
+  };
+
   return {
+    navigateToFacility,
     data,
     openDialog,
     cancelDialog,
