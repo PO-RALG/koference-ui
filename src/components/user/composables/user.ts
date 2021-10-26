@@ -7,11 +7,16 @@ import { get as getLevels } from "@/components/admin-area/level/services/level-s
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
 import { User } from "../types/User";
 
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+const { useState } = createNamespacedHelpers("Auth");
+
 export const useUser = (): any => {
+  const { currentUser } = useState(["currentUser"]);
   const dataItems: Array<User> = [];
   const userData = {} as User;
   const data = reactive({
     title: "Manage Users",
+    currentUser: null,
     valid: true,
     status: "",
     isOpen: false,
@@ -19,11 +24,14 @@ export const useUser = (): any => {
     levels: [],
     source: [],
     user: null,
+    confirmTitle: "",
     destination: [],
     facilities: [],
     showFacility: false,
     isFacilityUser: false,
     node: null,
+    action: "",
+    show: false,
     item: userData,
     itemName: "name",
     location: {},
@@ -35,7 +43,7 @@ export const useUser = (): any => {
       { text: "Phone Number", value: "phone_number" },
       { text: "Name", align: "start", sortable: false, value: "fullName" },
       { text: "Email", value: "email" },
-      { text: "Roles", value: "roles" },
+      { text: "Roles", value: "displayRoles" },
       { text: "Activation", value: "activations", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
@@ -71,6 +79,7 @@ export const useUser = (): any => {
     loadLevels();
     getNodes();
     loadRoles();
+    data.currentUser = currentUser;
     data.source = [
       { label: "WHITE", code: "#FFFFFF" },
       { label: "SILVER", code: "#C0C0C0" },
@@ -104,13 +113,22 @@ export const useUser = (): any => {
     return data.items.map((user: any) => ({
       ...user,
       fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
-      roles: user.roles.map((r: any) =>
-        r.name ? `[ ${r.name} ]` : `[ NO ROLE ]`),
+      displayRoles: user.roles.map((r: any) => r.name),
     }));
   });
 
   const selectedRoles = computed(() => {
     return data.selectedRoles;
+  });
+
+  const message = computed(() => {
+    return data.action === "DELETE"
+      ? `Are you sure you want to ${data.status} this user?`
+      : `Are you sure you want to ${data.status} this user?`;
+  });
+
+  const confirmTitle = computed(() => {
+    return data.action === "DELETE" ? `Delete User` : `${data.status} User`;
   });
 
   const facilities = computed(() => {
@@ -146,7 +164,6 @@ export const useUser = (): any => {
 
   const updateUser = (data: User) => {
     update(data).then((response: AxiosResponse) => {
-      console.log(response.status);
       if (response.status === 200) {
         cancelDialog();
         initialize();
@@ -164,19 +181,28 @@ export const useUser = (): any => {
   };
 
   const openConfirmDialog = (item: User) => {
+    data.status = "Delete";
     data.item = item;
+    data.user = item;
     data.isOpen = true;
+  };
+
+  const closeActivationDialog = () => {
+    data.item = null;
+    data.show = false;
+    data.status = null;
+    data.user = null;
   };
 
   const closeConfirmDialog = () => {
     data.item = {} as User;
     data.isOpen = false;
+    data.user = null;
   };
 
   const deleteItem = (item: number | string) => {
     const payload = item;
-    deleteUser(payload).then((response: AxiosResponse) => {
-      console.log(response);
+    deleteUser(payload).then(() => {
       initialize();
     });
     data.item = {} as User;
@@ -185,6 +211,7 @@ export const useUser = (): any => {
 
   const loadLocationChildren = (location: any) => {
     data.location = location;
+    data.roles = data.roles.filter((r: any) => r.level_id === location.level_id)
     toggleFacilitylOption(location);
     data.formData.location_id = location.id;
     if (!location.children) {
@@ -257,7 +284,6 @@ export const useUser = (): any => {
   };
 
   const onChangeList = ({ source, destination }): void => {
-    console.log(source, destination);
     destination.forEach((item) => {
       data.roles = upsert(source, item);
     });
@@ -282,9 +308,12 @@ export const useUser = (): any => {
     });
   };
 
-  const openActivationDialog = (user: any) => {
+  const openActivationDialog = (event, user: any) => {
+    console.log("event", event);
+    console.log("user:", user);
+    data.status = user.active ? "De-Activate" : "Activate";
     data.user = user;
-    data.isOpen = true;
+    data.show = true;
   };
 
   return {
@@ -299,6 +328,7 @@ export const useUser = (): any => {
     filterRoles,
     selectedRoles,
     onChangeList,
+    confirmTitle,
 
     loadLocationChildren,
     loadFacilities,
@@ -306,6 +336,8 @@ export const useUser = (): any => {
     getData,
     users,
     facilities,
+    message,
+    closeActivationDialog,
 
     updateUser,
     save,

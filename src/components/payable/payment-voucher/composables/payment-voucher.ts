@@ -30,34 +30,22 @@ export const usePaymentVoucher = (): any => {
     modalTitle: "",
     headers: [
       {
-        text: "Date",
-        align: "start",
-        sortable: false,
-        value: "date",
-      },
-      {
         text: "Reference Number",
         align: "start",
         sortable: false,
         value: "reference_no",
       },
       {
+        text: "Date",
+        align: "start",
+        sortable: false,
+        value: "date",
+      },
+      {
         text: "Supplier",
         align: "start",
         sortable: false,
         value: "supplier.name",
-      },
-      {
-        text: "Bank Account",
-        align: "start",
-        sortable: false,
-        value: "bank_account",
-      },
-      {
-        text: "Financial Year",
-        align: "start",
-        sortable: false,
-        value: "financial_year.name",
       },
       {
         text: "Amount",
@@ -273,6 +261,31 @@ export const usePaymentVoucher = (): any => {
     data.payables.splice(index, 1);
   };
 
+  const payableHeader = [
+    {
+      text: "Item",
+      align: "start",
+      sortable: false,
+      value: "invoice_number",
+      width: "70%",
+    },
+
+    {
+      text: "Amount",
+      align: "start",
+      sortable: false,
+      value: "amount",
+      width: "",
+    },
+    {
+      text: "",
+      align: "center",
+      sortable: false,
+      value: "",
+      width: "",
+    },
+  ];
+
   return {
     data,
     openDialog,
@@ -290,5 +303,6 @@ export const usePaymentVoucher = (): any => {
     searchFundingSource,
     filterGfsCodes,
     maxRules,
+    payableHeader,
   };
 };

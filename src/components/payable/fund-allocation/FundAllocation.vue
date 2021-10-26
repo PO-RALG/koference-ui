@@ -79,47 +79,42 @@
             </v-text-field>
           </v-col>
         </v-card-title>
-        <v-card-text>
-          <template v-if="data.items.length">
-            <v-simple-table>
-              <template v-slot:default>
-                <thead>
-                  <tr>
-                    <th class="text-left">GL Account</th>
-                    <th class="text-left">Budget</th>
-                    <th class="text-left">Allocated</th>
-                    <th class="text-left">Expenditure</th>
-                    <th class="text-left">Available</th>
-                    <th class="text-left">Allocate</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, i) in data.items" :key="i.id">
-                    <td>
-                      {{ item.code }} <br />
-                      <span style="color: teal">{{
-                        item.activity.description
-                        }}</span>
-                      <br />
-                      {{ item.gfsCode.name }}
-                    </td>
-                    <td>{{ item.budget }}</td>
-                    <td>{{ item.allocation }}</td>
-                    <td>{{ item.totalExpenditure }}</td>
-                    <td>{{ item.allocation - item.totalExpenditure }}</td>
-                    <td>
-                      <v-text-field
-                        :rules="[maxRules(item.budget - item.allocation)]"
-                        v-model="item.allocation_amount"
-                        @input="newAllocation(item.allocation_amount)"
-                        type="number"
-                      ></v-text-field>
-                    </td>
-                  </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-          </template>
+        <v-card-text class="data-table">
+          <v-data-table
+            :headers="data.headers"
+            disable-pagination
+            hide-default-footer
+            v-if="data.items.length"
+          >
+            <template v-slot:body>
+              <tbody>
+                <tr v-for="(item, i) in data.items" :key="i">
+                  <td class="pt-5 pb-2">
+                    {{ item.code }} <br />
+                    <span style="color: teal">{{
+                      item.activity.description
+                      }}</span>
+                    <br />
+                    {{ item.gfsCode.name }}
+                  </td>
+                  <td class="">{{ item.budget }}</td>
+                  <td class="">{{ item.allocation }}</td>
+                  <td class="">{{ item.totalExpenditure }}</td>
+                  <td class="">{{ item.allocation - item.totalExpenditure }}</td>
+                  <td class="pt-5">
+                    <v-text-field
+                      dense
+                      outlined
+                      :rules="[maxRules(item.budget - item.allocation)]"
+                      v-model="item.allocation_amount"
+                      @input="newAllocation(item.allocation_amount)"
+                      type="number"
+                    ></v-text-field>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-data-table>
         </v-card-text>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
@@ -165,4 +160,31 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.data-table {
+  table {
+    border: 1px solid #cccc;
+    thead {
+      th {
+        border-right: 1px solid #ccc;
+        &:last-child {
+          border-right: none;
+        }
+      }
+    }
+    
+    tr {
+      border-right: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+    }
+    
+    td {
+      border-right: 1px solid #ccc;
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+}
+</style>
+

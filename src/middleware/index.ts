@@ -98,15 +98,23 @@ const auth = async (to, _, next) => {
 };
 
 const forcePasswordChange = async (next, user) => {
-  const msg = { message: "Please Reset Your Password" };
-  if (user.password_changed) {
-    console.log("password changed?", user.password_changed)
+  const token = user ? user.token : null;
+  const { exp } = VueJwtDecode.decode(token);
+
+  if (Date.now() >= exp * 1000) {
+    const message = "Token has expired";
+    // show login pop up
+    store.dispatch("LoginDialog/SHOW", message);
     next();
   } else {
-    console.log("password changed?", user.password_changed)
-    store.dispatch("ChangePasswordDialog/SHOW", msg);
+    const msg = { message: "Please Reset Your Password" };
+    if (user.password_changed) {
+      next();
+    } else {
+      store.dispatch("ChangePasswordDialog/SHOW", msg);
+    }
   }
-}
+};
 
 export {
   setTitle,

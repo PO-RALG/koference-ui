@@ -26,6 +26,44 @@ export const useFundAllocation = (): any => {
     itemUnallocated: { allocated: 0, totalFund: 0, current: 0, carryover: 0 },
     running_balance: 0,
     allocated: 0,
+    headers: [
+      {
+        text: "GL Account",
+        align: "start",
+        sortable: false,
+        value: "",
+      },
+      {
+        text: "Budget",
+        align: "start",
+        sortable: false,
+        value: "",
+      },
+      {
+        text: "Allocated",
+        align: "start",
+        sortable: false,
+        value: "",
+      },
+      {
+        text: "Expenditure",
+        align: "start",
+        sortable: false,
+        value: "",
+      },
+      {
+        text: "Available",
+        align: "start",
+        sortable: false,
+        value: "",
+      },
+      {
+        text: "Allocate",
+        align: "start",
+        sortable: false,
+        value: "",
+      },
+    ],
   });
 
   onMounted(() => {

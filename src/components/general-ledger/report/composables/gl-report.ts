@@ -92,6 +92,21 @@ export const useGLReport = (): any => {
     return data.facility;
   });
 
+  const entries = computed(() => {
+    return data.entries.map((entry: any) => ({
+      ...entry,
+      name: getName(entry.ledgerable),
+    }));
+  });
+
+  const getName = (ledgerable: any) => {
+    if (ledgerable === null) {
+      return "No Entry";
+    } else {
+      return ledgerable.name? ledgerable.name : ledgerable.descriptions;
+    }
+  }
+
   const gfsCodes = computed(() => {
     return data.gfsCodes.map((gfs) => {
       return {
@@ -138,5 +153,6 @@ export const useGLReport = (): any => {
     dateSelected,
     filterReport,
     gfsCodes,
+    entries,
   };
 };

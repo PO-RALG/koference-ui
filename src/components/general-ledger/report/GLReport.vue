@@ -27,23 +27,26 @@
               <th class="text-left">DATE</th>
               <th class="text-left">INPUT</th>
               <th class="text-left">ACCOUNT #</th>
+              <th class="text-left">DESCRIPTION</th>
               <th class="text-left">DR</th>
               <th class="text-left">CR</th>
             </tr>
           </thead>
-          <tbody v-for="(entry, index) in data.entries" :key="index">
+          <tbody v-for="(entry, index) in entries" :key="index">
             <tr class="ledger-header">
-              <th colspan="5" class="account-th">{{ entry.account }} - {{ entry.account_description }}</th>
+              <th colspan="6" class="account-th">{{ entry.account }} - {{ entry.account_description }}</th>
             </tr>
             <tr v-for="(trx, idx) in entry.transactions" :key="idx">
-              <td>{{ trx.apply_datedata | format("MM/DD/YYYY") }}</td>
+              <td>{{ trx.apply_date | format("MM/DD/YYYY") }}</td>
               <td>{{ trx.description }}</td>
               <td>{{ trx.account }}</td>
+              <td>{{ entry.name }}</td>
               <td>{{ trx.dr | toCurrency }}</td>
               <td>{{ trx.cr | toCurrency }}</td>
             </tr>
             <tr class="ledger-summary">
               <td class="account"></td>
+              <td class="description"></td>
               <td class="description"></td>
               <td class="sub_total" style="text-align: right">
                 <span><strong>SUB TOTAL</strong></span>
@@ -174,6 +177,7 @@ export default defineComponent({
       dateSelected,
       filterReport,
       gfsCodes,
+      entries,
     } = useGLReport();
 
     return {
@@ -188,6 +192,7 @@ export default defineComponent({
       dateSelected,
       filterReport,
       gfsCodes,
+      entries,
     };
   },
 });

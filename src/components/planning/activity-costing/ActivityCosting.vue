@@ -17,7 +17,7 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Code"
+                label="Filter by Activity code"
                 @change="searchItem($event)"
                 :items="data.itemsToFilter"
                 :item-text="'activity.code'"
@@ -28,6 +28,9 @@
                 ></v-autocomplete>
             </v-col>
           </v-card-title>
+        </template>
+        <template v-slot:[`item.amount`]="{ item }">
+          {{ item.amount | toCurrency() }}
         </template>
         <template v-slot:footer>
           <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
