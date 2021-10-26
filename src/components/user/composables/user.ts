@@ -113,7 +113,7 @@ export const useUser = (): any => {
     return data.items.map((user: any) => ({
       ...user,
       fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
-      displayRoles: user.roles.map((r: any) => (r.name ? `[ ${r.name} ]` : `[ NO ROLE ]`)),
+      displayRoles: user.roles.map((r: any) => r.name),
     }));
   });
 
@@ -202,7 +202,7 @@ export const useUser = (): any => {
 
   const deleteItem = (item: number | string) => {
     const payload = item;
-    deleteUser(payload).then((response: AxiosResponse) => {
+    deleteUser(payload).then(() => {
       initialize();
     });
     data.item = {} as User;
@@ -211,6 +211,7 @@ export const useUser = (): any => {
 
   const loadLocationChildren = (location: any) => {
     data.location = location;
+    data.roles = data.roles.filter((r: any) => r.level_id === location.level_id)
     toggleFacilitylOption(location);
     data.formData.location_id = location.id;
     if (!location.children) {
@@ -307,7 +308,9 @@ export const useUser = (): any => {
     });
   };
 
-  const openActivationDialog = (user: any) => {
+  const openActivationDialog = (event, user: any) => {
+    console.log("event", event);
+    console.log("user:", user);
     data.status = user.active ? "De-Activate" : "Activate";
     data.user = user;
     data.show = true;
