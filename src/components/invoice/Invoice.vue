@@ -255,14 +255,14 @@
             <table cellpadding="0" cellspacing="0">
               <v-col class="pa-9" cols="12" sm="12" md="12">
                 <v-layout justify-center>
-                  <img :src="data.coat" class="login-logo pt-5" />
+                  <img :src="data.coat" class="login-logo pt-2" />
                 </v-layout>
-                <v-layout justify-center align="center">
+                <!-- <v-layout justify-center align="center">
                   <strong>
                     {{ "The United Republic of Tanzania" }}
                   </strong>
                   <br />
-                </v-layout>
+                </v-layout> -->
                 <v-layout justify-center align="center">
                   <strong>
                     {{ data.invoicedata.location.name }}
@@ -278,84 +278,79 @@
                     }}
                   </strong>
                 </v-layout>
+                <v-layout justify-center align="center ">
+                  <strong> <small>Address:</small> </strong>
+                  <strong>
+                    <small>
+                      {{
+                        data.invoicedata.facility
+                          ? data.invoicedata.facility.postal_address
+                          : ""
+                      }}</small
+                    ><br />
+                  </strong>
+                </v-layout>
+                <v-layout justify-center align="center ">
+                  <strong> <small>Email:</small> </strong>
+                  <strong>
+                    <small>
+                      {{
+                        data.invoicedata.facility
+                          ? data.invoicedata.facility.email
+                          : ""
+                      }}</small
+                    ><br />
+                  </strong>
+                </v-layout>
+                <v-layout justify-center align="center ">
+                  <strong> <small>Phone:</small> </strong>
+                  <em>
+                    {{
+                      data.invoicedata.facility
+                        ? data.invoicedata.facility.phone_number
+                        : ""
+                    }}<br />
+                  </em>
+                </v-layout>
+
                 <v-divider class="underline-title"></v-divider>
               </v-col>
-              <v-row no-gutters class="pt-0">
-                <v-col cols="12" sm="6" md="4">
-                  <v-layout justify-left>
-                    <v-card-actions>
-                      <div class="text-xs-center">
-                        <v-card flat class="pl-2">
-                          <strong> Facility Name: </strong>
+              <v-container class="">
+                <v-row no-gutters>
+                  <v-col cols="12" sm="6" md="8">
+                    <div class="text-xs-center">
+                      <v-card flat class="pl-2"> </v-card>
+                    </div>
+                  </v-col>
+                  <v-col cols="6" md="4">
+                    <div class="text-xs-left">
+                      <v-card flat align="right" class="pr-12" tile>
+                        <strong>
+                          Invoice #:{{
+                            data.invoicedata
+                              ? data.invoicedata.invoice_number
+                              : ""
+                          }}</strong
+                        ><br />
+                        <strong>
+                          Created:
                           {{
-                            data.invoicedata.facility
-                              ? data.invoicedata.facility.name
-                              : ""
+                            data.invoicedata
+                              ? data.invoicedata.date
+                              : "" | format
                           }}<br />
-                          Address:
-                          {{
-                            data.invoicedata.facility
-                              ? data.invoicedata.facility.postal_address
-                              : ""
-                          }}<br />
-                          Email:
-                          {{
-                            data.invoicedata.facility
-                              ? data.invoicedata.facility.email
-                              : ""
-                          }}<br />
-                          Phone:{{
-                            data.invoicedata.facility
-                              ? data.invoicedata.facility.phone_number
-                              : ""
-                          }}
-                        </v-card>
-                      </div>
-                    </v-card-actions>
-                  </v-layout>
-                </v-col>
-                <v-col cols="6" md="4" class="pl-9">
-                  <v-card flat class="pa-2">
-                    <strong>
-                      Invoice #:{{
-                        data.invoicedata ? data.invoicedata.invoice_number : ""
-                      }}</strong
-                    ><br />
-                    Created:
-                    {{ data.invoicedata ? data.invoicedata.date : "" | format
-                    }}<br />
-                  </v-card>
-                </v-col>
-                <v-col cols="6" md="4" class="pl-12">
-                  <v-card flat class="pa-2">
-                    <strong> Customer Name: </strong>
-                    {{
-                      data.invoicedata.customer
-                        ? data.invoicedata.customer.name
-                        : ""
-                    }}<br />
-                    Address:{{
-                      data.invoicedata.customer
-                        ? data.invoicedata.customer.address
-                        : ""
-                    }}<br />
-                    Email:{{
-                      data.invoicedata.customer
-                        ? data.invoicedata.customer.email
-                        : ""
-                    }}<br />
-                    Phone:{{
-                      data.invoicedata.customer
-                        ? data.invoicedata.customer.phone
-                        : ""
-                    }}<br />
-                  </v-card>
-                </v-col>
-              </v-row>
+                        </strong>
+                      </v-card>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-container>
               <v-sheet class="pl-3">
                 <v-sheet class="information green lighten-5 text-capitalize">
                   <strong> Description:</strong>
-                  {{ data.invoicedata.description | capitalizeFirstLatter }}
+                  <span class="">
+                    {{ data.invoicedata.description | capitalizeFirstLatter }}
+                  </span>
                 </v-sheet>
               </v-sheet>
 
@@ -470,7 +465,7 @@
           <v-card-actions class="pa-0">
             <v-spacer></v-spacer>
             <strong>
-              <h2>Invoice #:{{ data.invoicereceip.invoice_number }}</h2>
+              <h3>Invoice #:{{ data.invoicereceip.invoice_number }}</h3>
             </strong>
           </v-card-actions>
 
@@ -588,23 +583,25 @@
                 </v-col>
               </v-row>
             </v-container>
+            <v-card-actions class="pr-4">
+              <v-spacer></v-spacer>
+              <v-btn color="red darken-1" text @click="cancelInvoiceReceipt"
+                >Close</v-btn
+              >
+              <v-btn
+                v-show="can('create', 'Receipt')"
+                color="green darken-1"
+                text
+                @click="createReceipt"
+              >
+                Create</v-btn
+              >
+            </v-card-actions>
           </v-form>
         </ModalBody>
       </template>
       <template v-slot:footer>
-        <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelInvoiceReceipt"
-            >Close</v-btn
-          >
-          <v-btn
-            v-show="can('create', 'Receipt')"
-            color="green darken-1"
-            text
-            @click="createReceipt"
-          >
-            Create</v-btn
-          >
-        </ModalFooter>
+        <ModalFooter> </ModalFooter>
       </template>
     </Modal>
   </div>
@@ -679,21 +676,16 @@ export default defineComponent({
 <style lang="scss">
 #p1 {
   text-decoration: underline;
-  text-decoration-color: rgba(17, 0, 255, 0.74);
+  text-decoration-color: rgba(0, 110, 255, 0.76);
   text-decoration-thickness: 2px;
 }
 
-.underline-title {
-  border: 1px dashed rgb(196, 17, 17);
-  width: 100%;
-  border-color: red;
-}
 .underline-amount {
-  border-style: double none none;
+  border-style: double none double;
 }
 .underline-invoice-number {
   border-style: none none double;
-  border-block-color: rgb(17, 0, 255);
+  border-block-color: rgba(0, 110, 255, 0.76);
 }
 .invoice-box {
   max-width: 1100;
