@@ -1,15 +1,15 @@
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
-const paymentVoucherRoutes = [
+const paymentRoutes = [
   {
-    path: "/payment-vouchers",
-    component: () => import("../PaymentVoucher.vue"),
+    path: "/manage-payments",
+    component: () => import("../Payment.vue"),
     meta: {
       requiresAuth: true,
-      title: "Payment Vouchers",
+      title: "Manage Payments",
       middleware: [setTitle, validateToken, setHeaders, auth],
     },
   },
 ];
 
-export default paymentVoucherRoutes;
+export default paymentRoutes;

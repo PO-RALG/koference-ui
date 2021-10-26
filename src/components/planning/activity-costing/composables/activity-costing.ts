@@ -32,13 +32,13 @@ export const useActivityCosting = (): any => {
         text: "GFS code",
         align: "start",
         sortable: false,
-        value: "account.code",
+        value: "gfs_code.code",
       },
       {
         text: "Funding Source",
         align: "start",
         sortable: false,
-        value: "planrep_batch_no",
+        value: "funding_source.description",
       },
       {
         text: "Amount",
