@@ -17,18 +17,6 @@
                   <!-- <v-col cols="12" md="4" sm="12"> -->
                   <v-card-text class>
                     <img :src="data.coat" class="login-logo" />
-                    <v-alert
-                      v-if="$route.query.redirect"
-                      dismissible
-                      color="cyan"
-                      border="left"
-                      elevation="2"
-                      colored-border
-                      icon="mdi-alert-outline"
-                    >
-                      You must be logged in to access
-                      {{ $route.query.redirect }}
-                    </v-alert>
                     <h2 class="text-center pa-6 login-header" color="primary">LOGIN to your account</h2>
                     <h4 class="siteName pa-0 pb-4" v-if="isDemo()">({{ data.siteName }})</h4>
                     <v-form ref="form" v-model="data.valid">
@@ -95,9 +83,7 @@ export default Vue.extend({
       email: "",
       emailRules: [
         (v: any) => !!v || "Email is required",
-        (v: any) =>
-          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-          "E-mail must be a valid email",
+        (v: any) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "E-mail must be a valid email",
       ],
       password: "",
       passwordRules: [(v: any) => !!v || "Password is required"],
