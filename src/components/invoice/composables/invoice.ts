@@ -270,7 +270,6 @@ export const useInvoice = (): any => {
   };
 
   const openInvoiceReceipt = (invoiceData: any) => {
-    console.log("invoicedata", invoiceData);
     data.invoicedetails = false;
     data.invoicereceipt = true;
 
@@ -375,6 +374,8 @@ export const useInvoice = (): any => {
   };
 
   const createReceipt = () => {
+    const invoiceItems = data.invoicereceip.items.filter((item) => item.cleared !== true);
+    data.invoicereceip.items = invoiceItems;
     receiptcreate(data.invoicereceip).then(() => {
       data.invoicereceipt = false;
       reloadData();

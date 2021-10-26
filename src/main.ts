@@ -37,9 +37,13 @@ interface SnackBarPayload {
 const requestHandler = async (request: any) => {
   const currentUser = await getCurrentUser();
   request.cancelToken = cancelSource.token;
-  axios.defaults.headers.common["Authorization"] = currentUser
-    ? `Bearer ${currentUser.token}`
-    : null;
+
+  // set facility_id in the request params so
+  request.params = request.params || {};
+  const facilityID = router.currentRoute.query.facility_id;
+  request.params["facility_id"] = facilityID;
+
+  axios.defaults.headers.common["Authorization"] = currentUser ? `Bearer ${currentUser.token}` : null;
   axios.defaults.headers.common["Accept"] = `application/json`;
   axios.defaults.headers.common["Content-Type"] = `application/json`;
   return request;

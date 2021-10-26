@@ -95,7 +95,9 @@ export default Vue.extend({
       email: "",
       emailRules: [
         (v: any) => !!v || "Email is required",
-        (v: any) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "E-mail must be a valid email",
+        (v: any) =>
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+          "E-mail must be a valid email",
       ],
       password: "",
       passwordRules: [(v: any) => !!v || "Password is required"],

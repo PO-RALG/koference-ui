@@ -11,10 +11,15 @@
 
     <v-card>
       <v-data-table :headers="data.headers" :items="users" hide-default-footer class="elevation-1">
+        <template v-slot:[`item.displayRoles`]="{ item }">
+          <span>{{ item.displayRoles }}</span>
+        </template>
         <template v-slot:[`item.activations`]="{ item }">
           <v-switch
             :input-value="item.active"
-            @click="openActivationDialog(item)"
+            @click.native.stop
+            v-model="item.active"
+            @change="openActivationDialog($event, item)"
             :disabled="cant('activateDeactivate', 'User') || item.id === data.currentUser.id"
             value
           >
