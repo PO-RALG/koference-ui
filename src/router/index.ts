@@ -36,8 +36,9 @@ import { invoiceDebtorsRoutes } from "@/components/invoice-debtors";
 import { jvRoutes } from "@/components/general-ledger/journal-voucher";
 import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
 import { paymentVoucherRoutes } from "@/components/payable/payment-voucher";
-import { notFoundRoute } from "@/components/404";
 import { paymentRoutes } from "@/components/payable/payment";
+import { reportRoutes } from "@/components/report";
+import { notFoundRoute } from "@/components/404";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -98,6 +99,7 @@ const routes: Array<RouteConfig> = [
       ...fundAllocationRoutes,
       ...paymentVoucherRoutes,
       ...paymentRoutes,
+      ...reportRoutes,
       ...notFoundRoute,
     ],
   },

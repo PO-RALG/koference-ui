@@ -30,6 +30,7 @@ export const useUser = (): any => {
     showFacility: false,
     isFacilityUser: false,
     node: null,
+    currentItem: null,
     action: "",
     show: false,
     item: userData,
@@ -78,7 +79,7 @@ export const useUser = (): any => {
     });
     loadLevels();
     getNodes();
-    loadRoles();
+    loadRoles({});
     data.currentUser = currentUser;
     data.source = [
       { label: "WHITE", code: "#FFFFFF" },
@@ -149,6 +150,9 @@ export const useUser = (): any => {
   const openDialog = (formData?: User) => {
     if (formData && formData.id) {
       data.selectedRoles = formData.roles;
+      const location = formData["location"];
+      loadRoles({ search: { level_id: location.level_id } });
+      data.currentItem = location;
       data.formData = formData;
       if (formData.facility_id) {
         data.isFacilityUser = true;
@@ -210,8 +214,10 @@ export const useUser = (): any => {
   };
 
   const loadLocationChildren = (location: any) => {
+    data.currentItem = data.currentItem === location ? null : location;
     data.location = location;
-    data.roles = data.roles.filter((r: any) => r.level_id === location.level_id)
+    data.formData["location"] = location;
+    loadRoles({ search: { level_id: location.level_id } });
     toggleFacilitylOption(location);
     data.formData.location_id = location.id;
     if (!location.children) {
@@ -231,8 +237,8 @@ export const useUser = (): any => {
     });
   };
 
-  const loadRoles = () => {
-    getRoles({}).then((response: AxiosResponse) => {
+  const loadRoles = (params?: any) => {
+    getRoles(params).then((response: AxiosResponse) => {
       data.roles = response.data.data.data;
     });
   };
@@ -243,7 +249,7 @@ export const useUser = (): any => {
     });
   };
 
-  const toggleFacilitylOption = (location) => {
+  const toggleFacilitylOption = (location: any) => {
     const level = data.levels.find((level) => level.id === location.level_id);
     if (level.code === "WARD" || level.code === "VILLAGE_MTAA") {
       data.showFacility = true;
@@ -253,7 +259,7 @@ export const useUser = (): any => {
     }
   };
 
-  const checkForMoreClicks = (level) => {
+  const checkForMoreClicks = (level: any) => {
     if ((data.showFacility = true) && (level.code === "WARD" || level.code === "VILLAGE_MTAA")) {
       loadFacilities();
     }
@@ -308,9 +314,7 @@ export const useUser = (): any => {
     });
   };
 
-  const openActivationDialog = (event, user: any) => {
-    console.log("event", event);
-    console.log("user:", user);
+  const openActivationDialog = (user: any) => {
     data.status = user.active ? "De-Activate" : "Activate";
     data.user = user;
     data.show = true;
