@@ -3,7 +3,7 @@ import { AxiosResponse } from "axios";
 
 import { get, create, destroy } from "../services/payment.service";
 import { Payment } from "../types/Payment";
-import { find as findPaymentVoucher } from "@/components/payable/payment-voucher/services/payment-voucher.service";
+import { find as findPaymentVoucher, printPdf as printPvPdf } from "@/components/payable/payment-voucher/services/payment-voucher.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
 import { get as getPaymentVouchers } from "@/components/payable/payment-voucher/services/payment-voucher.service";
 import { FundSources } from "@/components/coa/funding-source/types/index";
@@ -43,7 +43,7 @@ export const usePayment = (): any => {
         text: "Payee",
         align: "start",
         sortable: false,
-        value: "payee",
+        value: "voucher.supplier.name",
       },
       {
         text: "Bank Account",
@@ -270,10 +270,7 @@ export const usePayment = (): any => {
   };
 
   const printPaymentVoucher = (id: number) => {
-    findPaymentVoucher(id).then((response: AxiosResponse) => {
-      data.pvDetails = response.data.data;
-      data.paymentVoucherModal = !data.paymentVoucherModal;
-    });
+    printPvPdf(id);
   };
 
   const payablePrintHeader = [
