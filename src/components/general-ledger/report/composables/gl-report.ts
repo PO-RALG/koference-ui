@@ -65,11 +65,13 @@ export const useGLReport = (): any => {
     if (params) {
       delete params.financial_year;
       get(params).then((response: AxiosResponse) => {
+        console.log("response params", response.data.data.data);
         data.facility = response.data.data.facility;
         data.entries = response.data.data.data;
       });
     } else {
       get().then((response: AxiosResponse) => {
+        console.log("response no params", response.data.data.data);
         data.facility = response.data.data.facility;
         data.entries = response.data.data.data;
       });
@@ -95,17 +97,16 @@ export const useGLReport = (): any => {
   const entries = computed(() => {
     return data.entries.map((entry: any) => ({
       ...entry,
-      name: getName(entry.ledgerable),
     }));
   });
 
-  const getName = (ledgerable: any) => {
-    if (ledgerable === null) {
-      return "No Entry";
+  const getName = (transaction: any) => {
+    if (transaction.ledgerable) {
+      return transaction.ledgerable.name ? transaction.ledgerable.name : transaction.ledgerable.descriptions;
     } else {
-      return ledgerable.name? ledgerable.name : ledgerable.descriptions;
+      return ("No Description Available ");
     }
-  }
+  };
 
   const gfsCodes = computed(() => {
     return data.gfsCodes.map((gfs) => {
@@ -154,5 +155,6 @@ export const useGLReport = (): any => {
     filterReport,
     gfsCodes,
     entries,
+    getName,
   };
 };

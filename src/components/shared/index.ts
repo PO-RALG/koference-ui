@@ -2,7 +2,7 @@ import Vue from "vue";
 
 Vue.component("TreeBrowser", () => import("./tree-browser/TreeBrowser.vue"));
 Vue.component("InfoDialog", () => import("./info-dialog/InfoDialog.vue"));
-Vue.component("Tree", () => import("./Tree.vue"));
+//Vue.component("Tree", () => import("./Tree.vue"));
 Vue.component("DualMultiSelect", () => import("./DualMultiSelect.vue"));
 Vue.component("Modal", () => import("./modal/Modal.vue"));
 Vue.component("ModalBody", () => import("./modal/ModalBody.vue"));

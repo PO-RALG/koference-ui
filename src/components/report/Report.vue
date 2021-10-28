@@ -4,21 +4,13 @@
     <v-row class="top-header d-flex justify-space-between" cols="12">
       <v-col cols="12" sm="12" md="3" class="hierarchy-container elevation-1">
         <v-label><h5>SELECT LOCATION</h5></v-label>
-        <TreeBrowser
-        @onClick="loadLocationChildren"
-        :node="data.node"
-        :current-item="data.currentItem"
-        />
+        <TreeBrowser @onClick="loadLocationChildren" :node="data.node" :current-item="data.currentItem" />
       </v-col>
-      <v-col cols="12" sm="12" md="5" class="hierarchy-container elevation-1">
+      <v-col cols="12" sm="12" md="3" class="hierarchy-container elevation-1" v-if="data.report && data.report.name">
         <v-label><h5>SELECT REPORT CATEGORY</h5></v-label>
-        <TreeBrowser
-          @onClick="loadReportCategories"
-          :node="data.reports"
-          :current-item="data.currentReportCategory"
-        />
+        <TreeBrowser @onClick="loadReportCategories" :node="data.report" :current-item="data.selectedReport" />
       </v-col>
-      <v-col cols="12" sm="12" md="4">
+      <v-col cols="12" sm="12" md="6">
         <router-view></router-view>
       </v-col>
     </v-row>

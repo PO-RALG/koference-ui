@@ -1,19 +1,15 @@
 <template>
-  <ul class="tree">
+  <ul class="tree" v-if="node">
     <li :style="{ 'margin-left': `${depth * 5}px` }">
       <span v-if="hasChildren" @click="nodeClicked()" class="type">
         <v-icon small>
           {{ data.expanded ? "mdi-chevron-down-box" : "mdi-chevron-right-box" }}
         </v-icon>
       </span>
-      <span
-        @click="nodeClicked()"
-        :class="{ active: isActiveItem }"
-        class="name"
-        :value="node"
-      >
+      <span @click="nodeClicked()" :class="{ active: isActiveItem }" class="name" :value="node">
         {{ node.name }}
       </span>
+
       <TreeBrowser
         v-show="data.expanded"
         v-for="child in node.children"
@@ -37,7 +33,6 @@ import { TreeNode } from "./types";
 export default defineComponent({
   props: {
     node: {
-      type: Object as PropType<TreeNode>,
       required: true,
       default: () => [],
     },
@@ -65,13 +60,14 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const { data, nodeClicked, hasChildren, isActiveItem, level } = useTree(props, context);
+    const { data, nodeClicked, hasChildren, isActiveItem, level, hasAttachment } = useTree(props, context);
     return {
       data,
       nodeClicked,
       hasChildren,
       isActiveItem,
       level,
+      hasAttachment,
     };
   },
 });

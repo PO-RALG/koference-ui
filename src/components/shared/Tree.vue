@@ -1,25 +1,19 @@
 <template>
-  <li class="list-group-item group-item">
-    <div
-      :class="{ active:item.id === isActiveItem }"
-      @click="selectGroup(item)"
-    >
-      {{ item.name }}
-      <span v-if="isFolder" @click="toggle">
-        [{{ data.isOpen ? "-" : "+" }}]
+  <div>
+    <div @click="data.expanded = !data.expanded" :style="{ 'margin-left': `${depth * 20}px` }" class="node">
+      <span v-if="hasChildren" class="type">
+        {{ expanded ? "&#9660;" : "&#9658;" }}
       </span>
+      <span v-else>&#9671;</span>
+      {{ node.name }}
     </div>
-    <ul v-show="data.isOpen" v-if="isFolder" class="list-group">
-      <tree
-        class="item"
-        v-for="(child, index) in item.children"
-        :current-item="child.id"
-        :key="index"
-        :item="child"
-        @select="select(child)"
-      ></tree>
-    </ul>
-  </li>
+    <Tree
+      v-if="data.expanded"
+      v-for="child in node.children"
+      :key="child.id"
+      :node="child"
+      :depth="depth + 1" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -27,13 +21,13 @@ import { defineComponent, reactive, computed } from "@vue/composition-api";
 export default defineComponent({
   props: {
     item: Object,
-    currentItem: Number,
+    currentItem: Object,
     selectedItem: Object,
   },
 
   setup(props, { emit }) {
-    let data = reactive({
-      isOpen: false,
+    const data = reactive({
+      expanded: false,
     });
 
     const isFolder = computed(() => {

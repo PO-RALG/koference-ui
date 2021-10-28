@@ -25,16 +25,19 @@ const exportReport = async (payload) => {
 };
 
 const updateReport = async (payload) => {
-  return await axios.put(API, payload);
+  return await axios.put(`${API}/${payload.id}`, payload);
 };
 
 const deleteReport = async (payload) => {
   return await axios.delete(API + "/" + payload);
 };
 
-const fetchReportTree = async (payload) => {
-  const END_POINT = `${api}/${payload}/tree`;
-  return await axios.get(END_POINT);
+const fetchReportTree = async ({ location_id, facility_id }) => {
+  if (facility_id) {
+    return await axios.get(`${API}/by-location?location_id=${location_id}&facility_id=${facility_id}`);
+  } else {
+    return await axios.get(`${API}/by-location?location_id=${location_id}`);
+  }
 };
 
 const fetchReportTree2 = async (payload) => {

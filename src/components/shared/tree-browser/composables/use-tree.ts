@@ -32,6 +32,10 @@ export const useTree = (props, { emit }): any => {
     return props.currentItem === props.node;
   });
 
+  const hasAttachment = computed(() => {
+    return props.node.template_uri;
+  });
+
   const level = computed(() => {
     return `${props.depth} + 1`;
   });
@@ -42,6 +46,7 @@ export const useTree = (props, { emit }): any => {
     nodeClicked,
 
     hasChildren,
+    hasAttachment,
     isActiveItem,
     level,
 

@@ -1,34 +1,61 @@
 import { reactive, onMounted, set, computed } from "@vue/composition-api";
 import router from "@/router";
+import store from "@/store";
 
-import { fetchReportTree } from "../services/report.services";
-import {
-  get as fetchLocationTree,
-  getChildren,
-} from "@/components/admin-area/admin-area/services/admin-area-services";
+import { fetchReportTree, getReports, createReport, updateReport, deleteReport } from "../services/report.services";
+import { get as fetchLocationTree, getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
+import { get as getLevels } from "@/components/admin-area/level/services/level-services";
 
 import { AxiosResponse } from "axios";
 import { useRoute } from "vue2-helpers/vue-router";
+import { getCurrentUser } from "@/middleware";
 
-export const useReport = (): any => {
+export const useReport = (actionType?: string): any => {
   const route = useRoute();
+  const currentUser = getCurrentUser();
 
   const data = reactive({
     location: {},
     infoMessage: "",
     isInfoDialogOpen: false,
     reportSelected: false,
-    reports: [],
+    requestParams:{
+      location_id: null,
+      facility_id: null,
+    },
+    report: null,
     selectedLocation: {},
     item: {},
-    selectedReport: {},
+    selectedReport: null,
     currentItem: null,
     node: null,
+    formData: {},
+    reportOrders: [...Array(50).keys()],
+    headers: [
+      { text: "Order", value: "order" },
+      { text: "Name", value: "name" },
+      { text: "Parent", value: "parent" },
+      { text: "Template URL", align: "start", sortable: false, value: "template_uri" },
+      { text: "Level", value: "level" },
+      { text: "Actions", value: "actions", sortable: false },
+    ],
+    entries: [],
+    modal: false,
+    deleteModal: false,
+    response: {},
+    rows: ["10", "20", "50", "100"],
+    modalTitle: "",
+    levels: [],
+    exportFormat: "",
+    formats: ["pdf", "xlsx", "pptx", "docx", "csv"],
   });
 
   const loadLocationChildren = (location: any) => {
+    store.dispatch("Drawer/CLOSE");
     data.currentItem = data.currentItem === location ? null : location;
+    console.log("location", location);
     data.location = location;
+    getReportTree(location);
     if (!location.children) {
       if (location.id !== data.node.id) {
         getChildren(location.id).then((response: AxiosResponse) => {
@@ -40,8 +67,9 @@ export const useReport = (): any => {
     }
   };
 
-  const loadReportCategories = (report) => {
-    const locationId = data.selectedLocation.id;
+  const loadReportCategories = (report: any) => {
+    const locationId = data.location["id"];
+    data.selectedReport = report;
     if (locationId && reportHasTemplateUrl(report)) {
       router
         .push({
@@ -68,10 +96,19 @@ export const useReport = (): any => {
     });
   };
 
-  const getReportTree = (location) => {
-    fetchReportTree(location.id).then((response: AxiosResponse) => {
-      console.log("reports:", response.data.data);
-      data.reports = response.data.data;
+  const setQueryParams = (location) => {
+    if (location.level_id === 5) {
+      data.requestParams.location_id = location.id;
+      data.requestParams.facility_id = location.id;
+    } else {
+      data.requestParams.location_id = location.id;
+    }
+  };
+
+  const getReportTree = (location: any) => {
+    setQueryParams(location);
+    fetchReportTree(data.requestParams).then((response: AxiosResponse) => {
+      data.report = response.data.data;
     });
   };
 
@@ -84,7 +121,7 @@ export const useReport = (): any => {
   };
 
   const reportHasTemplateUrl = (report) => {
-    return report.templateUri ? true : false;
+    return report.template_uri ? true : false;
   };
 
   const closeInfoDialog = (status: boolean) => {
@@ -92,14 +129,115 @@ export const useReport = (): any => {
   };
 
   onMounted(() => {
-    const queryParams = router.currentRoute;
-    getNodes();
-    if (queryParams.query.report_id) {
-      fetchReportTree(queryParams.params.id).then((response: AxiosResponse) => {
-        data.reports = response.data.data;
-      });
+    if (actionType) {
+      fetchReports();
+    } else {
+      getNodes();
     }
   });
+
+  const fetchReports = () => {
+    getReports({}).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.entries = response.data.data.data;
+    });
+  };
+
+  const openDialog = (formData?: any) => {
+    if (formData.id) {
+      data.formData = formData;
+      data.modalTitle = "Update";
+    } else {
+      data.modalTitle = "Create";
+    }
+    data.modal = true;
+    loadLevels();
+  };
+
+  const cancelDialog = () => {
+    data.modal = false;
+  };
+
+  const update = (data) => {
+    updateReport(data).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        data.modal = false;
+      }
+    });
+  };
+
+  const create = (data) => {
+    createReport(data).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        data.modal = false;
+      }
+    });
+  };
+
+  const openConfirmDialog = (item: any) => {
+    data.item = item;
+    data.deleteModal = true;
+  };
+
+  const closeConfirmDialog = () => {
+    data.deleteModal = true;
+  };
+
+  const deleteItem = (item: number | string) => {
+    const payload = item;
+    deleteReport(payload).then(() => {
+      if (response.status === 200) {
+        fetchReports();
+        data.item = {} as User;
+        data.isOpen = false;
+      }
+    });
+  };
+
+  const getData = () => {
+    fetchReports();
+  };
+
+  const save = () => {
+    if (data.formData["id"]) {
+      updateReport(data.formData).then((response: AxiosResponse) => {
+        if (response.status === 200) {
+          data.modal = false;
+          fetchReports();
+        }
+      });
+    } else {
+      createReport(data.formData).then((response: AxiosResponse) => {
+        if (response.status === 200) {
+          fetchReports();
+          data.modal = false;
+        }
+      });
+    }
+  };
+
+  const cancelConfirmDialog = () => {
+    data.deleteModal = false;
+  };
+
+  const remove = () => {
+    deleteReport(data.item).then(() => {
+      fetchReports();
+      data.deleteModal = false;
+    });
+    data.item = {};
+  };
+
+  const loadLevels = () => {
+    getLevels({}).then((response: AxiosResponse) => {
+      data.levels = response.data.data.data;
+    });
+  };
+
+  const printReport = () => {
+    console.log("print report");
+  };
 
   return {
     data,
@@ -112,5 +250,18 @@ export const useReport = (): any => {
     reportHasTemplateUrl,
     closeInfoDialog,
     getNodes,
+    openDialog,
+    updateReport,
+    createReport,
+    openConfirmDialog,
+    closeConfirmDialog,
+    deleteItem,
+    getData,
+    cancelDialog,
+    save,
+    cancelConfirmDialog,
+    remove,
+    fetchReports,
+    printReport,
   };
 };
