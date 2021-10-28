@@ -29,10 +29,10 @@ export const useActivityCosting = (): any => {
         value: "activity.code",
       },
       {
-        text: "GFS code",
+        text: "GFS name",
         align: "start",
         sortable: false,
-        value: "gfs_code.code",
+        value: "gfs_code.name",
       },
       {
         text: "Funding Source",

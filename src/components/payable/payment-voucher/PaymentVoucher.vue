@@ -38,7 +38,16 @@
           </v-card-title>
         </template>
         <template v-slot:[`item.reference_no`]="{ item }">
-          <span>{{ item.reference_no}}</span>
+          <span>
+            <v-list-item
+              class="text-link"
+              exact
+              light
+              @click="previewPaymentVoucher(item.id)"
+            >
+            {{ item.reference_no }}
+            </v-list-item>
+          </span>
         </template>
         <template v-slot:[`item.date`]="{ item }">
           <span>{{ item.date | format("DD/MM/YYYY") }}</span>
@@ -298,6 +307,114 @@
         </ModalFooter>
       </template>
     </Modal>
+
+    <Modal :fullScreen="true" :modal="data.paymentVoucherModal" :width="1260">
+      <template v-slot:header>
+        <ModalHeader :title="`Voucher`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <div class="" v-if="data.pvDetails">
+            <v-col class="d-flex justify-center">
+              <div class="font-weight-bold text-center">
+                <img :src="data.coat" class="login-logo pt-5" /><br />  
+                The United Republic of Tanzania <br />
+                President's Office Regional Administration and Local Government <br />
+                {{data.pvDetails.council?data.pvDetails.council.name:""}} <br />
+                {{data.pvDetails.facility?data.pvDetails.facility.name:"" }} {{data.pvDetails.facility?data.pvDetails.facility.facility_type.name:"" }}<br />
+              </div>
+            </v-col>
+            <v-col class="d-flex justify-center">
+              <div class="text-subtitle-1 font-weight-bold">
+                VOUCHER
+              </div>
+            </v-col>
+            <v-col>
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <td class="text-left">
+                      <span class="font-weight-bold">Payee's name: </span>
+                      {{ data.pvDetails.supplier?data.pvDetails.supplier.name:"" }}<br />
+                      <span class="font-weight-bold">Mobile #: </span>
+                      {{ data.pvDetails.supplier?data.pvDetails.supplier.phone:"" }}<br />
+                      <span class="font-weight-bold">Address: </span>
+                      {{ data.pvDetails.supplier?data.pvDetails.supplier.address:"" }}<br />
+                      <span class="font-weight-bold">TIN: </span>
+                      {{ data.pvDetails.supplier?data.pvDetails.supplier.tin:"" }}<br />
+                    </td>
+                    <td class="text-right">
+                      <span>REF NO: </span>
+                      <span class="font-weight-bold">
+                        {{ data.pvDetails.reference_no }}
+                      </span><br />
+                      <span>Date: </span>
+                      <span class="font-weight-bold">
+                        {{ data.pvDetails.date | format("DD/MM/YYYY") }}
+                      </span><br /><br /><br />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" class="pt-3">
+                      <span class="font-weight-bold">
+                        Description:
+                      </span>
+                      {{ data.pvDetails.description }}<br />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </v-col>
+            <v-col class="">
+              <v-data-table
+                    :headers="payablePrintHeader"
+                    disable-pagination
+                    hide-default-footer
+                  >
+                <template v-slot:body>
+                  <tbody>
+                    <tr v-for="(payable, i) in data.pvDetails.payables" :key="i">
+                      <td>{{payable.gl_account}}</td>
+                      <td>{{payable.funding_source.description}}</td>
+                      <td>{{payable.description}}</td>
+                      <td class="text-right">{{payable.amount | toCurrency()}}</td>
+                    </tr>
+                    <tr class="grey lighten-2">
+                      <th colspan="3" class="text-right">NET AMOUNT</th>
+                      <th class="text-right">{{data.pvDetails.amount | toCurrency()}}</th>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-data-table>
+            </v-col>
+            <v-col class="pt-10">
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <th class="text-left">Facility Financial Accounting and Reporting System</th>
+                    <th class="text-right">Printed on: {{data.pvDetails.printDate | format("DD/MM/YYYY H:mm:ss")}}</th>
+                  </tr>
+                </tbody>
+              </table>
+            </v-col>
+          </div>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn class="pb-5" color="red darken-1" text @click="cancelPreviewDialog">
+            Cancel
+          </v-btn>
+          <v-btn class="pb-5"
+            color="green darken-1"
+            text
+            @click="printPaymentVoucher(data.pvDetails.id)"
+          >
+            Print
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -328,6 +445,10 @@ export default defineComponent({
       maxRules,
       resetBudget,
       payableHeader,
+      payablePrintHeader,
+      previewPaymentVoucher,
+      printPaymentVoucher,
+      cancelPreviewDialog,
     } = usePaymentVoucher();
 
     return {
@@ -350,6 +471,10 @@ export default defineComponent({
       maxRules,
       resetBudget,
       payableHeader,
+      payablePrintHeader,
+      previewPaymentVoucher,
+      printPaymentVoucher,
+      cancelPreviewDialog,
     };
   },
 });
@@ -383,5 +508,12 @@ export default defineComponent({
       }
     }
   }
+}
+.login-logo {
+  height: 170px;
+  width: 130px;
+}
+.text-link{
+  color: #1976d2 !important;
 }
 </style>

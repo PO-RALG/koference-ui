@@ -159,7 +159,7 @@
                 </v-col>
               </v-row>
               <template>
-                <v-col cols="12" md="12" class="data-table">
+                <v-col cols="12" md="12" class="data-table" v-if="data.formData.voucher_id">
                   <v-data-table
                     :headers="payableHeader"
                     disable-pagination
@@ -273,7 +273,7 @@
                 <img :src="data.coat" class="login-logo pt-5" /><br />  
                 The United Republic of Tanzania <br />
                 President's Office Regional Administration and Local Government <br />
-                {{data.pvDetails.council.name}} <br />
+                {{data.pvDetails.council?data.pvDetails.council.name:""}} <br />
                 {{data.pvDetails.facility.name }} {{data.pvDetails.facility.facility_type.name }}<br />
               </div>
             </v-col>
