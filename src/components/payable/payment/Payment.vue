@@ -48,6 +48,7 @@
         <template v-slot:[`item.voucher`]="{ item }">
           <span>
             <v-list-item
+              class="text-link"
               exact
               light
               @click="previewPaymentVoucher(item.voucher.id)"
@@ -60,18 +61,32 @@
           {{ item.amount | toCurrency() }}
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon
-            @click="openRequestReversalDialog(item.id)"
-            :disabled="cant('delete', 'Payment')"
-          >
-            mdi-undo
-          </v-icon>
-          <v-icon
-            @click="openHistoryDialog(item.id)"
-            :disabled="cant('delete', 'Payment')"
-          >
-            mdi-update
-          </v-icon>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                @click="openRequestReversalDialog(item.id)"
+                :disabled="cant('delete', 'Payment')"
+              >
+                mdi-undo
+              </v-icon>
+            </template>
+            <span>Reverse Payment</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                @click="openHistoryDialog(item.id)"
+                :disabled="cant('delete', 'Payment')"
+              >
+                mdi-update
+              </v-icon>
+            </template>
+            <span>View  History for the approval requests and responses</span>
+          </v-tooltip>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -246,18 +261,20 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.paymentVoucherModal" :width="1000">
+    <Modal :fullScreen="true" :modal="data.paymentVoucherModal" :width="1260">
       <template v-slot:header>
         <ModalHeader :title="`Payment Voucher`" />
       </template>
       <template v-slot:body>
         <ModalBody>
-          <div class="invoice-box" v-if="data.pvDetails">
+          <div class="" v-if="data.pvDetails">
             <v-col class="d-flex justify-center">
-              <div class="text-h6 text-center">
-                THE UNITED REPUBLIC OF TANZANIA <br />
-                REGIONAL ADMIN AND LOCAL GOVERNMENT <br />
-                REGION <br />
+              <div class="font-weight-bold text-center">
+                <img :src="data.coat" class="login-logo pt-5" /><br />  
+                The United Republic of Tanzania <br />
+                President's Office Regional Administration and Local Government <br />
+                {{data.pvDetails.council.name}} <br />
+                {{data.pvDetails.facility.name }} {{data.pvDetails.facility.facility_type.name }}<br />
               </div>
             </v-col>
             <v-col class="d-flex justify-center">
@@ -265,55 +282,129 @@
                 PAYMENT VOUCHER
               </div>
             </v-col>
-            <table width="100%">
-              <tr class="top">
-                <td>
-                  <span>STATION NO: ............</span>
-                </td>
-                <td class="text-right">
-                  <span>REF NO: </span>
-                  <span class="font-weight-bold">
-                    {{ data.pvDetails.reference_no }}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td class="text-left">
-                  <span class="font-weight-bold">Payee's name: </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                  <span class="font-weight-bold">Payee's name: </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                  <span class="font-weight-bold">Payee #: </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                  <span class="font-weight-bold">Address: </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                  <span class="font-weight-bold">VRN: </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                </td>
-                <td class="text-right">
-                  <span class="font-weight-bold">Apply date: </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                  <span class="font-weight-bold">Reference No: </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                  <span class="font-weight-bold">SBC: </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                  <span class="font-weight-bold">Terms of: </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                  <span class="font-weight-bold">Payment: </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                </td>
-              </tr>
-              <tr pt="5">
-                <td colspan="2">
-                  <span class="font-weight-bold">
-                    Payment in respective of:
-                  </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                  <span class="font-weight-bold">To be paid from: </span>
-                  {{ data.pvDetails.reference_no }}<br />
-                </td>
-              </tr>
-            </table>
+            <v-col>
+              <table width="100%">
+                <tr>
+                  <td class="pb-5">
+                    <span>STATION NO: ............</span>
+                  </td>
+                  <td class="text-right pb-7">
+                    <span>PV NO: </span>
+                    <span class="font-weight-bold">
+                      {{ data.pvDetails.reference_no }}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-left">
+                    <span class="font-weight-bold">Payee's name: </span>
+                    {{ data.pvDetails.supplier.name }}<br />
+                    <span class="font-weight-bold">Mobile #: </span>
+                    {{ data.pvDetails.supplier.phone }}<br />
+                    <span class="font-weight-bold">Address: </span>
+                    {{ data.pvDetails.supplier.address }}<br />
+                    <span class="font-weight-bold">TIN: </span>
+                    {{ data.pvDetails.supplier.tin }}<br />
+                  </td>
+                  <td class="text-right">
+                    <span class="font-weight-bold">Apply date: </span>
+                    {{ data.pvDetails.date | format("DD/MM/YYYY") }}<br />
+                    <span class="font-weight-bold">SBC: </span>
+                    {{ data.pvDetails.reference_no }}<br />
+                    <span class="font-weight-bold">Terms of: </span>
+                    {{ data.pvDetails.reference_no }}<br />
+                    <span class="font-weight-bold">Payment: </span>
+                    {{ data.pvDetails.reference_no }}<br />
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" class="pt-3">
+                    <span class="font-weight-bold">
+                      Payment in respective of:
+                    </span>
+                    {{ data.pvDetails.description }}<br />
+                    <span class="font-weight-bold">To be paid from: </span>
+                    {{ data.pvDetails.reference_no }}<br />
+                  </td>
+                </tr>
+              </table>
+            </v-col>
+            <v-col class="">
+              <v-data-table
+                    :headers="payablePrintHeader"
+                    disable-pagination
+                    hide-default-footer
+                  >
+                <template v-slot:body>
+                  <tbody>
+                    <tr v-for="(payable, i) in data.pvDetails.payables" :key="i">
+                      <td>{{payable.gl_account}}</td>
+                      <td>{{payable.funding_source.description}}</td>
+                      <td>{{payable.description}}</td>
+                      <td class="text-right">{{payable.amount | toCurrency()}}</td>
+                    </tr>
+                    <tr class="grey lighten-2">
+                      <th colspan="3" class="text-right">NET AMOUNT</th>
+                      <th class="text-right">{{data.pvDetails.amount | toCurrency()}}</th>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-data-table>
+            </v-col>
+            <v-col>
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <td class="text-left text-h6">AUTHORITY:</td>
+                  </tr>
+                  <tr>
+                    <td colspan="4">
+                      Certify that the above sum of shillings (in words)
+                       <span class="font-weight-bold">
+                         {{convert(data.pvDetails.amount * 1)}} only
+                        </span> 
+                       is correctly payable to the above-named person and that the rates of payment/price(s) is/are in accordance with Regulations/the Terms of the Contract and the funds are available under the Sub-Vote/Cost Centre and Item quoted above to meet this payment.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </v-col>
+            <v-col>
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <td class="text-left">Prepared By:</td>
+                    <td class="text-left">Verified By:</td>
+                    <td class="text-left">Approved By:</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left pt-10"><hr width="80%"></td>
+                    <td class="text-left pt-10"><hr width="80%"></td>
+                    <td class="text-left pt-10"><hr width="80%"></td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Signature of Originating Officer</td>
+                    <td class="text-left">Signature of Verifying Officer</td>
+                    <td class="text-left">Signature of Authorizing Officer</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left pt-10">Date: ..............................</td>
+                    <td class="text-left pt-10">Date: ..............................</td>
+                    <td class="text-left pt-10">Date: ..............................</td>
+                  </tr>
+                </tbody>
+              </table>
+            </v-col>
+            <v-col>
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <th class="text-left">Facility Financial Accounting and Reporting System</th>
+                    <th class="text-right">Printed on: {{data.pvDetails.printDate | format("DD/MM/YYYY H:mm:ss")}}</th>
+                  </tr>
+                </tbody>
+              </table>
+            </v-col>
           </div>
         </ModalBody>
       </template>
@@ -326,7 +417,6 @@
             color="green darken-1"
             text
             @click="printPaymentVoucher(data.pvDetails.id)"
-            :disabled="!data.valid"
           >
             Print
           </v-btn>
@@ -363,6 +453,8 @@ export default defineComponent({
       previewPaymentVoucher,
       cancelPreviewDialog,
       printPaymentVoucher,
+      payablePrintHeader,
+      convert,
     } = usePayment();
 
     return {
@@ -385,6 +477,8 @@ export default defineComponent({
       previewPaymentVoucher,
       cancelPreviewDialog,
       printPaymentVoucher,
+      payablePrintHeader,
+      convert,
     };
   },
 });
@@ -416,5 +510,12 @@ export default defineComponent({
       }
     }
   }
+}
+.login-logo {
+  height: 170px;
+  width: 130px;
+}
+.text-link{
+  color: #1976d2 !important;
 }
 </style>

@@ -50,12 +50,19 @@
           {{ item.amount_paid | toCurrency() }}
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon
-            @click="openConfirmDialog(item.id)"
-            :disabled="cant('delete', 'Voucher')"
-          >
-            mdi-trash-can-outline
-          </v-icon>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                @click="openConfirmDialog(item.id)"
+                :disabled="cant('delete', 'Voucher')"
+              >
+                mdi-trash-can-outline
+              </v-icon>
+            </template>
+            <span>Delete</span>
+          </v-tooltip>
         </template>
         <template v-slot:footer>
           <Paginate

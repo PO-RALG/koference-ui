@@ -22,8 +22,16 @@ const create = async (payload: any) => {
 const update = async (payload: any) => {
   return await axios.put(`/api/v1/suppliers/` + payload.id, payload);
 };
+
 const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/suppliers/` + payload);
 };
 
-export { get, find, create, update, destroy, search };
+const activation = async (payload: any) => {
+  return await axios.post(
+    `/api/v1/suppliers/` + payload.id + "/change-status",
+    payload
+  );
+};
+
+export { get, find, create, update, destroy, search, activation };
