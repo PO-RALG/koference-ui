@@ -167,19 +167,13 @@
                   >
                     <template v-slot:body>
                       <tbody>
-                        <tr v-for="(payable, i) in data.payables" :key="i">
+                        <tr v-for="(payable, i) in data.payableItems" :key="i">
                           <td>
-                            <v-select
-                              class="pt-3"
-                              outlined
-                              dense
-                              v-model="payable.payable_id"
-                              :items="data.payableItems"
-                              item-text="description"
-                              item-value="id"
-                              @change="setAmount($event, i)"
-                            >
-                            </v-select>
+                            {{ payable.description}}<br />
+                            <span class="teal--text">
+                              {{ payable.funding_source.description}}
+                              ({{payable.funding_source.code}})
+                            </span>
                           </td>
                           <td>
                             {{ payable.required_amount | toCurrency() }}
@@ -193,29 +187,9 @@
                               outlined
                               dense
                               type="number"
-                              v-model="payable.amount"
+                              v-model="payable.payment"
                               :rules="[maxRules(payable.balance)]"
                             ></v-text-field>
-                          </td>
-                          <td>
-                            <v-btn
-                              v-if="data.payables.length > 1"
-                              text
-                              @click="removePayable(i)"
-                            >
-                              <v-icon color="red darken-1">
-                                mdi-minus-circle
-                              </v-icon>
-                            </v-btn>
-                            <v-btn
-                              v-if="data.payables.length == i + 1"
-                              text
-                              @click="addPayable"
-                            >
-                              <v-icon color="green darken-1">
-                                mdi-plus-circle
-                              </v-icon>
-                            </v-btn>
                           </td>
                         </tr>
                       </tbody>
@@ -443,10 +417,7 @@ export default defineComponent({
       cancelConfirmDialog,
       searchItem,
       getData,
-      addPayable,
-      removePayable,
       setPayableItems,
-      setAmount,
       maxRules,
       payableHeader,
       openHistoryDialog,
@@ -467,10 +438,7 @@ export default defineComponent({
       cancelConfirmDialog,
       searchItem,
       getData,
-      addPayable,
-      removePayable,
       setPayableItems,
-      setAmount,
       maxRules,
       payableHeader,
       openHistoryDialog,

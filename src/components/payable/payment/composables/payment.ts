@@ -137,11 +137,11 @@ export const usePayment = (): any => {
 
   const save = () => {
     const payableData = [];
-    const payableItems = data.payables;
+    const payableItems = data.payableItems;
     for (let i = 0; i < payableItems.length; i++) {
       const element = {
-        payable_id: payableItems[i].payable_id,
-        amount: payableItems[i].amount,
+        payable_id: payableItems[i].id,
+        amount: payableItems[i].payment,
       };
       payableData.push(element);
     }
@@ -184,42 +184,21 @@ export const usePayment = (): any => {
       `Amount must be less or equal to ${propertyType}`;
   };
 
-  const addPayable = () => {
-    data.payables.push({
-      payable_id: "",
-      required_amount: 0,
-      amount: 0,
-      paid_amount: 0,
-      balance: 0,
-    });
-  };
-
-  const removePayable = (index: number) => {
-    data.payables.splice(index, 1);
-  };
-
   const setPayableItems = (id: number) => {
-    const pvData = data.paymentVouchers;
-    for (let i = 0; i < pvData.length; i++) {
-      const element = pvData[i];
-      if (element.id === id) {
-        return (data.payableItems = element.payables);
-      }
-    }
-  };
+    findPaymentVoucher(id).then((response: AxiosResponse) => {
+      const pvData = response.data.data;
+      for (let j = 0; j < pvData.payables.length; j++) {
+        const e = pvData.payables[j];
+        e.payment = 0;
+        e.required_amount = Number(e.amount);
+        e.paid_amount = Number(e.paid_amount);
+        e.balance = Number(e.amount) - Number(e.paid_amount);
 
-  const setAmount = (id: number, index: number) => {
-    const payableData = data.payableItems;
-    for (let i = 0; i < payableData.length; i++) {
-      const element = payableData[i];
-      if (element.id === id) {
-        data.payables[index].required_amount = Number(element.amount);
-        data.payables[index].paid_amount = Number(element.paid_amount);
-        data.payables[index].balance =
-          Number(element.amount) - Number(element.paid_amount);
-        return data.payables;
+        data.payableItems.push(e);
       }
-    }
+      return data.payableItems;
+    });
+    
   };
 
   const payableHeader = [
@@ -243,13 +222,6 @@ export const usePayment = (): any => {
     },
     {
       text: "Payment",
-      align: "start",
-      sortable: false,
-      value: "",
-      width: "",
-    },
-    {
-      text: "",
       align: "start",
       sortable: false,
       value: "",
@@ -393,10 +365,7 @@ export const usePayment = (): any => {
     cancelConfirmDialog,
     getData,
     maxRules,
-    addPayable,
-    removePayable,
     setPayableItems,
-    setAmount,
     payableHeader,
     openHistoryDialog,
     previewPaymentVoucher,
