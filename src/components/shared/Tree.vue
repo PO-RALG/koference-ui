@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div @click="data.expanded = !data.expanded" :style="{ 'margin-left': `${depth * 20}px` }" class="node">
+    <div
+      @click="data.expanded = !data.expanded"
+      :style="{ 'margin-left': `${depth * 20}px` }"
+      class="node"
+    >
       <span v-if="hasChildren" class="type">
         {{ expanded ? "&#9660;" : "&#9658;" }}
       </span>
@@ -12,7 +16,8 @@
       v-for="child in node.children"
       :key="child.id"
       :node="child"
-      :depth="depth + 1" />
+      :depth="depth + 1"
+    />
   </div>
 </template>
 
