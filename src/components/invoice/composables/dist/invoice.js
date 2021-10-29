@@ -370,6 +370,15 @@ exports.useInvoice = function () {
             amount: ""
         });
     };
+    var checkDublicate = function (value, index) {
+        var obj = data.invoice_items.filter(function (o) { return o.invoice_item_definition_id === value; });
+        if (obj.length < 2) {
+            // addRow();
+        }
+        else {
+            data.invoice_items.splice(index, 10000);
+        }
+    };
     var removeRow = function (index) {
         data.invoice_items.splice(index, 1);
     };
@@ -413,6 +422,7 @@ exports.useInvoice = function () {
         HEADERS_INVOICE_DETAILS: HEADERS_INVOICE_DETAILS,
         newInvoiceItems: newInvoiceItems,
         newInvoiceItem: newInvoiceItem,
-        sumDebts: sumDebts
+        sumDebts: sumDebts,
+        checkDublicate: checkDublicate
     };
 };

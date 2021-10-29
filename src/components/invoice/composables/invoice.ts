@@ -418,6 +418,17 @@ export const useInvoice = (): any => {
     });
   };
 
+  const checkDublicate = (value, index) => {
+    const obj = data.invoice_items.filter(
+      (o) => o.invoice_item_definition_id === value
+    );
+    if (obj.length < 2) {
+      // addRow();
+    } else {
+      data.invoice_items.splice(index, 10000);
+    }
+  };
+
   const removeRow = (index: number) => {
     data.invoice_items.splice(index, 1);
   };
@@ -465,5 +476,6 @@ export const useInvoice = (): any => {
     newInvoiceItems,
     newInvoiceItem,
     sumDebts,
+    checkDublicate,
   };
 };
