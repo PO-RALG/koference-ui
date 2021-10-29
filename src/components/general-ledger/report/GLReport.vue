@@ -26,7 +26,7 @@
             <tr class="top-tr">
               <th class="text-left">DATE</th>
               <th class="text-left">INPUT</th>
-              <th class="text-left">ACCOUNT #</th>
+              <th class="text-left">REFERENCE #</th>
               <th class="text-left">DESCRIPTION</th>
               <th class="text-left">DR</th>
               <th class="text-left">CR</th>
@@ -39,8 +39,8 @@
             <tr v-for="(trx, idx) in entry.transactions" :key="idx">
               <td>{{ trx.apply_date | format("MM/DD/YYYY") }}</td>
               <td>{{ trx.description }}</td>
-              <td>{{ trx.account }}</td>
-              <td>{{ entry.name }}</td>
+              <td>{{ trx.reference }}</td>
+              <td>{{ getName(trx) }}</td>
               <td>{{ trx.dr | toCurrency }}</td>
               <td>{{ trx.cr | toCurrency }}</td>
             </tr>
@@ -64,6 +64,7 @@
           </tbody>
         </template>
       </v-simple-table>
+      <!--<pre>{{ entries }}</pre>-->
     </v-card>
 
     <Modal :modal="data.modal" :width="600">
@@ -178,6 +179,7 @@ export default defineComponent({
       filterReport,
       gfsCodes,
       entries,
+      getName,
     } = useGLReport();
 
     return {
@@ -193,6 +195,7 @@ export default defineComponent({
       filterReport,
       gfsCodes,
       entries,
+      getName,
     };
   },
 });

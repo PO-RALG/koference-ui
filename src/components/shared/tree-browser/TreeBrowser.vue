@@ -1,14 +1,15 @@
 <template>
-  <ul class="tree">
+  <ul class="tree" v-if="node">
     <li :style="{ 'margin-left': `${depth * 5}px` }">
-      <span v-if="hasChildren" @click="data.expanded = !data.expanded" class="type">
+      <span v-if="hasChildren" @click="nodeClicked()" class="type">
         <v-icon small>
           {{ data.expanded ? "mdi-chevron-down-box" : "mdi-chevron-right-box" }}
         </v-icon>
       </span>
-      <span @click="nodeClicked($event, node)" class="name" :value="node">
+      <span @click="nodeClicked()" :class="{ active: isActiveItem }" class="name" :value="node">
         {{ node.name }}
       </span>
+
       <TreeBrowser
         v-show="data.expanded"
         v-for="child in node.children"
@@ -16,6 +17,7 @@
         :node="child"
         :value="child"
         :depth="depth + 1"
+        :current-item="currentItem"
         @onClick="(child) => $emit('onClick', child)"
       />
     </li>
@@ -23,14 +25,14 @@
 </template>
 
 <script lang="ts">
-import { reactive, computed, PropType, defineComponent, ref } from "@vue/composition-api";
+import { defineComponent, PropType } from "@vue/composition-api";
+import { useTree } from "./composables/use-tree";
 
 import { TreeNode } from "./types";
 
 export default defineComponent({
   props: {
     node: {
-      type: Object as PropType<TreeNode>,
       required: true,
       default: () => [],
     },
@@ -42,42 +44,30 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    captionField: {
+      type: String,
+      required: false,
+      default: "name",
+    },
+    childrenField: {
+      type: String,
+      required: false,
+      default: "children",
+    },
+    currentItem: {
+      type: Object as PropType<TreeNode>,
+    },
   },
+
   setup(props, context) {
-    const activeElement = ref(null);
-    const activeElements = ref(null);
-    let data = reactive({
-      expanded: false,
-      active: "",
-    });
-
-    const setNodeClicked = (node: TreeNode) => {
-      context.emit("onClick", node);
-      context.emit("input", node);
-    };
-
-    const nodeClicked = (event: any, node: TreeNode) => {
-      event.target.classList.toggle("active");
-      setNodeClicked(node);
-    };
-
-    const hasChildren = computed(() => {
-      return props.node && "children" in props.node ? true : false;
-    });
-
-    const level = computed(() => {
-      return `${props.depth} + 1`;
-    });
-
+    const { data, nodeClicked, hasChildren, isActiveItem, level, hasAttachment } = useTree(props, context);
     return {
       data,
-
       nodeClicked,
-      activeElement,
-      activeElements,
-
       hasChildren,
+      isActiveItem,
       level,
+      hasAttachment,
     };
   },
 });
