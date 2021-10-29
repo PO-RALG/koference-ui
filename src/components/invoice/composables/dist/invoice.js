@@ -201,7 +201,7 @@ exports.useInvoice = function () {
         gfs_service_1.allgfscodes({ per_page: 2000 }).then(function (response) {
             data.bankName = response.data.data.data;
         });
-        customer_service_1.customers({ per_page: 2000 }).then(function (response) {
+        customer_service_1.customers({ per_page: 2000, active: true }).then(function (response) {
             data.customers = response.data.data.data;
         });
         invoice_item_definition_1.itemdefinitions({ per_page: 2000 }).then(function (response) {
@@ -252,7 +252,6 @@ exports.useInvoice = function () {
         data.invoicereceip.items = [];
     };
     var openInvoiceReceipt = function (invoiceData) {
-        console.log("invoicedata", invoiceData);
         data.invoicedetails = false;
         data.invoicereceipt = true;
         data.customer = [invoiceData]; //mapping customer in autocomplete field
@@ -335,6 +334,8 @@ exports.useInvoice = function () {
         });
     };
     var createReceipt = function () {
+        var invoiceItems = data.invoicereceip.items.filter(function (item) { return item.cleared !== true; });
+        data.invoicereceip.items = invoiceItems;
         invoice_1.receiptcreate(data.invoicereceip).then(function () {
             data.invoicereceipt = false;
             reloadData();
