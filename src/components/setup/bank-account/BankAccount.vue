@@ -76,7 +76,7 @@
     </v-card>
     <Modal :modal="data.modal" :width="620">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Bank Accounts`" />
+        <ModalHeader :title="`${data.modalTitle} Bank Account`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
