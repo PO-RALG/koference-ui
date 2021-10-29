@@ -51,7 +51,7 @@
               class="text-link"
               exact
               light
-              @click="previewPaymentVoucher(item.voucher.id)"
+              @click="previewPayment(item.id)"
             >
               {{ item.voucher.reference_no }}
             </v-list-item>
@@ -235,7 +235,7 @@
       </template>
     </Modal>
 
-    <Modal :fullScreen="true" :modal="data.paymentVoucherModal" :width="1260">
+    <Modal :fullScreen="true" :modal="data.paymentModal" :width="1260">
       <template v-slot:header>
         <ModalHeader :title="`Payment Voucher`" />
       </template>
@@ -247,8 +247,9 @@
                 <img :src="data.coat" class="login-logo pt-5" /><br />  
                 The United Republic of Tanzania <br />
                 President's Office Regional Administration and Local Government <br />
-                {{data.pvDetails.council?data.pvDetails.council.name:""}} <br />
-                {{data.pvDetails.facility.name }} {{data.pvDetails.facility.facility_type.name }}<br />
+                {{ data.pvDetails.council?data.pvDetails.council.name: "" }} <br />
+                {{ data.pvDetails.facility?data.pvDetails.facility.name: "" }} 
+                {{ data.pvDetails.facility?data.pvDetails.facility.name:"" }}<br />
               </div>
             </v-col>
             <v-col class="d-flex justify-center">
@@ -260,10 +261,14 @@
               <table width="100%">
                 <tr>
                   <td class="pb-5">
-                    <span>STATION NO: ............</span>
+                    <span>STATION NO: ............</span><br />
                   </td>
                   <td class="text-right pb-7">
                     <span>PV NO: </span>
+                    <span class="font-weight-bold">
+                      {{ data.pvDetails.voucher_number }}
+                    </span><br />
+                    <span>Payment NO: </span>
                     <span class="font-weight-bold">
                       {{ data.pvDetails.reference_no }}
                     </span>
@@ -272,23 +277,25 @@
                 <tr>
                   <td class="text-left">
                     <span class="font-weight-bold">Payee's name: </span>
-                    {{ data.pvDetails.supplier.name }}<br />
+                    {{ data.supplier.name }}<br />
                     <span class="font-weight-bold">Mobile #: </span>
-                    {{ data.pvDetails.supplier.phone }}<br />
+                    {{ data.supplier.phone }}<br />
                     <span class="font-weight-bold">Address: </span>
-                    {{ data.pvDetails.supplier.address }}<br />
+                    {{ data.supplier.address }}<br />
                     <span class="font-weight-bold">TIN: </span>
-                    {{ data.pvDetails.supplier.tin }}<br />
+                    {{ data.supplier.tin }}<br /><br />
                   </td>
                   <td class="text-right">
                     <span class="font-weight-bold">Apply date: </span>
-                    {{ data.pvDetails.date | format("DD/MM/YYYY") }}<br />
+                    {{ data.pvDetails.payment_date | format("DD/MM/YYYY") }}<br />
+                    <span class="font-weight-bold">Reference No: </span>
+                    {{ data.pvDetails.cheque }}<br />
                     <span class="font-weight-bold">SBC: </span>
-                    {{ data.pvDetails.reference_no }}<br />
+                    {{ ` - ` }}<br />
                     <span class="font-weight-bold">Terms of: </span>
-                    {{ data.pvDetails.reference_no }}<br />
+                    {{ ` NA `}}<br />
                     <span class="font-weight-bold">Payment: </span>
-                    {{ data.pvDetails.reference_no }}<br />
+                    {{ ` MANUAL ` }}<br />
                   </td>
                 </tr>
                 <tr>
@@ -298,7 +305,8 @@
                     </span>
                     {{ data.pvDetails.description }}<br />
                     <span class="font-weight-bold">To be paid from: </span>
-                    {{ data.pvDetails.reference_no }}<br />
+                    {{ data.pvDetails.bank_account?data.pvDetails.bank_account.bank+", "
+                    +data.pvDetails.bank_account.branch+", "+data.pvDetails.bank_account.number :"" }}<br />
                   </td>
                 </tr>
               </table>
@@ -311,11 +319,11 @@
                   >
                 <template v-slot:body>
                   <tbody>
-                    <tr v-for="(payable, i) in data.pvDetails.payables" :key="i">
-                      <td>{{payable.gl_account}}</td>
-                      <td>{{payable.funding_source.description}}</td>
-                      <td>{{payable.description}}</td>
-                      <td class="text-right">{{payable.amount | toCurrency()}}</td>
+                    <tr v-for="(payable, i) in data.pvDetails.payment_items" :key="i">
+                      <td>{{ payable.gl_account }}</td>
+                      <td>{{ payable.funding_source?payable.funding_source.description: "" }}</td>
+                      <td>{{ payable.description }}</td>
+                      <td class="text-right">{{ payable.amount | toCurrency() }}</td>
                     </tr>
                     <tr class="grey lighten-2">
                       <th colspan="3" class="text-right">NET AMOUNT</th>
@@ -390,7 +398,7 @@
           <v-btn
             color="green darken-1"
             text
-            @click="printPaymentVoucher(data.pvDetails.id)"
+            @click="printPayment(data.pvDetails.id)"
           >
             Print
           </v-btn>
@@ -421,9 +429,9 @@ export default defineComponent({
       maxRules,
       payableHeader,
       openHistoryDialog,
-      previewPaymentVoucher,
+      previewPayment,
       cancelPreviewDialog,
-      printPaymentVoucher,
+      printPayment,
       payablePrintHeader,
       convert,
     } = usePayment();
@@ -442,9 +450,9 @@ export default defineComponent({
       maxRules,
       payableHeader,
       openHistoryDialog,
-      previewPaymentVoucher,
+      previewPayment,
       cancelPreviewDialog,
-      printPaymentVoucher,
+      printPayment,
       payablePrintHeader,
       convert,
     };

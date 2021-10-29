@@ -334,6 +334,15 @@ export const usePaymentVoucher = (): any => {
     printPdf(id);
   };
 
+  const fullPaid = (item) => {
+    const bal = Number(item.amount) - Number(item.amount_paid);
+    if (bal === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   return {
     data,
     openDialog,
@@ -356,5 +365,6 @@ export const usePaymentVoucher = (): any => {
     cancelPreviewDialog,
     previewPaymentVoucher,
     printPaymentVoucher,
+    fullPaid,
   };
 };

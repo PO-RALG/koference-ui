@@ -58,6 +58,9 @@
         <template v-slot:[`item.amount_paid`]="{ item }">
           {{ item.amount_paid | toCurrency() }}
         </template>
+        <template v-slot:[`item.full_paid`]="{ item }">
+          {{ fullPaid(item) }}
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -449,6 +452,7 @@ export default defineComponent({
       previewPaymentVoucher,
       printPaymentVoucher,
       cancelPreviewDialog,
+      fullPaid,
     } = usePaymentVoucher();
 
     return {
@@ -475,6 +479,7 @@ export default defineComponent({
       previewPaymentVoucher,
       printPaymentVoucher,
       cancelPreviewDialog,
+      fullPaid,
     };
   },
 });

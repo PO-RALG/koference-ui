@@ -1,9 +1,9 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, destroy } from "../services/payment.service";
-import { Payment } from "../types/Payment";
-import { find as findPaymentVoucher, printPdf as printPvPdf } from "@/components/payable/payment-voucher/services/payment-voucher.service";
+import { get, create, destroy, find, printPdf } from "../services/payment.service";
+import { Payment, PaymentPreview } from "../types/Payment";
+import { find as findPaymentVoucher } from "@/components/payable/payment-voucher/services/payment-voucher.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
 import { get as getPaymentVouchers } from "@/components/payable/payment-voucher/services/payment-voucher.service";
 import { FundSources } from "@/components/coa/funding-source/types/index";
@@ -12,6 +12,7 @@ export const usePayment = (): any => {
   const dataItems: Array<Payment> = [];
   const paymentData = {} as Payment;
   const fundSourceItem = {} as FundSources;
+  const paymentPreviewData = {} as PaymentPreview;
 
   const data = reactive({
     title: "Payments",
@@ -74,18 +75,10 @@ export const usePayment = (): any => {
     bankAccounts: [],
     paymentVouchers: [],
     payableItems: [],
-    payables: [
-      {
-        payable_id: "",
-        required_amount: 0,
-        amount: 0,
-        paid_amount: 0,
-        balance: 0,
-      },
-    ],
     coat: "/coat_of_arms.svg.png",
-    paymentVoucherModal: false,
+    paymentModal: false,
     pvDetails: { printDate: "" },
+    supplier: [],
   });
 
   onMounted(() => {
@@ -229,20 +222,21 @@ export const usePayment = (): any => {
     },
   ];
 
-  const previewPaymentVoucher = (id: number) => {
-    findPaymentVoucher(id).then((response: AxiosResponse) => {
+  const previewPayment = (id: number) => {
+    find(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
       data.pvDetails.printDate = Date();
-      data.paymentVoucherModal = !data.paymentVoucherModal;
+      data.supplier = response.data.data.voucher.supplier;
+      data.paymentModal = !data.paymentModal;
     });
   };
 
   const cancelPreviewDialog = () => {
-    data.paymentVoucherModal = !data.paymentVoucherModal;
+    data.paymentModal = !data.paymentModal;
   };
 
-  const printPaymentVoucher = (id: number) => {
-    printPvPdf(id);
+  const printPayment = (id: number) => {
+    printPdf(id);
   };
 
   const payablePrintHeader = [
@@ -368,9 +362,9 @@ export const usePayment = (): any => {
     setPayableItems,
     payableHeader,
     openHistoryDialog,
-    previewPaymentVoucher,
+    previewPayment,
     cancelPreviewDialog,
-    printPaymentVoucher,
+    printPayment,
     payablePrintHeader,
     convert,
   };
