@@ -171,8 +171,8 @@
                           <td>
                             {{ payable.description}}<br />
                             <span class="teal--text">
-                              {{ payable.funding_source.description}}
-                              ({{payable.funding_source.code}})
+                              {{ payable.funding_source.description }}
+                              ({{ payable.funding_source.code }})
                             </span>
                           </td>
                           <td>
@@ -249,7 +249,7 @@
                 President's Office Regional Administration and Local Government <br />
                 {{ data.pvDetails.council?data.pvDetails.council.name: "" }} <br />
                 {{ data.pvDetails.facility?data.pvDetails.facility.name: "" }} 
-                {{ data.pvDetails.facility?data.pvDetails.facility.name:"" }}<br />
+                {{ data.pvDetails.facility?data.pvDetails.facility.facility_type.name:"" }}<br />
               </div>
             </v-col>
             <v-col class="d-flex justify-center">
@@ -261,41 +261,76 @@
               <table width="100%">
                 <tr>
                   <td class="pb-5">
-                    <span>STATION NO: ............</span><br />
+                    <span>STATION #: ............</span><br />
                   </td>
                   <td class="text-right pb-7">
-                    <span>PV NO: </span>
-                    <span class="font-weight-bold">
-                      {{ data.pvDetails.voucher_number }}
-                    </span><br />
-                    <span>Payment NO: </span>
-                    <span class="font-weight-bold">
-                      {{ data.pvDetails.reference_no }}
-                    </span>
+                    <table class="float-right">
+                      <tr>
+                        <td>
+                          <span>PV #: </span><br />
+                          <span>Payment #: </span>
+                        </td>
+                        <td>
+                          <span class="font-weight-bold">
+                            {{ data.pvDetails.voucher_number }}
+                          </span><br />
+                          <span class="font-weight-bold">
+                            {{ data.pvDetails.reference_no }}
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
                 <tr>
                   <td class="text-left">
-                    <span class="font-weight-bold">Payee's name: </span>
-                    {{ data.supplier.name }}<br />
-                    <span class="font-weight-bold">Mobile #: </span>
-                    {{ data.supplier.phone }}<br />
-                    <span class="font-weight-bold">Address: </span>
-                    {{ data.supplier.address }}<br />
-                    <span class="font-weight-bold">TIN: </span>
-                    {{ data.supplier.tin }}<br /><br />
+                    <table class="table">
+                      <tr>
+                        <td>
+                          <span class="font-weight-bold">Payee's name: </span>
+                          <br />
+                          <span class="font-weight-bold">Mobile #: </span>
+                          <br />
+                          <span class="font-weight-bold">Address: </span>
+                          <br />
+                          <span class="font-weight-bold">TIN: </span>
+                          <br /><br />
+                        </td>
+                        <td>
+                          {{ data.supplier.name }}<br />
+                          {{ data.supplier.phone }}<br />
+                          {{ data.supplier.address }}<br />
+                          {{ data.supplier.tin }}<br /><br />
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                   <td class="text-right">
-                    <span class="font-weight-bold">Apply date: </span>
-                    {{ data.pvDetails.payment_date | format("DD/MM/YYYY") }}<br />
-                    <span class="font-weight-bold">Reference No: </span>
-                    {{ data.pvDetails.cheque }}<br />
-                    <span class="font-weight-bold">SBC: </span>
-                    {{ ` - ` }}<br />
-                    <span class="font-weight-bold">Terms of: </span>
-                    {{ ` NA `}}<br />
-                    <span class="font-weight-bold">Payment: </span>
-                    {{ ` MANUAL ` }}<br />
+                    <table class="table float-right">
+                      <tr>
+                        <td>
+                          <span class="font-weight-bold">Apply date: </span>
+                          <br />
+                          <span class="font-weight-bold">Reference No: </span>
+                          <br />
+                          <span class="font-weight-bold">SBC: </span>
+                          <br />
+                          <span class="font-weight-bold">Terms of: </span>
+                          <br />
+                          <span class="font-weight-bold">Payment: </span>
+                          <br />
+                        </td>
+                        <td>
+                          {{
+                            data.pvDetails.payment_date | format("DD/MM/YYYY")
+                          }}<br />
+                          {{ data.pvDetails.cheque }}<br />
+                          {{ ` - ` }}<br />
+                          {{ ` NA ` }}<br />
+                          {{ ` MANUAL ` }}<br />
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
                 <tr>
@@ -319,15 +354,28 @@
                   >
                 <template v-slot:body>
                   <tbody>
-                    <tr v-for="(payable, i) in data.pvDetails.payment_items" :key="i">
+                    <tr
+                      v-for="(payable, i) in data.pvDetails.payment_items"
+                      :key="i"
+                    >
                       <td>{{ payable.gl_account }}</td>
-                      <td>{{ payable.funding_source?payable.funding_source.description: "" }}</td>
+                      <td>
+                        {{
+                          payable.funding_source
+                            ? payable.funding_source.description
+                            : ""
+                        }}
+                      </td>
                       <td>{{ payable.description }}</td>
-                      <td class="text-right">{{ payable.amount | toCurrency() }}</td>
+                      <td class="text-right">
+                        {{ payable.amount | toCurrency() }}
+                      </td>
                     </tr>
                     <tr class="grey lighten-2">
                       <th colspan="3" class="text-right">NET AMOUNT</th>
-                      <th class="text-right">{{data.pvDetails.amount | toCurrency()}}</th>
+                      <th class="text-right">
+                        {{ data.pvDetails.amount | toCurrency() }}
+                      </th>
                     </tr>
                   </tbody>
                 </template>
@@ -342,10 +390,14 @@
                   <tr>
                     <td colspan="4">
                       Certify that the above sum of shillings (in words)
-                       <span class="font-weight-bold">
-                         {{convert(data.pvDetails.amount * 1)}} only
-                        </span> 
-                       is correctly payable to the above-named person and that the rates of payment/price(s) is/are in accordance with Regulations/the Terms of the Contract and the funds are available under the Sub-Vote/Cost Centre and Item quoted above to meet this payment.
+                      <span class="font-weight-bold">
+                        {{ convert(data.pvDetails.amount * 1) }} only
+                      </span> 
+                        is correctly payable to the above-named person and that
+                        the rates of payment/price(s) is/are in accordance without
+                        Regulations/the Terms of the Contract and the funds are
+                        available under the Sub-Vote/Cost Centre and Item quoted
+                        above to meet this payment.
                     </td>
                   </tr>
                 </tbody>
@@ -360,9 +412,9 @@
                     <td class="text-left">Approved By:</td>
                   </tr>
                   <tr>
-                    <td class="text-left pt-10"><hr width="80%"></td>
-                    <td class="text-left pt-10"><hr width="80%"></td>
-                    <td class="text-left pt-10"><hr width="80%"></td>
+                    <td class="text-left pt-10"><hr width="80%" /></td>
+                    <td class="text-left pt-10"><hr width="80%" /></td>
+                    <td class="text-left pt-10"><hr width="80%" /></td>
                   </tr>
                   <tr>
                     <td class="text-left">Signature of Originating Officer</td>
@@ -370,9 +422,15 @@
                     <td class="text-left">Signature of Authorizing Officer</td>
                   </tr>
                   <tr>
-                    <td class="text-left pt-10">Date: ..............................</td>
-                    <td class="text-left pt-10">Date: ..............................</td>
-                    <td class="text-left pt-10">Date: ..............................</td>
+                    <td class="text-left pt-10">
+                      Date: ..............................
+                    </td>
+                    <td class="text-left pt-10">
+                      Date: ..............................
+                    </td>
+                    <td class="text-left pt-10">
+                      Date: ..............................
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -381,8 +439,15 @@
               <table width="100%">
                 <tbody>
                   <tr>
-                    <th class="text-left">Facility Financial Accounting and Reporting System</th>
-                    <th class="text-right">Printed on: {{data.pvDetails.printDate | format("DD/MM/YYYY H:mm:ss")}}</th>
+                    <th class="text-left">
+                      Facility Financial Accounting and Reporting System
+                    </th>
+                    <th class="text-right">
+                      Printed on:
+                      {{
+                        data.pvDetails.printDate | format("DD/MM/YYYY H:mm:ss")
+                      }}
+                    </th>
                   </tr>
                 </tbody>
               </table>
@@ -491,7 +556,7 @@ export default defineComponent({
   height: 170px;
   width: 130px;
 }
-.text-link{
+.text-link {
   color: #1976d2 !important;
 }
 </style>

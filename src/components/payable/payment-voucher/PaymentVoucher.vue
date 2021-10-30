@@ -336,24 +336,40 @@
                 <tbody>
                   <tr>
                     <td class="text-left">
-                      <span class="font-weight-bold">Payee's name: </span>
-                      {{ data.pvDetails.supplier?data.pvDetails.supplier.name:"" }}<br />
-                      <span class="font-weight-bold">Mobile #: </span>
-                      {{ data.pvDetails.supplier?data.pvDetails.supplier.phone:"" }}<br />
-                      <span class="font-weight-bold">Address: </span>
-                      {{ data.pvDetails.supplier?data.pvDetails.supplier.address:"" }}<br />
-                      <span class="font-weight-bold">TIN: </span>
-                      {{ data.pvDetails.supplier?data.pvDetails.supplier.tin:"" }}<br />
+                      <table>
+                        <tr>
+                          <td>
+                            <span class="font-weight-bold">Payee's name: </span><br />
+                            <span class="font-weight-bold">Mobile #: </span><br />
+                            <span class="font-weight-bold">Address: </span><br />
+                            <span class="font-weight-bold">TIN: </span><br />
+                          </td>
+                          <td>
+                            {{ data.pvDetails.supplier?data.pvDetails.supplier.name:"" }}<br />
+                            {{ data.pvDetails.supplier?data.pvDetails.supplier.phone:"" }}<br />
+                            {{ data.pvDetails.supplier?data.pvDetails.supplier.address:"" }}<br />
+                            {{ data.pvDetails.supplier?data.pvDetails.supplier.tin:"" }}<br />
+                          </td>
+                        </tr>
+                      </table>
                     </td>
                     <td class="text-right">
-                      <span>REF NO: </span>
-                      <span class="font-weight-bold">
-                        {{ data.pvDetails.reference_no }}
-                      </span><br />
-                      <span>Date: </span>
-                      <span class="font-weight-bold">
-                        {{ data.pvDetails.date | format("DD/MM/YYYY") }}
-                      </span><br /><br /><br />
+                      <table class="float-right">
+                        <tr>
+                          <td>
+                            <span>REF #: </span><br />
+                            <span>Date: </span><br /><br /><br />
+                          </td>
+                          <td>
+                            <span class="font-weight-bold">
+                              {{ data.pvDetails.reference_no }}
+                            </span><br />
+                            <span class="font-weight-bold">
+                              {{ data.pvDetails.date | format("DD/MM/YYYY") }}
+                            </span><br /><br /><br />
+                          </td>
+                        </tr>
+                      </table>
                     </td>
                   </tr>
                   <tr>

@@ -341,7 +341,7 @@ export const usePaymentVoucher = (): any => {
     } else {
       return false;
     }
-  }
+  };
 
   return {
     data,
