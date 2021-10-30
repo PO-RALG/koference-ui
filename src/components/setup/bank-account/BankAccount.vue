@@ -24,10 +24,10 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Code"
+                label="Filter by Bank Name"
                 @change="searchCategory($event)"
-                :items="data.itemsToFilter"
-                :item-text="'code'"
+                :items="bankName"
+                :item-text="'fullName'"
                 :item-divider="true"
                 return-object
                 required
@@ -76,7 +76,7 @@
     </v-card>
     <Modal :modal="data.modal" :width="620">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Bank Accounts`" />
+        <ModalHeader :title="`${data.modalTitle} Bank Account`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -196,6 +196,7 @@ export default defineComponent({
       openFilterDialog,
       cancelFilterDialog,
       resumeDialog,
+      bankName,
     } = useBank();
 
     return {
@@ -214,6 +215,7 @@ export default defineComponent({
       openFilterDialog,
       cancelFilterDialog,
       resumeDialog,
+      bankName,
     };
   },
 });

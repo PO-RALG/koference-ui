@@ -2,7 +2,14 @@ import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
 import { Customer } from "../types/Customer";
-import { get, create, update, destroy, search, activation } from "../services/customer.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+  activation,
+} from "../services/customer.service";
 
 export const useCustomer = (): any => {
   const dataItems: Array<Customer> = [];
@@ -32,7 +39,8 @@ export const useCustomer = (): any => {
 
   onMounted(() => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
@@ -65,7 +73,8 @@ export const useCustomer = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });

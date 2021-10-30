@@ -50,7 +50,11 @@ exports.get = get;
 var customers = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/customers", { params: payload })];
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/customers", {
+                    params: {
+                        search: JSON.stringify(payload)
+                    }
+                })];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });

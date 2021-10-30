@@ -142,6 +142,7 @@
                             dense
                             outlined
                             hide-details
+                            @change="checkDublicate($event, index)"
                           ></v-select>
                         </td>
 
@@ -640,6 +641,7 @@ export default defineComponent({
       newInvoiceItems,
       newInvoiceItem,
       sumDebts,
+      checkDublicate,
     } = useInvoice();
     return {
       data,
@@ -668,6 +670,7 @@ export default defineComponent({
       newInvoiceItems,
       newInvoiceItem,
       sumDebts,
+      checkDublicate,
     };
   },
 });

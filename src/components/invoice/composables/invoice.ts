@@ -208,9 +208,11 @@ export const useInvoice = (): any => {
       data.bankName = response.data.data.data;
     });
 
-    customers({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.customers = response.data.data.data;
-    });
+    customers({ per_page: 2000, active: true }).then(
+      (response: AxiosResponse) => {
+        data.customers = response.data.data.data;
+      }
+    );
 
     itemdefinitions({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.itemdefinitions = response.data.data.data;
@@ -374,7 +376,9 @@ export const useInvoice = (): any => {
   };
 
   const createReceipt = () => {
-    const invoiceItems = data.invoicereceip.items.filter((item) => item.cleared !== true);
+    const invoiceItems = data.invoicereceip.items.filter(
+      (item) => item.cleared !== true
+    );
     data.invoicereceip.items = invoiceItems;
     receiptcreate(data.invoicereceip).then(() => {
       data.invoicereceipt = false;
@@ -412,6 +416,17 @@ export const useInvoice = (): any => {
       invoice_item_definition_id: "",
       amount: "",
     });
+  };
+
+  const checkDublicate = (value, index) => {
+    const obj = data.invoice_items.filter(
+      (o) => o.invoice_item_definition_id === value
+    );
+    if (obj.length < 2) {
+      // addRow();
+    } else {
+      data.invoice_items.splice(index, 10000);
+    }
   };
 
   const removeRow = (index: number) => {
@@ -461,5 +476,6 @@ export const useInvoice = (): any => {
     newInvoiceItems,
     newInvoiceItem,
     sumDebts,
+    checkDublicate,
   };
 };

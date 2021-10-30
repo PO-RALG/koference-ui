@@ -19,7 +19,7 @@
             :input-value="item.active"
             @click.native.stop
             v-model="item.active"
-            @change="openActivationDialog($event, item)"
+            @change="openActivationDialog(item)"
             :disabled="cant('activateDeactivate', 'User') || item.id === data.currentUser.id"
             value
           >
@@ -111,6 +111,7 @@
                     v-if="data.node"
                     @onClick="loadLocationChildren"
                     v-model="data.formData.location"
+                    :current-item="data.currentItem"
                     :node="data.node"
                   />
                 </v-col>

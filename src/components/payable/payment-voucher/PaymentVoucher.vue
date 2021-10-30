@@ -85,7 +85,6 @@
         </template>
       </v-data-table>
     </v-card>
-
     <Modal :modal="data.modal" :width="1260">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Payment Voucher`" />
@@ -133,8 +132,8 @@
                 </v-col>
               </v-row>
               <template>
-                <v-card elevation="2" class="mb-5 p-3">
-                  <v-simple-table color="blue lighten-4">
+                <v-card class="mb-5 p-3">
+                  <v-simple-table>
                     <template v-slot:default>
                       <thead>
                         <tr>
