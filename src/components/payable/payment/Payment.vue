@@ -391,7 +391,7 @@
                     <td colspan="4">
                       Certify that the above sum of shillings (in words)
                       <span class="font-weight-bold">
-                        {{ convert(data.pvDetails.amount * 1) }} only
+                        {{ data.pvDetails.amount_in_words }} only
                       </span> 
                         is correctly payable to the above-named person and that
                         the rates of payment/price(s) is/are in accordance without
@@ -498,7 +498,6 @@ export default defineComponent({
       cancelPreviewDialog,
       printPayment,
       payablePrintHeader,
-      convert,
     } = usePayment();
 
     return {
@@ -519,7 +518,6 @@ export default defineComponent({
       cancelPreviewDialog,
       printPayment,
       payablePrintHeader,
-      convert,
     };
   },
 });

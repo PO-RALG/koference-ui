@@ -1,8 +1,14 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, destroy, find, printPdf } from "../services/payment.service";
-import { Payment, PaymentPreview } from "../types/Payment";
+import {
+  get,
+  create,
+  destroy,
+  find,
+  printPdf,
+} from "../services/payment.service";
+import { Payment } from "../types/Payment";
 import { find as findPaymentVoucher } from "@/components/payable/payment-voucher/services/payment-voucher.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
 import { get as getPaymentVouchers } from "@/components/payable/payment-voucher/services/payment-voucher.service";
@@ -12,7 +18,6 @@ export const usePayment = (): any => {
   const dataItems: Array<Payment> = [];
   const paymentData = {} as Payment;
   const fundSourceItem = {} as FundSources;
-  const paymentPreviewData = {} as PaymentPreview;
 
   const data = reactive({
     title: "Payments",
@@ -191,7 +196,6 @@ export const usePayment = (): any => {
       }
       return data.payableItems;
     });
-    
   };
 
   const payableHeader = [
@@ -267,88 +271,6 @@ export const usePayment = (): any => {
     },
   ];
 
-  const ones = [
-    "",
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "six",
-    "seven",
-    "eight",
-    "nine",
-  ];
-  const tens = [
-    "",
-    "",
-    "twenty",
-    "thirty",
-    "forty",
-    "fifty",
-    "sixty",
-    "seventy",
-    "eighty",
-    "ninety",
-  ];
-  const teens = [
-    "ten",
-    "eleven",
-    "twelve",
-    "thirteen",
-    "fourteen",
-    "fifteen",
-    "sixteen",
-    "seventeen",
-    "eighteen",
-    "nineteen",
-  ];
-
-  const convertMillions = (num: number) => {
-    if (num >= 1000000) {
-      return (
-        convertMillions(Math.floor(num / 1000000)) +
-        " million " +
-        convertThousands(num % 1000000)
-      );
-    } else {
-      return convertThousands(num);
-    }
-  };
-
-  const convertThousands = (num: number) => {
-    if (num >= 1000) {
-      return (
-        convertHundreds(Math.floor(num / 1000)) +
-        " thousand " +
-        convertHundreds(num % 1000)
-      );
-    } else {
-      return convertHundreds(num);
-    }
-  };
-
-  const convertHundreds = (num: number) => {
-    if (num > 99) {
-      return ones[Math.floor(num / 100)] + " hundred " + convertTens(num % 100);
-    } else {
-      return convertTens(num);
-    }
-  };
-
-  const convertTens = (num: number) => {
-    if (num < 10) return ones[num];
-    else if (num >= 10 && num < 20) return teens[num - 10];
-    else {
-      return tens[Math.floor(num / 10)] + " " + ones[num % 10];
-    }
-  };
-
-  const convert = (num: number) => {
-    if (num == 0) return "zero";
-    else return convertMillions(num);
-  };
-
   return {
     data,
     openDialog,
@@ -366,6 +288,5 @@ export const usePayment = (): any => {
     cancelPreviewDialog,
     printPayment,
     payablePrintHeader,
-    convert,
   };
 };
