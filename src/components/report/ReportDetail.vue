@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+  <v-container v-if="data.report.template_uri">
     <h2>
-      Report Details for <span class="">{{ data.node.name }}</span>
+      Report Details for <span class="">{{ location.name }}</span>
     </h2>
     <br />
     <v-card elevation="1">
@@ -41,6 +41,7 @@
             </v-row>
           </v-container>
         </v-form>
+        <pre>{{ location }}</pre>
       </v-card-text>
       <v-card-actions class="mr-5 mt-n10">
         <v-spacer></v-spacer>
@@ -55,11 +56,12 @@ import { defineComponent } from "@vue/composition-api";
 import { useReport } from "./composables/use-report";
 export default defineComponent({
   setup() {
-    const { data, printReport } = useReport();
+    const { data, printReport, location } = useReport();
 
     return {
       data,
       printReport,
+      location,
     };
   },
 });

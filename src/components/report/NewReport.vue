@@ -53,7 +53,7 @@
           </v-icon>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate :params="data.params" :rows="data.rows" @onPageChange="loadReports" />
         </template>
       </v-data-table>
     </v-card>
@@ -68,12 +68,7 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="4" sm="6">
-                  <v-select
-                    v-model="data.formData.order"
-                    :items="data.reportOrders"
-                    label="Report Order"
-                    required
-                  >
+                  <v-select v-model="data.formData.order" :items="data.reportOrders" label="Report Order" required>
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="8" sm="6">
@@ -104,7 +99,7 @@
                     label="Report Parent"
                     required
                   >
-                    <template v-slot:selection="{ item }">{{item.name}}</template>
+                    <template v-slot:selection="{ item }">{{ item.name }}</template>
                     <template v-slot:item="{ item }">{{ item.name }}</template>
                   </v-select>
                 </v-col>
@@ -148,25 +143,19 @@ import { useReport } from "./composables/use-report";
 export default defineComponent({
   name: "NewReport",
   setup() {
-    const {
-      data,
-      openDialog,
-      openConfirmDialog,
-      getData,
-      cancelDialog,
-      save,
-      cancelConfirmDialog,
-      remove,
-    } = useReport("NEW");
+    const { data, openDialog, openConfirmDialog, fetchReports, cancelDialog, save, cancelConfirmDialog, remove,
+      loadReports } =
+      useReport("NEW");
 
     return {
       data,
       openDialog,
       openConfirmDialog,
-      getData,
+      fetchReports,
       cancelDialog,
       save,
       cancelConfirmDialog,
+      loadReports,
       remove,
     };
   },
