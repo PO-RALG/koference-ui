@@ -97,10 +97,10 @@
                     <br />
                     {{ item.gfsCode.name }}
                   </td>
-                  <td class="">{{ item.budget }}</td>
-                  <td class="">{{ item.allocation }}</td>
-                  <td class="">{{ item.totalExpenditure }}</td>
-                  <td class="">{{ item.allocation - item.totalExpenditure }}</td>
+                  <td class="">{{ item.budget | toCurrency()  }}</td>
+                  <td class="">{{ item.allocation | toCurrency()  }}</td>
+                  <td class="">{{ item.totalExpenditure | toCurrency()  }}</td>
+                  <td class="">{{ (item.allocation - item.totalExpenditure) | toCurrency()  }}</td>
                   <td class="pt-5">
                     <v-text-field
                       dense
@@ -119,7 +119,6 @@
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
           <v-btn
-            :disabled="!data.valid"
             color="primary"
             @click="save"
             v-if="data.items.length"

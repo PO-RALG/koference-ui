@@ -4,7 +4,11 @@ const get = async (payload: any) => {
   return await axios.get("/api/v1/customers", { params: payload });
 };
 const customers = async (payload: any) => {
-  return await axios.get("/api/v1/customers", { params: payload });
+  return await axios.get("/api/v1/customers", {
+    params: {
+      search: JSON.stringify(payload),
+    },
+  });
 };
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/customers/`, {

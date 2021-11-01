@@ -64,6 +64,7 @@ export const useFundAllocation = (): any => {
         value: "",
       },
     ],
+    selectedFund:{} as FundSources,
   });
 
   onMounted(() => {
@@ -101,7 +102,15 @@ export const useFundAllocation = (): any => {
 
   const createFundAllocation = (load: FundAllocation) => {
     create(load).then(() => {
-      window.location.reload();
+      getBudget({ fund_code: data.selectedFund.code }).then((response: AxiosResponse) => {
+        const results = [];
+        const responseData = response.data.data;
+        for (let i = 0; i < responseData.length; i++) {
+          responseData[i].allocation_amount = 0;
+          results.push(responseData[i])
+        }
+        data.items = results;
+      });
     });
   };
 
@@ -116,8 +125,15 @@ export const useFundAllocation = (): any => {
 
   const searchBudgets = (fund: FundSources) => {
     data.funding_source_id = fund.id;
+    data.selectedFund = fund;
     getBudget({ fund_code: fund.code }).then((response: AxiosResponse) => {
-      data.items = response.data.data;
+      const results = [];
+      const responseData = response.data.data;
+      for (let i = 0; i < responseData.length; i++) {
+        responseData[i].allocation_amount = 0;
+        results.push(responseData[i])
+      }
+      data.items = results;
     });
 
     statistic(fund.id).then((response: AxiosResponse) => {

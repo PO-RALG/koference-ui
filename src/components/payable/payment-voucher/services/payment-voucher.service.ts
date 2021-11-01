@@ -33,4 +33,11 @@ const fundByActivity = async (id: string | number) => {
 const fundByActivityFundSource = async (activityId: string | number ,id: string | number) => {
   return await axios.get(`/api/v1/budgets/${activityId}/${id}/gfs`);
 };
-export { get, find, create, update, destroy, search, fundByActivity, fundByActivityFundSource };
+
+const printPdf = (id: string | number) => {
+  const user = JSON.parse(localStorage.getItem("FFARS_USER"));
+  let url = `${process.env.VUE_APP_SERVER_URL}/api/v1/vouchers/${id}/print?token=${user.token}`;
+  return window.open(url);
+}
+
+export { get, find, create, update, destroy, search, fundByActivity, fundByActivityFundSource, printPdf };

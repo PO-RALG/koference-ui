@@ -1,3 +1,5 @@
+import { BackAccount } from "@/components/setup/bank-account/types/BackAccount";
+import { Facility } from "@/components/facility/facility/types/Facility";
 export interface Payment {
   id: number;
   date: string;
@@ -15,5 +17,19 @@ export interface ItemPlayLoad {
   paid_amount: number;
   amount: number;
   balance: number;
+}
+
+interface Council{
+  id: number;
+  name: string;
+}
+export interface PaymentPreview {
+  id: number;
+  amount: number;
+  cheque: string;
+  bank_account:BackAccount;
+  concil:Council;
+  facility:Facility;
+  printDate:Date;
 }
 

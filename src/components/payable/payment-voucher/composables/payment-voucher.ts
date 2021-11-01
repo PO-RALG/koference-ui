@@ -3,8 +3,10 @@ import { AxiosResponse } from "axios";
 
 import {
   get,
+  find,
   create,
   destroy,
+  printPdf,
   fundByActivity,
   fundByActivityFundSource,
 } from "../services/payment-voucher.service";
@@ -97,6 +99,9 @@ export const usePaymentVoucher = (): any => {
     fundingSources: [],
     accounts: [],
     payables: [],
+    coat: "/coat_of_arms.svg.png",
+    pvDetails: { printDate: "" },
+    paymentVoucherModal: false,
   });
 
   onMounted(() => {
@@ -286,6 +291,58 @@ export const usePaymentVoucher = (): any => {
     },
   ];
 
+  const payablePrintHeader = [
+    {
+      text: "Account code",
+      align: "start",
+      sortable: false,
+      width: "60%",
+    },
+    {
+      text: "Fund source",
+      align: "start",
+      sortable: false,
+      width: "",
+    },
+    {
+      text: "Account description",
+      align: "start",
+      sortable: false,
+      width: "",
+    },
+    {
+      text: "Amount",
+      align: "end",
+      sortable: false,
+      value: "",
+      width: "",
+    },
+  ];
+  const previewPaymentVoucher = (id: number) => {
+    find(id).then((response: AxiosResponse) => {
+      data.pvDetails = response.data.data;
+      data.pvDetails.printDate = Date();
+      data.paymentVoucherModal = !data.paymentVoucherModal;
+    });
+  };
+
+  const cancelPreviewDialog = () => {
+    data.paymentVoucherModal = !data.paymentVoucherModal;
+  };
+
+  const printPaymentVoucher = (id: number) => {
+    printPdf(id);
+  };
+
+  const fullPaid = (item) => {
+    const bal = Number(item.amount) - Number(item.amount_paid);
+    if (bal === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return {
     data,
     openDialog,
@@ -304,5 +361,10 @@ export const usePaymentVoucher = (): any => {
     filterGfsCodes,
     maxRules,
     payableHeader,
+    payablePrintHeader,
+    cancelPreviewDialog,
+    previewPaymentVoucher,
+    printPaymentVoucher,
+    fullPaid,
   };
 };

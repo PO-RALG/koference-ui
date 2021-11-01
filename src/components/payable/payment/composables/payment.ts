@@ -1,7 +1,13 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, destroy } from "../services/payment.service";
+import {
+  get,
+  create,
+  destroy,
+  find,
+  printPdf,
+} from "../services/payment.service";
 import { Payment } from "../types/Payment";
 import { find as findPaymentVoucher } from "@/components/payable/payment-voucher/services/payment-voucher.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
@@ -43,7 +49,7 @@ export const usePayment = (): any => {
         text: "Payee",
         align: "start",
         sortable: false,
-        value: "payee",
+        value: "voucher.supplier.name",
       },
       {
         text: "Bank Account",
@@ -74,18 +80,10 @@ export const usePayment = (): any => {
     bankAccounts: [],
     paymentVouchers: [],
     payableItems: [],
-    payables: [
-      {
-        payable_id: "",
-        required_amount: 0,
-        amount: 0,
-        paid_amount: 0,
-        balance: 0,
-      },
-    ],
     coat: "/coat_of_arms.svg.png",
-    paymentVoucherModal: false,
+    paymentModal: false,
     pvDetails: { printDate: "" },
+    supplier: [],
   });
 
   onMounted(() => {
@@ -137,11 +135,11 @@ export const usePayment = (): any => {
 
   const save = () => {
     const payableData = [];
-    const payableItems = data.payables;
+    const payableItems = data.payableItems;
     for (let i = 0; i < payableItems.length; i++) {
       const element = {
-        payable_id: payableItems[i].payable_id,
-        amount: payableItems[i].amount,
+        payable_id: payableItems[i].id,
+        amount: payableItems[i].payment,
       };
       payableData.push(element);
     }
@@ -184,42 +182,20 @@ export const usePayment = (): any => {
       `Amount must be less or equal to ${propertyType}`;
   };
 
-  const addPayable = () => {
-    data.payables.push({
-      payable_id: "",
-      required_amount: 0,
-      amount: 0,
-      paid_amount: 0,
-      balance: 0,
-    });
-  };
-
-  const removePayable = (index: number) => {
-    data.payables.splice(index, 1);
-  };
-
   const setPayableItems = (id: number) => {
-    const pvData = data.paymentVouchers;
-    for (let i = 0; i < pvData.length; i++) {
-      const element = pvData[i];
-      if (element.id === id) {
-        return (data.payableItems = element.payables);
-      }
-    }
-  };
+    findPaymentVoucher(id).then((response: AxiosResponse) => {
+      const pvData = response.data.data;
+      for (let j = 0; j < pvData.payables.length; j++) {
+        const e = pvData.payables[j];
+        e.payment = 0;
+        e.required_amount = Number(e.amount);
+        e.paid_amount = Number(e.paid_amount);
+        e.balance = Number(e.amount) - Number(e.paid_amount);
 
-  const setAmount = (id: number, index: number) => {
-    const payableData = data.payableItems;
-    for (let i = 0; i < payableData.length; i++) {
-      const element = payableData[i];
-      if (element.id === id) {
-        data.payables[index].required_amount = Number(element.amount);
-        data.payables[index].paid_amount = Number(element.paid_amount);
-        data.payables[index].balance =
-          Number(element.amount) - Number(element.paid_amount);
-        return data.payables;
+        data.payableItems.push(e);
       }
-    }
+      return data.payableItems;
+    });
   };
 
   const payableHeader = [
@@ -248,32 +224,23 @@ export const usePayment = (): any => {
       value: "",
       width: "",
     },
-    {
-      text: "",
-      align: "start",
-      sortable: false,
-      value: "",
-      width: "",
-    },
   ];
 
-  const previewPaymentVoucher = (id: number) => {
-    findPaymentVoucher(id).then((response: AxiosResponse) => {
+  const previewPayment = (id: number) => {
+    find(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
       data.pvDetails.printDate = Date();
-      data.paymentVoucherModal = !data.paymentVoucherModal;
+      data.supplier = response.data.data.voucher.supplier;
+      data.paymentModal = !data.paymentModal;
     });
   };
 
   const cancelPreviewDialog = () => {
-    data.paymentVoucherModal = !data.paymentVoucherModal;
+    data.paymentModal = !data.paymentModal;
   };
 
-  const printPaymentVoucher = (id: number) => {
-    findPaymentVoucher(id).then((response: AxiosResponse) => {
-      data.pvDetails = response.data.data;
-      data.paymentVoucherModal = !data.paymentVoucherModal;
-    });
+  const printPayment = (id: number) => {
+    printPdf(id);
   };
 
   const payablePrintHeader = [
@@ -304,88 +271,6 @@ export const usePayment = (): any => {
     },
   ];
 
-  const ones = [
-    "",
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "six",
-    "seven",
-    "eight",
-    "nine",
-  ];
-  const tens = [
-    "",
-    "",
-    "twenty",
-    "thirty",
-    "forty",
-    "fifty",
-    "sixty",
-    "seventy",
-    "eighty",
-    "ninety",
-  ];
-  const teens = [
-    "ten",
-    "eleven",
-    "twelve",
-    "thirteen",
-    "fourteen",
-    "fifteen",
-    "sixteen",
-    "seventeen",
-    "eighteen",
-    "nineteen",
-  ];
-
-  const convertMillions = (num: number) => {
-    if (num >= 1000000) {
-      return (
-        convertMillions(Math.floor(num / 1000000)) +
-        " million " +
-        convertThousands(num % 1000000)
-      );
-    } else {
-      return convertThousands(num);
-    }
-  };
-
-  const convertThousands = (num: number) => {
-    if (num >= 1000) {
-      return (
-        convertHundreds(Math.floor(num / 1000)) +
-        " thousand " +
-        convertHundreds(num % 1000)
-      );
-    } else {
-      return convertHundreds(num);
-    }
-  };
-
-  const convertHundreds = (num: number) => {
-    if (num > 99) {
-      return ones[Math.floor(num / 100)] + " hundred " + convertTens(num % 100);
-    } else {
-      return convertTens(num);
-    }
-  };
-
-  const convertTens = (num: number) => {
-    if (num < 10) return ones[num];
-    else if (num >= 10 && num < 20) return teens[num - 10];
-    else {
-      return tens[Math.floor(num / 10)] + " " + ones[num % 10];
-    }
-  };
-
-  const convert = (num: number) => {
-    if (num == 0) return "zero";
-    else return convertMillions(num);
-  };
-
   return {
     data,
     openDialog,
@@ -396,16 +281,12 @@ export const usePayment = (): any => {
     cancelConfirmDialog,
     getData,
     maxRules,
-    addPayable,
-    removePayable,
     setPayableItems,
-    setAmount,
     payableHeader,
     openHistoryDialog,
-    previewPaymentVoucher,
+    previewPayment,
     cancelPreviewDialog,
-    printPaymentVoucher,
+    printPayment,
     payablePrintHeader,
-    convert,
   };
 };
