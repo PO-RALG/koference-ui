@@ -2,7 +2,14 @@ import { reactive, onMounted, set, computed, watch } from "@vue/composition-api"
 import router from "@/router";
 import store from "@/store";
 
-import { fetchReportTree, getReports, createReport, updateReport, deleteReport } from "../services/report.services";
+import {
+  fetchReportTree,
+  getReports,
+  createReport,
+  updateReport,
+  deleteReport,
+  getParams,
+} from "../services/report.services";
 import {
   get as fetchLocationTree,
   getChildren,
@@ -21,7 +28,9 @@ export const useReport = (actionType?: string): any => {
   const data = reactive({
     location: null,
     locationID: null,
+    reportIcon: "mdi-attachment",
     locations: [],
+    reportParams: null,
     infoMessage: "",
     isInfoDialogOpen: false,
     reportSelected: false,
@@ -82,10 +91,17 @@ export const useReport = (actionType?: string): any => {
     store.dispatch("Drawer/CLOSE");
   };
 
-  const loadReportCategories = (report: any) => {
+  const getReportParameters = async (id: number) => {
+    getParams(id).then((response: AxiosResponse) => {
+      data.reportParams = response.data.data;
+    });
+  };
+
+  const loadReportCategories = async (report: any) => {
     const locationId = data.location["id"];
     data.selectedReport = report;
     if (locationId && reportHasTemplateUrl(report)) {
+      await getReportParameters(report.id);
       router
         .push({
           path: `/reports/${locationId}`,
@@ -102,12 +118,14 @@ export const useReport = (actionType?: string): any => {
   };
 
   watch(
-    () => route.params.location_id, async (newLocationID: number | string) => {
+    () => route.params.location_id,
+    async (newLocationID: number | string) => {
       find(newLocationID).then((response: AxiosResponse) => {
         data.location = response.data.data;
         data.currentItem = response.data.data;
       });
-  });
+    }
+  );
 
   const getLocationTree = () => {
     fetchLocationTree({}).then((response: AxiosResponse) => {
@@ -147,9 +165,10 @@ export const useReport = (actionType?: string): any => {
   };
 
   const setQueryParams = async (location: any) => {
-    router.push({
-      path: `/reports/${location.id}`,
-    })
+    router
+      .push({
+        path: `/reports/${location.id}`,
+      })
       .catch((error: any) => {
         console.error(error);
       });
@@ -194,7 +213,7 @@ export const useReport = (actionType?: string): any => {
   });
 
   const fetchReports = () => {
-    getReports(data.params).then((response: AxiosResponse) => {
+    getReports({ per_page: 100, asc: "order" }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.params = { from, to, total, current_page, per_page, last_page, asc: "order" };
       data.entries = response.data.data.data;
