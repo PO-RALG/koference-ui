@@ -6,7 +6,7 @@
         <v-label><h5>SELECT LOCATION</h5></v-label>
         <TreeBrowser @onClick="loadLocationChildren" :node="data.node" :current-item="data.currentItem" />
       </v-col>
-      <v-col cols="12" sm="12" md="3" class="hierarchy-container elevation-1" v-if="data.report && data.report.name">
+      <v-col cols="12" sm="12" md="3" class="hierarchy-container elevation-1" v-if="data.location">
         <v-label><h5>SELECT REPORT CATEGORY</h5></v-label>
         <TreeBrowser @onClick="loadReportCategories" :node="data.report" :current-item="data.selectedReport" />
       </v-col>

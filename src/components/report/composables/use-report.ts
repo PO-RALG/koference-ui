@@ -1,9 +1,13 @@
-import { reactive, onMounted, set, computed } from "@vue/composition-api";
+import { reactive, onMounted, set, computed, watch } from "@vue/composition-api";
 import router from "@/router";
 import store from "@/store";
 
 import { fetchReportTree, getReports, createReport, updateReport, deleteReport } from "../services/report.services";
-import { get as fetchLocationTree, getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
+import {
+  get as fetchLocationTree,
+  getChildren,
+  find,
+} from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getLevels } from "@/components/admin-area/level/services/level-services";
 
 import { AxiosResponse } from "axios";
@@ -15,11 +19,14 @@ export const useReport = (actionType?: string): any => {
   const currentUser = getCurrentUser();
 
   const data = reactive({
-    location: {},
+    location: null,
+    locationID: null,
+    locations: [],
     infoMessage: "",
     isInfoDialogOpen: false,
     reportSelected: false,
-    requestParams:{
+    isOpen: false,
+    requestParams: {
       location_id: null,
       facility_id: null,
     },
@@ -42,7 +49,15 @@ export const useReport = (actionType?: string): any => {
     entries: [],
     modal: false,
     deleteModal: false,
-    response: {},
+    params: {
+      asc: "order",
+      from: null,
+      to: null,
+      total: null,
+      current_page: null,
+      per_page: null,
+      last_page: null,
+    },
     rows: ["10", "20", "50", "100"],
     modalTitle: "",
     levels: [],
@@ -51,10 +66,9 @@ export const useReport = (actionType?: string): any => {
   });
 
   const loadLocationChildren = (location: any) => {
-    store.dispatch("Drawer/CLOSE");
-    data.currentItem = data.currentItem === location ? null : location;
-    console.log("location", location);
     data.location = location;
+    data.currentItem = data.currentItem === location ? null : location;
+    data.locationID = location.id;
     getReportTree(location);
     if (!location.children) {
       if (location.id !== data.node.id) {
@@ -65,6 +79,7 @@ export const useReport = (actionType?: string): any => {
         });
       }
     }
+    store.dispatch("Drawer/CLOSE");
   };
 
   const loadReportCategories = (report: any) => {
@@ -78,25 +93,67 @@ export const useReport = (actionType?: string): any => {
         })
         .catch((err) => console.log(err));
     } else {
-      data.isInfoDialogOpen = true;
-      data.infoMessage = "Sorry, you can only view reports for lower level reports that have a template";
+      const reportId = router.currentRoute.query.report_id;
+      console.log("not reportable");
+      if (reportId) {
+        router.go(-1);
+      }
     }
   };
 
+  watch(
+    () => route.params.location_id, async (newLocationID: number | string) => {
+      find(newLocationID).then((response: AxiosResponse) => {
+        data.location = response.data.data;
+        data.currentItem = response.data.data;
+      });
+  });
+
   const getLocationTree = () => {
     fetchLocationTree({}).then((response: AxiosResponse) => {
-      console.log("response: ", response.data.data);
       data.location = response.data.data;
     });
   };
 
-  const getNodes = (id?: number | string) => {
-    getChildren(id).then((response: AxiosResponse) => {
-      data.node = response.data.data;
-    });
+  const location = computed(() => {
+    return data.location;
+  });
+
+  const getNodes = async (id?: number | string) => {
+    const locationID = router.currentRoute.params.location_id;
+    let location = null;
+    if (locationID && !data.location) {
+      find(locationID)
+        .then((response: AxiosResponse) => {
+          location = response.data.data;
+          data.location = response.data.data;
+          data.currentItem = response.data.data;
+        })
+        .then(() => {
+          getChildren(id)
+            .then((response: AxiosResponse) => {
+              data.node = response.data.data;
+            })
+            .then(() => {
+              getReportTree(location);
+              setQueryParams(location);
+            });
+        });
+    } else {
+      getChildren(id).then((response: AxiosResponse) => {
+        data.node = response.data.data;
+      });
+    }
   };
 
-  const setQueryParams = (location) => {
+  const setQueryParams = async (location: any) => {
+    router.push({
+      path: `/reports/${location.id}`,
+    })
+      .catch((error: any) => {
+        console.error(error);
+      });
+
     if (location.level_id === 5) {
       data.requestParams.location_id = location.id;
       data.requestParams.facility_id = location.id;
@@ -105,8 +162,8 @@ export const useReport = (actionType?: string): any => {
     }
   };
 
-  const getReportTree = (location: any) => {
-    setQueryParams(location);
+  const getReportTree = async (location: any) => {
+    await setQueryParams(location);
     fetchReportTree(data.requestParams).then((response: AxiosResponse) => {
       data.report = response.data.data;
     });
@@ -137,9 +194,22 @@ export const useReport = (actionType?: string): any => {
   });
 
   const fetchReports = () => {
-    getReports({}).then((response: AxiosResponse) => {
+    getReports(data.params).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } = response.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
+      data.params = { from, to, total, current_page, per_page, last_page, asc: "order" };
+      data.entries = response.data.data.data;
+    });
+  };
+
+  const loadReports = (params: any) => {
+    const query = {
+      ...params,
+      asc: "order",
+    };
+    getReports(query).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      data.params = { from, to, total, current_page, per_page, last_page, asc: "order" };
+      console.log(data.params);
       data.entries = response.data.data.data;
     });
   };
@@ -157,6 +227,7 @@ export const useReport = (actionType?: string): any => {
 
   const cancelDialog = () => {
     data.modal = false;
+    data.formData = {};
   };
 
   const update = (data) => {
@@ -186,10 +257,10 @@ export const useReport = (actionType?: string): any => {
 
   const deleteItem = (item: number | string) => {
     const payload = item;
-    deleteReport(payload).then(() => {
+    deleteReport(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
         fetchReports();
-        data.item = {} as User;
+        data.item = {};
         data.isOpen = false;
       }
     });
@@ -262,6 +333,8 @@ export const useReport = (actionType?: string): any => {
     cancelConfirmDialog,
     remove,
     fetchReports,
+    loadReports,
     printReport,
+    location,
   };
 };

@@ -7,7 +7,7 @@ const reportRoutes = [
     component: () => import(/* webpackChunkName: "Report" */ "../Report.vue"),
     children: [
       {
-        path: ":id",
+        path: ":location_id",
         component: () => import("../ReportDetail.vue"),
         meta: {
           requiresAuth: true,
