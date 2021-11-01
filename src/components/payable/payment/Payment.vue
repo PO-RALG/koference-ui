@@ -326,8 +326,8 @@
                           }}<br />
                           {{ data.pvDetails.cheque }}<br />
                           {{ ` - ` }}<br />
-                          {{ ` NA ` }}<br />
-                          {{ ` MANUAL ` }}<br />
+                          {{ ` ASAP` }}<br />
+                          {{ data.pvDetails.cheque.length > 0?`CHEQUE`:` MANUAL ` }}<br />
                         </td>
                       </tr>
                     </table>
