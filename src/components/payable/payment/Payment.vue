@@ -254,7 +254,7 @@
             </v-col>
             <v-col class="d-flex justify-center">
               <div class="text-subtitle-1 font-weight-bold">
-                PAYMENT VOUCHER
+                PAYMENT
               </div>
             </v-col>
             <v-col>
@@ -326,8 +326,8 @@
                           }}<br />
                           {{ data.pvDetails.cheque }}<br />
                           {{ ` - ` }}<br />
-                          {{ ` NA ` }}<br />
-                          {{ ` MANUAL ` }}<br />
+                          {{ ` ASAP` }}<br />
+                          {{ data.pvDetails.cheque.length > 0?`CHEQUE`:` MANUAL ` }}<br />
                         </td>
                       </tr>
                     </table>
@@ -358,15 +358,15 @@
                       v-for="(payable, i) in data.pvDetails.payment_items"
                       :key="i"
                     >
-                      <td>{{ payable.gl_account }}</td>
+                      <td>{{ payable.gl_account.code }}</td>
                       <td>
                         {{
-                          payable.funding_source
-                            ? payable.funding_source.description
+                          payable.gl_account.fund_source
+                            ? payable.gl_account.fund_source.description
                             : ""
                         }}
                       </td>
-                      <td>{{ payable.description }}</td>
+                      <td>{{ payable.gl_account.description }}</td>
                       <td class="text-right">
                         {{ payable.amount | toCurrency() }}
                       </td>
@@ -407,7 +407,14 @@
               <table width="100%">
                 <tbody>
                   <tr>
-                    <td class="text-left">Prepared By:</td>
+                    <td class="text-left">
+                      Prepared By: 
+                      <span class="text-uppercase">
+                        {{ data.pvDetails.user?data.pvDetails.user.first_name:"" }}
+                        {{ data.pvDetails.user?data.pvDetails.user.middle_name:"" }}
+                        {{ data.pvDetails.user?data.pvDetails.user.last_name:"" }}
+                      </span>
+                    </td>
                     <td class="text-left">Verified By:</td>
                     <td class="text-left">Approved By:</td>
                   </tr>

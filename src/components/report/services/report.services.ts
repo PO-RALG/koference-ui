@@ -44,8 +44,8 @@ const fetchReportTree = async ({ location_id, facility_id }) => {
   }
 };
 
-const fetchReportParams = async (payload) => {
-  const END_POINT = `${API}/report-parameters/${payload}`;
+const fetchReportParams = async (id) => {
+  const END_POINT = `${API}/${id}/parameters`;
   return axios.get(END_POINT);
 };
 

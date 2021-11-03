@@ -2,7 +2,7 @@ import { reactive, onMounted, set, ref, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
 import store from "@/store";
-import { get } from "../services/gl-report-services";
+import { get, printPdf } from "../services/gl-report-services";
 import { get as getFinancialYears } from "@/components/setup/financial-year/services/financialyear.service";
 import { get as getGfsCodes } from "@/components/coa/gfs-code/service/gfs.service";
 import moment from "moment";
@@ -17,6 +17,7 @@ export const useGLReport = (): any => {
     start_date: null,
     end_date: null,
     financial_year_id: null,
+    print_type: null,
   });
 
   const data = reactive({
@@ -37,10 +38,9 @@ export const useGLReport = (): any => {
   });
 
   const openPrintDialog = () => {
-    store.dispatch("Drawer/CLOSE");
-    setTimeout(function () {
-      window.print();
-    }, 0);
+    params.print_type = "pdf";
+    delete params.financial_year;
+    printPdf(params);
   };
 
   const openDialog = () => {
@@ -136,6 +136,7 @@ export const useGLReport = (): any => {
   };
 
   const filterReport = () => {
+    delete params.print_type;
     params.financial_year_id = params.financial_year.id;
     init(params);
     closeDialog();
