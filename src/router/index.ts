@@ -38,6 +38,7 @@ import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
 import { paymentVoucherRoutes } from "@/components/payable/payment-voucher";
 import { paymentRoutes } from "@/components/payable/payment";
 import { reportRoutes } from "@/components/report";
+import { testRoutes } from "@/components/test";
 import { notFoundRoute } from "@/components/404";
 
 // import route middlewares
@@ -100,6 +101,7 @@ const routes: Array<RouteConfig> = [
       ...paymentVoucherRoutes,
       ...paymentRoutes,
       ...reportRoutes,
+      ...testRoutes,
       ...notFoundRoute,
     ],
   },
