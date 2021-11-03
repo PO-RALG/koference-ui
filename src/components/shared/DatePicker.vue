@@ -27,8 +27,7 @@
         :max="max"
         :min="min"
         no-title
-        @change="dateSelected($event)"
-        @input="input($event)"
+        @change="$emit('input', $event)"
       ></v-date-picker>
     </v-menu>
   </v-layout>

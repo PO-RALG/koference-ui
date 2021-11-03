@@ -33,11 +33,7 @@ export default defineComponent({
       loadLocationChildren,
       loadReportCategories,
       getLocationTree,
-      getReportTree,
-      showContextMenu,
-      getReportsByLevel,
-      reportHasTemplateUrl,
-      closeInfoDialog,
+      closeInfoDialog
     } = useReport();
 
     return {
@@ -45,10 +41,6 @@ export default defineComponent({
       loadLocationChildren,
       loadReportCategories,
       getLocationTree,
-      getReportTree,
-      showContextMenu,
-      getReportsByLevel,
-      reportHasTemplateUrl,
       closeInfoDialog,
     };
   },
