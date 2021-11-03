@@ -327,7 +327,7 @@
                           {{ data.pvDetails.cheque }}<br />
                           {{ ` - ` }}<br />
                           {{ ` ASAP` }}<br />
-                          {{ data.pvDetails.cheque.length > 0?`CHEQUE`:` MANUAL ` }}<br />
+                          <span v-if="data.pvDetails.cheque">{{ data.pvDetails.cheque.length > 0?`CHEQUE`:` MANUAL ` }}</span><br />
                         </td>
                       </tr>
                     </table>
@@ -452,7 +452,7 @@
                     <th class="text-right">
                       Printed on:
                       {{
-                        data.pvDetails.printDate | format("DD/MM/YYYY H:mm:ss")
+                        data.pvDetails.printDate
                       }}
                     </th>
                   </tr>

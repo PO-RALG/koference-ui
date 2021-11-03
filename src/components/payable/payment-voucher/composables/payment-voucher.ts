@@ -9,13 +9,14 @@ import {
   printPdf,
   fundByActivity,
   fundByActivityFundSource,
-} from "../services/payment-voucher.service";
+} from "../services/payment-voucher.services";
 import { PaymentVoucher, Account } from "../types/PaymentVoucher";
-import { get as getSupplier } from "@/components/payable/supplier/services/supplier.service";
+import { get as getSupplier } from "@/components/payable/supplier/services/supplier.services";
 import { get as getActivity } from "@/components/planning/activity/services/activity.service";
-import { getBudget } from "@/components/payable/fund-allocation/services/fund-allocation.service";
+import { getBudget } from "@/components/payable/fund-allocation/services/fund-allocation.services";
 import { Activity } from "@/components/planning/activity/types/Activity";
 import { FundSources } from "@/components/coa/funding-source/types/index";
+import moment from "moment";
 
 export const usePaymentVoucher = (): any => {
   const dataItems: Array<PaymentVoucher> = [];
@@ -321,7 +322,7 @@ export const usePaymentVoucher = (): any => {
   const previewPaymentVoucher = (id: number) => {
     find(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
-      data.pvDetails.printDate = Date();
+      data.pvDetails.printDate = moment(new Date()).format("DD/MM/YYYY H:mm:ss");
       data.paymentVoucherModal = !data.paymentVoucherModal;
     });
   };

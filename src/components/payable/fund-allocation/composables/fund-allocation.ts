@@ -4,7 +4,7 @@ import {
   create,
   getBudget,
   statistic,
-} from "@/components/payable/fund-allocation/services/fund-allocation.service";
+} from "@/components/payable/fund-allocation/services/fund-allocation.services";
 import {
   Budget,
   FundAllocation,
@@ -64,7 +64,7 @@ export const useFundAllocation = (): any => {
         value: "",
       },
     ],
-    selectedFund:{} as FundSources,
+    selectedFund: {} as FundSources,
   });
 
   onMounted(() => {
@@ -102,15 +102,17 @@ export const useFundAllocation = (): any => {
 
   const createFundAllocation = (load: FundAllocation) => {
     create(load).then(() => {
-      getBudget({ fund_code: data.selectedFund.code }).then((response: AxiosResponse) => {
-        const results = [];
-        const responseData = response.data.data;
-        for (let i = 0; i < responseData.length; i++) {
-          responseData[i].allocation_amount = 0;
-          results.push(responseData[i])
+      getBudget({ fund_code: data.selectedFund.code }).then(
+        (response: AxiosResponse) => {
+          const results = [];
+          const responseData = response.data.data;
+          for (let i = 0; i < responseData.length; i++) {
+            responseData[i].allocation_amount = 0;
+            results.push(responseData[i]);
+          }
+          data.items = results;
         }
-        data.items = results;
-      });
+      );
     });
   };
 
@@ -131,7 +133,7 @@ export const useFundAllocation = (): any => {
       const responseData = response.data.data;
       for (let i = 0; i < responseData.length; i++) {
         responseData[i].allocation_amount = 0;
-        results.push(responseData[i])
+        results.push(responseData[i]);
       }
       data.items = results;
     });

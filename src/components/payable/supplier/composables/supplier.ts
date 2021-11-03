@@ -8,7 +8,7 @@ import {
   destroy,
   search,
   activation
-} from "../services/supplier.service";
+} from "../services/supplier.services";
 import { Supplier } from "../types/Supplier";
 
 export const useSupplier = (): any => {

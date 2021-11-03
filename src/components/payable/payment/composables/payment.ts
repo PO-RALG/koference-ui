@@ -1,5 +1,6 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
+import moment from "moment";
 
 import {
   get,
@@ -7,11 +8,11 @@ import {
   destroy,
   find,
   printPdf,
-} from "../services/payment.service";
+} from "../services/payment.services";
 import { Payment } from "../types/Payment";
-import { find as findPaymentVoucher } from "@/components/payable/payment-voucher/services/payment-voucher.service";
+import { find as findPaymentVoucher } from "@/components/payable/payment-voucher/services/payment-voucher.services";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
-import { get as getPaymentVouchers } from "@/components/payable/payment-voucher/services/payment-voucher.service";
+import { get as getPaymentVouchers } from "@/components/payable/payment-voucher/services/payment-voucher.services";
 import { FundSources } from "@/components/coa/funding-source/types/index";
 
 export const usePayment = (): any => {
@@ -229,7 +230,7 @@ export const usePayment = (): any => {
   const previewPayment = (id: number) => {
     find(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
-      data.pvDetails.printDate = Date();
+      data.pvDetails.printDate = moment(new Date()).format("DD/MM/YYYY H:mm:ss");
       data.supplier = response.data.data.voucher.supplier;
       data.paymentModal = !data.paymentModal;
     });
