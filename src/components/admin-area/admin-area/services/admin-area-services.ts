@@ -6,7 +6,6 @@ const get = async (payload: any) => {
 };
 
 const find = async (id: string | number) => {
-  console.log("id", id);
   return await axios.get(`${API}/${id}`);
 };
 
