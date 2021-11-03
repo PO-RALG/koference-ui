@@ -1,22 +1,22 @@
 <template>
   <div>
     <v-select
-      :items="entries"
+      :items="items"
       :label="label"
       :value="value"
       :item-value="itemValue"
       :item-text="itemText"
       v-bind="{
-        ...$attrs,
+      ...$attrs,
       }"
       @change="$emit('input', $event)"
-    >
+      >
     </v-select>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "@vue/composition-api";
+import { defineComponent } from "@vue/composition-api";
 export default defineComponent({
   props: {
     label: {
@@ -39,19 +39,6 @@ export default defineComponent({
       type: Array,
       required: true,
     },
-  },
-
-  setup(props) {
-    const entries = computed(() => {
-      return props.items.map((item: any) => ({
-        ...item,
-        name: item.name ? item.name : item.description,
-      }));
-    });
-
-    return {
-      entries,
-    };
   },
 });
 </script>

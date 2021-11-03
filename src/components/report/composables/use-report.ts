@@ -1,22 +1,25 @@
-import { reactive, onMounted, set, computed, watch } from "@vue/composition-api";
+import {
+  reactive,
+  onMounted,
+  set,
+  computed,
+  watch
+} from "@vue/composition-api";
+import { fetchReportTree } from "../services/report.services";
 import router from "@/router";
 import store from "@/store";
 
-import { fetchReportTree, getReports, createReport, updateReport, deleteReport } from "../services/report.services";
 import {
   get as fetchLocationTree,
   getChildren,
   find,
 } from "@/components/admin-area/admin-area/services/admin-area-services";
-import { get as getLevels } from "@/components/admin-area/level/services/level-services";
 
 import { AxiosResponse } from "axios";
 import { useRoute } from "vue2-helpers/vue-router";
-import { getCurrentUser } from "@/middleware";
 
-export const useReport = (actionType?: string): any => {
+export const useReport = (): any => {
   const route = useRoute();
-  const currentUser = getCurrentUser();
 
   const data = reactive({
     location: null,
@@ -24,52 +27,21 @@ export const useReport = (actionType?: string): any => {
     locations: [],
     infoMessage: "",
     isInfoDialogOpen: false,
-    reportSelected: false,
-    isOpen: false,
-    requestParams: {
-      location_id: null,
-      facility_id: null,
-    },
-    report: null,
-    selectedLocation: {},
-    item: {},
     selectedReport: null,
     currentItem: null,
+    report: null,
     node: null,
-    formData: {},
-    reportOrders: [...Array(50).keys()],
-    headers: [
-      { text: "Order", value: "order" },
-      { text: "Name", value: "name" },
-      { text: "Parent", value: "parent" },
-      { text: "Template URL", align: "start", sortable: false, value: "template_uri" },
-      { text: "Level", value: "level" },
-      { text: "Actions", value: "actions", sortable: false },
-    ],
-    entries: [],
-    modal: false,
     deleteModal: false,
-    params: {
-      asc: "order",
-      from: null,
-      to: null,
-      total: null,
-      current_page: null,
-      per_page: null,
-      last_page: null,
-    },
     rows: ["10", "20", "50", "100"],
     modalTitle: "",
-    levels: [],
-    exportFormat: "",
     formats: ["pdf", "xlsx", "pptx", "docx", "csv"],
   });
 
-  const loadLocationChildren = (location: any) => {
+  const loadLocationChildren = async (location: any) => {
     data.location = location;
+    await loadReportsByLocation(location)
     data.currentItem = data.currentItem === location ? null : location;
     data.locationID = location.id;
-    getReportTree(location);
     if (!location.children) {
       if (location.id !== data.node.id) {
         getChildren(location.id).then((response: AxiosResponse) => {
@@ -82,9 +54,19 @@ export const useReport = (actionType?: string): any => {
     store.dispatch("Drawer/CLOSE");
   };
 
-  const loadReportCategories = (report: any) => {
-    const locationId = data.location["id"];
-    data.selectedReport = report;
+  const loadReportsByLocation = (location) => {
+    const params = {
+      location_id: location.id,
+      facility_id: (location.level_id === 6)? location.id : null,
+    };
+
+    fetchReportTree(params).then((response: AxiosResponse) => {
+      data.report = response.data.data;
+    });
+  };
+
+  const loadReportCategories = async (report: any) => {
+    const locationId = data.location.id;
     if (locationId && reportHasTemplateUrl(report)) {
       router
         .push({
@@ -94,20 +76,11 @@ export const useReport = (actionType?: string): any => {
         .catch((err) => console.log(err));
     } else {
       const reportId = router.currentRoute.query.report_id;
-      console.log("not reportable");
       if (reportId) {
         router.go(-1);
       }
     }
   };
-
-  watch(
-    () => route.params.location_id, async (newLocationID: number | string) => {
-      find(newLocationID).then((response: AxiosResponse) => {
-        data.location = response.data.data;
-        data.currentItem = response.data.data;
-      });
-  });
 
   const getLocationTree = () => {
     fetchLocationTree({}).then((response: AxiosResponse) => {
@@ -119,13 +92,15 @@ export const useReport = (actionType?: string): any => {
     return data.location;
   });
 
+  const hasTemplateUrL = computed(() => {
+    return reportHasTemplateUrl(data.selectedReport);
+  });
+
   const getNodes = async (id?: number | string) => {
-    const locationID = router.currentRoute.params.location_id;
-    let location = null;
+    const locationID = id? id : route.params.location_id;
     if (locationID && !data.location) {
       find(locationID)
         .then((response: AxiosResponse) => {
-          location = response.data.data;
           data.location = response.data.data;
           data.currentItem = response.data.data;
         })
@@ -135,8 +110,7 @@ export const useReport = (actionType?: string): any => {
               data.node = response.data.data;
             })
             .then(() => {
-              getReportTree(location);
-              setQueryParams(location);
+              setQueryParams(data.location);
             });
         });
     } else {
@@ -147,26 +121,13 @@ export const useReport = (actionType?: string): any => {
   };
 
   const setQueryParams = async (location: any) => {
-    router.push({
-      path: `/reports/${location.id}`,
-    })
+    router
+      .push({
+        path: `/reports/${location.id}`,
+      })
       .catch((error: any) => {
         console.error(error);
       });
-
-    if (location.level_id === 5) {
-      data.requestParams.location_id = location.id;
-      data.requestParams.facility_id = location.id;
-    } else {
-      data.requestParams.location_id = location.id;
-    }
-  };
-
-  const getReportTree = async (location: any) => {
-    await setQueryParams(location);
-    fetchReportTree(data.requestParams).then((response: AxiosResponse) => {
-      data.report = response.data.data;
-    });
   };
 
   const showContextMenu = (node) => {
@@ -177,7 +138,7 @@ export const useReport = (actionType?: string): any => {
     console.log("reports by level", location);
   };
 
-  const reportHasTemplateUrl = (report) => {
+  const reportHasTemplateUrl = (report: any) => {
     return report.template_uri ? true : false;
   };
 
@@ -186,155 +147,28 @@ export const useReport = (actionType?: string): any => {
   };
 
   onMounted(() => {
-    if (actionType) {
-      fetchReports();
+    if (route.params.location_id) {
+      find(route.params.location_id).then((response: AxiosResponse) => {
+        data.location = response.data.data;
+        loadReportsByLocation(response.data.data);
+        getNodes(route.params.location_id);
+      })
     } else {
       getNodes();
     }
   });
-
-  const fetchReports = () => {
-    getReports(data.params).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
-      data.params = { from, to, total, current_page, per_page, last_page, asc: "order" };
-      data.entries = response.data.data.data;
-    });
-  };
-
-  const loadReports = (params: any) => {
-    const query = {
-      ...params,
-      asc: "order",
-    };
-    getReports(query).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
-      data.params = { from, to, total, current_page, per_page, last_page, asc: "order" };
-      console.log(data.params);
-      data.entries = response.data.data.data;
-    });
-  };
-
-  const openDialog = (formData?: any) => {
-    if (formData.id) {
-      data.formData = formData;
-      data.modalTitle = "Update";
-    } else {
-      data.modalTitle = "Create";
-    }
-    data.modal = true;
-    loadLevels();
-  };
-
-  const cancelDialog = () => {
-    data.modal = false;
-    data.formData = {};
-  };
-
-  const update = (data) => {
-    updateReport(data).then((response: AxiosResponse) => {
-      if (response.status === 200) {
-        data.modal = false;
-      }
-    });
-  };
-
-  const create = (data) => {
-    createReport(data).then((response: AxiosResponse) => {
-      if (response.status === 200) {
-        data.modal = false;
-      }
-    });
-  };
-
-  const openConfirmDialog = (item: any) => {
-    data.item = item;
-    data.deleteModal = true;
-  };
-
-  const closeConfirmDialog = () => {
-    data.deleteModal = true;
-  };
-
-  const deleteItem = (item: number | string) => {
-    const payload = item;
-    deleteReport(payload).then((response: AxiosResponse) => {
-      if (response.status === 200) {
-        fetchReports();
-        data.item = {};
-        data.isOpen = false;
-      }
-    });
-  };
-
-  const getData = () => {
-    fetchReports();
-  };
-
-  const save = () => {
-    if (data.formData["id"]) {
-      updateReport(data.formData).then((response: AxiosResponse) => {
-        if (response.status === 200) {
-          data.modal = false;
-          fetchReports();
-        }
-      });
-    } else {
-      createReport(data.formData).then((response: AxiosResponse) => {
-        if (response.status === 200) {
-          fetchReports();
-          data.modal = false;
-        }
-      });
-    }
-  };
-
-  const cancelConfirmDialog = () => {
-    data.deleteModal = false;
-  };
-
-  const remove = () => {
-    deleteReport(data.item).then(() => {
-      fetchReports();
-      data.deleteModal = false;
-    });
-    data.item = {};
-  };
-
-  const loadLevels = () => {
-    getLevels({}).then((response: AxiosResponse) => {
-      data.levels = response.data.data.data;
-    });
-  };
-
-  const printReport = () => {
-    console.log("print report");
-  };
 
   return {
     data,
     loadLocationChildren,
     loadReportCategories,
     getLocationTree,
-    getReportTree,
     showContextMenu,
     getReportsByLevel,
     reportHasTemplateUrl,
     closeInfoDialog,
     getNodes,
-    openDialog,
-    updateReport,
-    createReport,
-    openConfirmDialog,
-    closeConfirmDialog,
-    deleteItem,
-    getData,
-    cancelDialog,
-    save,
-    cancelConfirmDialog,
-    remove,
-    fetchReports,
-    loadReports,
-    printReport,
     location,
+    hasTemplateUrL,
   };
 };

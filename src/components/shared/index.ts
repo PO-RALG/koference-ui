@@ -2,7 +2,7 @@ import Vue from "vue";
 
 Vue.component("TreeBrowser", () => import("./tree-browser/TreeBrowser.vue"));
 Vue.component("InfoDialog", () => import("./info-dialog/InfoDialog.vue"));
-//Vue.component("Tree", () => import("./Tree.vue"));
+Vue.component("Fetcher", () => import("./form/Fetcher.vue"));
 Vue.component("DualMultiSelect", () => import("./DualMultiSelect.vue"));
 Vue.component("Modal", () => import("./modal/Modal.vue"));
 Vue.component("ModalBody", () => import("./modal/ModalBody.vue"));
@@ -14,5 +14,6 @@ Vue.component("Paginate", () => import("./Paginate.vue"));
 Vue.component("SearchField", () => import("./SearchField.vue"));
 Vue.component("DatePicker", () => import("./DatePicker.vue"));
 Vue.component("BaseErrorMessage", () => import("./form/BaseErrorMessage.vue"));
+Vue.component("BaseSelect", () => import("./form/BaseSelect.vue"));
 Vue.component("Loader", () => import("./Loader.vue"));
 Vue.component("AppLocationHeader", () => import("./AppLocationHeader.vue"));

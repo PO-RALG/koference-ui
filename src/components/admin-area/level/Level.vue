@@ -16,7 +16,7 @@
         hide-default-footer
         disable-pagination
         class="elevation-1"
-        >
+      >
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Level')">
             mdi-pencil-box-outline
@@ -29,33 +29,33 @@
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
-    <template v-slot:header>
-      <ModalHeader :title="`${data.modalTitle} Level`" />
-    </template>
-    <template v-slot:body>
-      <ModalBody>
-      <v-form ref="form" v-model="data.valid">
-        <v-container>
-          <v-row>
-            <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-              <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
-            </v-col>
-            <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-              <v-text-field label="Position" v-model="data.formData.position" required> </v-text-field>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-form>
-      </ModalBody>
-    </template>
-    <template v-slot:footer>
-      <ModalFooter class="mt-n8">
-      <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-      <v-btn color="blue darken-1" text @click="save">
-        {{ data.modalTitle }}
-      </v-btn>
-      </ModalFooter>
-    </template>
+      <template v-slot:header>
+        <ModalHeader :title="`${data.modalTitle} Level`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-form ref="form" v-model="data.valid">
+            <v-container>
+              <v-row>
+                <v-col cols="12" lg="6" md="12" sm="12">
+                  <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <v-text-field label="Position" v-model="data.formData.position" required> </v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter class="mt-n8">
+          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="save">
+            {{ data.modalTitle }}
+          </v-btn>
+        </ModalFooter>
+      </template>
     </Modal>
     <ConfirmDialog
       @rejectFunction="closeConfirmDialog"
@@ -64,7 +64,7 @@
       :data="data.item"
       :isOpen="data.isOpen"
       :title="'Delete Level'"
-      />
+    />
   </div>
 </template>
 
