@@ -1,51 +1,44 @@
 <template>
-  <v-container v-if="data.report.template_uri">
-    <h2>
-      Report Details for <span class="">{{ location.name }}</span>
+  <v-container>
+    <h2 v-if="data.location && data.currentReport">
+      <span class="">{{ data.currentReport.name }} Report for {{ data.location.name }}</span>
     </h2>
     <br />
     <v-card elevation="1">
       <v-card-text class="mt-n8">
         <v-form ref="form">
-          <v-container>
-            <v-row class="mt-n8">
-              <v-col cols="12" sm="12" md="6">
-                <v-autocomplete
-                  v-model="data.formData.calendar_year"
-                  class="pr-2 pt-6 my-input"
-                  dense
-                  clearable
-                  item-text="name"
-                  item-value="id"
-                ></v-autocomplete>
-              </v-col>
-              <v-col cols="12" lg="6" md="6" sm="12">
-                <v-select
-                  :items="data.formats"
-                  v-model="data.exportFormat"
-                  :item-value="'id'"
-                  label="Report Format"
-                ></v-select>
-              </v-col>
-            </v-row>
-            <v-row class="mt-n8">
-              <v-col cols="12" lg="6" md="6" sm="12">
-                <v-select
-                  :items="data.academicYears"
+          <v-layout row wrap v-if="reportParams">
+            <v-flex
+              xs6
+              v-for="component in reportParams"
+              :key="component.id"
+              class="mb-5 pl-5 pr-5">
+              <div v-if="!component.needsApiCall">
+                <DatePicker
+                  :label="component.description"
+                  v-model="data.formData[component.name]"
+                />
+              </div>
+              <fetcher v-else :api="component.api">
+              <div slot-scope="{ json: items, loading }">
+                <div v-if="loading">Loading...</div>
+                <BaseSelect
+                  v-else
+                  :items="items"
                   :item-text="'name'"
-                  v-model="data.formData.academic_year_id"
-                  :item-value="'id'"
-                  label="Academic Year"
-                ></v-select>
-              </v-col>
-            </v-row>
-          </v-container>
+                  :label="component.description"
+                  v-model="data.formData[component.name]"
+                  />
+              </div>
+              </fetcher>
+            </v-flex>
+          </v-layout>
         </v-form>
-        <pre>{{ location }}</pre>
+        <!--<pre>{{ data.formData }}</pre>-->
       </v-card-text>
       <v-card-actions class="mr-5 mt-n10">
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" :disabled="false" text @click="printReport"> DOWNLOAD REPORT </v-btn>
+        <v-btn color="blue darken-1" :disabled="false" text>PRINT REPORT</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -53,15 +46,14 @@
 
 <script charset="utf-8">
 import { defineComponent } from "@vue/composition-api";
-import { useReport } from "./composables/use-report";
+import { useReportDetail } from "./composables/use-report-detail";
 export default defineComponent({
   setup() {
-    const { data, printReport, location } = useReport();
+    const { data, reportParams } = useReportDetail();
 
     return {
       data,
-      printReport,
-      location,
+      reportParams,
     };
   },
 });
