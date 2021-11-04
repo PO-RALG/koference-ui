@@ -39,8 +39,30 @@
         <template v-slot:[`item.amount_paid`]="{ item }">
           {{ item.amount_paid | toCurrency() }}
         </template>
-        <template v-slot:[`item.full_paid`]="{ item }">
-          {{ fullPaid(item) }}
+        <template v-slot:[`item.below_30`]="{ item }">
+          <span v-if="item.age < 30">
+            {{ item.amount | toCurrency() }}
+          </span>
+        </template>
+        <template v-slot:[`item.between_30_60`]="{ item }">
+          <span v-if="item.age > 30 && item.age < 60">
+            {{ item.amount | toCurrency() }}
+          </span>
+        </template>
+        <template v-slot:[`item.between_60_90`]="{ item }">
+          <span v-if="item.age > 60 && item.age < 90">
+            {{ item.amount | toCurrency() }}
+          </span>
+        </template>
+        <template v-slot:[`item.between_90_120`]="{ item }">
+          <span v-if="item.age > 90 && item.age < 120">
+            {{ item.amount | toCurrency() }}
+          </span>
+        </template>
+        <template v-slot:[`item.above_120`]="{ item }">
+          <span v-if="item.age > 120">
+            {{ item.amount | toCurrency() }}
+          </span>
         </template>
         <template v-slot:footer>
           <Paginate
