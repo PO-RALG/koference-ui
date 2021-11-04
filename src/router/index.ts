@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import VueRouteMiddleware from "vue-route-middleware";
 import store from "@/store";
+import { computed } from "@vue/composition-api";
 
 import { dashboardRoutes } from "@/components/dashboard";
 import { userRoutes } from "@/components/user";
@@ -114,6 +115,20 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+
+const routeData = Vue.observable({ params: {}, query: {} });
+router.afterEach((route) => {
+  routeData.params = route.params;
+  routeData.query = route.query;
+});
+
+export const useParams = () => {
+  return computed(() => routeData.params);
+};
+
+export const useQuery = () => {
+  return computed(() => routeData.query);
+};
 
 // middlewares
 const isLoggedIn = (to, _, next) => {

@@ -1,10 +1,4 @@
-import {
-  reactive,
-  onMounted,
-  set,
-  computed,
-  watch
-} from "@vue/composition-api";
+import { reactive, onMounted, set, computed } from "@vue/composition-api";
 import { fetchReportTree } from "../services/report.services";
 import router from "@/router";
 import store from "@/store";
@@ -24,7 +18,9 @@ export const useReport = (): any => {
   const data = reactive({
     location: null,
     locationID: null,
+    reportIcon: "mdi-attachment",
     locations: [],
+    reportParams: null,
     infoMessage: "",
     isInfoDialogOpen: false,
     selectedReport: null,
@@ -39,7 +35,7 @@ export const useReport = (): any => {
 
   const loadLocationChildren = async (location: any) => {
     data.location = location;
-    await loadReportsByLocation(location)
+    await loadReportsByLocation(location);
     data.currentItem = data.currentItem === location ? null : location;
     data.locationID = location.id;
     if (!location.children) {
@@ -54,10 +50,10 @@ export const useReport = (): any => {
     store.dispatch("Drawer/CLOSE");
   };
 
-  const loadReportsByLocation = (location) => {
+  const loadReportsByLocation = async (location) => {
     const params = {
       location_id: location.id,
-      facility_id: (location.level_id === 6)? location.id : null,
+      facility_id: location.level_id === 6 ? location.id : null,
     };
 
     fetchReportTree(params).then((response: AxiosResponse) => {
@@ -97,7 +93,7 @@ export const useReport = (): any => {
   });
 
   const getNodes = async (id?: number | string) => {
-    const locationID = id? id : route.params.location_id;
+    const locationID = id ? id : route.params.location_id;
     if (locationID && !data.location) {
       find(locationID)
         .then((response: AxiosResponse) => {
@@ -152,7 +148,7 @@ export const useReport = (): any => {
         data.location = response.data.data;
         loadReportsByLocation(response.data.data);
         getNodes(route.params.location_id);
-      })
+      });
     } else {
       getNodes();
     }

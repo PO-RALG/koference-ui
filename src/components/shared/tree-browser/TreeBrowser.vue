@@ -6,6 +6,9 @@
           {{ data.expanded ? "mdi-chevron-down-box" : "mdi-chevron-right-box" }}
         </v-icon>
       </span>
+      <span v-else class="type">
+        <v-icon small>{{ attachmentIcon }}</v-icon>
+      </span>
       <span @click="nodeClicked()" :class="{ active: isActiveItem }" class="name" :value="node">
         {{ node.name }}
       </span>
@@ -53,6 +56,11 @@ export default defineComponent({
       type: String,
       required: false,
       default: "children",
+    },
+    attachmentIcon: {
+      type: String,
+      required: false,
+      default: "",
     },
     currentItem: {
       type: Object as PropType<TreeNode>,

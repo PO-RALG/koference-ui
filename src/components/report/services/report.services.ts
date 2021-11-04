@@ -11,6 +11,10 @@ const findReport = async (id) => {
   return axios.get(`${API}/${id}`);
 };
 
+const getParams = async (id) => {
+  return axios.get(`${API}/${id}/parameters`);
+};
+
 const createReport = async (payload) => {
   return await axios.post(API, payload);
 };
@@ -40,13 +44,6 @@ const fetchReportTree = async ({ location_id, facility_id }) => {
   }
 };
 
-const fetchReportTree2 = async (payload) => {
-  const params = {
-    "levelId.equals": payload,
-  };
-  return axios.get(API, { params: params });
-};
-
 const fetchReportParams = async (id) => {
   const END_POINT = `${API}/${id}/parameters`;
   return axios.get(END_POINT);
@@ -61,5 +58,5 @@ export {
   updateReport,
   deleteReport,
   fetchReportParams,
-  fetchReportTree2,
+  getParams,
 };
