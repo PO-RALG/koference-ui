@@ -41,6 +41,7 @@ import { paymentRoutes } from "@/components/payable/payment";
 import { reportRoutes } from "@/components/report";
 // import { testRoutes } from "@/components/test";
 import { creditorRoutes } from "@/components/payable/creditor";
+import { chequeListRoutes } from "@/components/payable/cheque-list";
 import { notFoundRoute } from "@/components/404";
 
 // import route middlewares
@@ -105,6 +106,7 @@ const routes: Array<RouteConfig> = [
       ...reportRoutes,
       // ...testRoutes,
       ...creditorRoutes,
+      ...chequeListRoutes,
       ...notFoundRoute,
     ],
   },
