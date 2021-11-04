@@ -1,7 +1,7 @@
 import axios from "axios";
+import { getCurrentUser } from "@/middleware";
 
 const API = "api/v1/reports";
-const ENDPOINT = "api/v1/reportp/exportz";
 
 const getReports = async (payload) => {
   return axios.get(API, { params: payload });
@@ -15,17 +15,28 @@ const getParams = async (id) => {
   return axios.get(`${API}/${id}/parameters`);
 };
 
-const createReport = async (payload) => {
-  return await axios.post(API, payload);
+const serializeParams = (params: any) =>  {
+  const str = [];
+  for (const p in params) {
+    if (p in params) {
+      if (params[p]) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(params[p]));
+      }
+    }
+  }
+  return str.join("&");
 };
 
-const exportReport = async (payload) => {
-  return await axios({
-    url: ENDPOINT,
-    data: payload,
-    method: "POST",
-    responseType: "blob",
-  });
+const printReport = async (reportID: number, payload?: any) => {
+  const currentUser = await getCurrentUser();
+  const token = currentUser.token;
+  const query = serializeParams(payload);
+  const url = `${process.env.VUE_APP_SERVER_URL}/${API}/${reportID}/print?${query}&token=${token}`;
+  return window.open(url);
+};
+
+const createReport = async (payload) => {
+  return await axios.post(API, payload);
 };
 
 const updateReport = async (payload) => {
@@ -54,9 +65,9 @@ export {
   fetchReportTree,
   findReport,
   createReport,
-  exportReport,
   updateReport,
   deleteReport,
   fetchReportParams,
   getParams,
+  printReport,
 };

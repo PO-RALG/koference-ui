@@ -3,6 +3,7 @@ import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 const reportRoutes = [
   {
     path: "/reports",
+    name: "reports",
     title: "Print Reports",
     component: () => import(/* webpackChunkName: "Report" */ "../Report.vue"),
     children: [
