@@ -103,19 +103,6 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
-                  <DualMultiSelect
-                    :source="data.roles"
-                    :destination="data.selectedRoles"
-                    v-model="data.formData.roles"
-                    :label="'name'"
-                    :modelName="'roles'"
-                    @onChangeList="onChangeList"
-                  />
-                </v-col>
-              </v-row>
-
-              <v-row>
                 <v-col cols="12" sm="12" md="6">
                   <v-label v-if="data.formData.location">
                     <h5 class="tree-title">SELECTED USER LOCATION ({{ data.formData.location.name }})</h5>
@@ -151,6 +138,18 @@
                       ></v-select>
                     </v-col>
                   </v-row>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+                  <DualMultiSelect
+                    :source="data.roles"
+                    :destination="data.selectedRoles"
+                    v-model="data.formData.roles"
+                    :label="'name'"
+                    :modelName="'roles'"
+                    @onChangeList="onChangeList"
+                  />
                 </v-col>
               </v-row>
             </v-container>
