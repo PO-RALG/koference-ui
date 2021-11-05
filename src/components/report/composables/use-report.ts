@@ -1,7 +1,8 @@
-import { reactive, onMounted, set, computed } from "@vue/composition-api";
+import { reactive, onMounted, set, computed, watch } from "@vue/composition-api";
 import { fetchReportTree } from "../services/report.services";
 import router from "@/router";
 import store from "@/store";
+import { getCurrentUser } from "@/middleware";
 
 import {
   get as fetchLocationTree,
@@ -12,8 +13,9 @@ import {
 import { AxiosResponse } from "axios";
 import { useRoute } from "vue2-helpers/vue-router";
 
-export const useReport = (): any => {
+export const useReport = (props, { root }): any => {
   const route = useRoute();
+  const currentUser = getCurrentUser();
 
   const data = reactive({
     location: null,
@@ -28,16 +30,17 @@ export const useReport = (): any => {
     report: null,
     node: null,
     deleteModal: false,
-    rows: ["10", "20", "50", "100"],
     modalTitle: "",
-    formats: ["pdf", "xlsx", "pptx", "docx", "csv"],
   });
 
   const loadLocationChildren = async (location: any) => {
-    data.location = location;
+    // if data.location.id is similar to the selected location.id
+    // dont do any navigation otherwise replace the params
+
+    store.dispatch("Drawer/CLOSE");
     await loadReportsByLocation(location);
     data.currentItem = data.currentItem === location ? null : location;
-    data.locationID = location.id;
+    data.location = location;
     if (!location.children) {
       if (location.id !== data.node.id) {
         getChildren(location.id).then((response: AxiosResponse) => {
@@ -47,8 +50,8 @@ export const useReport = (): any => {
         });
       }
     }
-    store.dispatch("Drawer/CLOSE");
   };
+
 
   const loadReportsByLocation = async (location) => {
     const params = {
@@ -64,16 +67,18 @@ export const useReport = (): any => {
   const loadReportCategories = async (report: any) => {
     const locationId = data.location.id;
     if (locationId && reportHasTemplateUrl(report)) {
-      router
-        .push({
-          path: `/reports/${locationId}`,
-          query: { report_id: report.id },
-        })
-        .catch((err) => console.log(err));
+      const path = `/reports/${locationId}?report_id=${report.id}`;
+      const currentPath = root.$route.path;
+      if (currentPath === path) {
+        return
+      } else {
+        router.push(path).catch((err) => console.log(err));
+      }
     } else {
-      const reportId = router.currentRoute.query.report_id;
-      if (reportId) {
-        router.go(-1);
+      if (root.$route.path === '/reports') {
+        return;
+      } else {
+        router.push({ path: "/reports" });
       }
     }
   };
@@ -88,50 +93,24 @@ export const useReport = (): any => {
     return data.location;
   });
 
+  const locationId = computed(() => parseInt(root.$route.params.location_id));
+
   const hasTemplateUrL = computed(() => {
     return reportHasTemplateUrl(data.selectedReport);
   });
 
   const getNodes = async (id?: number | string) => {
-    const locationID = id ? id : route.params.location_id;
-    if (locationID && !data.location) {
-      find(locationID)
-        .then((response: AxiosResponse) => {
-          data.location = response.data.data;
-          data.currentItem = response.data.data;
-        })
-        .then(() => {
-          getChildren(id)
-            .then((response: AxiosResponse) => {
-              data.node = response.data.data;
-            })
-            .then(() => {
-              setQueryParams(data.location);
-            });
-        });
-    } else {
-      getChildren(id).then((response: AxiosResponse) => {
-        data.node = response.data.data;
-      });
-    }
-  };
-
-  const setQueryParams = async (location: any) => {
-    router
-      .push({
-        path: `/reports/${location.id}`,
+    find(id)
+      .then((response: AxiosResponse) => {
+        loadReportsByLocation(response.data.data);
+        data.location = response.data.data;
+        data.currentItem = response.data.data;
       })
-      .catch((error: any) => {
-        console.error(error);
+      .then(() => {
+        getChildren(id).then((response: AxiosResponse) => {
+          data.node = response.data.data;
+        });
       });
-  };
-
-  const showContextMenu = (node) => {
-    console.log("right-clicked node", node);
-  };
-
-  const getReportsByLevel = (location) => {
-    console.log("reports by level", location);
   };
 
   const reportHasTemplateUrl = (report: any) => {
@@ -143,14 +122,14 @@ export const useReport = (): any => {
   };
 
   onMounted(() => {
-    if (route.params.location_id) {
-      find(route.params.location_id).then((response: AxiosResponse) => {
-        data.location = response.data.data;
-        loadReportsByLocation(response.data.data);
-        getNodes(route.params.location_id);
-      });
+    const locationId = root.$route.params.location_id;
+    // if there's no location id param then
+    // add the current user's location_id in the param
+    // if there's location don't do anything just load the report categories
+    if (locationId) {
+      getNodes(locationId);
     } else {
-      getNodes();
+      getNodes(currentUser.location_id);
     }
   });
 
@@ -159,12 +138,11 @@ export const useReport = (): any => {
     loadLocationChildren,
     loadReportCategories,
     getLocationTree,
-    showContextMenu,
-    getReportsByLevel,
     reportHasTemplateUrl,
     closeInfoDialog,
     getNodes,
     location,
     hasTemplateUrL,
+    locationId,
   };
 };

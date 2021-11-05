@@ -81,20 +81,20 @@
 
                 <v-col cols="12" md="6">
                   <fetcher :api="'/api/v1/admin-area-levels'">
-                  <div slot-scope="{ json: levels, loading }">
-                    <div v-if="loading">Loading...</div>
-                    <v-select
-                      v-else
-                      v-model="data.formData.level_id"
-                      :items="levels"
-                      item-value="id"
-                      label="Report Level"
-                      required
+                    <div slot-scope="{ json: levels, loading }">
+                      <div v-if="loading">Loading...</div>
+                      <v-select
+                        v-else
+                        v-model="data.formData.level_id"
+                        :items="levels"
+                        item-value="id"
+                        label="Report Level"
+                        required
                       >
-                      <template v-slot:selection="{ item }">{{ item.name }}</template>
-                      <template v-slot:item="{ item }">{{ item.name }}</template>
-                    </v-select>
-                  </div>
+                        <template v-slot:selection="{ item }">{{ item.name }}</template>
+                        <template v-slot:item="{ item }">{{ item.name }}</template>
+                      </v-select>
+                    </div>
                   </fetcher>
                 </v-col>
                 <v-col cols="12" md="6">
@@ -149,26 +149,14 @@ import { useNewReport } from "./composables/use-new-report";
 export default defineComponent({
   name: "NewReport",
   setup() {
-    const {
-      data,
-      openDialog,
-      openConfirmDialog,
-      fetchReports,
-      cancelDialog,
-      save,
-      cancelConfirmDialog,
-      remove,
-      loadReports,
-    } = useNewReport();
+    const { data, openDialog, openConfirmDialog, cancelDialog, save, remove, loadReports } = useNewReport();
 
     return {
       data,
       openDialog,
       openConfirmDialog,
-      fetchReports,
       cancelDialog,
       save,
-      cancelConfirmDialog,
       loadReports,
       remove,
     };

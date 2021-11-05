@@ -1,6 +1,21 @@
 <template>
   <div>
     <v-select
+      v-if="required"
+      :items="entries"
+      :label="requiredLabel"
+      :value="value"
+      :item-value="itemValue"
+      :item-text="itemText"
+      :rules="data.rules.select"
+      v-bind="{
+        ...$attrs,
+      }"
+      @change="$emit('input', $event)"
+    >
+    </v-select>
+    <v-select
+      v-else
       :items="entries"
       :label="label"
       :value="value"
@@ -16,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "@vue/composition-api";
+import { reactive, computed, defineComponent } from "@vue/composition-api";
 export default defineComponent({
   props: {
     label: {
@@ -25,6 +40,10 @@ export default defineComponent({
     },
     value: {
       required: false,
+    },
+    required: {
+      type: Boolean,
+      default: false,
     },
     itemText: {
       required: false,
@@ -42,6 +61,11 @@ export default defineComponent({
   },
 
   setup(props) {
+    const data = reactive({
+      rules: {
+        select: [v => !!v || 'Item is required'],
+      },
+    });
     const entries = computed(() => {
       return props.items.map((item: any) => ({
         ...item,
@@ -49,8 +73,14 @@ export default defineComponent({
       }));
     });
 
+    const requiredLabel = computed(() => {
+      return `${props.label} *`;
+    });
+
     return {
+      data,
       entries,
+      requiredLabel,
     };
   },
 });

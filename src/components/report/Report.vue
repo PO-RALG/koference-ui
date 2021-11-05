@@ -16,7 +16,7 @@
         />
       </v-col>
       <v-col cols="12" sm="12" md="6">
-        <router-view></router-view>
+        <router-view :key="this.$route.fullPath"></router-view>
       </v-col>
     </v-row>
     <info-dialog
@@ -32,14 +32,11 @@ import { defineComponent } from "@vue/composition-api";
 import { useReport } from "./composables/use-report";
 
 export default defineComponent({
-  setup() {
-    const {
-      data,
-      loadLocationChildren,
-      loadReportCategories,
-      getLocationTree,
-      closeInfoDialog
-    } = useReport();
+  setup(props, context) {
+    const { data, loadLocationChildren, loadReportCategories, getLocationTree, closeInfoDialog } = useReport(
+      props,
+      context
+    );
 
     return {
       data,
