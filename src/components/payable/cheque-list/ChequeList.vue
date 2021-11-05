@@ -69,46 +69,54 @@
                 <v-col cols="12" md="3">
                   <DatePicker
                     :label="'Date'"
-                    v-model="data.formData.payment_date"
+                    v-model="data.formData.date"
                     required
                   />
                 </v-col>
+                <v-col cols="12" md="3" sm="12">
+                  <v-select
+                    v-model="data.formData.bank_account_id"
+                    :items="data.bankAccounts"
+                    item-text="name"
+                    item-value="id"
+                    label="Select Bank Account"
+                    required
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12" md="3" sm="12">
+                  <v-btn
+                    color="primary"
+                    @click="searchPaymentByDate"
+                    :disabled="!data.valid"
+                  >
+                    {{ `Search Payments` }}
+                  </v-btn>
+                </v-col>
               </v-row>
               <template>
-                <v-col cols="12" md="12" class="data-table" v-if="data.formData.voucher_id">
+                <v-col cols="12" md="12" v-if="data.formData.date">
                   <v-data-table
-                    :headers="payableHeader"
+                    :headers="data.paymentHeaders"
+                    :items="data.payments"
                     disable-pagination
                     hide-default-footer
                   >
-                    <template v-slot:body>
-                      <tbody>
-                        <tr v-for="(payable, i) in data.payableItems" :key="i">
-                          <td>
-                            {{ payable.description}}<br />
-                            <span class="teal--text">
-                              {{ payable.funding_source.description }}
-                              ({{ payable.funding_source.code }})
-                            </span>
-                          </td>
-                          <td>
-                            {{ payable.required_amount | toCurrency() }}
-                          </td>
-                          <td>
-                            {{ payable.paid_amount | toCurrency() }}
-                          </td>
-                          <td>
-                            <v-text-field
-                              class="pt-3"
-                              outlined
-                              dense
-                              type="number"
-                              v-model="payable.payment"
-                              :rules="[maxRules(payable.balance)]"
-                            ></v-text-field>
-                          </td>
-                        </tr>
-                      </tbody>
+                    <template v-slot:[`item.payment_date`]="{ item }">
+                      <span>{{ item.payment_date | format("DD/MM/YYYY") }}</span>
+                    </template>
+                    <template v-slot:[`item.amount`]="{ item }">
+                      {{ item.amount | toCurrency() }}
+                    </template>
+                    <template v-slot:[`item.bank_account`]="{ item }">
+                      {{ item.bank_account.number  }}({{ item.bank_account.name }})
+                    </template>
+                    <template v-slot:[`item.activations`]="{ item }">
+                      <v-switch
+                        :input-value="item.active"
+                        @change="setActivation(item)"
+                        value
+                      ></v-switch>
                     </template>
                   </v-data-table>
                 </v-col>
@@ -270,6 +278,7 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       save,
+      searchPaymentByDate,
     } = useChequeList();
 
     return {
@@ -282,6 +291,7 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       save,
+      searchPaymentByDate,
     };
   },
 });

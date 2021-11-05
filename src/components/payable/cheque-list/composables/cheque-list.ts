@@ -3,13 +3,14 @@ import { AxiosResponse } from "axios";
 import moment from "moment";
 import { get, find, getPayments } from "../services/cheque-list.services";
 import { ChequeList } from "../types/ChequeList";
+import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
 
 export const useChequeList = (): any => {
   const dataItems: Array<ChequeList> = [];
   const chequeListData = {} as ChequeList;
 
   const data = reactive({
-    title: "ChequeLists",
+    title: "Cheque Lists",
     valid: false,
     isOpen: false,
     node: null,
@@ -53,6 +54,49 @@ export const useChequeList = (): any => {
         sortable: false,
       },
     ],
+    paymentHeaders: [
+      {
+        text: "Date",
+        align: "start",
+        sortable: false,
+        value: "payment_date",
+      },
+      {
+        text: "Payment #",
+        align: "start",
+        sortable: false,
+        value: "reference_no",
+      },
+      {
+        text: "Amount",
+        align: "start",
+        sortable: false,
+        value: "amount",
+      },
+      {
+        text: "Payee",
+        align: "start",
+        sortable: false,
+        value: "voucher.supplier.name",
+      },
+      {
+        text: "Cheque #",
+        align: "start",
+        sortable: false,
+        value: "cheque",
+      },
+      {
+        text: "Bank Account",
+        align: "start",
+        sortable: false,
+        value: "bank_account",
+      },
+      {
+        text: "Select",
+        value: "activations",
+        sortable: false,
+      },
+    ],
     items: dataItems,
     itemsToFilter: [],
     formData: chequeListData,
@@ -66,6 +110,7 @@ export const useChequeList = (): any => {
     pvDetails: { printDate: "" },
     CreditorModal: false,
     payments: [],
+    bankAccounts: [],
   });
 
   onMounted(() => {
@@ -123,6 +168,7 @@ export const useChequeList = (): any => {
     data.modalTitle = "Create";
     data.searchTerm = "";
     data.modal = !data.modal;
+    getBankAccountData();
   };
 
   const cancelDialog = () => {
@@ -135,13 +181,7 @@ export const useChequeList = (): any => {
 
     // createPayment(data.formData);
   };
-
-  const getPaymentData = (dateSelected) => {
-    getPayments(dateSelected).then((response: AxiosResponse) => {
-      data.payments = response.data.data.data;
-    });
-  }
-
+  
   const previewPayment = (id: number) => {
     find(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
@@ -156,6 +196,23 @@ export const useChequeList = (): any => {
     data.CreditorModal = !data.CreditorModal;
   };
 
+  const searchPaymentByDate = () => {
+    getPayments(data.formData).then((response: AxiosResponse) => {
+      const allPayments = response.data.data;
+      for (let i = 0; i < allPayments.length; i++) {
+        const element = allPayments[i];
+        element.active = false;
+        data.payments.push(element);
+      }
+    });
+  };
+
+  const getBankAccountData = () => {
+    getBankAccounts({ per_page: 10 }).then((response: AxiosResponse) => {
+      data.bankAccounts = response.data.data.data;
+    });
+  };
+
   return {
     data,
     getData,
@@ -165,5 +222,6 @@ export const useChequeList = (): any => {
     openDialog,
     cancelDialog,
     save,
+    searchPaymentByDate,
   };
 };

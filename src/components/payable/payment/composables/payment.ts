@@ -188,7 +188,7 @@ export const usePayment = (): any => {
       const pvData = response.data.data;
       for (let j = 0; j < pvData.payables.length; j++) {
         const e = pvData.payables[j];
-        e.payment = 0;
+        e.payment = Number(e.amount);
         e.required_amount = Number(e.amount);
         e.paid_amount = Number(e.paid_amount);
         e.balance = Number(e.amount) - Number(e.paid_amount);
