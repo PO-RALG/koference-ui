@@ -8,14 +8,14 @@ const getReports = async (payload) => {
 };
 
 const findReport = async (id) => {
-  return axios.get(`${API}/${id}`);
+  if (id) return axios.get(`${API}/${id}`);
 };
 
 const getParams = async (id) => {
   return axios.get(`${API}/${id}/parameters`);
 };
 
-const serializeParams = (params: any) =>  {
+const serializeParams = (params: any) => {
   const str = [];
   for (const p in params) {
     if (p in params) {

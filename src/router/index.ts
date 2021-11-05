@@ -116,20 +116,6 @@ const router = new VueRouter({
   routes,
 });
 
-const routeData = Vue.observable({ params: {}, query: {} });
-router.afterEach((route) => {
-  routeData.params = route.params;
-  routeData.query = route.query;
-});
-
-export const useParams = () => {
-  return computed(() => routeData.params);
-};
-
-export const useQuery = () => {
-  return computed(() => routeData.query);
-};
-
 // middlewares
 const isLoggedIn = (to, _, next) => {
   const loginStatus = store.getters["Auth/getLoginStatus"];
