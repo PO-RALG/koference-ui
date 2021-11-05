@@ -186,7 +186,13 @@ export const usePaymentVoucher = (): any => {
 
   const getSupplierData = () => {
     getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
-      data.suppliers = response.data.data.data;
+      const allSuppliers = response.data.data.data;
+      for (let i = 0; i < allSuppliers.length; i++) {
+        const element = allSuppliers[i];
+        if (element.active === true) {
+          data.suppliers.push(element);
+        }
+      }
     });
   };
 
@@ -194,7 +200,13 @@ export const usePaymentVoucher = (): any => {
     const regSearchTerm = item ? item : data.searchTerm;
     getSupplier({ per_page: 10, regSearch: regSearchTerm }).then(
       (response: AxiosResponse) => {
-        data.suppliers = response.data.data.data;
+        const allSuppliers = response.data.data.data;
+        for (let i = 0; i < allSuppliers.length; i++) {
+          const element = allSuppliers[i];
+          if (element.active === true) {
+            data.suppliers.push(element);
+          }
+        }
       }
     );
   };
@@ -322,7 +334,9 @@ export const usePaymentVoucher = (): any => {
   const previewPaymentVoucher = (id: number) => {
     find(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
-      data.pvDetails.printDate = moment(new Date()).format("DD/MM/YYYY H:mm:ss");
+      data.pvDetails.printDate = moment(new Date()).format(
+        "DD/MM/YYYY H:mm:ss"
+      );
       data.paymentVoucherModal = !data.paymentVoucherModal;
     });
   };
