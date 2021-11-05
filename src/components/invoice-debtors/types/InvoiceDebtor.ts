@@ -5,4 +5,5 @@ export interface InvoiceDebtor {
   email: string;
   address: string;
   phone: string;
+  age: number;
 }

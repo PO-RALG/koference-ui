@@ -4,301 +4,105 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
     </v-card-actions>
-    <v-card>
-      <v-data-table
-        :headers="data.headers"
-        :items="data.items"
-        :single-expand="true"
-        class="elevation-1"
-        disable-pagination
-        hide-default-footer
-      >
-        <template v-slot:top>
-          <v-card-title>
-            <v-spacer></v-spacer>
-            <!-- <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Name"
-                @change="searchCategory($event)"
-                :items="data.itemsToFilter"
-                :item-text="'name'"
-                :item-divider="true"
-                return-object
-                required
-                clearable
-              ></v-autocomplete>
-            </v-col> -->
-          </v-card-title>
-        </template>
+    <v-container>
+      <v-row>
+        <v-col sm="12">
+          <v-row no-gutters>
+            <v-col cols="12" sm="4">
+              <v-card flat class="pa-2" outlined tile>
+                Debtors age les than <strong>30 days</strong>
+              </v-card>
 
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-list-item
-            class="font-italic"
-            exact
-            light
-            @click="viewInvoice(item)"
-            >{{ "VIEW INVOICES" }}</v-list-item
-          >
-        </template>
-
-        <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
-        </template>
-      </v-data-table>
-    </v-card>
-    <Modal :modal="data.viewInvoiceDialog" :width="1080">
-      <template v-slot:header>
-        <ModalHeader :title="`List of Customer's Invoices`" />
-      </template>
-      <template v-slot:body>
-        <ModalBody flat v-if="data.invoices">
-          <v-data-table
-            dense
-            :headers="data.invoice_headers"
-            :items="data.invoices"
-            :single-expand="true"
-            class="elevation-0"
-            disable-pagination
-            hide-default-footer
-            :loading="data.loading"
-            loading-text="Loading... Please wait"
-          >
-            <template v-slot:[`item.invoice_number`]="{ item }">
-              <v-list-item @click="previewInvoice(item)">{{
-                item.invoice_number
-              }}</v-list-item>
-            </template>
-            <template v-slot:[`item.date`]="{ item }">
-              {{ item.date | format() }}
-            </template>
-            <template v-slot:[`item.amount`]="{ item }">
-              {{ item.amount | toCurrency() }}
-            </template>
-            <template v-slot:[`item.pending`]="{ item }">
-              {{ (item.amount - item.received_amount) | toCurrency() }}
-            </template>
-            <template v-slot:[`item.received_amount`]="{ item }">
-              {{ item.received_amount | toCurrency() }}
-            </template>
-            <template v-slot:top>
-              <v-card-title>
-                <span v-if="data">
-                  <v-icon></v-icon>
-                  Customer:
-                  <small>
-                    {{ data.selectedDebtor.name }}
-                  </small>
-                </span>
-                <span v-if="data">
-                  <v-icon></v-icon>
-                  Phone:
-                  <small>
-                    {{ data.selectedDebtor.phone }}
-                  </small>
-                </span>
-                <v-spacer></v-spacer>
-                <v-btn color="red darken-1" text @click="cancelDialog"
-                  >Close</v-btn
+              <v-card flat>
+                <v-data-table
+                  :headers="data.headers"
+                  :items="newDetorsWithin30Days"
+                  :single-expand="true"
+                  class="elevation-1 green lighten-5"
+                  disable-pagination
+                  hide-default-footer
                 >
-              </v-card-title>
-            </template>
+                  <template v-slot:[`item.actions`]="{ item }">
+                    <v-list-item
+                      class="font-italic"
+                      exact
+                      light
+                      @click="viewInvoice(item)"
+                      >{{ "VIEW INVOICES" }}</v-list-item
+                    >
+                  </template>
 
-            <template v-slot:footer>
-              <Paginate
-                :params="data.response"
-                :rows="data.rows"
-                @onPageChange="getData"
-              />
-            </template>
-          </v-data-table>
-        </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter> </ModalFooter>
-      </template>
-    </Modal>
+                  <template v-slot:[`item.customer`]="{ item }">
+                    <small>{{ item.customer.name }}</small>
+                  </template>
+                </v-data-table>
+              </v-card>
+            </v-col>
 
-    <Modal :modal="data.invoicedetails" :width="1000">
-      <template v-slot:header>
-        <ModalHeader :title="`Invoice Details`" />
-      </template>
-      <template v-slot:body>
-        <ModalBody>
-          <div class="invoice-box" v-if="data.invoiceData">
-            <table cellpadding="0" cellspacing="0">
-              <tr class="top">
-                <td colspan="4">
-                  <table>
-                    <tr>
-                      <td class="title">
-                        <v-btn
-                          color="info darken-1"
-                          text
-                          @click="cancelInvoiceDialog"
-                          ><v-icon> mdi-printer </v-icon> Print</v-btn
-                        >
+            <v-col cols="12" sm="4">
+              <v-card flat class="pa-2" outlined tile>
+                Debtors age greater than <strong>30 days</strong> less than
+                <strong>90 days</strong>
+              </v-card>
 
-                        <v-btn
-                          color="red darken-1"
-                          text
-                          @click="cancelInvoiceDialog"
-                          >Close</v-btn
-                        >
-                      </td>
+              <v-card flat>
+                <v-data-table
+                  :headers="data.headers"
+                  :items="newDetorsBelow30Days"
+                  :single-expand="true"
+                  class="elevation-1 yellow lighten-5"
+                  disable-pagination
+                  hide-default-footer
+                >
+                  <template v-slot:[`item.actions`]="{ item }">
+                    <v-list-item
+                      class="font-italic"
+                      exact
+                      light
+                      @click="viewInvoice(item)"
+                      >{{ "VIEW INVOICES" }}</v-list-item
+                    >
+                  </template>
+                  <template v-slot:[`item.customer`]="{ item }">
+                    <small>{{ item.customer.name }}</small>
+                  </template>
+                </v-data-table>
+              </v-card>
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-card flat class="pa-2" outlined tile>
+                Debtors age greater than <strong>90 days</strong>
+              </v-card>
 
-                      <td>
-                        <strong>
-                          Invoice #:{{
-                            data.invoiceData
-                              ? data.invoiceData.invoice_number
-                              : ""
-                          }}</strong
-                        ><br />
-                        Created:
-                        {{
-                          data.invoiceData
-                            ? data.invoiceData.date
-                            : "" | format
-                        }}<br />
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
+              <v-card flat>
+                <v-data-table
+                  :headers="data.headers"
+                  :items="newDetorsGreater90Days"
+                  :single-expand="true"
+                  class="elevation-1 red lighten-5"
+                  disable-pagination
+                  hide-default-footer
+                >
+                  <template v-slot:[`item.actions`]="{ item }">
+                    <v-list-item
+                      class="font-italic"
+                      exact
+                      light
+                      @click="viewInvoice(item)"
+                      >{{ "VIEW INVOICES" }}</v-list-item
+                    >
+                  </template>
 
-              <tr class="information">
-                <td colspan="4">
-                  <table>
-                    <tr v-if="data.invoiceData">
-                      <td>
-                        <img :src="data.coat" class="login-logo pt-5" /><br />
-                        <strong> Facility Name: </strong>
-                        {{
-                          data.invoiceData.facility
-                            ? data.invoiceData.facility.name
-                            : ""
-                        }}<br />
-                        Address:
-                        {{
-                          data.invoiceData.facility
-                            ? data.invoiceData.facility.postal_address
-                            : ""
-                        }}<br />
-                        Email:
-                        {{
-                          data.invoiceData.facility
-                            ? data.invoiceData.facility.email
-                            : ""
-                        }}<br />
-                        Phone:{{
-                          data.invoiceData.facility
-                            ? data.invoiceData.facility.phone_number
-                            : ""
-                        }}
-                      </td>
-
-                      <td>
-                        <strong> Customer Name: </strong>
-                        {{
-                          data.invoiceData.customer
-                            ? data.invoiceData.customer.name
-                            : ""
-                        }}<br />
-                        Address:{{
-                          data.invoiceData.customer
-                            ? data.invoiceData.customer.address
-                            : ""
-                        }}<br />
-                        Email:{{
-                          data.invoiceData.customer
-                            ? data.invoiceData.customer.email
-                            : ""
-                        }}<br />
-                        Phone:{{
-                          data.invoiceData.customer
-                            ? data.invoiceData.customer.phone
-                            : ""
-                        }}<br />
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              <v-data-table
-                :headers="data.HEADERS_INVOICE_DETAILS"
-                :items="data.items"
-                disable-pagination
-                hide-default-footer
-              >
-                <template v-slot:body>
-                  <tr
-                    v-for="item in data.invoiceData.invoice_items"
-                    :key="item.id"
-                    class="invoice-tr"
-                  >
-                    <td>
-                      <v-text-field
-                        :hide-details="true"
-                        disabled
-                        flat
-                        dense
-                        filled
-                        v-model="item.definition.name"
-                      >
-                      </v-text-field>
-                    </td>
-
-                    <td class="invoice-td">
-                      <!-- {{ item }} -->
-                      <v-text-field
-                        :hide-details="true"
-                        disabled
-                        flat
-                        filled
-                        dense
-                        v-model="item.received_amount"
-                      >
-                      </v-text-field>
-                    </td>
-                    <td>
-                      <v-text-field
-                        :hide-details="true"
-                        type="number"
-                        disabled
-                        flat
-                        dense
-                        filled
-                        reverse
-                        v-model="item.amount"
-                      ></v-text-field>
-                    </td>
-                    <td>
-                      <v-text-field
-                        :hide-details="true"
-                        type="number"
-                        disabled
-                        flat
-                        dense
-                        filled
-                        reverse
-                        :value="item.amount - item.received_amount"
-                      ></v-text-field>
-                    </td>
-                  </tr>
-                </template>
-              </v-data-table>
-            </table>
-          </div>
-        </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter> </ModalFooter>
-      </template>
-    </Modal>
+                  <template v-slot:[`item.customer`]="{ item }">
+                    <small>{{ item.customer.name }}</small>
+                  </template>
+                </v-data-table>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -321,6 +125,9 @@ export default defineComponent({
       searchCategory,
       previewInvoice,
       cancelInvoiceDialog,
+      newDetorsWithin30Days,
+      newDetorsBelow30Days,
+      newDetorsGreater90Days,
     } = useInvoiceDebtor();
 
     return {
@@ -334,6 +141,9 @@ export default defineComponent({
       searchCategory,
       previewInvoice,
       cancelInvoiceDialog,
+      newDetorsWithin30Days,
+      newDetorsBelow30Days,
+      newDetorsGreater90Days,
     };
   },
 });
