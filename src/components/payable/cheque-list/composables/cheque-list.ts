@@ -1,74 +1,61 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import moment from "moment";
-import { get, find } from "../services/creditor.services";
-import { Creditor } from "../types/Creditor";
+import { get, find, getPayments } from "../services/cheque-list.services";
+import { ChequeList } from "../types/ChequeList";
 
-export const useCreditor = (): any => {
-  const dataItems: Array<Creditor> = [];
-  const creditorData = {} as Creditor;
+export const useChequeList = (): any => {
+  const dataItems: Array<ChequeList> = [];
+  const chequeListData = {} as ChequeList;
 
   const data = reactive({
-    title: "Creditors",
+    title: "ChequeLists",
     valid: false,
     isOpen: false,
     node: null,
     response: {},
     modalTitle: "",
+    modal: false,
     headers: [
       {
-        text: "Reference Number",
+        text: "Payment #",
         align: "start",
         sortable: false,
-        value: "reference_no",
+        value: "voucher",
       },
       {
         text: "Date",
         align: "start",
         sortable: false,
-        value: "date",
+        value: "payment_date",
       },
       {
-        text: "Supplier",
+        text: "Amount",
         align: "start",
         sortable: false,
-        value: "supplier.name",
+        value: "amount",
       },
       {
-        text: "Age < 30 days",
-        align: "end",
+        text: "Payee",
+        align: "start",
         sortable: false,
-        value: "below_30",
+        value: "voucher.supplier.name",
       },
       {
-        text: "30 days > Age < 60 days",
-        align: "end",
+        text: "Bank Account",
+        align: "start",
         sortable: false,
-        value: "between_30_60",
+        value: "bank_account",
       },
       {
-        text: "60 days > Age < 90 days",
-        align: "end",
+        text: "Actions",
+        value: "actions",
         sortable: false,
-        value: "between_60_90",
       },
-      {
-        text: "60 days > Age < 90 days",
-        align: "end",
-        sortable: false,
-        value: "between_90_120",
-      },
-      {
-        text: "Age > 120 days",
-        align: "end",
-        sortable: false,
-        value: "above_120",
-      },
-      
     ],
     items: dataItems,
     itemsToFilter: [],
-    formData: creditorData,
+    formData: chequeListData,
     params: {
       total: 100,
       size: 10,
@@ -78,6 +65,7 @@ export const useCreditor = (): any => {
     coat: "/coat_of_arms.svg.png",
     pvDetails: { printDate: "" },
     CreditorModal: false,
+    payments: [],
   });
 
   onMounted(() => {
@@ -94,7 +82,7 @@ export const useCreditor = (): any => {
     });
   };
 
-  const getData = (params: Creditor) => {
+  const getData = (params: ChequeList) => {
     data.response = params;
     get(params).then((response: AxiosResponse) => {
       data.response = response.data.data;
@@ -129,8 +117,32 @@ export const useCreditor = (): any => {
       width: "",
     },
   ];
-  
-  const previewCreditor = (id: number) => {
+
+  const openDialog = () => {
+    data.formData = {} as ChequeList;
+    data.modalTitle = "Create";
+    data.searchTerm = "";
+    data.modal = !data.modal;
+  };
+
+  const cancelDialog = () => {
+    data.formData = {} as ChequeList;
+    data.modal = !data.modal;
+  };
+
+  const save = () => {
+    const payableData = [];
+
+    // createPayment(data.formData);
+  };
+
+  const getPaymentData = (dateSelected) => {
+    getPayments(dateSelected).then((response: AxiosResponse) => {
+      data.payments = response.data.data.data;
+    });
+  }
+
+  const previewPayment = (id: number) => {
     find(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
       data.pvDetails.printDate = moment(new Date()).format(
@@ -149,6 +161,9 @@ export const useCreditor = (): any => {
     getData,
     payablePrintHeader,
     cancelPreviewDialog,
-    previewCreditor,
+    previewPayment,
+    openDialog,
+    cancelDialog,
+    save,
   };
 };

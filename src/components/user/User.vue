@@ -60,13 +60,25 @@
             <v-container>
               <v-row>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="First Name" v-model="data.formData.first_name" required> </v-text-field>
+                  <v-text-field
+                    label="First Name"
+                    v-model="data.formData.first_name"
+                    :rules="data.requiredRules"
+                    required> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="Midde Name" v-model="data.formData.middle_name" required> </v-text-field>
+                  <v-text-field
+                    label="Midde Name"
+                    v-model="data.formData.middle_name"
+                    :rules="data.requiredRules"
+                    required> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="Last Name" v-model="data.formData.last_name" required> </v-text-field>
+                  <v-text-field
+                    label="Last Name"
+                    v-model="data.formData.last_name"
+                    :rules="data.requiredRules"
+                    required> </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -83,22 +95,13 @@
                   <v-text-field label="Phone Number" v-model="data.formData.phone_number" required> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field label="Check Number" v-model="data.formData.check_number" required> </v-text-field>
+                  <v-text-field
+                    label="Check Number"
+                    v-model="data.formData.check_number"
+                    :rules="data.requiredRules"
+                    required> </v-text-field>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
-                  <DualMultiSelect
-                    :source="data.roles"
-                    :destination="data.selectedRoles"
-                    v-model="data.formData.roles"
-                    :label="'name'"
-                    :modelName="'roles'"
-                    @onChangeList="onChangeList"
-                  />
-                </v-col>
-              </v-row>
-
               <v-row>
                 <v-col cols="12" sm="12" md="6">
                   <v-label v-if="data.formData.location">
@@ -137,6 +140,18 @@
                   </v-row>
                 </v-col>
               </v-row>
+              <v-row>
+                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+                  <DualMultiSelect
+                    :source="data.roles"
+                    :destination="data.selectedRoles"
+                    v-model="data.formData.roles"
+                    :label="'name'"
+                    :modelName="'roles'"
+                    @onChangeList="onChangeList"
+                  />
+                </v-col>
+              </v-row>
             </v-container>
             <!--<pre>{{ data.formData }}</pre>-->
           </v-form>
@@ -145,7 +160,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save">
+          <v-btn color="blue darken-1" text @click="save" :disabled="!data.valid">
             {{ data.modalTitle }}
           </v-btn>
         </ModalFooter>

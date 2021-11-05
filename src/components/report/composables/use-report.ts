@@ -52,7 +52,6 @@ export const useReport = (props, { root }): any => {
     }
   };
 
-
   const loadReportsByLocation = async (location) => {
     const params = {
       location_id: location.id,
@@ -66,16 +65,20 @@ export const useReport = (props, { root }): any => {
 
   const loadReportCategories = async (report: any) => {
     const locationId = data.location.id;
-    if (locationId && reportHasTemplateUrl(report)) {
+    if (locationId || reportHasTemplateUrl(report)) {
       const path = `/reports/${locationId}?report_id=${report.id}`;
       const currentPath = root.$route.path;
       if (currentPath === path) {
-        return
+        return;
       } else {
         router.push(path).catch((err) => console.log(err));
       }
     } else {
-      if (root.$route.path === '/reports') {
+      if (!report.children) {
+        data.isInfoDialogOpen = true;
+        data.infoMessage = "Sorry, you can only view reports that have a template";
+      }
+      if (root.$route.path === "/reports") {
         return;
       } else {
         router.push({ path: "/reports" });

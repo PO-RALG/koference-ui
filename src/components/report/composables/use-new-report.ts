@@ -161,6 +161,10 @@ export const useNewReport = () => {
     fetchReports();
   });
 
+  const cancelConfirmDialog = () => {
+    data.deleteModal = false;
+  };
+
   return {
     data,
     deleteItem,
@@ -175,5 +179,6 @@ export const useNewReport = () => {
     getReportTree,
     remove,
     getReport,
+    cancelConfirmDialog,
   };
 };

@@ -60,6 +60,9 @@ export const useUser = (): any => {
       (v: string) => !!v || "Name is required",
       (v: string) => (v && v.length <= 10) || "Name must be less than 10 characters",
     ],
+    requiredRules: [
+      (v: string) => !!v || "Field is required",
+    ],
     email: "",
     emailRules: [
       (v: string) => !!v || "E-mail is required",
