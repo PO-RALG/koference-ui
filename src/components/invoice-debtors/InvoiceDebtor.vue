@@ -10,7 +10,7 @@
           <v-row no-gutters>
             <v-col cols="12" sm="4">
               <v-card flat class="pa-2" outlined tile>
-                Debtors age les than <strong>30 days</strong>
+                Debtors age less than <strong>30 days</strong>
               </v-card>
 
               <v-card flat>
