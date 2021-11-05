@@ -65,13 +65,11 @@ export const useGLReport = (): any => {
     if (params) {
       delete params.financial_year;
       get(params).then((response: AxiosResponse) => {
-        console.log("response params", response.data.data.data);
         data.facility = response.data.data.facility;
         data.entries = response.data.data.data;
       });
     } else {
       get().then((response: AxiosResponse) => {
-        console.log("response no params", response.data.data.data);
         data.facility = response.data.data.facility;
         data.entries = response.data.data.data;
       });
@@ -104,7 +102,7 @@ export const useGLReport = (): any => {
     if (transaction.ledgerable) {
       return transaction.ledgerable.name ? transaction.ledgerable.name : transaction.ledgerable.descriptions;
     } else {
-      return ("No Description Available ");
+      return "No Description Available ";
     }
   };
 
@@ -118,10 +116,6 @@ export const useGLReport = (): any => {
     });
   });
 
-  const validateDate = () => {
-    console.log("date selected");
-  };
-
   const showDateSelection = () => {
     const fyStartDate = moment(params.financial_year.start_date).format("YYYY-MM-DD");
     const fyEndDate = moment(params.financial_year.end_date).format("YYYY-MM-DD");
@@ -129,10 +123,6 @@ export const useGLReport = (): any => {
     data.maxDate = moment(fyEndDate).isBefore(moment(data.currentDate)) ? fyEndDate : data.currentDate;
     data.minDate = fyStartDate;
     data.showDateSelection = true;
-  };
-
-  const dateSelected = (date) => {
-    //console.log("date selected composables", date)
   };
 
   const filterReport = () => {
@@ -151,8 +141,6 @@ export const useGLReport = (): any => {
     showDateSelection,
     openDialog,
     closeDialog,
-    validateDate,
-    dateSelected,
     filterReport,
     gfsCodes,
     entries,

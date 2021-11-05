@@ -101,8 +101,6 @@ export const useUser = (): any => {
   };
 
   const save = () => {
-    const roles = data.formData.roles ? data.formData.roles.map((role: any) => role.id) : [];
-    set(data.formData, "roles", roles);
     if (data.formData.id) {
       updateUser(data.formData);
     } else {
