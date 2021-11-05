@@ -149,7 +149,16 @@ import { useNewReport } from "./composables/use-new-report";
 export default defineComponent({
   name: "NewReport",
   setup() {
-    const { data, openDialog, openConfirmDialog, cancelDialog, save, remove, loadReports } = useNewReport();
+    const {
+      data,
+      openDialog,
+      openConfirmDialog,
+      cancelDialog,
+      save,
+      remove,
+      loadReports,
+      cancelConfirmDialog
+    } = useNewReport();
 
     return {
       data,
@@ -159,6 +168,7 @@ export default defineComponent({
       save,
       loadReports,
       remove,
+      cancelConfirmDialog,
     };
   },
 });
