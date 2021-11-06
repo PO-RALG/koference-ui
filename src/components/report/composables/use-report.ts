@@ -64,6 +64,7 @@ export const useReport = (props, { root }): any => {
   };
 
   const loadReportCategories = async (report: any) => {
+    data.selectedReport = report;
     const locationId = data.location.id;
     if (locationId && !report.children) {
       const path = `/reports/${locationId}?report_id=${report.id}`;
