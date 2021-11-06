@@ -1,28 +1,20 @@
 <template>
   <v-container>
     <v-card elevation="2" v-if="data.location && data.currentReport">
-    <h2 class="pl-5">
-      <span class="">{{ data.currentReport.name }} Report for {{ data.location.name }}</span>
-    </h2>
-    <br />
+      <h2 class="pl-5">
+        <span>
+          {{ data.currentReport.name }} Report ({{ data.location.name }} {{ data.location.level_id === 1? "" : data.location.level.name}})</span
+        >
+      </h2>
+      <br />
       <v-card-text class="mt-n8">
         <v-form ref="form" v-model="data.valid">
           <v-layout row wrap v-if="reportParams">
             <v-flex xs6 class="mb-5 pl-5 pr-5" v-if="reportParams.length === 1">
-              <v-select
-                v-model="data.formData.format"
-                label="Select Report Format"
-                :items="data.format"
-                outlined
-              />
+              <v-select v-model="data.formData.format" label="Select Report Format" :items="data.format" outlined />
             </v-flex>
             <v-flex xs12 class="mb-5 pl-5 pr-5" v-else>
-              <v-select
-                v-model="data.formData.format"
-                label="Select Report Format"
-                :items="data.format"
-                outlined
-              />
+              <v-select v-model="data.formData.format" label="Select Report Format" :items="data.format" outlined />
             </v-flex>
             <v-flex xs6 v-for="component in reportParams" :key="component.id" class="mb-5 pl-5 pr-5">
               <div v-if="!component.needsApiCall">
@@ -47,7 +39,7 @@
         </v-form>
         <!--<pre>{{ data.formData }}</pre>-->
       </v-card-text>
-      <v-card-actions class="mr-5 mt-n10">
+      <v-card-actions class="mr-5 mt-n4 pb-5">
         <v-spacer></v-spacer>
         <v-btn color="primary" :disabled="!data.valid" @click="print">PRINT REPORT</v-btn>
       </v-card-actions>

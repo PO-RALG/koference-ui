@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 exports.__esModule = true;
 exports.useInvoiceDebtor = void 0;
 var composition_api_1 = require("@vue/composition-api");
@@ -11,11 +22,15 @@ exports.useInvoiceDebtor = function () {
         title: "Manage Invoice Debtors",
         modalTitle: "",
         headers: [
-            { text: "Actions", align: "start", value: "actions", sortable: false },
-            { text: "Name", align: "start", sortable: false, value: "name" },
-            { text: "Email", align: "start", sortable: false, value: "email" },
-            { text: "Address", align: "start", sortable: false, value: "address" },
-            { text: "Phone", align: "start", sortable: false, value: "phone" },
+            { text: "Customer", align: "start", sortable: false, value: "customer" },
+            {
+                text: "Invoice Number",
+                align: "start",
+                sortable: false,
+                value: "invoice_number"
+            },
+            { text: "Age", align: "start", sortable: false, value: "age" },
+            { text: "Action", align: "start", sortable: false, value: "actions" },
         ],
         HEADERS_INVOICE_DETAILS: [
             {
@@ -98,8 +113,20 @@ exports.useInvoiceDebtor = function () {
             data.itemsToFilter = response.data.data.data;
         });
     });
-    composition_api_1.computed(function () {
-        return "test";
+    var newDetorsWithin30Days = composition_api_1.computed(function () {
+        return data.items
+            .filter(function (item) { return item.age >= 0 && item.age <= 29; })
+            .map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); });
+    });
+    var newDetorsBelow30Days = composition_api_1.computed(function () {
+        return data.items
+            .filter(function (item) { return item.age >= 30 && item.age <= 90; })
+            .map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); });
+    });
+    var newDetorsGreater90Days = composition_api_1.computed(function () {
+        return data.items
+            .filter(function (item) { return item.age >= 31 && item.age >= 91; })
+            .map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); });
     });
     var searchCategory = function (categoryName) {
         console.log("argument", categoryName);
@@ -166,6 +193,9 @@ exports.useInvoiceDebtor = function () {
         reloadData: reloadData,
         searchCategory: searchCategory,
         previewInvoice: previewInvoice,
-        cancelInvoiceDialog: cancelInvoiceDialog
+        cancelInvoiceDialog: cancelInvoiceDialog,
+        newDetorsWithin30Days: newDetorsWithin30Days,
+        newDetorsBelow30Days: newDetorsBelow30Days,
+        newDetorsGreater90Days: newDetorsGreater90Days
     };
 };

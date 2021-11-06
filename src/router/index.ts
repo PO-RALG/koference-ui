@@ -39,7 +39,7 @@ import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
 import { paymentVoucherRoutes } from "@/components/payable/payment-voucher";
 import { paymentRoutes } from "@/components/payable/payment";
 import { reportRoutes } from "@/components/report";
-// import { testRoutes } from "@/components/test";
+ //import { testRoutes } from "@/components/test";
 import { creditorRoutes } from "@/components/payable/creditor";
 import { chequeListRoutes } from "@/components/payable/cheque-list";
 import { notFoundRoute } from "@/components/404";
@@ -104,7 +104,7 @@ const routes: Array<RouteConfig> = [
       ...paymentVoucherRoutes,
       ...paymentRoutes,
       ...reportRoutes,
-      // ...testRoutes,
+       //...testRoutes,
       ...creditorRoutes,
       ...chequeListRoutes,
       ...notFoundRoute,
@@ -117,6 +117,7 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+
 
 // middlewares
 const isLoggedIn = (to, _, next) => {

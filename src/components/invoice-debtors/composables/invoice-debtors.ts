@@ -17,13 +17,16 @@ export const useInvoiceDebtor = (): any => {
     title: "Manage Invoice Debtors",
     modalTitle: "",
     headers: [
-      { text: "Actions", align: "start", value: "actions", sortable: false },
+      { text: "Customer", align: "start", sortable: false, value: "customer" },
 
-      { text: "Name", align: "start", sortable: false, value: "name" },
-      { text: "Email", align: "start", sortable: false, value: "email" },
-
-      { text: "Address", align: "start", sortable: false, value: "address" },
-      { text: "Phone", align: "start", sortable: false, value: "phone" },
+      {
+        text: "Invoice Number",
+        align: "start",
+        sortable: false,
+        value: "invoice_number",
+      },
+      { text: "Age", align: "start", sortable: false, value: "age" },
+      { text: "Action", align: "start", sortable: false, value: "actions" },
     ],
 
     HEADERS_INVOICE_DETAILS: [
@@ -113,8 +116,29 @@ export const useInvoiceDebtor = (): any => {
     });
   });
 
-  computed(() => {
-    return "test";
+  const newDetorsWithin30Days: any = computed(() => {
+    return data.items
+      .filter((item) => item.age >= 0 && item.age <= 29)
+      .map((data, index) => ({
+        ...data,
+        index: ++index,
+      }));
+  });
+  const newDetorsBelow30Days: any = computed(() => {
+    return data.items
+      .filter((item) => item.age >= 30 && item.age <= 90)
+      .map((data, index) => ({
+        ...data,
+        index: ++index,
+      }));
+  });
+  const newDetorsGreater90Days: any = computed(() => {
+    return data.items
+      .filter((item) => item.age >= 31 && item.age >= 91)
+      .map((data, index) => ({
+        ...data,
+        index: ++index,
+      }));
   });
 
   const searchCategory = (categoryName) => {
@@ -193,5 +217,8 @@ export const useInvoiceDebtor = (): any => {
     searchCategory,
     previewInvoice,
     cancelInvoiceDialog,
+    newDetorsWithin30Days,
+    newDetorsBelow30Days,
+    newDetorsGreater90Days,
   };
 };
