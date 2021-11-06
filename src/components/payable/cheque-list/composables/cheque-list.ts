@@ -1,33 +1,71 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import moment from "moment";
-import { get, find, getPayments } from "../services/cheque-list.services";
+import {
+  get,
+  getPayments,
+  create,
+  destroy,
+} from "../services/cheque-list.services";
 import { ChequeList } from "../types/ChequeList";
+import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
 
 export const useChequeList = (): any => {
   const dataItems: Array<ChequeList> = [];
   const chequeListData = {} as ChequeList;
 
   const data = reactive({
-    title: "ChequeLists",
+    title: "Cheque Lists",
     valid: false,
     isOpen: false,
     node: null,
     response: {},
     modalTitle: "",
     modal: false,
+    deletemodal: false,
+    itemtodelete: "",
     headers: [
       {
-        text: "Payment #",
+        text: "Date",
         align: "start",
         sortable: false,
-        value: "voucher",
+        value: "date",
       },
+      {
+        text: "Cheque #",
+        align: "start",
+        sortable: false,
+        value: "payments",
+      },
+      {
+        text: "Bank Account",
+        align: "start",
+        sortable: false,
+        value: "bank_account",
+      },
+      {
+        text: "Amount",
+        align: "start",
+        sortable: false,
+        value: "amount",
+      },
+      {
+        text: "Actions",
+        value: "actions",
+        sortable: false,
+      },
+    ],
+    paymentHeaders: [
       {
         text: "Date",
         align: "start",
         sortable: false,
         value: "payment_date",
+      },
+      {
+        text: "Payment #",
+        align: "start",
+        sortable: false,
+        value: "reference_no",
       },
       {
         text: "Amount",
@@ -42,14 +80,20 @@ export const useChequeList = (): any => {
         value: "voucher.supplier.name",
       },
       {
+        text: "Cheque #",
+        align: "start",
+        sortable: false,
+        value: "cheque",
+      },
+      {
         text: "Bank Account",
         align: "start",
         sortable: false,
         value: "bank_account",
       },
       {
-        text: "Actions",
-        value: "actions",
+        text: "Select",
+        value: "activations",
         sortable: false,
       },
     ],
@@ -62,10 +106,8 @@ export const useChequeList = (): any => {
     },
     rows: ["10", "20", "50", "100"],
     searchTerm: "",
-    coat: "/coat_of_arms.svg.png",
-    pvDetails: { printDate: "" },
-    CreditorModal: false,
     payments: [],
+    bankAccounts: [],
   });
 
   onMounted(() => {
@@ -90,80 +132,91 @@ export const useChequeList = (): any => {
     });
   };
 
-  const payablePrintHeader = [
-    {
-      text: "Account code",
-      align: "start",
-      sortable: false,
-      width: "60%",
-    },
-    {
-      text: "Fund source",
-      align: "start",
-      sortable: false,
-      width: "",
-    },
-    {
-      text: "Account description",
-      align: "start",
-      sortable: false,
-      width: "",
-    },
-    {
-      text: "Amount",
-      align: "end",
-      sortable: false,
-      value: "",
-      width: "",
-    },
-  ];
-
   const openDialog = () => {
     data.formData = {} as ChequeList;
     data.modalTitle = "Create";
     data.searchTerm = "";
     data.modal = !data.modal;
+    getBankAccountData();
   };
 
   const cancelDialog = () => {
     data.formData = {} as ChequeList;
+    data.payments = [];
     data.modal = !data.modal;
   };
 
   const save = () => {
-    const payableData = [];
+    const paymentData = data.payments;
+    const chequeListItemsData = [];
+    for (let j = 0; j < paymentData.length; j++) {
+      const element = paymentData[j];
+      if (element.active === true) {
+        chequeListItemsData.push({ payment_id: element.id });
+      }
+    }
 
-    // createPayment(data.formData);
+    const chequeListData = {
+      date: data.formData.date,
+      bank_account_id: data.formData.bank_account_id,
+      chequeListItems: chequeListItemsData,
+    };
+
+    if (chequeListItemsData.length > 0) {
+      createChequeList(chequeListData);
+    }
   };
 
-  const getPaymentData = (dateSelected) => {
-    getPayments(dateSelected).then((response: AxiosResponse) => {
-      data.payments = response.data.data.data;
-    });
-  }
-
-  const previewPayment = (id: number) => {
-    find(id).then((response: AxiosResponse) => {
-      data.pvDetails = response.data.data;
-      data.pvDetails.printDate = moment(new Date()).format(
-        "DD/MM/YYYY H:mm:ss"
-      );
-      data.CreditorModal = !data.CreditorModal;
+  const createChequeList = (data: ChequeList) => {
+    create(data).then(() => {
+      cancelDialog();
+      getTableData();
     });
   };
 
-  const cancelPreviewDialog = () => {
-    data.CreditorModal = !data.CreditorModal;
+  const searchPaymentByDate = () => {
+    getPayments(data.formData).then((response: AxiosResponse) => {
+      const allPayments = response.data.data;
+      for (let i = 0; i < allPayments.length; i++) {
+        const element = allPayments[i];
+        element.active = false;
+        data.payments.push(element);
+      }
+    });
+  };
+
+  const getBankAccountData = () => {
+    getBankAccounts({ per_page: 10 }).then((response: AxiosResponse) => {
+      data.bankAccounts = response.data.data.data;
+    });
+  };
+
+  const openConfirmDialog = (deleteId: string) => {
+    data.deletemodal = !data.modal;
+    data.itemtodelete = deleteId;
+  };
+
+  const cancelConfirmDialog = () => {
+    data.formData = {} as ChequeList;
+    data.deletemodal = false;
+  };
+
+  const remove = () => {
+    destroy(data.itemtodelete).then(() => {
+      data.deletemodal = false;
+      getTableData();
+    });
   };
 
   return {
     data,
     getData,
-    payablePrintHeader,
-    cancelPreviewDialog,
-    previewPayment,
     openDialog,
     cancelDialog,
     save,
+    searchPaymentByDate,
+    openConfirmDialog,
+    cancelConfirmDialog,
+    remove,
   };
 };

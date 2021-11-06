@@ -258,12 +258,20 @@
                 <v-layout justify-center>
                   <img :src="data.coat" class="login-logo pt-2" />
                 </v-layout>
-                <!-- <v-layout justify-center align="center">
+                <v-layout justify-center align="center">
                   <strong>
                     {{ "The United Republic of Tanzania" }}
                   </strong>
                   <br />
-                </v-layout> -->
+                </v-layout>
+                <v-layout justify-center align="center">
+                  <strong>
+                    {{
+                      "President's Office, Regional Administration and Local Government(PO-RALG)"
+                    }}
+                  </strong>
+                  <br />
+                </v-layout>
                 <v-layout justify-center align="center">
                   <strong>
                     {{ data.invoicedata.location.name }}
