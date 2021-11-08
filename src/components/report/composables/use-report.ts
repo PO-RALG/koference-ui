@@ -64,8 +64,9 @@ export const useReport = (props, { root }): any => {
   };
 
   const loadReportCategories = async (report: any) => {
+    data.selectedReport = report;
     const locationId = data.location.id;
-    if (locationId || reportHasTemplateUrl(report)) {
+    if (locationId && !report.children) {
       const path = `/reports/${locationId}?report_id=${report.id}`;
       const currentPath = root.$route.path;
       if (currentPath === path) {

@@ -182,14 +182,7 @@
                             {{ payable.paid_amount | toCurrency() }}
                           </td>
                           <td>
-                            <v-text-field
-                              class="pt-3"
-                              outlined
-                              dense
-                              type="number"
-                              v-model="payable.payment"
-                              :rules="[maxRules(payable.balance)]"
-                            ></v-text-field>
+                            {{ payable.payment | toCurrency() }}
                           </td>
                         </tr>
                       </tbody>
@@ -538,9 +531,6 @@ export default defineComponent({
       th {
         border-right: 1px solid #ccc;
         &:last-child {
-          border-right: none;
-        }
-        &:nth-last-child(2) {
           border-right: none;
         }
       }
