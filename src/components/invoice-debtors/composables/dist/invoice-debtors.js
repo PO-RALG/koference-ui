@@ -17,9 +17,11 @@ var invoice_debtor_service_1 = require("../services/invoice-debtor.service");
 var invoice_1 = require("../../invoice/services/invoice");
 exports.useInvoiceDebtor = function () {
     var invoiceDebtorData = [];
-    var invoiceData = [];
+    var invoiceData;
+    // const invoiceData: Array<Invoice> = [];
     var data = composition_api_1.reactive({
         title: "Manage Invoice Debtors",
+        coat: "/coat_of_arms.svg.png",
         modalTitle: "",
         headers: [
             { text: "Customer", align: "start", sortable: false, value: "customer" },
@@ -29,36 +31,43 @@ exports.useInvoiceDebtor = function () {
                 sortable: false,
                 value: "invoice_number"
             },
-            { text: "Age", align: "start", sortable: false, value: "age" },
+            { text: "Age (days)", align: "start", sortable: false, value: "age" },
             { text: "Action", align: "start", sortable: false, value: "actions" },
         ],
         HEADERS_INVOICE_DETAILS: [
             {
+                text: "No",
+                align: "start",
+                sortable: false,
+                value: "no",
+                width: "5%"
+            },
+            {
                 text: "Item Name",
                 align: "start",
                 sortable: false,
-                value: "invoice_number",
+                value: "item",
                 width: "30%"
             },
             {
                 text: "Amount",
-                align: "end",
+                align: "start",
                 sortable: false,
                 value: "amount",
                 width: "15%"
             },
             {
                 text: "Received Amount",
-                align: "end",
+                align: "start",
                 sortable: false,
-                value: "amount",
+                value: "received_amount",
                 width: "15%"
             },
             {
                 text: "Pending Amount ",
-                align: "end",
+                align: "start",
                 sortable: false,
-                value: "amount",
+                value: "balance_amount",
                 width: "15%"
             },
         ],
@@ -184,7 +193,27 @@ exports.useInvoiceDebtor = function () {
         data.invoicedetails = false;
         data.viewInvoiceDialog = true;
     };
+    var newInvoiceItem = composition_api_1.computed(function () {
+        return data.invoiceData.invoice_items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); });
+    });
+    var invoicedAmount = composition_api_1.ref(newInvoiceItem);
+    var sumDebts = composition_api_1.computed(function () {
+        return {
+            sumamount: invoicedAmount.value.reduce(function (sum, totalAmount) {
+                return sum + Number(totalAmount.amount);
+            }, 0),
+            sumamountReceived: invoicedAmount.value.reduce(function (sum, totalAmount) {
+                return sum + Number(totalAmount.received_amount);
+            }, 0),
+            sumamountPending: invoicedAmount.value.reduce(function (sum, totalAmount) {
+                return sum + Number(totalAmount.amount - totalAmount.received_amount);
+            }, 0)
+        };
+    });
     return {
+        newInvoiceItem: newInvoiceItem,
+        sumDebts: sumDebts,
+        invoicedAmount: invoicedAmount,
         data: data,
         getData: getData,
         cancelDialog: cancelDialog,

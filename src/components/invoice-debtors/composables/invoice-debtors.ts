@@ -1,4 +1,4 @@
-import { reactive, onMounted, computed } from "@vue/composition-api";
+import { reactive, ref, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
 import { InvoiceDebtor } from "../types/InvoiceDebtor";
@@ -11,10 +11,13 @@ import {
 
 export const useInvoiceDebtor = (): any => {
   const invoiceDebtorData: Array<InvoiceDebtor> = [];
-  const invoiceData: Array<Invoice> = [];
+  let invoiceData: Invoice;
+
+  // const invoiceData: Array<Invoice> = [];
 
   const data = reactive({
     title: "Manage Invoice Debtors",
+    coat: "/coat_of_arms.svg.png",
     modalTitle: "",
     headers: [
       { text: "Customer", align: "start", sortable: false, value: "customer" },
@@ -25,38 +28,45 @@ export const useInvoiceDebtor = (): any => {
         sortable: false,
         value: "invoice_number",
       },
-      { text: "Age", align: "start", sortable: false, value: "age" },
+      { text: "Age (days)", align: "start", sortable: false, value: "age" },
       { text: "Action", align: "start", sortable: false, value: "actions" },
     ],
 
     HEADERS_INVOICE_DETAILS: [
       {
+        text: "No",
+        align: "start",
+        sortable: false,
+        value: "no",
+        width: "5%",
+      },
+      {
         text: "Item Name",
         align: "start",
         sortable: false,
-        value: "invoice_number",
+        value: "item",
         width: "30%",
       },
 
       {
         text: "Amount",
-        align: "end",
+        align: "start",
         sortable: false,
         value: "amount",
         width: "15%",
       },
       {
         text: "Received Amount",
-        align: "end",
+        align: "start",
         sortable: false,
-        value: "amount",
+        value: "received_amount",
         width: "15%",
       },
       {
         text: "Pending Amount ",
-        align: "end",
+        align: "start",
         sortable: false,
-        value: "amount",
+        value: "balance_amount",
         width: "15%",
       },
     ],
@@ -207,7 +217,43 @@ export const useInvoiceDebtor = (): any => {
     data.viewInvoiceDialog = true;
   };
 
+  const newInvoiceItem: any = computed(() => {
+    return data.invoiceData.invoice_items.map((data, index) => ({
+      ...data,
+      index: ++index,
+    }));
+  });
+
+  const invoicedAmount = ref(newInvoiceItem);
+
+  const sumDebts = computed(() => {
+    return {
+      sumamount: invoicedAmount.value.reduce(function (sum, totalAmount) {
+        return sum + Number(totalAmount.amount);
+      }, 0),
+
+      sumamountReceived: invoicedAmount.value.reduce(function (
+        sum,
+        totalAmount
+      ) {
+        return sum + Number(totalAmount.received_amount);
+      },
+      0),
+
+      sumamountPending: invoicedAmount.value.reduce(function (
+        sum,
+        totalAmount
+      ) {
+        return sum + Number(totalAmount.amount - totalAmount.received_amount);
+      },
+      0),
+    };
+  });
+
   return {
+    newInvoiceItem,
+    sumDebts,
+    invoicedAmount,
     data,
     getData,
     cancelDialog,
