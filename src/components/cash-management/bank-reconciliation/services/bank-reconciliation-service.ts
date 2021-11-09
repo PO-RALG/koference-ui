@@ -19,8 +19,12 @@ const addBalance = async (payload: any): Promise<AxiosResponse> => {
   return await axios.post(`${API}/add-balance`, payload);
 };
 
-const getEntries = async (payload: any): Promise<AxiosResponse> => {
-  return await axios.get(`${API}/get-entries`, {params: payload});
+const getReport = async (accountId: number, params: any): Promise<AxiosResponse> => {
+  return await axios.get(`${API}/${accountId}/report`, { params });
 };
 
-export { get, find, create, addBalance, getEntries };
+const getEntries = async (payload: any): Promise<AxiosResponse> => {
+  return await axios.get(`${API}/get-entries`, { params: payload });
+};
+
+export { get, find, create, addBalance, getEntries, getReport };
