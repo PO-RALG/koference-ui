@@ -39,10 +39,11 @@ import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
 import { paymentVoucherRoutes } from "@/components/payable/payment-voucher";
 import { paymentRoutes } from "@/components/payable/payment";
 import { reportRoutes } from "@/components/report";
- //import { testRoutes } from "@/components/test";
+//import { testRoutes } from "@/components/test";
 import { creditorRoutes } from "@/components/payable/creditor";
 import { chequeListRoutes } from "@/components/payable/cheque-list";
 import { notFoundRoute } from "@/components/404";
+import { receiptRoutes } from "@/components/payable/receipt";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -104,9 +105,10 @@ const routes: Array<RouteConfig> = [
       ...paymentVoucherRoutes,
       ...paymentRoutes,
       ...reportRoutes,
-       //...testRoutes,
+      //...testRoutes,
       ...creditorRoutes,
       ...chequeListRoutes,
+      ...receiptRoutes,
       ...notFoundRoute,
     ],
   },
@@ -117,7 +119,6 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
-
 
 // middlewares
 const isLoggedIn = (to, _, next) => {
@@ -137,6 +138,8 @@ const isLoggedIn = (to, _, next) => {
   }
 };
 
-router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
+router.beforeEach(
+  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
+);
 
 export default router;

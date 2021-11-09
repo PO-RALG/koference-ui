@@ -6,8 +6,10 @@ const get = async (payload: any) => {
   });
 };
 const itemdefinitions = async (payload: any) => {
-  return await axios.get("/api/v1/invoice-item-definitions", {
-    params: payload,
+  return await axios.get("/api/v1/gl-accounts", {
+    params: {
+      search: JSON.stringify(payload),
+    },
   });
 };
 const search = async (payload: any) => {
@@ -16,13 +18,6 @@ const search = async (payload: any) => {
       search: JSON.stringify(payload),
     },
   });
-};
-
-const activation = async (payload: any) => {
-  return await axios.post(
-    `/api/v1/invoice-item-definitions/` + payload.id + "/change-status",
-    payload
-  );
 };
 
 const find = async (id: string | number) => {
