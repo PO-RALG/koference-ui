@@ -17,7 +17,13 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-switch :input-value="item.active" @change="openActivationDialog(item)" value></v-switch>
         </template>
-        <template v-slot:footer> </template>
+        <template v-slot:footer>
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
+        </template>
       </v-data-table>
     </v-card>
     <Modal :modal="data.modal" :width="600">
@@ -62,7 +68,16 @@ export default defineComponent({
       { text: "Actions", value: "actions", sortable: false },
     ];
 
-    const { data, toggleStatus, openActivationDialog, cancelActivationDialog, openDialog, cancelDialog, save } =
+    const {
+      data,
+      toggleStatus,
+      openActivationDialog,
+      cancelActivationDialog,
+      openDialog,
+      cancelDialog,
+      save,
+      getData,
+    } =
       useGLAccount();
 
     return {
@@ -74,6 +89,7 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       save,
+      getData,
     };
   },
 });
