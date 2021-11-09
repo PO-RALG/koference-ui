@@ -98,7 +98,7 @@
       </v-data-table>
     </v-card>
 
-    <Modal :modal="data.modal" :width="1260">
+    <Modal :modal="data.modal" :width="1000">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Payment`" />
       </template>
@@ -107,14 +107,14 @@
           <v-form v-model="data.valid">
             <v-container>
               <v-row class="pa-2 pb-5">
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="12">
                   <DatePicker
                     :label="'Date'"
                     v-model="data.formData.payment_date"
                     required
                   />
                 </v-col>
-                <v-col cols="12" md="3" sm="12">
+                <v-col cols="12" md="6" sm="12">
                   <v-select
                     v-model="data.formData.bank_account_id"
                     :items="data.bankAccounts"
@@ -125,7 +125,7 @@
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="3" sm="12">
+                <v-col cols="12" md="6" sm="12">
                   <v-select
                     v-model="data.formData.cheque_type"
                     :items="data.chequeTypes"
@@ -134,13 +134,13 @@
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="3" sm="12">
+                <v-col cols="12" md="6" sm="12">
                   <v-text-field
                     v-model="data.formData.cheque"
                     label="Cheque"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="3" sm="12">
+                <v-col cols="12" md="6" sm="12">
                   <v-select
                     v-model="data.formData.voucher_id"
                     :items="data.paymentVouchers"
@@ -151,7 +151,7 @@
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="9" sm="12">
+                <v-col cols="12" md="12" sm="12">
                   <v-text-field
                     v-model="data.formData.description"
                     label="Description"
