@@ -9856,6 +9856,11 @@ vuetify-loader@^1.7.0:
     file-loader "^6.2.0"
     loader-utils "^2.0.0"
 
+vuetify-money@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/vuetify-money/-/vuetify-money-1.2.0.tgz#8a3e0367e0aa6a2223276fe1f24f06a052a76b9a"
+  integrity sha512-YVxO2bNE9HIgRZmF/d3ol4DJrJrbnptzrd72D5KpUxaSyjx0+8bTxUStGRYIHPoFsnUH/uCJOuZkGSVhbdqf3A==
+
 vuetify@^2.4.0:
   version "2.5.8"
   resolved "https://registry.npmjs.org/vuetify/-/vuetify-2.5.8.tgz"

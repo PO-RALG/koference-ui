@@ -57,6 +57,10 @@ export default defineComponent({
       type: Function,
       required: false,
     },
+    selectionType: {
+      type: String,
+      required: false,
+    },
   },
 
   setup(props, { emit }) {
