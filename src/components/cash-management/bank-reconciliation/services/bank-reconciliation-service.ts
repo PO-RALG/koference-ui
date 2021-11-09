@@ -23,8 +23,12 @@ const getReport = async (accountId: number, params: any): Promise<AxiosResponse>
   return await axios.get(`${API}/${accountId}/report`, { params });
 };
 
+const reconcileEntries = async (payload: any): Promise<AxiosResponse> => {
+  return await axios.post(`${API}/reconcile`, payload);
+};
+
 const getEntries = async (payload: any): Promise<AxiosResponse> => {
   return await axios.get(`${API}/get-entries`, { params: payload });
 };
 
-export { get, find, create, addBalance, getEntries, getReport };
+export { get, find, create, addBalance, getEntries, getReport, reconcileEntries };

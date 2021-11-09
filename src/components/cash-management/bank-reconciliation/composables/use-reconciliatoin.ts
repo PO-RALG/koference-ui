@@ -1,6 +1,6 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import { getEntries, addBalance, getReport } from "../services/bank-reconciliation-service";
+import { getEntries, addBalance, getReport, reconcileEntries as reconcile } from "../services/bank-reconciliation-service";
 import { Params } from "../types";
 import moment from "moment";
 import json from "../sample/json";
@@ -30,14 +30,13 @@ export const useBankReconciliation = ({ root }): any => {
     showBalance: true,
     rows: ["10", "20", "50", "60", "100"],
     headers: [
-      { text: "PV Number", value: "number" },
+      { text: "Ref Number", value: "reference_no" },
       { text: "Date", value: "date" },
-      { text: "Amount", align: "start", sortable: false, value: "amount" },
-      { text: "Account", value: "account" },
-      { text: "Cheque #", value: "annual_serial" },
+      { text: "DR Amount", align: "start", sortable: false, value: "dr_amount" },
+      { text: "CR Amount", align: "start", sortable: false, value: "cr_amount" },
       { text: "Status", value: "status", sortable: false },
     ],
-    statuses: ["CREATED", "RECONCILED", "OUTSTANDING DEPOSITS", "OUTSTANDING PAYMENTS"],
+    statuses: ["RECONCILE"],
     balanceRules: [(v: string) => !!v || "Bank Balance is Required"],
 
     accountRules: [(v: string) => !!v || "You must selecte a bank account"],
@@ -63,32 +62,42 @@ export const useBankReconciliation = ({ root }): any => {
   });
 
   const init = async (params: Params) => {
-    getEntries(params).then((response: AxiosResponse) => {
-      console.log("entries", response.data);
-      data.entries = response.data.data;
-      //console.log("entries", json);
-      //data.entries = json;
-    }).then(() => {
-      getReport(params.bank_account_id, { date: params.date }).then((response: AxiosResponse) => {
-        if (response.data.data.balance_required) {
-          console.log("report", response.data.data);
-          data.dialog = !data.dialog;
-          openDialog("BALANCE");
-        } else {
-
-          data.report = response.data.data;
-        }
+    getEntries(params)
+      .then((response: AxiosResponse) => {
+        data.entries = response.data.data;
+      })
+      .then(() => {
+        getReport(params.bank_account_id, { date: params.date }).then((response: AxiosResponse) => {
+          if (response.data.data.balance_required) {
+            openDialog("BALANCE");
+          } else {
+            data.report = response.data.data;
+          }
+        });
       });
-    });
   };
 
   const fetchData = async () => {
     console.log("get data");
   };
 
-  const reconcileEntries = (status: string) => {
-    console.log("entry selected", status);
-    console.log("selected entries:", data.selectedEntries);
+  const reconcileEntries = () => {
+    const entries = data.selectedEntries.map((entry) => {
+      return {
+        id: entry.id,
+        status: true,
+      }
+    })
+    const payload = {
+      date: root.$root.$route.query.date,
+      bank_account_id: root.$root.$route.query.bank_account_id,
+      entries,
+    }
+    reconcile(payload).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        console.log("response", response);
+      }
+    })
   };
 
   const openDialog = async (type: string) => {
@@ -107,7 +116,7 @@ export const useBankReconciliation = ({ root }): any => {
       data.buttonTitle = "Save";
       data.showBalance = true;
     }
-    data.dialog = !data.dialog;
+    data.dialog = true;
   };
 
   const cancelDialog = async () => {
@@ -147,19 +156,20 @@ export const useBankReconciliation = ({ root }): any => {
       getEntries(data.formData)
         .then((response: AxiosResponse) => {
           if (response.status === 200) {
-            if ((data.formData.bank_account_id !== bankAccountId) || (data.formData.date !== date)) {
-            root.$router.replace({
-              query: {
-                date: data.formData.date,
-                bank_account_id: data.formData.bank_account_id,
-              },
-            });
+            if (data.formData.bank_account_id !== bankAccountId || data.formData.date !== date) {
+              root.$router.replace({
+                query: {
+                  date: data.formData.date,
+                  bank_account_id: data.formData.bank_account_id,
+                },
+              });
             } else {
               return null;
             }
-            data.entries = json;
+            data.entries = response.data.data;
           }
-        }).then(() => {
+        })
+        .then(() => {
           getReport(data.formData.bank_account_id, { date: data.formData.date }).then((response: AxiosResponse) => {
             if (response.data.data.balance_required) {
               console.log("report", response.data.data);
