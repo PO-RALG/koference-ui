@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.itemdefinitions = exports.activation = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
+exports.glAccounts = exports.itemdefinitions = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
 var axios_1 = require("axios");
 var get = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -52,6 +52,17 @@ exports.get = get;
 var itemdefinitions = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoice-item-definitions", {
+                    params: payload
+                })];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.itemdefinitions = itemdefinitions;
+var glAccounts = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gl-accounts", {
                     params: {
                         search: JSON.stringify(payload)
@@ -61,7 +72,7 @@ var itemdefinitions = function (payload) { return __awaiter(void 0, void 0, void
         }
     });
 }); };
-exports.itemdefinitions = itemdefinitions;
+exports.glAccounts = glAccounts;
 var search = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {

@@ -127,19 +127,20 @@ export const useReceipt = (): any => {
     modalTitle: "",
     headers: [
       {
-        text: "GLAccount",
+        text: "Receipt Number",
         align: "start",
         sortable: false,
-        value: "gl_account",
+        value: "receipt_number",
       },
-      { text: "Invoice Date", value: "date", sortable: true },
-
       {
         text: "Customer",
         align: "start",
         sortable: false,
         value: "customer.name",
       },
+
+      { text: "Invoice Date", value: "date", sortable: true },
+
       {
         text: "Description",
         align: "start",
@@ -359,6 +360,16 @@ export const useReceipt = (): any => {
     );
   };
 
+  const newreceiptItem: any = computed(() => {
+    return data.items
+      ? data.items.map((data, index) => ({
+          ...data,
+          index: ++index,
+          tatizo: data,
+        }))
+      : [];
+  });
+
   const updateInvoiceItemDefinition = (data: any) => {
     update(data).then(() => {
       reloadData();
@@ -466,5 +477,6 @@ export const useReceipt = (): any => {
     newInvoiceItem,
     sumDebts,
     checkDublicate,
+    newreceiptItem,
   };
 };

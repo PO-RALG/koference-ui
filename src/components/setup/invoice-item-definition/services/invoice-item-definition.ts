@@ -6,6 +6,11 @@ const get = async (payload: any) => {
   });
 };
 const itemdefinitions = async (payload: any) => {
+  return await axios.get("/api/v1/invoice-item-definitions", {
+    params: payload,
+  });
+};
+const glAccounts = async (payload: any) => {
   return await axios.get("/api/v1/gl-accounts", {
     params: {
       search: JSON.stringify(payload),
@@ -46,6 +51,6 @@ export {
   update,
   destroy,
   search,
-  activation,
   itemdefinitions,
+  glAccounts,
 };

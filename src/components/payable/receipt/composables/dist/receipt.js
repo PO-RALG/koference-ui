@@ -125,18 +125,18 @@ exports.useReceipt = function () {
         modalTitle: "",
         headers: [
             {
-                text: "GLAccount",
+                text: "Receipt Number",
                 align: "start",
                 sortable: false,
-                value: "gl_account"
+                value: "receipt_number"
             },
-            { text: "Invoice Date", value: "date", sortable: true },
             {
                 text: "Customer",
                 align: "start",
                 sortable: false,
                 value: "customer.name"
             },
+            { text: "Invoice Date", value: "date", sortable: true },
             {
                 text: "Description",
                 align: "start",
@@ -316,6 +316,11 @@ exports.useReceipt = function () {
             data.glAccounts = response.data.data.data;
         });
     };
+    var newreceiptItem = composition_api_1.computed(function () {
+        return data.items
+            ? data.items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index, tatizo: data })); })
+            : [];
+    });
     var updateInvoiceItemDefinition = function (data) {
         invoice_1.update(data).then(function () {
             reloadData();
@@ -412,6 +417,7 @@ exports.useReceipt = function () {
         newInvoiceItems: newInvoiceItems,
         newInvoiceItem: newInvoiceItem,
         sumDebts: sumDebts,
-        checkDublicate: checkDublicate
+        checkDublicate: checkDublicate,
+        newreceiptItem: newreceiptItem
     };
 };

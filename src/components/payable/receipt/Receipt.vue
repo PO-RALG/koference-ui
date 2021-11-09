@@ -15,7 +15,7 @@
     <v-card>
       <v-data-table
         :headers="data.headers"
-        :items="data.items"
+        :items="newreceiptItem"
         :single-expand="true"
         class="elevation-1"
         disable-pagination
@@ -42,30 +42,20 @@
         </template>
         <template v-slot:[`item.description`]="{ item }">
           <span>
-            {{ item.description | capitalizeFirstLatter }}
+            {{ item.tatizo.description }}
           </span>
         </template>
-        <template v-slot:[`item.gl_account`]="{ item }">
-          <span>
-            {{ item.items }}
-          </span>
-        </template>
+
         <template v-slot:[`item.date`]="{ item }">
           {{ item.date | format() }}
         </template>
-        <template v-slot:[`item.amount`]="{ item }">
-          {{ item.amount | toCurrency() }}
-        </template>
+
         <template v-slot:[`item.received_amount`]="{ item }">
-          {{ item.received_amount | toCurrency() }}
+          <span>
+            {{ item.tatizo.items }}
+          </span>
         </template>
-        <template v-slot:[`item.invoice_number`]="{ item }">
-          <v-list-item id="p1" exact light @click="previewInvoice(item)"
-            ><h3>
-              {{ item.invoice_number }}
-            </h3></v-list-item
-          >
-        </template>
+
         <template v-slot:[`item.pending`]="{ item }">
           {{ (item.amount - item.received_amount) | toCurrency() }}
         </template>
@@ -155,7 +145,7 @@
                       >
                         <td>
                           <v-select
-                            :items="data.itemdefinitions"
+                            :items="data.glAccounts"
                             :item-text="'code'"
                             v-model="invoice.gl_account_id"
                             :name="`data.receipt_items[${index}][invoice_item_definition_id]`"
@@ -672,6 +662,7 @@ export default defineComponent({
       newInvoiceItem,
       sumDebts,
       checkDublicate,
+      newreceiptItem,
     } = useReceipt();
     return {
       data,
@@ -701,6 +692,7 @@ export default defineComponent({
       newInvoiceItem,
       sumDebts,
       checkDublicate,
+      newreceiptItem,
     };
   },
 });
