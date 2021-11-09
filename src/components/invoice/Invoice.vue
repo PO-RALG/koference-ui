@@ -775,7 +775,7 @@ export default defineComponent({
   text-align: left;
 }
 .login-logo {
-  height: 170px;
+  height: 160px;
   width: 130px;
 }
 tbody tr:nth-of-type(odd) {
