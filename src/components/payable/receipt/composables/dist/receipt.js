@@ -20,96 +20,6 @@ var invoice_item_definition_1 = require("@/components/setup/invoice-item-definit
 exports.useReceipt = function () {
     var dataItems = [];
     var invoiceData;
-    var HEADERS = [
-        {
-            text: "GLAccount",
-            align: "start",
-            sortable: false,
-            value: "invoice_number",
-            width: "30%"
-        },
-        {
-            text: "Amount",
-            align: "start",
-            sortable: false,
-            value: "amount",
-            width: "15%"
-        },
-        {
-            text: "",
-            align: "center",
-            sortable: false,
-            value: "amount_pending",
-            width: "13%"
-        },
-    ];
-    var HEADERS_INVOICE_DETAILS = [
-        {
-            text: "No",
-            align: "start",
-            sortable: false,
-            value: "no",
-            width: "5%"
-        },
-        {
-            text: "Item Name",
-            align: "start",
-            sortable: false,
-            value: "item",
-            width: "30%"
-        },
-        {
-            text: "Amount",
-            align: "start",
-            sortable: false,
-            value: "amount",
-            width: "15%"
-        },
-        {
-            text: "Received Amount",
-            align: "start",
-            sortable: false,
-            value: "received_amount",
-            width: "15%"
-        },
-        {
-            text: "Pending Amount ",
-            align: "start",
-            sortable: false,
-            value: "balance_amount",
-            width: "15%"
-        },
-    ];
-    var RECEIPTHEADERS = [
-        {
-            text: "Item",
-            align: "start",
-            sortable: false,
-            value: "invoice_number",
-            width: "30%"
-        },
-        {
-            text: "Amount",
-            align: "start",
-            sortable: false,
-            value: "amount",
-            width: "15%"
-        },
-        {
-            text: "Amount Received",
-            align: "start",
-            sortable: false,
-            value: "amount_received",
-            width: "17%"
-        },
-        {
-            text: "Add Amount",
-            align: "start",
-            sortable: false,
-            value: "amount_pending",
-            width: "15%"
-        },
-    ];
     var data = composition_api_1.reactive({
         invoicereceip: {
             invoice_id: "",
@@ -130,6 +40,7 @@ exports.useReceipt = function () {
                 sortable: false,
                 value: "receipt_number"
             },
+            { text: "Date", value: "date", sortable: true },
             {
                 text: "Amount",
                 align: "start",
@@ -137,17 +48,22 @@ exports.useReceipt = function () {
                 value: "amount"
             },
             {
-                text: "Customer",
+                text: "From",
                 align: "start",
                 sortable: false,
                 value: "customer.name"
             },
-            { text: "Receipt Date", value: "date", sortable: true },
             {
                 text: "Description",
                 align: "start",
                 sortable: false,
                 value: "description"
+            },
+            {
+                text: "Bank Account",
+                align: "start",
+                sortable: false,
+                value: "bank_account"
             },
             {
                 text: "Action",
@@ -281,7 +197,11 @@ exports.useReceipt = function () {
     };
     var newreceiptItem = composition_api_1.computed(function () {
         return data.items
-            ? data.items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index, tatizo: data })); })
+            ? data.items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index, newData: data, bankAccount: data.bank_account.bank +
+                    data.bank_account.name +
+                    " (" +
+                    data.bank_account.number +
+                    ")" })); })
             : [];
     });
     var updateInvoiceItemDefinition = function (data) {
@@ -356,10 +276,7 @@ exports.useReceipt = function () {
         previewInvoice: previewInvoice,
         cancelInvoiceDialog: cancelInvoiceDialog,
         cancelInvoiceReceipt: cancelInvoiceReceipt,
-        HEADERS: HEADERS,
-        RECEIPTHEADERS: RECEIPTHEADERS,
         bankName: bankName,
-        HEADERS_INVOICE_DETAILS: HEADERS_INVOICE_DETAILS,
         newInvoiceItems: newInvoiceItems,
         checkDublicate: checkDublicate,
         newreceiptItem: newreceiptItem,

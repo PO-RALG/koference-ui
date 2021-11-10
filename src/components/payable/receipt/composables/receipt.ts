@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { Invoice } from "../types";
-import { reactive, onMounted, ref, computed } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "@vue/composition-api";
 import {
   get,
   create,
@@ -8,7 +8,6 @@ import {
   destroy,
   search,
   viewinvoice,
-  receiptcreate,
   printReceipt,
 } from "../services/invoice";
 import { customers } from "@/components/setup/customer/services/customer.service";
@@ -18,99 +17,6 @@ import { glAccounts } from "@/components/setup/invoice-item-definition/services/
 export const useReceipt = (): any => {
   const dataItems: Array<Invoice> = [];
   let invoiceData: Invoice;
-
-  const HEADERS = [
-    {
-      text: "GLAccount",
-      align: "start",
-      sortable: false,
-      value: "invoice_number",
-      width: "30%",
-    },
-
-    {
-      text: "Amount",
-      align: "start",
-      sortable: false,
-      value: "amount",
-      width: "15%",
-    },
-    {
-      text: "",
-      align: "center",
-      sortable: false,
-      value: "amount_pending",
-      width: "13%",
-    },
-  ];
-  const HEADERS_INVOICE_DETAILS = [
-    {
-      text: "No",
-      align: "start",
-      sortable: false,
-      value: "no",
-      width: "5%",
-    },
-    {
-      text: "Item Name",
-      align: "start",
-      sortable: false,
-      value: "item",
-      width: "30%",
-    },
-
-    {
-      text: "Amount",
-      align: "start",
-      sortable: false,
-      value: "amount",
-      width: "15%",
-    },
-    {
-      text: "Received Amount",
-      align: "start",
-      sortable: false,
-      value: "received_amount",
-      width: "15%",
-    },
-    {
-      text: "Pending Amount ",
-      align: "start",
-      sortable: false,
-      value: "balance_amount",
-      width: "15%",
-    },
-  ];
-  const RECEIPTHEADERS = [
-    {
-      text: "Item",
-      align: "start",
-      sortable: false,
-      value: "invoice_number",
-      width: "30%",
-    },
-    {
-      text: "Amount",
-      align: "start",
-      sortable: false,
-      value: "amount",
-      width: "15%",
-    },
-    {
-      text: "Amount Received",
-      align: "start",
-      sortable: false,
-      value: "amount_received",
-      width: "17%",
-    },
-    {
-      text: "Add Amount",
-      align: "start",
-      sortable: false,
-      value: "amount_pending",
-      width: "15%",
-    },
-  ];
 
   const data = reactive({
     invoicereceip: {
@@ -133,6 +39,8 @@ export const useReceipt = (): any => {
         sortable: false,
         value: "receipt_number",
       },
+      { text: "Date", value: "date", sortable: true },
+
       {
         text: "Amount",
         align: "start",
@@ -140,19 +48,23 @@ export const useReceipt = (): any => {
         value: "amount",
       },
       {
-        text: "Customer",
+        text: "From",
         align: "start",
         sortable: false,
         value: "customer.name",
       },
-
-      { text: "Receipt Date", value: "date", sortable: true },
 
       {
         text: "Description",
         align: "start",
         sortable: false,
         value: "description",
+      },
+      {
+        text: "Bank Account",
+        align: "start",
+        sortable: false,
+        value: "bank_account",
       },
       {
         text: "Action",
@@ -312,7 +224,13 @@ export const useReceipt = (): any => {
       ? data.items.map((data, index) => ({
           ...data,
           index: ++index,
-          tatizo: data,
+          newData: data,
+          bankAccount:
+            data.bank_account.bank +
+            data.bank_account.name +
+            " (" +
+            data.bank_account.number +
+            ")",
         }))
       : [];
   });
@@ -397,10 +315,7 @@ export const useReceipt = (): any => {
     previewInvoice,
     cancelInvoiceDialog,
     cancelInvoiceReceipt,
-    HEADERS,
-    RECEIPTHEADERS,
     bankName,
-    HEADERS_INVOICE_DETAILS,
     newInvoiceItems,
     checkDublicate,
     newreceiptItem,

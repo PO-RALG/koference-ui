@@ -42,7 +42,7 @@
         </template>
         <template v-slot:[`item.description`]="{ item }">
           <span>
-            {{ item.tatizo.description }}
+            {{ item.newData.description }}
           </span>
         </template>
 
@@ -52,7 +52,12 @@
 
         <template v-slot:[`item.received_amount`]="{ item }">
           <span>
-            {{ item.tatizo.items }}
+            {{ item.newData.items }}
+          </span>
+        </template>
+        <template v-slot:[`item.bank_account`]="{ item }">
+          <span>
+            {{ item.bankAccount }}
           </span>
         </template>
 
@@ -283,10 +288,7 @@ export default defineComponent({
       cancelInvoiceDialog,
       cancelInvoiceReceipt,
       openInvoiceReceipt,
-      HEADERS,
-      RECEIPTHEADERS,
       bankName,
-      HEADERS_INVOICE_DETAILS,
       newInvoiceItems,
 
       checkDublicate,
@@ -313,10 +315,7 @@ export default defineComponent({
       cancelInvoiceDialog,
       cancelInvoiceReceipt,
       openInvoiceReceipt,
-      HEADERS,
-      RECEIPTHEADERS,
       bankName,
-      HEADERS_INVOICE_DETAILS,
       newInvoiceItems,
 
       checkDublicate,
