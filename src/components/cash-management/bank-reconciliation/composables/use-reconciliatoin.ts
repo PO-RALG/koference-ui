@@ -35,6 +35,7 @@ export const useBankReconciliation = ({ root }): any => {
     dialogTitle: "",
     buttonTitle: "",
     dialog: false,
+    showEdit: false,
     showBalance: true,
     rows: ["10", "20", "50", "60", "100"],
     headers: [
@@ -183,6 +184,7 @@ export const useBankReconciliation = ({ root }): any => {
     if (data.showBalance) {
       addBalance(data.formData).then((response: AxiosResponse) => {
         if (response.status === 200) {
+          data.showEdit = false;
           data.formData = { date: null, balance: null, bank_account_id: null };
           cancelDialog();
           router.go(0);
@@ -263,11 +265,22 @@ export const useBankReconciliation = ({ root }): any => {
     });
   };
 
+  const rowClicked = (item: any) => {
+    data.formData.balance = data.report.bank_balance;
+    data.showEdit = true;
+  };
+
+  const currentDate = computed(() => {
+    const date = new Date();
+    return moment(date).format("YYYY-MM");
+  });
+
   return {
     data,
     fetchData,
     openDialog,
     cancelDialog,
+    currentDate,
     save,
     reconcileEntries,
     outstandingDeposits,
@@ -276,5 +289,6 @@ export const useBankReconciliation = ({ root }): any => {
     showConfirmDialog,
     closeConfirmDialog,
     confirmReconciliation,
+    rowClicked,
   };
 };

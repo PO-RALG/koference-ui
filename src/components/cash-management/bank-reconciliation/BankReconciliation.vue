@@ -4,10 +4,11 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
-        v-if="(!data.report || !data.report.confirmed)"
+        v-if="!data.report || !data.report.confirmed"
         color="primary"
         @click="openDialog('BALANCE')"
-        :disabled="cant('addBalance', 'Reconciliation')">
+        :disabled="cant('addBalance', 'Reconciliation')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add Bank Balance
       </v-btn>
@@ -23,7 +24,8 @@
           class="ma-2"
           outlined
           color="black"
-          v-if="(!data.report || !data.report.confirmed)">
+          v-if="!data.report || !data.report.confirmed"
+        >
           <v-icon>mdi-progress-download</v-icon>
           Load Cashbook Entries
         </v-btn>
@@ -42,8 +44,18 @@
           </thead>
           <tbody>
             <tr class="border-bottom">
-              <td class="border-right">
-                <strong>{{ data.report.bank_balance | toCurrency }}</strong>
+              <td class="border-right adjustable" @click="rowClicked(data.report)">
+                <strong v-if="!data.showEdit">{{ data.report.bank_balance | toCurrency }}</strong>
+                <v-form v-else ref="form" @submit.prevent="save">
+                  <v-row>
+                    <v-col cols="6" md="5" sm="3">
+                      <v-text-field v-model="data.report.bank_balance" dense> </v-text-field>
+                    </v-col>
+                    <v-col cols="6" md="1" sm="3" class="mt-1">
+                      <v-btn color="green" class="white--text" type="submit" dense> Save </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-form>
               </td>
               <td class="border-right">
                 <strong>{{ outstandingDeposits | toCurrency }}</strong>
@@ -153,7 +165,11 @@
                         >
                         </v-text-field>
                       </template>
-                      <v-date-picker v-model="data.formData.date" type="month" scrollable>
+                      <v-date-picker
+                        v-model="data.formData.date"
+                        type="month"
+                        :max="currentDate"
+                        scrollable>
                         <v-spacer></v-spacer>
                         <v-btn text color="primary" @click="data.modal = false"> Cancel </v-btn>
                         <v-btn text color="primary" @click="$refs.dialog.save(data.date)"> OK</v-btn>
@@ -203,6 +219,8 @@ export default defineComponent({
       closeConfirmDialog,
       confirmReconciliation,
       diff,
+      rowClicked,
+      currentDate,
     } = useBankReconciliation(context);
 
     return {
@@ -218,6 +236,8 @@ export default defineComponent({
       closeConfirmDialog,
       confirmReconciliation,
       diff,
+      rowClicked,
+      currentDate,
     };
   },
 });
@@ -232,5 +252,8 @@ export default defineComponent({
 }
 .border-top {
   background: #efedec;
+}
+.adjustable {
+  cursor: pointer;
 }
 </style>
