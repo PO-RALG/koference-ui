@@ -19,7 +19,7 @@
                     <img :src="data.coat" class="login-logo" />
                     <h2 class="text-center pa-6 login-header" color="primary">LOGIN to your account</h2>
                     <h4 class="siteName pa-0 pb-4" v-if="isDemo()">({{ data.siteName }})</h4>
-                    <v-form ref="form" v-model="data.valid">
+                    <v-form ref="form" v-model="data.valid" @submit.prevent="login">
                       <v-text-field
                         prepend-inner-icon="mdi-account-box"
                         label="Email"
@@ -40,14 +40,19 @@
                         outlined
                         class="mr-3 ml-3"
                       ></v-text-field>
+                    <v-card-actions class="mr-1 ml-3 mt-n4">
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="primary"
+                        class="white--text"
+                        type="submit"
+                        :disabled="!data.valid || data.loading"
+                        :loading="data.loading">
+                        <v-icon left>mdi-login</v-icon>LOGIN
+                      </v-btn>
+                    </v-card-actions>
                     </v-form>
                   </v-card-text>
-                  <v-card-actions class="mr-1 ml-3 pr-6 pl-6 mt-n8">
-                    <v-spacer></v-spacer>
-                    <v-btn color="primary" class="white--text" @click="login" :loading="data.loading">
-                      <v-icon left>mdi-login</v-icon>LOGIN
-                    </v-btn>
-                  </v-card-actions>
                 </v-col>
                 <!-- login form end -->
               </v-row>

@@ -7,7 +7,6 @@
     <v-spacer></v-spacer>
     <v-menu
       max-height="420"
-      open-on-hover
       v-model="data.menu"
       :close-on-content-click="true"
       :nudge-width="250"
@@ -58,7 +57,7 @@
         </v-card-actions>
       </v-card>
     </v-menu>
-    <v-menu open-on-hover v-model="data.userMenu" :close-on-content-click="true" :nudge-width="200" offset-y>
+    <v-menu v-model="data.userMenu" :close-on-content-click="true" :nudge-width="200" offset-y>
       <template v-slot:activator="{ on, attrs }">
         <img
           :src="data.avatar"
