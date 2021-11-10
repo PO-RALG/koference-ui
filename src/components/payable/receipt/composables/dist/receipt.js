@@ -131,7 +131,7 @@ exports.useReceipt = function () {
                 value: "receipt_number"
             },
             {
-                text: "Ammount",
+                text: "Amount",
                 align: "start",
                 sortable: false,
                 value: "amount"
@@ -159,7 +159,6 @@ exports.useReceipt = function () {
         modal: false,
         deletemodal: false,
         invoicedetails: false,
-        invoicereceipt: false,
         items: dataItems,
         itemsToFilter: [],
         formData: invoiceData,
@@ -235,57 +234,14 @@ exports.useReceipt = function () {
         data.invoicedetails = false;
     };
     var cancelInvoiceReceipt = function () {
-        data.invoicereceipt = false;
         data.invoicedetails = true;
         data.invoicereceip.items = [];
-    };
-    var openInvoiceReceipt = function (invoiceData) {
-        data.invoicedetails = false;
-        data.invoicereceipt = true;
-        data.customer = [invoiceData]; //mapping customer in autocomplete field
-        data.invoicereceip.customer_id = invoiceData; //mapping customer in autocomplete for two way binding
-        data.invoicereceip.invoice_id = invoiceData.id;
-        data.invoicereceip.invoice_number = invoiceData.invoice_number;
-        if (data.invoicedata.receipt_items) {
-            data.invoicedata.receipt_items.forEach(function (value) {
-                var one_item = {
-                    invoicedAmount: value.amount,
-                    received: value.received_amount,
-                    itemName: value.definition.name,
-                    invoice_item_id: value.id,
-                    amount: ""
-                };
-                data.invoicereceip.items.push(one_item);
-            });
-            back_accounts_service_1.bankaccounts({ per_page: 2000 }).then(function (response) {
-                data.bankaccounts = response.data.data.data;
-            });
-        }
     };
     var bankName = composition_api_1.computed(function () {
         return data.bankaccounts.map(function (account) {
             account.fullName = "Account Number -" + account.number + "  " + account.bank + " - " + account.branch;
             return account;
         });
-    });
-    var newInvoiceItem = composition_api_1.computed(function () {
-        return data.invoicedata
-            ? data.invoicedata.receipt_items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); })
-            : [];
-    });
-    var invoicedAmount = composition_api_1.ref(newInvoiceItem);
-    var sumDebts = composition_api_1.computed(function () {
-        return {
-            sumamount: invoicedAmount.value.reduce(function (sum, totalAmount) {
-                return sum + Number(totalAmount.amount);
-            }, 0),
-            sumamountReceived: invoicedAmount.value.reduce(function (sum, totalAmount) {
-                return sum + Number(totalAmount.received_amount);
-            }, 0),
-            sumamountPending: invoicedAmount.value.reduce(function (sum, totalAmount) {
-                return sum + Number(totalAmount.amount - totalAmount.received_amount);
-            }, 0)
-        };
     });
     var cancelConfirmDialog = function () {
         data.formData = {};
@@ -332,24 +288,6 @@ exports.useReceipt = function () {
         invoice_1.update(data).then(function () {
             reloadData();
             cancelDialog();
-        });
-    };
-    var createReceipt = function () {
-        var invoiceItems = data.invoicereceip.items.filter(function (item) { return item.cleared !== true; });
-        data.invoicereceip.items = invoiceItems;
-        invoice_1.receiptcreate(data.invoicereceip).then(function () {
-            data.invoicereceipt = false;
-            reloadData();
-            data.invoicereceip = {
-                invoice_id: "",
-                date: "",
-                description: "",
-                customer_id: "",
-                bank_account_id: "",
-                bank_reference_number: "",
-                invoice_number: "",
-                items: []
-            };
         });
     };
     var createInvoice = function (data) {
@@ -403,7 +341,6 @@ exports.useReceipt = function () {
     return {
         data: data,
         getData: getData,
-        createReceipt: createReceipt,
         addRow: addRow,
         removeRow: removeRow,
         openDialog: openDialog,
@@ -419,14 +356,11 @@ exports.useReceipt = function () {
         previewInvoice: previewInvoice,
         cancelInvoiceDialog: cancelInvoiceDialog,
         cancelInvoiceReceipt: cancelInvoiceReceipt,
-        openInvoiceReceipt: openInvoiceReceipt,
         HEADERS: HEADERS,
         RECEIPTHEADERS: RECEIPTHEADERS,
         bankName: bankName,
         HEADERS_INVOICE_DETAILS: HEADERS_INVOICE_DETAILS,
         newInvoiceItems: newInvoiceItems,
-        newInvoiceItem: newInvoiceItem,
-        sumDebts: sumDebts,
         checkDublicate: checkDublicate,
         newreceiptItem: newreceiptItem,
         print: print

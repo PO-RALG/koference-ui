@@ -134,7 +134,7 @@ export const useReceipt = (): any => {
         value: "receipt_number",
       },
       {
-        text: "Ammount",
+        text: "Amount",
         align: "start",
         sortable: false,
         value: "amount",
@@ -164,7 +164,7 @@ export const useReceipt = (): any => {
     modal: false,
     deletemodal: false,
     invoicedetails: false,
-    invoicereceipt: false,
+
     items: dataItems,
     itemsToFilter: [],
     formData: invoiceData,
@@ -254,36 +254,8 @@ export const useReceipt = (): any => {
   };
 
   const cancelInvoiceReceipt = () => {
-    data.invoicereceipt = false;
     data.invoicedetails = true;
     data.invoicereceip.items = [];
-  };
-
-  const openInvoiceReceipt = (invoiceData: any) => {
-    data.invoicedetails = false;
-    data.invoicereceipt = true;
-
-    data.customer = [invoiceData]; //mapping customer in autocomplete field
-    data.invoicereceip.customer_id = invoiceData; //mapping customer in autocomplete for two way binding
-    data.invoicereceip.invoice_id = invoiceData.id;
-    data.invoicereceip.invoice_number = invoiceData.invoice_number;
-
-    if (data.invoicedata.receipt_items) {
-      data.invoicedata.receipt_items.forEach((value) => {
-        const one_item = {
-          invoicedAmount: value.amount,
-          received: value.received_amount,
-          itemName: value.definition.name,
-          invoice_item_id: value.id,
-          amount: "",
-        };
-        data.invoicereceip.items.push(one_item);
-      });
-
-      bankaccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
-        data.bankaccounts = response.data.data.data;
-      });
-    }
   };
 
   const bankName = computed(() => {
@@ -291,39 +263,6 @@ export const useReceipt = (): any => {
       account.fullName = `Account Number -${account.number}  ${account.bank} - ${account.branch}`;
       return account;
     });
-  });
-
-  const newInvoiceItem: any = computed(() => {
-    return data.invoicedata
-      ? data.invoicedata.receipt_items.map((data, index) => ({
-          ...data,
-          index: ++index,
-        }))
-      : [];
-  });
-
-  const invoicedAmount = ref(newInvoiceItem);
-
-  const sumDebts = computed(() => {
-    return {
-      sumamount: invoicedAmount.value.reduce(function (sum, totalAmount) {
-        return sum + Number(totalAmount.amount);
-      }, 0),
-      sumamountReceived: invoicedAmount.value.reduce(function (
-        sum,
-        totalAmount
-      ) {
-        return sum + Number(totalAmount.received_amount);
-      },
-      0),
-      sumamountPending: invoicedAmount.value.reduce(function (
-        sum,
-        totalAmount
-      ) {
-        return sum + Number(totalAmount.amount - totalAmount.received_amount);
-      },
-      0),
-    };
   });
 
   const cancelConfirmDialog = () => {
@@ -385,27 +324,6 @@ export const useReceipt = (): any => {
     });
   };
 
-  const createReceipt = () => {
-    const invoiceItems = data.invoicereceip.items.filter(
-      (item) => item.cleared !== true
-    );
-    data.invoicereceip.items = invoiceItems;
-    receiptcreate(data.invoicereceip).then(() => {
-      data.invoicereceipt = false;
-      reloadData();
-      data.invoicereceip = {
-        invoice_id: "",
-        date: "",
-        description: "",
-        customer_id: "",
-        bank_account_id: "",
-        bank_reference_number: "",
-        invoice_number: "",
-        items: [],
-      };
-    });
-  };
-
   const createInvoice = (data: any) => {
     create(data).then(() => {
       reloadData();
@@ -464,7 +382,6 @@ export const useReceipt = (): any => {
   return {
     data,
     getData,
-    createReceipt,
     addRow,
     removeRow,
     openDialog,
@@ -480,14 +397,11 @@ export const useReceipt = (): any => {
     previewInvoice,
     cancelInvoiceDialog,
     cancelInvoiceReceipt,
-    openInvoiceReceipt,
     HEADERS,
     RECEIPTHEADERS,
     bankName,
     HEADERS_INVOICE_DETAILS,
     newInvoiceItems,
-    newInvoiceItem,
-    sumDebts,
     checkDublicate,
     newreceiptItem,
     print,
