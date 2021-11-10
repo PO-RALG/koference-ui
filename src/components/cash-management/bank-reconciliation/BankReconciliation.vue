@@ -3,19 +3,32 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog('BALANCE')" :disabled="cant('addBalance', 'Reconciliation')">
+      <v-btn
+        v-if="(!data.report || !data.report.confirmed)"
+        color="primary"
+        @click="openDialog('BALANCE')"
+        :disabled="cant('addBalance', 'Reconciliation')">
         <v-icon>mdi-plus</v-icon>
         Add Bank Balance
       </v-btn>
+      <v-btn v-if="data.report && data.report.confirmed" color="green">
+        <v-icon small>mdi-lock</v-icon>
+        Report Locked
+      </v-btn>
     </v-card-actions>
-    <v-card>
+    <v-card class="elevation-0">
       <v-card-actions class="justify-center" v-if="!data.selectedEntries.length">
-        <v-btn @click="openDialog('LOAD')" class="ma-2" outlined color="black">
+        <v-btn
+          @click="openDialog('LOAD')"
+          class="ma-2"
+          outlined
+          color="black"
+          v-if="(!data.report || !data.report.confirmed)">
           <v-icon>mdi-progress-download</v-icon>
           Load Cashbook Entries
         </v-btn>
       </v-card-actions>
-      <v-simple-table v-if="data.entries.length">
+      <v-simple-table v-if="data.report">
         <template v-slot:default>
           <thead>
             <tr class="border-top">
@@ -29,27 +42,39 @@
           </thead>
           <tbody>
             <tr class="border-bottom">
-              <td class="border-right"><strong>{{ data.report.bank_balance | toCurrency }}</strong></td>
-              <td class="border-right"><strong>400,000.00</strong></td>
-              <td class="border-right"><strong>23,000.00</strong></td>
+              <td class="border-right">
+                <strong>{{ data.report.bank_balance | toCurrency }}</strong>
+              </td>
+              <td class="border-right">
+                <strong>{{ outstandingDeposits | toCurrency }}</strong>
+              </td>
+              <td class="border-right">
+                <strong>{{ outstandingPayments | toCurrency }}</strong>
+              </td>
               <td class="border-right">
                 <strong>{{ data.report.adjusted_balance | toCurrency }}</strong>
               </td>
-              <td class="border-right"><strong>5,637,000.00</strong></td>
-              <td><strong>4,210,000.00</strong></td>
+              <td class="border-right">
+                <strong>{{ data.report.cash_balance | toCurrency }}</strong>
+              </td>
+              <td>
+                <strong>{{ diff | toCurrency }}</strong>
+              </td>
             </tr>
           </tbody>
         </template>
       </v-simple-table>
+      <v-divider></v-divider>
       <v-card-actions class="pa-4 elevation-4" v-if="data.selectedEntries.length">
         <v-btn text color="primary"> {{ data.selectedEntries.length }} Entries Selected </v-btn>
-        <v-spacer></v-spacer>
+        <v-spacer v-if="data.report"></v-spacer>
         <v-btn @click="reconcileEntries(status)" color="primary" v-for="status in data.statuses" :key="status">
           <v-icon>mdi-plus</v-icon>
           {{ status }}
         </v-btn>
       </v-card-actions>
       <v-data-table
+        v-if="data.entries.length"
         class="elevation-2"
         :headers="data.headers"
         :items="data.entries"
@@ -68,10 +93,10 @@
           <span>{{ item.cr_amount | toCurrency }}</span>
         </template>
         <template v-slot:[`item.status`]="{ item }">
-          <span>{{ item.status? 'RECONCILED' : 'CREATED' }}</span>
+          <span>{{ item.status ? "RECONCILED" : "OUTSTANDING DEPOSITS" }}</span>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="fetchData" />
+          <!--<Paginate :params="data.response" :rows="data.rows" @onPageChange="fetchData" />-->
         </template>
       </v-data-table>
 
@@ -85,7 +110,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" md="12">
-                    <vuetify-money
+                    <v-text-field
                       v-if="data.showBalance"
                       v-model="data.formData.balance"
                       outlined
@@ -96,7 +121,7 @@
                       :options="data.options"
                       label="Account Balance"
                     >
-                    </vuetify-money>
+                    </v-text-field>
                   </v-col>
                   <v-col cols="12" md="12" class="mt-n8">
                     <fetcher :api="'/api/v1/bank-accounts'">
@@ -147,6 +172,15 @@
           </ModalFooter>
         </template>
       </Modal>
+
+      <ConfirmDialog
+        @rejectFunction="closeConfirmDialog"
+        @acceptFunction="confirmReconciliation"
+        :message="'Are you sure you want to confirm?'"
+        :data="data.report"
+        :isOpen="data.isOpen"
+        :title="`Confirm Reconciliation`"
+      />
     </v-card>
   </div>
 </template>
@@ -156,7 +190,20 @@ import { defineComponent } from "@vue/composition-api";
 import { useBankReconciliation } from "./composables/use-reconciliatoin";
 export default defineComponent({
   setup(_, context) {
-    const { data, fetchData, openDialog, cancelDialog, save, reconcileEntries } = useBankReconciliation(context);
+    const {
+      data,
+      fetchData,
+      openDialog,
+      cancelDialog,
+      save,
+      reconcileEntries,
+      outstandingDeposits,
+      outstandingPayments,
+      showConfirmDialog,
+      closeConfirmDialog,
+      confirmReconciliation,
+      diff,
+    } = useBankReconciliation(context);
 
     return {
       data,
@@ -165,6 +212,12 @@ export default defineComponent({
       cancelDialog,
       save,
       reconcileEntries,
+      outstandingDeposits,
+      outstandingPayments,
+      showConfirmDialog,
+      closeConfirmDialog,
+      confirmReconciliation,
+      diff,
     };
   },
 });

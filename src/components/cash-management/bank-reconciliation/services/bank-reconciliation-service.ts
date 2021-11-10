@@ -31,4 +31,8 @@ const getEntries = async (payload: any): Promise<AxiosResponse> => {
   return await axios.get(`${API}/get-entries`, { params: payload });
 };
 
-export { get, find, create, addBalance, getEntries, getReport, reconcileEntries };
+const confirmReport = async (payload: any): Promise<AxiosResponse> => {
+  return await axios.post(`${API}/confirm`, payload);
+};
+
+export { get, find, create, addBalance, getEntries, getReport, reconcileEntries, confirmReport };

@@ -190,7 +190,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .header-toolbar {
   color: #fff;
   background-color: rgb(33, 150, 243) !important;
