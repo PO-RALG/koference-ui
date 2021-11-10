@@ -71,15 +71,18 @@ export const useBankReconciliation = ({ root }): any => {
       data.formData.date = date;
       init(params);
     }
-  }
+  };
 
-  watch(() => (root.$route.query), async (newQuery) => {
-    const { bank_account_id, date } = newQuery;
-    const params = { date, bank_account_id };
-    if (!date && !bank_account_id) {
-      init(params);
+  watch(
+    () => root.$route.query,
+    async (newQuery) => {
+      const { bank_account_id, date } = newQuery;
+      const params = { date, bank_account_id };
+      if (!date && !bank_account_id) {
+        init(params);
+      }
     }
-  });
+  );
 
   const init = async (params: Params) => {
     if (params.bank_account_id && params.date) {
@@ -182,6 +185,7 @@ export const useBankReconciliation = ({ root }): any => {
         if (response.status === 200) {
           data.formData = { date: null, balance: null, bank_account_id: null };
           cancelDialog();
+          router.go(0);
         }
       });
     } else {
@@ -249,7 +253,7 @@ export const useBankReconciliation = ({ root }): any => {
       ...data.report,
       bank_account_id: root.$root.$route.query.bank_account_id,
       date: root.$root.$route.query.date,
-    }
+    };
     console.log("confirmReconciliation", payload);
     confirmReport(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
