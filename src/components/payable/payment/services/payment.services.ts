@@ -27,10 +27,10 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/payments/` + payload);
 };
 
-const printPdf = (id: string | number) => {
+const printPdf = (id: number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
-  let url = `${process.env.VUE_APP_SERVER_URL}/api/v1/payments/${id}/print?token=${user.token}`;
+  const url = `${process.env.VUE_APP_SERVER_URL}/api/v1/payments/${id}/print?token=${user.token}`;
   return window.open(url);
-}
+};
 
 export { get, find, create, update, destroy, search, printPdf };

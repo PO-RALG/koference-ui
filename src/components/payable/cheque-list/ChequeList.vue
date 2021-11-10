@@ -32,7 +32,7 @@
           {{ item.amount | toCurrency() }}
         </template>
         <template v-slot:[`item.bank_account`]="{ item }">
-          {{ item.bank_account.number }} - 
+          {{ item.bank_account.number }} -
           {{ item.bank_account.name }}
         </template>
         <template v-slot:[`item.actions`]="{ item }">

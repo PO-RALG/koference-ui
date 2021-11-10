@@ -144,7 +144,7 @@ export const useChequeList = (): any => {
       bank_account_id: data.formData.bank_account_id,
       chequeListItems: chequeListItemsData,
     };
-    
+
     if (data.selected.length > 0) {
       createChequeList(chequeListData);
     }
