@@ -9,6 +9,7 @@ import {
   search,
   viewinvoice,
   receiptcreate,
+  printReceipt,
 } from "../services/invoice";
 import { customers } from "@/components/setup/customer/services/customer.service";
 import { bankaccounts } from "@/components/setup/bank-account/services/back-accounts.service";
@@ -133,13 +134,19 @@ export const useReceipt = (): any => {
         value: "receipt_number",
       },
       {
+        text: "Ammount",
+        align: "start",
+        sortable: false,
+        value: "amount",
+      },
+      {
         text: "Customer",
         align: "start",
         sortable: false,
         value: "customer.name",
       },
 
-      { text: "Invoice Date", value: "date", sortable: true },
+      { text: "Receipt Date", value: "date", sortable: true },
 
       {
         text: "Description",
@@ -148,10 +155,10 @@ export const useReceipt = (): any => {
         value: "description",
       },
       {
-        text: "Ammount",
+        text: "Action",
         align: "start",
         sortable: false,
-        value: "amount",
+        value: "actions",
       },
     ],
     modal: false,
@@ -200,8 +207,9 @@ export const useReceipt = (): any => {
   });
 
   const searchCategory = (categoryName) => {
+    console.log("receipt_number", categoryName);
     if (categoryName != null) {
-      search({ invoice_number: categoryName.invoice_number }).then(
+      search({ receipt_number: categoryName.receipt_number }).then(
         (response: AxiosResponse) => {
           data.items = response.data.data.data;
         }
@@ -433,6 +441,10 @@ export const useReceipt = (): any => {
     data.receipt_items.splice(index, 1);
   };
 
+  const print = (id: number) => {
+    printReceipt(id);
+  };
+
   const previewInvoice = (item: any) => {
     viewinvoice(item).then((response: AxiosResponse) => {
       data.invoicedata = response.data.data;
@@ -478,5 +490,6 @@ export const useReceipt = (): any => {
     sumDebts,
     checkDublicate,
     newreceiptItem,
+    print,
   };
 };

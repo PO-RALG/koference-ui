@@ -145,7 +145,7 @@ exports.useInvoice = function () {
                 value: "description"
             },
             {
-                text: "Ammount",
+                text: "Amount",
                 align: "start",
                 sortable: false,
                 value: "amount"

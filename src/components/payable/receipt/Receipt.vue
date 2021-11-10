@@ -31,7 +31,7 @@
                 label="Filter By Invoice Number"
                 @change="searchCategory($event)"
                 :items="data.itemsToFilter"
-                :item-text="'invoice_number'"
+                :item-text="'receipt_number'"
                 :item-divider="true"
                 return-object
                 required
@@ -56,10 +56,29 @@
           </span>
         </template>
 
+        <template v-slot:[`item.amount`]="{ item }">
+          {{ item.amount | toCurrency() }}
+        </template>
         <template v-slot:[`item.pending`]="{ item }">
           {{ (item.amount - item.received_amount) | toCurrency() }}
         </template>
-
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-tooltip :disabled="cant('edit', 'BankAccount')" bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn @click="print(item.id)" text color="green">
+                <v-icon
+                  :disabled="cant('edit', 'BankAccount')"
+                  v-bind="attrs"
+                  v-on="on"
+                  class="mr-2"
+                >
+                  mdi-printer
+                </v-icon>
+              </v-btn>
+            </template>
+            <span>Print</span>
+          </v-tooltip>
+        </template>
         <template v-slot:footer>
           <Paginate
             :params="data.response"
@@ -663,6 +682,7 @@ export default defineComponent({
       sumDebts,
       checkDublicate,
       newreceiptItem,
+      print,
     } = useReceipt();
     return {
       data,
@@ -693,6 +713,7 @@ export default defineComponent({
       sumDebts,
       checkDublicate,
       newreceiptItem,
+      print,
     };
   },
 });

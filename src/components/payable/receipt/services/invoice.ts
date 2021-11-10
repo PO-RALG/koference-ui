@@ -37,11 +37,14 @@ const destroy = async (payload: any) => {
 
 const receiptcreate = async (payload: any) => {
   console.log("payload", payload);
-  return await axios.post(
-    `/api/v1/receipts/` + payload.invoice_id + "/invoice",
-    payload
-  );
 };
+
+const printReceipt = (id: string | number) => {
+  const user = JSON.parse(localStorage.getItem("FFARS_USER"));
+  let url = `${process.env.VUE_APP_SERVER_URL}/api/v1/receipts/${id}?token=${user.token}`;
+  return window.open(url);
+};
+
 export {
   get,
   find,
@@ -51,4 +54,5 @@ export {
   search,
   viewinvoice,
   receiptcreate,
+  printReceipt,
 };

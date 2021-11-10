@@ -95,7 +95,7 @@
                 </v-col>
                 <v-col class="pt-6" cols="12" md="6">
                   <DatePicker
-                    :label="'Ivoice Date'"
+                    :label="'Invoice Date'"
                     v-model="data.formData.date"
                   />
                 </v-col>
@@ -137,7 +137,7 @@
                             :item-text="'name'"
                             v-model="invoice.invoice_item_definition_id"
                             :name="`data.invoice_items[${index}][invoice_item_definition_id]`"
-                            label="Select Ivoice Item"
+                            label="Select Invoice Item"
                             item-value="id"
                             dense
                             outlined

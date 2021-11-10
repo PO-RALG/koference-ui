@@ -44,6 +44,13 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/invoice-item-definitions/` + payload);
 };
 
+const activation = async (payload: any) => {
+  return await axios.post(
+    `/api/v1/invoice-item-definitions/` + payload.id + "/change-status",
+    payload
+  );
+};
+
 export {
   get,
   find,
@@ -53,4 +60,5 @@ export {
   search,
   itemdefinitions,
   glAccounts,
+  activation,
 };

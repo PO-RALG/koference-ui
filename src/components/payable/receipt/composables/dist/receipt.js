@@ -131,12 +131,18 @@ exports.useReceipt = function () {
                 value: "receipt_number"
             },
             {
+                text: "Ammount",
+                align: "start",
+                sortable: false,
+                value: "amount"
+            },
+            {
                 text: "Customer",
                 align: "start",
                 sortable: false,
                 value: "customer.name"
             },
-            { text: "Invoice Date", value: "date", sortable: true },
+            { text: "Receipt Date", value: "date", sortable: true },
             {
                 text: "Description",
                 align: "start",
@@ -144,10 +150,10 @@ exports.useReceipt = function () {
                 value: "description"
             },
             {
-                text: "Ammount",
+                text: "Action",
                 align: "start",
                 sortable: false,
-                value: "amount"
+                value: "actions"
             },
         ],
         modal: false,
@@ -190,8 +196,9 @@ exports.useReceipt = function () {
         });
     });
     var searchCategory = function (categoryName) {
+        console.log("receipt_number", categoryName);
         if (categoryName != null) {
-            invoice_1.search({ invoice_number: categoryName.invoice_number }).then(function (response) {
+            invoice_1.search({ receipt_number: categoryName.receipt_number }).then(function (response) {
                 data.items = response.data.data.data;
             });
         }
@@ -376,6 +383,9 @@ exports.useReceipt = function () {
     var removeRow = function (index) {
         data.receipt_items.splice(index, 1);
     };
+    var print = function (id) {
+        invoice_1.printReceipt(id);
+    };
     var previewInvoice = function (item) {
         invoice_1.viewinvoice(item).then(function (response) {
             data.invoicedata = response.data.data;
@@ -418,6 +428,7 @@ exports.useReceipt = function () {
         newInvoiceItem: newInvoiceItem,
         sumDebts: sumDebts,
         checkDublicate: checkDublicate,
-        newreceiptItem: newreceiptItem
+        newreceiptItem: newreceiptItem,
+        print: print
     };
 };

@@ -148,7 +148,7 @@ export const useInvoice = (): any => {
         value: "description",
       },
       {
-        text: "Ammount",
+        text: "Amount",
         align: "start",
         sortable: false,
         value: "amount",

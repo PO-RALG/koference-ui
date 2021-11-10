@@ -45,7 +45,7 @@
               light
               @click="previewPaymentVoucher(item.id)"
             >
-            {{ item.reference_no }}
+              {{ item.reference_no }}
             </v-list-item>
           </span>
         </template>
@@ -222,7 +222,8 @@
                             <br />
                             <span>
                               {{
-                                (account.allocation - account.totalExpenditure) | toCurrency()
+                                (account.allocation - account.totalExpenditure)
+                                  | toCurrency()
                               }}
                             </span>
                           </td>
@@ -231,7 +232,12 @@
                     </template>
                   </v-simple-table>
                 </v-card>
-                <v-col cols="12" md="12" class="pb-3 pt-7 data-table" v-if="data.payables.length">
+                <v-col
+                  cols="12"
+                  md="12"
+                  class="pb-3 pt-7 data-table"
+                  v-if="data.payables.length"
+                >
                   <v-data-table
                     :headers="payableHeader"
                     disable-pagination
@@ -243,9 +249,13 @@
                           <td class="pt-5 pb-2">
                             <span class="text-lg-body-1">{{ item.code }}</span>
                             <br />
-                            <span style="color: teal">{{ item.description }}</span>
+                            <span style="color: teal">{{
+                              item.description
+                            }}</span>
                             <br />
-                            <span class="text--primary">{{ item.balance | toCurrency() }}</span>
+                            <span class="text--primary">{{
+                              item.balance | toCurrency()
+                            }}</span>
                           </td>
                           <td class="pt-5 pb-2">
                             <v-text-field
@@ -259,11 +269,10 @@
                             ></v-text-field>
                           </td>
                           <td>
-                            <v-btn
-                              text
-                              @click="removePayable(i)"
-                            >
-                              <v-icon color="red darken-1">mdi-minus-circle</v-icon>
+                            <v-btn text @click="removePayable(i)">
+                              <v-icon color="red darken-1"
+                                >mdi-minus-circle</v-icon
+                              >
                             </v-btn>
                           </td>
                         </tr>
@@ -319,12 +328,11 @@
           <div class="" v-if="data.pvDetails">
             <v-col class="d-flex justify-center">
               <div class="font-weight-bold text-center">
-                <img :src="data.coat" class="login-logo pt-5" /><br />  
+                <img :src="data.coat" class="login-logo pt-5" /><br />
                 The United Republic of Tanzania <br />
-                President's Office Regional Administration and Local Government <br />
-                {{
-                  data.pvDetails.council ? data.pvDetails.council.name : ""
-                }} 
+                President's Office Regional Administration and Local Government
+                <br />
+                {{ data.pvDetails.council ? data.pvDetails.council.name : "" }}
                 <br />
                 {{
                   data.pvDetails.facility ? data.pvDetails.facility.name : ""
@@ -391,13 +399,13 @@
                           </td>
                           <td>
                             <span class="font-weight-bold">
-                              {{ data.pvDetails.reference_no }} 
-                            </span><br />
+                              {{ data.pvDetails.reference_no }} </span
+                            ><br />
                             <span class="font-weight-bold">
                               {{
                                 data.pvDetails.date | format("DD/MM/YYYY")
                               }}</span
-                              >
+                            >
                             <br /><br /><br />
                           </td>
                         </tr>

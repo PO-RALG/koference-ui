@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.glAccounts = exports.itemdefinitions = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
+exports.activation = exports.glAccounts = exports.itemdefinitions = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
 var axios_1 = require("axios");
 var get = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -124,3 +124,12 @@ var destroy = function (payload) { return __awaiter(void 0, void 0, void 0, func
     });
 }); };
 exports.destroy = destroy;
+var activation = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/invoice-item-definitions/" + payload.id + "/change-status", payload)];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.activation = activation;
