@@ -258,6 +258,7 @@ export const useBankReconciliation = ({ root }): any => {
     confirmReport(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
         data.isOpen = false;
+        router.go(0);
       }
     });
   };
