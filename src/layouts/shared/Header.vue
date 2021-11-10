@@ -37,22 +37,18 @@
         <v-divider></v-divider>
 
         <v-list>
-          <v-list-item>
-            <v-list-item-title class="message">
-              <a href="#">You have documents pending for approval</a>
-            </v-list-item-title>
-          </v-list-item>
-          <v-divider></v-divider>
+          <div v-for="message in data.messages" :key="message.id">
+            <v-list-item>
+              <v-list-item-title class="message">
+                <a href="#">{{ message.title }}</a>
+              </v-list-item-title>
+            </v-list-item>
+            <v-divider></v-divider>
+          </div>
 
           <v-list-item>
-            <v-list-item-title class="message">
-              <a href="#">Please approve some vouchers and receipts for processing in the next stage</a>
-            </v-list-item-title>
-          </v-list-item>
-          <v-divider></v-divider>
-          <v-list-item>
-            <v-list-item-title class="message">
-              <a href="#">VIEW ALL NOTIFICATIONS</a>
+            <v-list-item-title class="message font-weight-bold">
+              <a href="#">VIEW ALL</a>
             </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -97,7 +93,7 @@
 
           <v-list-item class="list-item">
             <v-list-item-action>
-              <v-icon>mdi-account-box-outline</v-icon>
+              <v-icon>mdi-cog-outline</v-icon>
             </v-list-item-action>
             <v-list-item-title class="clickable">
               <span>Update Profile</span>
@@ -135,8 +131,8 @@ export default defineComponent({
   setup(props, { emit }) {
     const data = reactive({
       messages: [
-        { id: 1, title: "Message 1" },
-        { id: 2, title: "Message 2" },
+        { id: 1, title: "You have documents pending for approval" },
+        { id: 2, title: "Your documents have been approved, please proceed with the next step" },
       ],
       menu: false,
       userMenu: false,
