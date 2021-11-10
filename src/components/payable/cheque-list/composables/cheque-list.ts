@@ -5,6 +5,7 @@ import {
   getPayments,
   create,
   destroy,
+  printPdf,
 } from "../services/cheque-list.services";
 import { ChequeList } from "../types/ChequeList";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
@@ -14,7 +15,7 @@ export const useChequeList = (): any => {
   const chequeListData = {} as ChequeList;
 
   const data = reactive({
-    title: "Cheque Lists",
+    title: "Chequelists",
     valid: false,
     isOpen: false,
     node: null,
@@ -29,12 +30,6 @@ export const useChequeList = (): any => {
         align: "start",
         sortable: false,
         value: "date",
-      },
-      {
-        text: "Cheque #",
-        align: "start",
-        sortable: false,
-        value: "payments",
       },
       {
         text: "Bank Account",
@@ -56,16 +51,16 @@ export const useChequeList = (): any => {
     ],
     paymentHeaders: [
       {
-        text: "Date",
-        align: "start",
-        sortable: false,
-        value: "payment_date",
-      },
-      {
         text: "Payment #",
         align: "start",
         sortable: false,
         value: "reference_no",
+      },
+      {
+        text: "Payment Date",
+        align: "start",
+        sortable: false,
+        value: "payment_date",
       },
       {
         text: "Amount",
@@ -80,21 +75,10 @@ export const useChequeList = (): any => {
         value: "voucher.supplier.name",
       },
       {
-        text: "Cheque #",
-        align: "start",
-        sortable: false,
-        value: "cheque",
-      },
-      {
         text: "Bank Account",
         align: "start",
         sortable: false,
         value: "bank_account",
-      },
-      {
-        text: "Select",
-        value: "activations",
-        sortable: false,
       },
     ],
     items: dataItems,
@@ -108,6 +92,7 @@ export const useChequeList = (): any => {
     searchTerm: "",
     payments: [],
     bankAccounts: [],
+    selected: [],
   });
 
   onMounted(() => {
@@ -151,9 +136,7 @@ export const useChequeList = (): any => {
     const chequeListItemsData = [];
     for (let j = 0; j < paymentData.length; j++) {
       const element = paymentData[j];
-      if (element.active === true) {
-        chequeListItemsData.push({ payment_id: element.id });
-      }
+      chequeListItemsData.push({ payment_id: element.id });
     }
 
     const chequeListData = {
@@ -161,8 +144,8 @@ export const useChequeList = (): any => {
       bank_account_id: data.formData.bank_account_id,
       chequeListItems: chequeListItemsData,
     };
-
-    if (chequeListItemsData.length > 0) {
+    
+    if (data.selected.length > 0) {
       createChequeList(chequeListData);
     }
   };
@@ -208,6 +191,10 @@ export const useChequeList = (): any => {
     });
   };
 
+  const printChequelist = (id: number) => {
+    printPdf(id);
+  };
+
   return {
     data,
     getData,
@@ -218,5 +205,6 @@ export const useChequeList = (): any => {
     openConfirmDialog,
     cancelConfirmDialog,
     remove,
+    printChequelist,
   };
 };
