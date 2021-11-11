@@ -288,7 +288,6 @@ export const useBankReconciliation = ({ root }): any => {
   };
 
   const rowClicked = (item: any) => {
-    console.log("item", item);
     data.formData.balance = data.report.bank_balance;
     if (item.confirmed) {
       data.showEdit = false;
