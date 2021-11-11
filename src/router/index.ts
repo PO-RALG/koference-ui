@@ -42,6 +42,8 @@ import { reportRoutes } from "@/components/report";
 //import { testRoutes } from "@/components/test";
 import { creditorRoutes } from "@/components/payable/creditor";
 import { chequeListRoutes } from "@/components/payable/cheque-list";
+//import { testRoutes } from "@/components/test";
+import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
 import { notFoundRoute } from "@/components/404";
 import { receiptRoutes } from "@/components/payable/receipt";
 
@@ -109,6 +111,7 @@ const routes: Array<RouteConfig> = [
       ...creditorRoutes,
       ...chequeListRoutes,
       ...receiptRoutes,
+      ...bankReconciliationRoutes,
       ...notFoundRoute,
     ],
   },
@@ -138,6 +141,9 @@ const isLoggedIn = (to, _, next) => {
   }
 };
 
+router.beforeEach(
+  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
+);
 router.beforeEach(
   VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
 );

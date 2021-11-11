@@ -1,14 +1,10 @@
 <template>
   <div id="inspire">
-    <Sidebar
-      :drawer="data.drawer"
-      @toggle="toggleSidebar"
-      :user="user"
-      class="d-print-none"
-    />
+    <Sidebar :drawer="data.drawer" @toggle="toggleSidebar" :user="user" class="d-print-none" />
     <Header
       @logoutFunction="logout"
       @sidebarToggle="toggleSidebar"
+      :user="user"
       :drawer="data.drawer"
       class="d-print-none"
     />

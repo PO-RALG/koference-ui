@@ -59,7 +59,10 @@
           {{ item.amount_paid | toCurrency() }}
         </template>
         <template v-slot:[`item.full_paid`]="{ item }">
-          {{ fullPaid(item) }}
+          <v-icon v-if="fullPaid(item)" medium color="success"
+            >mdi-check</v-icon
+          >
+          <v-icon v-else medium color="warning">mdi-close</v-icon>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
@@ -85,7 +88,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="1260">
+    <Modal :modal="data.modal" :width="1200">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Payment Voucher`" />
       </template>
@@ -94,14 +97,14 @@
           <v-form v-model="data.valid">
             <v-container>
               <v-row class="pa-2 pb-5">
-                <v-col cols="12" md="2">
+                <v-col cols="12" md="12">
                   <DatePicker
                     :label="'Date'"
                     v-model="data.formData.date"
                     required
                   />
                 </v-col>
-                <v-col cols="12" md="4" sm="12">
+                <v-col cols="12" md="6" sm="12">
                   <v-select
                     v-model="data.formData.supplier_id"
                     :items="data.suppliers"
@@ -132,106 +135,105 @@
                 </v-col>
               </v-row>
               <template>
-                <v-card class="mb-5 p-3">
-                  <v-simple-table>
-                    <template v-slot:default>
-                      <thead>
-                        <tr>
-                          <td>
-                            <v-row>
-                              <v-col md="4" sm="12" cols="12">
-                                <v-select
-                                  :items="data.activities"
-                                  item-text="name"
-                                  label="Select Activity"
-                                  @change="searchFundingSource($event)"
-                                  required
-                                >
-                                  <template v-slot:selection="{ item }">
-                                    {{ item.description }} ({{
-                                      item.sub_budget_class.description
-                                    }})
-                                  </template>
-                                  <template v-slot:item="{ item }">
-                                    {{ item.description }} ({{
-                                      item.sub_budget_class.description
-                                    }})
-                                  </template>
-                                  <template v-slot:prepend-item>
-                                    <v-list-item>
-                                      <v-list-item-content>
-                                        <v-text-field
-                                          v-model="data.searchTerm"
-                                          placeholder="Search"
-                                          @input="searchActivities"
-                                        ></v-text-field>
-                                      </v-list-item-content>
-                                    </v-list-item>
-                                    <v-divider></v-divider>
-                                  </template>
-                                </v-select>
-                              </v-col>
-                              <v-col md="4" sm="12" cols="12">
-                                <v-select
-                                  :items="data.fundingSources"
-                                  item-text="code"
-                                  label="Select Funding Sources"
-                                  @change="searchGfsCodes($event)"
-                                  return-object
-                                >
-                                  <template v-slot:selection="{ item }">
-                                    {{ item.code }} - {{ item.description }}
-                                  </template>
-                                  <template v-slot:item="{ item }">
-                                    {{ item.code }} - {{ item.description }}
-                                  </template>
-                                </v-select>
-                              </v-col>
-                              <v-col md="4" sm="12" cols="12">
-                                <v-select
-                                  :items="data.gfsCodes"
-                                  item-value="code"
-                                  item-text="name"
-                                  label="Select GFS Code"
-                                  @change="filterGfsCodes($event)"
-                                >
-                                  <template v-slot:selection="{ item }">
-                                    {{ item.code }} - {{ item.name }}
-                                  </template>
-                                  <template v-slot:item="{ item }">
-                                    {{ item.code }} - {{ item.name }}
-                                  </template>
-                                </v-select>
-                              </v-col>
-                            </v-row>
-                          </td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(account, i) in data.accounts" :key="i">
-                          <td
-                            class="py-2"
-                            @click="addPayable(account)"
-                            colspan="2"
-                          >
-                            <span>{{ account.code }}</span>
-                            <br />
-                            <span style="color: teal">
-                              {{ account.description }}
-                            </span>
-                            <br />
-                            <span>
-                              {{
-                                (account.allocation - account.totalExpenditure)
-                                  | toCurrency()
-                              }}
-                            </span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </template>
-                  </v-simple-table>
-                </v-card>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <td>
+                          <v-row>
+                            <v-col md="12" sm="12" cols="12">
+                              <v-select
+                                :items="data.activities"
+                                item-text="name"
+                                label="Select Activity"
+                                @change="searchFundingSource($event)"
+                                required
+                              >
+                                <template v-slot:selection="{ item }">
+                                  {{ item.description }} ({{
+                                    item.sub_budget_class.description
+                                  }})
+                                </template>
+                                <template v-slot:item="{ item }">
+                                  {{ item.description }} ({{
+                                    item.sub_budget_class.description
+                                  }})
+                                </template>
+                                <template v-slot:prepend-item>
+                                  <v-list-item>
+                                    <v-list-item-content>
+                                      <v-text-field
+                                        v-model="data.searchTerm"
+                                        placeholder="Search"
+                                        @input="searchActivities"
+                                      ></v-text-field>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                  <v-divider></v-divider>
+                                </template>
+                              </v-select>
+                            </v-col>
+                            <v-col md="6" sm="12" cols="12">
+                              <v-select
+                                :items="data.fundingSources"
+                                item-text="code"
+                                label="Select Funding Sources"
+                                @change="searchGfsCodes($event)"
+                                return-object
+                              >
+                                <template v-slot:selection="{ item }">
+                                  {{ item.code }} - {{ item.description }}
+                                </template>
+                                <template v-slot:item="{ item }">
+                                  {{ item.code }} - {{ item.description }}
+                                </template>
+                              </v-select>
+                            </v-col>
+                            <v-col md="6" sm="12" cols="12">
+                              <v-select
+                                :items="data.gfsCodes"
+                                item-value="code"
+                                item-text="name"
+                                label="Select GFS Code"
+                                @change="filterGfsCodes($event)"
+                              >
+                                <template v-slot:selection="{ item }">
+                                  {{ item.code }} - {{ item.name }}
+                                </template>
+                                <template v-slot:item="{ item }">
+                                  {{ item.code }} - {{ item.name }}
+                                </template>
+                              </v-select>
+                            </v-col>
+                          </v-row>
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(account, i) in data.accounts" :key="i">
+                        <td
+                          class="py-2"
+                          @click="addPayable(account)"
+                          colspan="2"
+                        >
+                          <span>{{ account.code }}</span>
+                          <br />
+                          <span style="color: teal">
+                            {{ account.description }}
+                          </span>
+                          <br />
+                          <span>
+                            {{
+                              (account.allocation - account.totalExpenditure)
+                                | toCurrency()
+                            }}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+
                 <v-col
                   cols="12"
                   md="12"

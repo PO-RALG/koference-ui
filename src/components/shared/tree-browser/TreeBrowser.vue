@@ -1,12 +1,12 @@
 <template>
   <ul class="tree" v-if="node">
     <li :style="{ 'margin-left': `${depth * 5}px` }">
-      <span v-if="hasChildren" @click="nodeClicked()" class="type">
+      <span @click="nodeClicked()" class="type">
         <v-icon small>
           {{ data.expanded ? "mdi-chevron-down-box" : "mdi-chevron-right-box" }}
         </v-icon>
       </span>
-      <span v-else class="type">
+      <span class="type">
         <v-icon small>{{ attachmentIcon }}</v-icon>
       </span>
       <span @click="nodeClicked()" :class="{ active: isActiveItem }" class="name" :value="node">
