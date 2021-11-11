@@ -122,6 +122,7 @@
             color="primary"
             @click="save"
             v-if="data.items.length"
+            :disabled="!data.valid"
           >
             save
           </v-btn>
