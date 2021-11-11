@@ -16,6 +16,10 @@
         <v-icon small>mdi-lock</v-icon>
         Report Locked
       </v-btn>
+      <v-btn v-if="data.report && data.report.confirmed" color="red" @click="openUnlockDialog()">
+        <v-icon small>mdi-lock-open-outline</v-icon>
+        Unlock Report
+      </v-btn>
     </v-card-actions>
     <v-card class="elevation-0">
       <v-card-actions class="justify-center" v-if="!data.selectedEntries.length">
@@ -86,10 +90,10 @@
         </v-btn>
       </v-card-actions>
       <v-data-table
-        v-if="data.entries.length"
+        v-if="entries.length"
         class="elevation-2"
         :headers="data.headers"
-        :items="data.entries"
+        :items="entries"
         show-select
         hide-default-footer
         v-model="data.selectedEntries"
@@ -105,7 +109,7 @@
           <span>{{ item.cr_amount | toCurrency }}</span>
         </template>
         <template v-slot:[`item.status`]="{ item }">
-          <span>{{ item.status ? "RECONCILED" : "OUTSTANDING DEPOSITS" }}</span>
+          <span>{{ item.type }}</span>
         </template>
         <template v-slot:footer>
           <!--<Paginate :params="data.response" :rows="data.rows" @onPageChange="fetchData" />-->
@@ -165,11 +169,7 @@
                         >
                         </v-text-field>
                       </template>
-                      <v-date-picker
-                        v-model="data.formData.date"
-                        type="month"
-                        :max="currentDate"
-                        scrollable>
+                      <v-date-picker v-model="data.formData.date" type="month" :max="currentDate" scrollable>
                         <v-spacer></v-spacer>
                         <v-btn text color="primary" @click="data.modal = false"> Cancel </v-btn>
                         <v-btn text color="primary" @click="$refs.dialog.save(data.date)"> OK</v-btn>
@@ -197,13 +197,21 @@
         :isOpen="data.isOpen"
         :title="`Confirm Reconciliation`"
       />
+
+      <ConfirmDialog
+        @rejectFunction="closeUnlockDialog"
+        @acceptFunction="unlock"
+        :message="'Are you sure you want to unlock?'"
+        :isOpen="data.isUnlockOpen"
+        :title="`Unlock Report`"
+      />
     </v-card>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import { useBankReconciliation } from "./composables/use-reconciliatoin";
+import { useBankReconciliation } from "./composables/use-reconciliation";
 export default defineComponent({
   setup(_, context) {
     const {
@@ -221,6 +229,10 @@ export default defineComponent({
       diff,
       rowClicked,
       currentDate,
+      entries,
+      closeUnlockDialog,
+      openUnlockDialog,
+      unlock,
     } = useBankReconciliation(context);
 
     return {
@@ -238,6 +250,10 @@ export default defineComponent({
       diff,
       rowClicked,
       currentDate,
+      entries,
+      closeUnlockDialog,
+      openUnlockDialog,
+      unlock,
     };
   },
 });
