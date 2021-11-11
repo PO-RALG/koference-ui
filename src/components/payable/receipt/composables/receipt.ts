@@ -19,7 +19,8 @@ export const useReceipt = (): any => {
         funding_source_code: null,
         gl_account_id: null,
         amount: null,
-      }],
+      },
+    ],
   });
 
   const dataItems: Array<Receipt> = [];
@@ -111,7 +112,8 @@ export const useReceipt = (): any => {
           funding_source_code: null,
           gl_account_id: null,
           amount: null,
-        }],
+        },
+      ],
     },
 
     rows: ["10", "20", "50", "100"],
@@ -225,7 +227,7 @@ export const useReceipt = (): any => {
         funding_source_code: line.funding_source_code.code,
         gl_account_id: line.gl_account_id,
         amount: line.amount,
-      }
+      };
     });
 
     data.receipt.lines = lines;
@@ -271,7 +273,7 @@ export const useReceipt = (): any => {
         data.gl_accounts.push(response.data.data.data);
       }
     });
-  }
+  };
 
   const fundingSourceName = computed(() => {
     return data.fundingSources.map((fundsource) => {
@@ -323,15 +325,6 @@ export const useReceipt = (): any => {
     });
   };
 
-  const checkDublicate = (value, index) => {
-    const obj = data.receipt_items.filter((o) => o.gl_account_id === value);
-    if (obj.length < 2) {
-      // addRow();
-    } else {
-      data.receipt_items.splice(index, 10000);
-    }
-  };
-
   const removeRow = (index: number) => {
     data.receipt.lines.splice(index, 1);
   };
@@ -339,15 +332,6 @@ export const useReceipt = (): any => {
   const print = (id: number) => {
     printReceipt(id);
   };
-
-  const newInvoiceItems = computed(() => {
-    if (data.invoicereceip) {
-      return data.invoicereceip.items.map((item) => {
-        item.cleared = item.invoicedAmount == item.received ? true : false;
-        return item;
-      });
-    }
-  });
 
   return {
     data,
@@ -367,8 +351,6 @@ export const useReceipt = (): any => {
     cancelInvoiceDialog,
     cancelInvoiceReceipt,
     bankName,
-    newInvoiceItems,
-    checkDublicate,
     newreceiptItem,
     print,
     fundingSourceName,
