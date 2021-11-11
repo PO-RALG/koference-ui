@@ -3,11 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        :disabled="cant('create', 'Receipt')"
-        color="primary"
-        @click="openDialog"
-      >
+      <v-btn :disabled="cant('create', 'Receipt')" color="primary" @click="openDialog">
         <v-icon>mdi-plus</v-icon>
         Create Receipt
       </v-btn>
@@ -71,12 +67,7 @@
           <v-tooltip :disabled="cant('edit', 'BankAccount')" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-btn @click="print(item.id)" text color="green">
-                <v-icon
-                  :disabled="cant('edit', 'BankAccount')"
-                  v-bind="attrs"
-                  v-on="on"
-                  class="mr-2"
-                >
+                <v-icon :disabled="cant('edit', 'BankAccount')" v-bind="attrs" v-on="on" class="mr-2">
                   mdi-printer
                 </v-icon>
               </v-btn>
@@ -85,26 +76,22 @@
           </v-tooltip>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="1050">
+    <Modal :modal="data.modal" :width="1250">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Receipt`" />
       </template>
       <template v-slot:body>
-        <ModalBody v-if="data.formData">
+        <ModalBody v-if="data.receipt">
           <v-form>
             <v-container>
               <v-row class="mt-n8 pa-5">
                 <v-col cols="12" md="6">
                   <v-autocomplete
-                    v-model="data.formData.customer_id"
+                    v-model="data.receipt.customer_id"
                     label="Select Customer"
                     :items="data.customers"
                     :item-text="'name'"
@@ -113,27 +100,21 @@
                   ></v-autocomplete>
                 </v-col>
                 <v-col class="pt-6" cols="12" md="6">
-                  <DatePicker
-                    :label="'Ivoice Date'"
-                    v-model="data.formData.date"
-                  />
+                  <DatePicker :label="'Ivoice Date'" v-model="data.receipt.date" />
                 </v-col>
                 <v-col cols="12" md="6" class="mt-n8">
                   <v-text-field
                     label="Bank Reference Number"
-                    v-model="data.formData.bank_reference_number"
+                    v-model="data.receipt.bank_reference_number"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6" class="mt-n8">
-                  <v-text-field
-                    label="Description"
-                    v-model="data.formData.description"
-                  ></v-text-field>
+                  <v-text-field label="Description" v-model="data.receipt.description"></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="12">
                   <v-autocomplete
-                    v-model="data.formData.bank_account_id"
+                    v-model="data.receipt.bank_account_id"
                     label="Select Bank Account"
                     :items="bankName"
                     :item-text="`fullName`"
@@ -147,38 +128,47 @@
                       Add GLAccount {{ " " }}{{ "by pressing" }}
                       <v-icon small color="success"> mdi-plus-circle </v-icon>
                       {{ " " }} {{ "or" }} {{ "remove by pressing " }}{{ " " }}
-                      <v-icon small color="red"> mdi-minus-circle </v-icon
-                      >{{ " " }}{{ "sign in the right" }}
+                      <v-icon small color="red"> mdi-minus-circle </v-icon>{{ " " }}{{ "sign in the right" }}
                       {{ " " }}
                       <v-icon color=""> mdi-arrow-right-bold </v-icon>
                     </td>
                   </tr>
                 </v-col>
                 <v-col class="pt-2 invoice-table" cols="12" md="12">
-                  <v-data-table
-                    :headers="HEADERS"
-                    :items="data.items"
-                    disable-pagination
-                    hide-default-footer
-                  >
+                  <v-data-table :headers="HEADERS" :items="data.lines" disable-pagination hide-default-footer>
                     <template v-slot:body>
-                      <tr
-                        v-for="(invoice, index) in data.receipt_items"
-                        :key="index"
-                        class="invoice-tr"
-                      >
+                      <tr v-for="(line, index) in data.receipt.lines" :key="index" class="invoice-tr">
                         <td>
                           <v-select
-                            :items="fundingSourceName"
-                            :item-text="'fullName'"
-                            v-model="invoice.gl_account_id"
-                            :name="`data.receipt_items[${index}][invoice_item_definition_id]`"
+                            :items="data.fundingSources"
+                            :item-text="'description'"
+                            v-model="line.funding_source_code"
+                            :name="`data.receipt.lines[${index}][fund_source_code]`"
                             label="Select Fund Source"
-                            item-value="filteredGL.id"
+                            item-value="id"
+                            full-width
                             dense
                             outlined
+                            item-disabled="disabled"
+                            @change="loadGLAccounts($event, index)"
                             hide-details
-                            @change="checkDublicate($event, index)"
+                            return-object
+                          ></v-select>
+                        </td>
+
+                        <td class="invoice-td">
+                          <v-select
+                            :items="data.gl_accounts[index]"
+                            :item-text="'code'"
+                            v-model="line.gl_account_id"
+                            :name="`data.receipt.lines[${index}][gl_account_id]`"
+                            label="Select GL Account"
+                            item-value="id"
+                            full-width
+                            dense
+                            outlined
+                            item-disabled="disabled"
+                            hide-details
                           ></v-select>
                         </td>
 
@@ -188,9 +178,8 @@
                             hide-details
                             outlined
                             type="number"
-                            onkeydown="javascript: return event.keyCode == 69 ? false : true"
-                            v-model="invoice.amount"
-                            :name="`data.receipt_items[${index}][name]`"
+                            v-model="line.amount"
+                            :name="`data.receipt.lines[${index}][amount]`"
                           >
                           </v-text-field>
                         </td>
@@ -199,25 +188,19 @@
                             color="blue darken-1"
                             small
                             text
-                            v-if="
-                              index || (!index && data.receipt_items.length > 1)
-                            "
+                            v-if="index || (!index && data.receipt.lines.length > 1)"
                             @click="removeRow(index)"
                           >
-                            <v-icon small color="red">
-                              mdi-minus-circle
-                            </v-icon>
+                            <v-icon small color="red"> mdi-minus-circle </v-icon>
                           </v-btn>
                           <v-btn
                             small
                             color="blue darken-1"
                             text
                             @click="addRow"
-                            v-if="index == data.receipt_items.length - 1"
+                            v-if="index == data.receipt.lines.length - 1"
                           >
-                            <v-icon small color="success">
-                              mdi-plus-circle
-                            </v-icon>
+                            <v-icon small color="success"> mdi-plus-circle </v-icon>
                           </v-btn>
                         </td>
                       </tr>
@@ -229,15 +212,14 @@
                 </v-col>
               </v-row>
             </v-container>
+            <!--<pre>{{ data.receipt }}</pre>-->
           </v-form>
         </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -252,9 +234,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
-            >No</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="cancelConfirmDialog">No</v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -295,7 +275,9 @@ export default defineComponent({
       newreceiptItem,
       print,
       HEADERS,
+      loadGLAccounts,
     } = useReceipt();
+
     return {
       data,
       getData,
@@ -323,6 +305,7 @@ export default defineComponent({
       newreceiptItem,
       print,
       HEADERS,
+      loadGLAccounts,
     };
   },
 });

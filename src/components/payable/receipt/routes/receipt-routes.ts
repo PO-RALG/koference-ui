@@ -1,15 +1,15 @@
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
-const accountPayableInvoiceRoutes = [
+const receiptRoutes = [
   {
-    path: "/manage-receipt",
+    path: "/manage-receipts",
     component: () => import(/* webpackChunkName: "Receipt" */ "../Receipt.vue"),
     meta: {
       requiresAuth: true,
-      title: "Manage Invoice",
+      title: "Manage Receipt",
       middleware: [setTitle, validateToken, setHeaders, auth],
     },
   },
 ];
 
-export default accountPayableInvoiceRoutes;
+export default receiptRoutes;

@@ -1,22 +1,27 @@
 import { AxiosResponse } from "axios";
 import { Receipt } from "../types";
 import { reactive, onMounted, computed } from "@vue/composition-api";
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-  printReceipt,
-} from "../services/invoice";
+import { get, create, update, destroy, search, printReceipt } from "../services/invoice";
 import { customers } from "@/components/setup/customer/services/customer.service";
 import { bankaccounts } from "@/components/setup/bank-account/services/back-accounts.service";
-import {
-  fundingSource,
-  glAccount,
-} from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
+import { fundingSource, glAccount } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
 
 export const useReceipt = (): any => {
+  const receipt = reactive({
+    id: null,
+    customer_id: null,
+    date: null,
+    bank_reference_number: null,
+    description: null,
+    bank_account_id: null,
+    lines: [
+      {
+        funding_source_code: null,
+        gl_account_id: null,
+        amount: null,
+      }],
+  });
+
   const dataItems: Array<Receipt> = [];
   let receiptData: Receipt;
   const HEADERS = [
@@ -27,6 +32,12 @@ export const useReceipt = (): any => {
       value: "invoice_number",
       width: "80%",
     },
+    {
+      text: "GL Account",
+      align: "start",
+      sortable: false,
+      width: "20%",
+    },
 
     {
       text: "Amount",
@@ -36,18 +47,8 @@ export const useReceipt = (): any => {
       width: "20%",
     },
   ];
-  const data = reactive({
-    invoicereceip: {
-      invoice_id: "",
-      date: "",
-      description: "",
-      customer_id: "",
-      bank_account_id: "",
-      bank_reference_number: "",
-      invoice_number: "",
-      items: [],
-    },
 
+  const data = reactive({
     title: "Manage Receipts",
     modalTitle: "",
     headers: [
@@ -97,13 +98,28 @@ export const useReceipt = (): any => {
 
     items: dataItems,
     itemsToFilter: [],
-    formData: receiptData,
+    gl_accounts: [],
+    receipt: {
+      id: null,
+      customer_id: null,
+      date: null,
+      bank_reference_number: null,
+      description: null,
+      bank_account_id: null,
+      lines: [
+        {
+          funding_source_code: null,
+          gl_account_id: null,
+          amount: null,
+        }],
+    },
+
     rows: ["10", "20", "50", "100"],
     itemTodelete: "",
     response: {},
     bankName: [],
     customers: [],
-    fundingSource: [],
+    fundingSources: [],
     glAccounts: [],
     receiptdata: receiptData,
     bankaccounts: [],
@@ -122,29 +138,24 @@ export const useReceipt = (): any => {
   onMounted(() => {
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.loading = false;
     });
 
-    customers({ per_page: 2000, active: true }).then(
-      (response: AxiosResponse) => {
-        data.customers = response.data.data.data;
-      }
-    );
+    customers({ per_page: 2000, active: true }).then((response: AxiosResponse) => {
+      data.customers = response.data.data.data;
+    });
   });
 
   const searchCategory = (categoryName) => {
     console.log("receipt_number", categoryName);
     if (categoryName != null) {
-      search({ receipt_number: categoryName.receipt_number }).then(
-        (response: AxiosResponse) => {
-          data.items = response.data.data.data;
-        }
-      );
+      search({ receipt_number: categoryName.receipt_number }).then((response: AxiosResponse) => {
+        data.items = response.data.data.data;
+      });
     } else {
       reloadData();
     }
@@ -152,8 +163,7 @@ export const useReceipt = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -170,7 +180,7 @@ export const useReceipt = (): any => {
   };
 
   const cancelDialog = () => {
-    data.formData = {} as Receipt;
+    data.receipt = receipt;
     (data.receipt_items = [
       {
         gl_account_id: "",
@@ -182,11 +192,12 @@ export const useReceipt = (): any => {
 
   const cancelInvoiceDialog = () => {
     data.invoicedetails = false;
+    data.receipt = receipt;
   };
 
   const cancelInvoiceReceipt = () => {
     data.invoicedetails = true;
-    data.invoicereceip.items = [];
+    data.receipt = receipt;
   };
 
   const bankName = computed(() => {
@@ -197,7 +208,7 @@ export const useReceipt = (): any => {
   });
 
   const cancelConfirmDialog = () => {
-    data.formData = {} as Receipt;
+    data.receipt = receipt;
     data.deletemodal = false;
   };
 
@@ -209,20 +220,28 @@ export const useReceipt = (): any => {
   };
 
   const save = () => {
-    data.formData.items = data.receipt_items;
-    if (data.formData.id) {
-      updateInvoiceItemDefinition(data.formData);
+    const lines = data.receipt.lines.map((line) => {
+      return {
+        funding_source_code: line.funding_source_code.code,
+        gl_account_id: line.gl_account_id,
+        amount: line.amount,
+      }
+    });
+
+    data.receipt.lines = lines;
+
+    if (data.receipt.id) {
+      updateInvoiceItemDefinition(data.receipt);
     } else {
-      createInvoice(data.formData);
+      createInvoice(data.receipt);
     }
   };
 
   const openDialog = (formData?: any) => {
     if (formData.id) {
-      data.formData = formData;
+      data.receipt = formData;
       data.modalTitle = "Update";
     } else {
-      data.formData = {} as Receipt;
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
@@ -232,22 +251,32 @@ export const useReceipt = (): any => {
     });
 
     fundingSource({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.fundingSource = response.data.data.data;
+      data.fundingSources = response.data.data.data;
     });
 
-    glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then(
-      (response: AxiosResponse) => {
-        data.glAccounts = response.data.data.data;
-      }
-    );
+    glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then((response: AxiosResponse) => {
+      data.glAccounts = response.data.data.data;
+    });
   };
 
+  const loadGLAccounts = async (fundSource, index) => {
+    const params = {
+      per_page: 10,
+      gl_account_type: "REVENUE",
+      fund_code: fundSource.code,
+    };
+
+    glAccount(params).then((response: AxiosResponse) => {
+      if (response.data.data.data.length > 0) {
+        data.gl_accounts.push(response.data.data.data);
+      }
+    });
+  }
+
   const fundingSourceName = computed(() => {
-    return data.fundingSource.map((fundsource) => {
+    return data.fundingSources.map((fundsource) => {
       fundsource.fullName = `${fundsource.code}  ${fundsource.description}`;
-      fundsource.filteredGL = data.glAccounts.find(
-        (o) => o.fund_code === "10C"
-      );
+      fundsource.filteredGL = data.glAccounts.find((o) => o.fund_code === "10C");
 
       return fundsource;
     });
@@ -259,12 +288,7 @@ export const useReceipt = (): any => {
           ...data,
           index: ++index,
           newData: data,
-          bankAccount:
-            data.bank_account.bank +
-            data.bank_account.name +
-            " (" +
-            data.bank_account.number +
-            ")",
+          bankAccount: data.bank_account.bank + data.bank_account.name + " (" + data.bank_account.number + ")",
         }))
       : [];
   });
@@ -292,9 +316,10 @@ export const useReceipt = (): any => {
   };
 
   const addRow = () => {
-    data.receipt_items.push({
-      gl_account_id: "",
-      amount: "",
+    data.receipt.lines.push({
+      funding_source_code: null,
+      gl_account_id: null,
+      amount: null,
     });
   };
 
@@ -308,7 +333,7 @@ export const useReceipt = (): any => {
   };
 
   const removeRow = (index: number) => {
-    data.receipt_items.splice(index, 1);
+    data.receipt.lines.splice(index, 1);
   };
 
   const print = (id: number) => {
@@ -348,5 +373,6 @@ export const useReceipt = (): any => {
     print,
     fundingSourceName,
     HEADERS,
+    loadGLAccounts,
   };
 };
