@@ -50,7 +50,7 @@
             <tr class="border-bottom">
               <td class="border-right adjustable" @click="rowClicked(data.report)">
                 <strong v-if="!data.showEdit">{{ data.report.bank_balance | toCurrency }}</strong>
-                <v-form v-else ref="form" @submit.prevent="save">
+                <v-form v-else ref="form" @submit.prevent="updateBalance">
                   <v-row>
                     <v-col cols="6" md="5" sm="3">
                       <v-text-field v-model="data.report.bank_balance" dense> </v-text-field>
@@ -233,6 +233,7 @@ export default defineComponent({
       closeUnlockDialog,
       openUnlockDialog,
       unlock,
+      updateBalance,
     } = useBankReconciliation(context);
 
     return {
@@ -254,6 +255,7 @@ export default defineComponent({
       closeUnlockDialog,
       openUnlockDialog,
       unlock,
+      updateBalance,
     };
   },
 });

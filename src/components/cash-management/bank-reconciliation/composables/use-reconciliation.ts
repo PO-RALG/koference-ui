@@ -239,6 +239,22 @@ export const useBankReconciliation = ({ root }): any => {
     }
   };
 
+  const updateBalance = () => {
+    const payload = {
+      balance: data.report.bank_balance,
+      date: root.$route.query.date,
+      bank_account_id: root.$route.query.bank_account_id,
+    };
+
+    addBalance(payload).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        data.showEdit = false;
+        data.formData = { date: null, balance: null, bank_account_id: null };
+        loadComponent();
+      }
+    });
+  };
+
   const outstandingDeposits = computed(() => {
     const sum = data.entries.reduce((acc, entry) => {
       return acc + parseInt(entry.dr_amount);
@@ -341,5 +357,6 @@ export const useBankReconciliation = ({ root }): any => {
     rowClicked,
     entries,
     unlock,
+    updateBalance,
   };
 };
