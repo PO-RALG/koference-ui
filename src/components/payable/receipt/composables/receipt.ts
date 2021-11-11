@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { Invoice } from "../types";
+import { Receipt } from "../types";
 import { reactive, onMounted, computed } from "@vue/composition-api";
 import {
   get,
@@ -7,17 +7,35 @@ import {
   update,
   destroy,
   search,
-  viewinvoice,
   printReceipt,
 } from "../services/invoice";
 import { customers } from "@/components/setup/customer/services/customer.service";
 import { bankaccounts } from "@/components/setup/bank-account/services/back-accounts.service";
-import { glAccounts } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
+import {
+  fundingSource,
+  glAccount,
+} from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
 
 export const useReceipt = (): any => {
-  const dataItems: Array<Invoice> = [];
-  let invoiceData: Invoice;
+  const dataItems: Array<Receipt> = [];
+  let receiptData: Receipt;
+  const HEADERS = [
+    {
+      text: "Fund Source",
+      align: "start",
+      sortable: false,
+      value: "invoice_number",
+      width: "80%",
+    },
 
+    {
+      text: "Amount",
+      align: "start",
+      sortable: false,
+      value: "amount",
+      width: "20%",
+    },
+  ];
   const data = reactive({
     invoicereceip: {
       invoice_id: "",
@@ -79,14 +97,15 @@ export const useReceipt = (): any => {
 
     items: dataItems,
     itemsToFilter: [],
-    formData: invoiceData,
+    formData: receiptData,
     rows: ["10", "20", "50", "100"],
     itemTodelete: "",
     response: {},
     bankName: [],
     customers: [],
+    fundingSource: [],
     glAccounts: [],
-    invoicedata: invoiceData,
+    receiptdata: receiptData,
     bankaccounts: [],
     customer: [],
     receipt_items: [
@@ -151,7 +170,7 @@ export const useReceipt = (): any => {
   };
 
   const cancelDialog = () => {
-    data.formData = {} as Invoice;
+    data.formData = {} as Receipt;
     (data.receipt_items = [
       {
         gl_account_id: "",
@@ -178,7 +197,7 @@ export const useReceipt = (): any => {
   });
 
   const cancelConfirmDialog = () => {
-    data.formData = {} as Invoice;
+    data.formData = {} as Receipt;
     data.deletemodal = false;
   };
 
@@ -203,7 +222,7 @@ export const useReceipt = (): any => {
       data.formData = formData;
       data.modalTitle = "Update";
     } else {
-      data.formData = {} as Invoice;
+      data.formData = {} as Receipt;
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
@@ -212,12 +231,27 @@ export const useReceipt = (): any => {
       data.bankaccounts = response.data.data.data;
     });
 
-    glAccounts({ per_page: 2000, gl_account_type: "REVENUE" }).then(
+    fundingSource({ per_page: 2000 }).then((response: AxiosResponse) => {
+      data.fundingSource = response.data.data.data;
+    });
+
+    glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then(
       (response: AxiosResponse) => {
         data.glAccounts = response.data.data.data;
       }
     );
   };
+
+  const fundingSourceName = computed(() => {
+    return data.fundingSource.map((fundsource) => {
+      fundsource.fullName = `${fundsource.code}  ${fundsource.description}`;
+      fundsource.filteredGL = data.glAccounts.find(
+        (o) => o.fund_code === "10C"
+      );
+
+      return fundsource;
+    });
+  });
 
   const newreceiptItem: any = computed(() => {
     return data.items
@@ -281,13 +315,6 @@ export const useReceipt = (): any => {
     printReceipt(id);
   };
 
-  const previewInvoice = (item: any) => {
-    viewinvoice(item).then((response: AxiosResponse) => {
-      data.invoicedata = response.data.data;
-      data.invoicedetails = true;
-    });
-  };
-
   const newInvoiceItems = computed(() => {
     if (data.invoicereceip) {
       return data.invoicereceip.items.map((item) => {
@@ -312,7 +339,6 @@ export const useReceipt = (): any => {
     remove,
     cancelConfirmDialog,
     searchCategory,
-    previewInvoice,
     cancelInvoiceDialog,
     cancelInvoiceReceipt,
     bankName,
@@ -320,5 +346,7 @@ export const useReceipt = (): any => {
     checkDublicate,
     newreceiptItem,
     print,
+    fundingSourceName,
+    HEADERS,
   };
 };

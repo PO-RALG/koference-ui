@@ -93,7 +93,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="1000">
+    <Modal :modal="data.modal" :width="1050">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Receipt`" />
       </template>
@@ -169,12 +169,12 @@
                       >
                         <td>
                           <v-select
-                            :items="data.glAccounts"
-                            :item-text="'code'"
+                            :items="fundingSourceName"
+                            :item-text="'fullName'"
                             v-model="invoice.gl_account_id"
                             :name="`data.receipt_items[${index}][invoice_item_definition_id]`"
-                            label="Select GLAccount"
-                            item-value="id"
+                            label="Select Fund Source"
+                            item-value="filteredGL.id"
                             dense
                             outlined
                             hide-details
@@ -290,10 +290,11 @@ export default defineComponent({
       openInvoiceReceipt,
       bankName,
       newInvoiceItems,
-
+      fundingSourceName,
       checkDublicate,
       newreceiptItem,
       print,
+      HEADERS,
     } = useReceipt();
     return {
       data,
@@ -317,10 +318,11 @@ export default defineComponent({
       openInvoiceReceipt,
       bankName,
       newInvoiceItems,
-
+      fundingSourceName,
       checkDublicate,
       newreceiptItem,
       print,
+      HEADERS,
     };
   },
 });
@@ -445,11 +447,6 @@ tbody tr:nth-of-type(odd) {
   }
   .v-card__actions {
     margin-right: 15px;
-  }
-
-  // remove elipsis from select menu
-  .v-select.v-text-field input {
-    width: 64px !important;
   }
 }
 </style>

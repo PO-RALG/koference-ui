@@ -19,7 +19,23 @@ var back_accounts_service_1 = require("@/components/setup/bank-account/services/
 var invoice_item_definition_1 = require("@/components/setup/invoice-item-definition/services/invoice-item-definition");
 exports.useReceipt = function () {
     var dataItems = [];
-    var invoiceData;
+    var receiptData;
+    var HEADERS = [
+        {
+            text: "Fund Source",
+            align: "start",
+            sortable: false,
+            value: "invoice_number",
+            width: "80%"
+        },
+        {
+            text: "Amount",
+            align: "start",
+            sortable: false,
+            value: "amount",
+            width: "20%"
+        },
+    ];
     var data = composition_api_1.reactive({
         invoicereceip: {
             invoice_id: "",
@@ -77,14 +93,15 @@ exports.useReceipt = function () {
         invoicedetails: false,
         items: dataItems,
         itemsToFilter: [],
-        formData: invoiceData,
+        formData: receiptData,
         rows: ["10", "20", "50", "100"],
         itemTodelete: "",
         response: {},
         bankName: [],
         customers: [],
+        fundingSource: [],
         glAccounts: [],
-        invoicedata: invoiceData,
+        receiptdata: receiptData,
         bankaccounts: [],
         customer: [],
         receipt_items: [
@@ -191,10 +208,20 @@ exports.useReceipt = function () {
         back_accounts_service_1.bankaccounts({ per_page: 2000 }).then(function (response) {
             data.bankaccounts = response.data.data.data;
         });
-        invoice_item_definition_1.glAccounts({ per_page: 2000, gl_account_type: "REVENUE" }).then(function (response) {
+        invoice_item_definition_1.fundingSource({ per_page: 2000 }).then(function (response) {
+            data.fundingSource = response.data.data.data;
+        });
+        invoice_item_definition_1.glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then(function (response) {
             data.glAccounts = response.data.data.data;
         });
     };
+    var fundingSourceName = composition_api_1.computed(function () {
+        return data.fundingSource.map(function (fundsource) {
+            fundsource.fullName = fundsource.code + "  " + fundsource.description;
+            fundsource.filteredGL = data.glAccounts.find(function (o) { return o.fund_code === "10C"; });
+            return fundsource;
+        });
+    });
     var newreceiptItem = composition_api_1.computed(function () {
         return data.items
             ? data.items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index, newData: data, bankAccount: data.bank_account.bank +
@@ -244,12 +271,6 @@ exports.useReceipt = function () {
     var print = function (id) {
         invoice_1.printReceipt(id);
     };
-    var previewInvoice = function (item) {
-        invoice_1.viewinvoice(item).then(function (response) {
-            data.invoicedata = response.data.data;
-            data.invoicedetails = true;
-        });
-    };
     var newInvoiceItems = composition_api_1.computed(function () {
         if (data.invoicereceip) {
             return data.invoicereceip.items.map(function (item) {
@@ -273,13 +294,14 @@ exports.useReceipt = function () {
         remove: remove,
         cancelConfirmDialog: cancelConfirmDialog,
         searchCategory: searchCategory,
-        previewInvoice: previewInvoice,
         cancelInvoiceDialog: cancelInvoiceDialog,
         cancelInvoiceReceipt: cancelInvoiceReceipt,
         bankName: bankName,
         newInvoiceItems: newInvoiceItems,
         checkDublicate: checkDublicate,
         newreceiptItem: newreceiptItem,
-        print: print
+        print: print,
+        fundingSourceName: fundingSourceName,
+        HEADERS: HEADERS
     };
 };

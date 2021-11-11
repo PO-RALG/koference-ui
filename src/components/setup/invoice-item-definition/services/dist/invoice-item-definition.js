@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.activation = exports.glAccounts = exports.itemdefinitions = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
+exports.activation = exports.glAccount = exports.fundingSource = exports.itemdefinitions = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
 var axios_1 = require("axios");
 var get = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -60,10 +60,19 @@ var itemdefinitions = function (payload) { return __awaiter(void 0, void 0, void
     });
 }); };
 exports.itemdefinitions = itemdefinitions;
-var glAccounts = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
+var fundingSource = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gl-accounts", {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/funding-sources", payload)];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.fundingSource = fundingSource;
+var glAccount = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gl-accounts/", {
                     params: {
                         search: JSON.stringify(payload)
                     }
@@ -72,7 +81,7 @@ var glAccounts = function (payload) { return __awaiter(void 0, void 0, void 0, f
         }
     });
 }); };
-exports.glAccounts = glAccounts;
+exports.glAccount = glAccount;
 var search = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
