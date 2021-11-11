@@ -42,7 +42,7 @@
         </template>
         <template v-slot:[`item.description`]="{ item }">
           <span>
-            {{ item.tatizo.description }}
+            {{ item.newData.description }}
           </span>
         </template>
 
@@ -52,7 +52,12 @@
 
         <template v-slot:[`item.received_amount`]="{ item }">
           <span>
-            {{ item.tatizo.items }}
+            {{ item.newData.items }}
+          </span>
+        </template>
+        <template v-slot:[`item.bank_account`]="{ item }">
+          <span>
+            {{ item.bankAccount }}
           </span>
         </template>
 
@@ -88,7 +93,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="1000">
+    <Modal :modal="data.modal" :width="1050">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Receipt`" />
       </template>
@@ -164,12 +169,12 @@
                       >
                         <td>
                           <v-select
-                            :items="data.glAccounts"
-                            :item-text="'code'"
+                            :items="fundingSourceName"
+                            :item-text="'fullName'"
                             v-model="invoice.gl_account_id"
                             :name="`data.receipt_items[${index}][invoice_item_definition_id]`"
-                            label="Select GLAccount"
-                            item-value="id"
+                            label="Select Fund Source"
+                            item-value="filteredGL.id"
                             dense
                             outlined
                             hide-details
@@ -254,396 +259,6 @@
         </ModalFooter>
       </template>
     </Modal>
-
-    <Modal :fullScreen="true" :modal="data.invoicedetails" :width="1120">
-      <template v-slot:header>
-        <ModalHeader :title="`Invoice Details`" />
-      </template>
-      <template v-slot:body>
-        <ModalBody>
-          <div class="invoice-box" v-if="data.invoicedata">
-            <td class="title">
-              <v-btn
-                v-show="can('create', 'Receipt')"
-                color="green darken-1"
-                text
-                @click="openInvoiceReceipt(data.invoicedata)"
-                ><v-icon> mdi-receipt </v-icon> Create receipt</v-btn
-              >
-              <!-- <v-btn color="info darken-1" text @click="cancelInvoiceDialog"
-                ><v-icon> mdi-printer </v-icon> Print</v-btn
-              > -->
-              <v-btn
-                v-show="can('delete', 'Receipt')"
-                @click="deleteInvoiceItemdefinition(data.invoicedata.id)"
-                color="warning darken-1"
-                text
-                ><v-icon>mdi-arrow-u-left-top-bold</v-icon> Cancel</v-btn
-              >
-              <v-btn color="red darken-1" text @click="cancelInvoiceDialog"
-                >Close</v-btn
-              >
-            </td>
-            <table cellpadding="0" cellspacing="0">
-              <v-col class="pa-9" cols="12" sm="12" md="12">
-                <v-layout justify-center>
-                  <img :src="data.coat" class="login-logo pt-2" />
-                </v-layout>
-                <v-layout justify-center align="center">
-                  <strong>
-                    {{ "The United Republic of Tanzania" }}
-                  </strong>
-                  <br />
-                </v-layout>
-                <v-layout justify-center align="center">
-                  <strong>
-                    {{
-                      "President's Office, Regional Administration and Local Government(PO-RALG)"
-                    }}
-                  </strong>
-                  <br />
-                </v-layout>
-                <v-layout justify-center align="center">
-                  <strong>
-                    {{ data.invoicedata.location.name }}
-                  </strong>
-                  <br />
-                </v-layout>
-                <v-layout justify-center align="center ">
-                  <strong>
-                    {{
-                      data.invoicedata.facility
-                        ? data.invoicedata.facility.name
-                        : ""
-                    }}
-                  </strong>
-                </v-layout>
-                <v-layout justify-center align="center ">
-                  <strong> <small>Address:</small> </strong>
-                  <strong>
-                    <small>
-                      {{
-                        data.invoicedata.facility
-                          ? data.invoicedata.facility.postal_address
-                          : ""
-                      }}</small
-                    ><br />
-                  </strong>
-                </v-layout>
-                <v-layout justify-center align="center ">
-                  <strong> <small>Email:</small> </strong>
-                  <strong>
-                    <small>
-                      {{
-                        data.invoicedata.facility
-                          ? data.invoicedata.facility.email
-                          : ""
-                      }}</small
-                    ><br />
-                  </strong>
-                </v-layout>
-                <v-layout justify-center align="center ">
-                  <strong> <small>Phone:</small> </strong>
-                  <em>
-                    {{
-                      data.invoicedata.facility
-                        ? data.invoicedata.facility.phone_number
-                        : ""
-                    }}<br />
-                  </em>
-                </v-layout>
-
-                <v-divider class="underline-title"></v-divider>
-              </v-col>
-              <v-container class="">
-                <v-row no-gutters>
-                  <v-col cols="12" sm="6" md="8">
-                    <div class="text-xs-center">
-                      <v-card flat class="pl-2"> </v-card>
-                    </div>
-                  </v-col>
-                  <v-col cols="6" md="4">
-                    <div class="text-xs-left">
-                      <v-card flat align="right" class="pr-12" tile>
-                        <strong>
-                          Invoice #:{{
-                            data.invoicedata
-                              ? data.invoicedata.invoice_number
-                              : ""
-                          }}</strong
-                        ><br />
-                        <strong>
-                          Created:
-                          {{
-                            data.invoicedata
-                              ? data.invoicedata.date
-                              : "" | format
-                          }}<br />
-                        </strong>
-                      </v-card>
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-container>
-              <v-sheet class="pl-3">
-                <v-sheet class="information green lighten-5 text-capitalize">
-                  <strong> Description:</strong>
-                  <span class="">
-                    {{ data.invoicedata.description | capitalizeFirstLatter }}
-                  </span>
-                </v-sheet>
-              </v-sheet>
-
-              <v-data-table
-                :headers="HEADERS_INVOICE_DETAILS"
-                :items="newInvoiceItem"
-                disable-pagination
-                hide-default-footer
-              >
-                <template v-slot:[`item.no`]="{ index }">
-                  <tr class="text--bold">
-                    {{
-                      index + 1
-                    }}
-                  </tr>
-                </template>
-                <template v-slot:[`item.item`]="{ item }">
-                  <tr class="text--bold">
-                    {{
-                      item.definition.name
-                    }}
-                  </tr>
-                </template>
-                <template v-slot:[`item.received_amount`]="{ item }">
-                  <tr class="text--bold">
-                    {{
-                      item.received_amount | toCurrency()
-                    }}
-                  </tr>
-                </template>
-                <template v-slot:[`item.amount`]="{ item }">
-                  <tr class="text--bold">
-                    {{
-                      item.amount | toCurrency()
-                    }}
-                  </tr>
-                </template>
-                <template v-slot:[`item.balance_amount`]="{ item }">
-                  <tr class="text--bold">
-                    {{
-                      (item.amount - item.received_amount) | toCurrency()
-                    }}
-                  </tr>
-                </template>
-
-                <template v-slot:[`body.append`]="{ headers }">
-                  <tr>
-                    <th
-                      class="grey lighten-5"
-                      v-for="(header, i) in headers"
-                      :key="i"
-                    >
-                      <div v-if="header.value == 'no'">
-                        <h2>
-                          {{ "TOTAL" }}
-                        </h2>
-                      </div>
-                      <span v-if="header.value == 'amount'">
-                        <h2 class="underline-amount">
-                          {{ sumDebts.sumamount | toCurrency() }}
-                        </h2>
-                      </span>
-                      <span v-if="header.value == 'received_amount'">
-                        <h2 class="underline-amount">
-                          {{ sumDebts.sumamountReceived | toCurrency() }}
-                        </h2>
-                      </span>
-                      <span v-if="header.value == 'balance_amount'">
-                        <h2 class="underline-amount">
-                          {{ sumDebts.sumamountPending | toCurrency() }}
-                        </h2>
-                      </span>
-                    </th>
-                  </tr>
-                </template>
-              </v-data-table>
-              <v-sheet class="text-capitalize pt-8">
-                <strong> Created By:</strong>
-                <em>
-                  {{
-                    data.invoicedata.user
-                      ? data.invoicedata.user.first_name
-                      : ""
-                  }}
-                  {{ " " }}
-                  {{
-                    data.invoicedata.user
-                      ? data.invoicedata.user.middle_name
-                      : ""
-                  }}
-                  {{ " " }}
-                  {{
-                    data.invoicedata.user ? data.invoicedata.user.last_name : ""
-                  }}
-                </em>
-              </v-sheet>
-            </table>
-          </div>
-        </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter> </ModalFooter>
-      </template>
-    </Modal>
-
-    <Modal :fullScreen="true" :modal="data.invoicereceipt" :width="1120">
-      <template v-slot:header>
-        <ModalHeader :title="`Create Invoice Receipt`" />
-      </template>
-      <template v-slot:body>
-        <ModalBody>
-          <v-card-actions class="pa-0">
-            <v-spacer></v-spacer>
-            <strong>
-              <h3>Invoice #:{{ data.invoicereceip.invoice_number }}</h3>
-            </strong>
-          </v-card-actions>
-
-          <v-form>
-            <v-container>
-              <v-row class="mt-n8 pa-5">
-                <v-col cols="12" md="6">
-                  <v-autocomplete
-                    readonly
-                    v-model="data.invoicereceip.customer_id"
-                    label="Select Customer"
-                    :items="data.customer"
-                    :item-text="'customer.name'"
-                    item-value="customer.id"
-                  ></v-autocomplete>
-                </v-col>
-                <v-col class="pt-6" cols="12" md="6">
-                  <DatePicker
-                    v-model="data.invoicereceip.date"
-                    :label="'Receipt Date'"
-                  />
-                </v-col>
-                <v-col cols="12" md="12">
-                  <v-text-field
-                    hide-details="true"
-                    v-model="data.invoicereceip.description"
-                    label="Description"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-autocomplete
-                    v-model="data.invoicereceip.bank_account_id"
-                    label="Select Bank Account"
-                    :items="bankName"
-                    :item-text="`fullName`"
-                    item-value="id"
-                  ></v-autocomplete>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    hide-details="true"
-                    v-model="data.invoicereceip.bank_reference_number"
-                    label="Bank Reference Number"
-                  ></v-text-field>
-                </v-col>
-
-                <v-col class="pt-2" cols="12" md="12"> </v-col>
-                <v-col class="pt-2 invoice-table" cols="12" md="12">
-                  <v-data-table
-                    :headers="RECEIPTHEADERS"
-                    :items="data.items"
-                    disable-pagination
-                    hide-default-footer
-                  >
-                    <template v-slot:body>
-                      <tr
-                        v-for="(invoice, index) in newInvoiceItems"
-                        :key="index"
-                        class="invoice-tr"
-                      >
-                        <td>
-                          <v-text-field
-                            outlined
-                            class="black--text"
-                            dense
-                            disabled
-                            :filled="invoice.cleared"
-                            hide-details
-                            v-model="invoice.itemName"
-                          ></v-text-field>
-                        </td>
-                        <td class="invoice-td">
-                          <v-text-field
-                            outlined
-                            dense
-                            disabled
-                            :filled="invoice.cleared"
-                            hide-details
-                            v-model="invoice.invoicedAmount"
-                          ></v-text-field>
-                        </td>
-                        <td class="invoice-td">
-                          <v-text-field
-                            outlined
-                            dense
-                            disabled
-                            :filled="invoice.cleared"
-                            hide-details
-                            v-model="invoice.received"
-                          ></v-text-field>
-                        </td>
-                        <td class="invoice-td">
-                          <span v-if="invoice.cleared">
-                            {{ "Cleared" }}
-                            <v-icon color="green">mdi-check</v-icon>
-                          </span>
-                          <v-text-field
-                            v-else
-                            :filled="invoice.cleared"
-                            outlined
-                            dense
-                            type="number"
-                            onkeydown="javascript: return event.keyCode == 69 ? false : true"
-                            hide-details
-                            v-model="invoice.amount"
-                            :name="`data.receipt_items[${index}][name]`"
-                          ></v-text-field>
-                        </td>
-                      </tr>
-                    </template>
-                    <template v-slot:[`item.icon`]="{ item }">
-                      <v-icon class="mr-2">{{ item.icon }}</v-icon>
-                    </template>
-                  </v-data-table>
-                </v-col>
-              </v-row>
-            </v-container>
-            <v-card-actions class="pr-4">
-              <v-spacer></v-spacer>
-              <v-btn color="red darken-1" text @click="cancelInvoiceReceipt"
-                >Close</v-btn
-              >
-              <v-btn
-                v-show="can('create', 'Receipt')"
-                color="green darken-1"
-                text
-                @click="createReceipt"
-              >
-                Create</v-btn
-              >
-            </v-card-actions>
-          </v-form>
-        </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter> </ModalFooter>
-      </template>
-    </Modal>
   </div>
 </template>
 
@@ -673,16 +288,13 @@ export default defineComponent({
       cancelInvoiceDialog,
       cancelInvoiceReceipt,
       openInvoiceReceipt,
-      HEADERS,
-      RECEIPTHEADERS,
       bankName,
-      HEADERS_INVOICE_DETAILS,
       newInvoiceItems,
-      newInvoiceItem,
-      sumDebts,
+      fundingSourceName,
       checkDublicate,
       newreceiptItem,
       print,
+      HEADERS,
     } = useReceipt();
     return {
       data,
@@ -704,16 +316,13 @@ export default defineComponent({
       cancelInvoiceDialog,
       cancelInvoiceReceipt,
       openInvoiceReceipt,
-      HEADERS,
-      RECEIPTHEADERS,
       bankName,
-      HEADERS_INVOICE_DETAILS,
       newInvoiceItems,
-      newInvoiceItem,
-      sumDebts,
+      fundingSourceName,
       checkDublicate,
       newreceiptItem,
       print,
+      HEADERS,
     };
   },
 });
@@ -838,11 +447,6 @@ tbody tr:nth-of-type(odd) {
   }
   .v-card__actions {
     margin-right: 15px;
-  }
-
-  // remove elipsis from select menu
-  .v-select.v-text-field input {
-    width: 64px !important;
   }
 }
 </style>

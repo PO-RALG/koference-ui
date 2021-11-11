@@ -19,95 +19,21 @@ var back_accounts_service_1 = require("@/components/setup/bank-account/services/
 var invoice_item_definition_1 = require("@/components/setup/invoice-item-definition/services/invoice-item-definition");
 exports.useReceipt = function () {
     var dataItems = [];
-    var invoiceData;
+    var receiptData;
     var HEADERS = [
         {
-            text: "GLAccount",
+            text: "Fund Source",
             align: "start",
             sortable: false,
             value: "invoice_number",
-            width: "30%"
+            width: "80%"
         },
         {
             text: "Amount",
             align: "start",
             sortable: false,
             value: "amount",
-            width: "15%"
-        },
-        {
-            text: "",
-            align: "center",
-            sortable: false,
-            value: "amount_pending",
-            width: "13%"
-        },
-    ];
-    var HEADERS_INVOICE_DETAILS = [
-        {
-            text: "No",
-            align: "start",
-            sortable: false,
-            value: "no",
-            width: "5%"
-        },
-        {
-            text: "Item Name",
-            align: "start",
-            sortable: false,
-            value: "item",
-            width: "30%"
-        },
-        {
-            text: "Amount",
-            align: "start",
-            sortable: false,
-            value: "amount",
-            width: "15%"
-        },
-        {
-            text: "Received Amount",
-            align: "start",
-            sortable: false,
-            value: "received_amount",
-            width: "15%"
-        },
-        {
-            text: "Pending Amount ",
-            align: "start",
-            sortable: false,
-            value: "balance_amount",
-            width: "15%"
-        },
-    ];
-    var RECEIPTHEADERS = [
-        {
-            text: "Item",
-            align: "start",
-            sortable: false,
-            value: "invoice_number",
-            width: "30%"
-        },
-        {
-            text: "Amount",
-            align: "start",
-            sortable: false,
-            value: "amount",
-            width: "15%"
-        },
-        {
-            text: "Amount Received",
-            align: "start",
-            sortable: false,
-            value: "amount_received",
-            width: "17%"
-        },
-        {
-            text: "Add Amount",
-            align: "start",
-            sortable: false,
-            value: "amount_pending",
-            width: "15%"
+            width: "20%"
         },
     ];
     var data = composition_api_1.reactive({
@@ -130,24 +56,30 @@ exports.useReceipt = function () {
                 sortable: false,
                 value: "receipt_number"
             },
+            { text: "Date", value: "date", sortable: true },
             {
-                text: "Ammount",
+                text: "Amount",
                 align: "start",
                 sortable: false,
                 value: "amount"
             },
             {
-                text: "Customer",
+                text: "From",
                 align: "start",
                 sortable: false,
                 value: "customer.name"
             },
-            { text: "Receipt Date", value: "date", sortable: true },
             {
                 text: "Description",
                 align: "start",
                 sortable: false,
                 value: "description"
+            },
+            {
+                text: "Bank Account",
+                align: "start",
+                sortable: false,
+                value: "bank_account"
             },
             {
                 text: "Action",
@@ -159,17 +91,17 @@ exports.useReceipt = function () {
         modal: false,
         deletemodal: false,
         invoicedetails: false,
-        invoicereceipt: false,
         items: dataItems,
         itemsToFilter: [],
-        formData: invoiceData,
+        formData: receiptData,
         rows: ["10", "20", "50", "100"],
         itemTodelete: "",
         response: {},
         bankName: [],
         customers: [],
+        fundingSource: [],
         glAccounts: [],
-        invoicedata: invoiceData,
+        receiptdata: receiptData,
         bankaccounts: [],
         customer: [],
         receipt_items: [
@@ -235,57 +167,14 @@ exports.useReceipt = function () {
         data.invoicedetails = false;
     };
     var cancelInvoiceReceipt = function () {
-        data.invoicereceipt = false;
         data.invoicedetails = true;
         data.invoicereceip.items = [];
-    };
-    var openInvoiceReceipt = function (invoiceData) {
-        data.invoicedetails = false;
-        data.invoicereceipt = true;
-        data.customer = [invoiceData]; //mapping customer in autocomplete field
-        data.invoicereceip.customer_id = invoiceData; //mapping customer in autocomplete for two way binding
-        data.invoicereceip.invoice_id = invoiceData.id;
-        data.invoicereceip.invoice_number = invoiceData.invoice_number;
-        if (data.invoicedata.receipt_items) {
-            data.invoicedata.receipt_items.forEach(function (value) {
-                var one_item = {
-                    invoicedAmount: value.amount,
-                    received: value.received_amount,
-                    itemName: value.definition.name,
-                    invoice_item_id: value.id,
-                    amount: ""
-                };
-                data.invoicereceip.items.push(one_item);
-            });
-            back_accounts_service_1.bankaccounts({ per_page: 2000 }).then(function (response) {
-                data.bankaccounts = response.data.data.data;
-            });
-        }
     };
     var bankName = composition_api_1.computed(function () {
         return data.bankaccounts.map(function (account) {
             account.fullName = "Account Number -" + account.number + "  " + account.bank + " - " + account.branch;
             return account;
         });
-    });
-    var newInvoiceItem = composition_api_1.computed(function () {
-        return data.invoicedata
-            ? data.invoicedata.receipt_items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); })
-            : [];
-    });
-    var invoicedAmount = composition_api_1.ref(newInvoiceItem);
-    var sumDebts = composition_api_1.computed(function () {
-        return {
-            sumamount: invoicedAmount.value.reduce(function (sum, totalAmount) {
-                return sum + Number(totalAmount.amount);
-            }, 0),
-            sumamountReceived: invoicedAmount.value.reduce(function (sum, totalAmount) {
-                return sum + Number(totalAmount.received_amount);
-            }, 0),
-            sumamountPending: invoicedAmount.value.reduce(function (sum, totalAmount) {
-                return sum + Number(totalAmount.amount - totalAmount.received_amount);
-            }, 0)
-        };
     });
     var cancelConfirmDialog = function () {
         data.formData = {};
@@ -319,37 +208,33 @@ exports.useReceipt = function () {
         back_accounts_service_1.bankaccounts({ per_page: 2000 }).then(function (response) {
             data.bankaccounts = response.data.data.data;
         });
-        invoice_item_definition_1.glAccounts({ per_page: 2000, gl_account_type: "REVENUE" }).then(function (response) {
+        invoice_item_definition_1.fundingSource({ per_page: 2000 }).then(function (response) {
+            data.fundingSource = response.data.data.data;
+        });
+        invoice_item_definition_1.glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then(function (response) {
             data.glAccounts = response.data.data.data;
         });
     };
+    var fundingSourceName = composition_api_1.computed(function () {
+        return data.fundingSource.map(function (fundsource) {
+            fundsource.fullName = fundsource.code + "  " + fundsource.description;
+            fundsource.filteredGL = data.glAccounts.find(function (o) { return o.fund_code === "10C"; });
+            return fundsource;
+        });
+    });
     var newreceiptItem = composition_api_1.computed(function () {
         return data.items
-            ? data.items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index, tatizo: data })); })
+            ? data.items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index, newData: data, bankAccount: data.bank_account.bank +
+                    data.bank_account.name +
+                    " (" +
+                    data.bank_account.number +
+                    ")" })); })
             : [];
     });
     var updateInvoiceItemDefinition = function (data) {
         invoice_1.update(data).then(function () {
             reloadData();
             cancelDialog();
-        });
-    };
-    var createReceipt = function () {
-        var invoiceItems = data.invoicereceip.items.filter(function (item) { return item.cleared !== true; });
-        data.invoicereceip.items = invoiceItems;
-        invoice_1.receiptcreate(data.invoicereceip).then(function () {
-            data.invoicereceipt = false;
-            reloadData();
-            data.invoicereceip = {
-                invoice_id: "",
-                date: "",
-                description: "",
-                customer_id: "",
-                bank_account_id: "",
-                bank_reference_number: "",
-                invoice_number: "",
-                items: []
-            };
         });
     };
     var createInvoice = function (data) {
@@ -386,12 +271,6 @@ exports.useReceipt = function () {
     var print = function (id) {
         invoice_1.printReceipt(id);
     };
-    var previewInvoice = function (item) {
-        invoice_1.viewinvoice(item).then(function (response) {
-            data.invoicedata = response.data.data;
-            data.invoicedetails = true;
-        });
-    };
     var newInvoiceItems = composition_api_1.computed(function () {
         if (data.invoicereceip) {
             return data.invoicereceip.items.map(function (item) {
@@ -403,7 +282,6 @@ exports.useReceipt = function () {
     return {
         data: data,
         getData: getData,
-        createReceipt: createReceipt,
         addRow: addRow,
         removeRow: removeRow,
         openDialog: openDialog,
@@ -416,19 +294,14 @@ exports.useReceipt = function () {
         remove: remove,
         cancelConfirmDialog: cancelConfirmDialog,
         searchCategory: searchCategory,
-        previewInvoice: previewInvoice,
         cancelInvoiceDialog: cancelInvoiceDialog,
         cancelInvoiceReceipt: cancelInvoiceReceipt,
-        openInvoiceReceipt: openInvoiceReceipt,
-        HEADERS: HEADERS,
-        RECEIPTHEADERS: RECEIPTHEADERS,
         bankName: bankName,
-        HEADERS_INVOICE_DETAILS: HEADERS_INVOICE_DETAILS,
         newInvoiceItems: newInvoiceItems,
-        newInvoiceItem: newInvoiceItem,
-        sumDebts: sumDebts,
         checkDublicate: checkDublicate,
         newreceiptItem: newreceiptItem,
-        print: print
+        print: print,
+        fundingSourceName: fundingSourceName,
+        HEADERS: HEADERS
     };
 };

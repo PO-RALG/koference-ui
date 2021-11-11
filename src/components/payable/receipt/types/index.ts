@@ -1,6 +1,6 @@
-import { InvoiceItem } from "./invoice-items";
-export interface Invoice {
-  invoice_items: InvoiceItem;
+import { ReceiptItem } from "./invoice-items";
+export interface Receipt {
+  receipt_items: ReceiptItem;
   [x: string]: any;
   id: number;
   items: any;

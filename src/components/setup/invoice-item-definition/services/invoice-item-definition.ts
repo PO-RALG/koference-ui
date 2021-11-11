@@ -5,18 +5,25 @@ const get = async (payload: any) => {
     params: payload,
   });
 };
+
 const itemdefinitions = async (payload: any) => {
   return await axios.get("/api/v1/invoice-item-definitions", {
     params: payload,
   });
 };
-const glAccounts = async (payload: any) => {
-  return await axios.get("/api/v1/gl-accounts", {
+
+const fundingSource = async (payload: any) => {
+  return await axios.get(`/api/v1/funding-sources`, payload);
+};
+
+const glAccount = async (payload: any) => {
+  return await axios.get(`/api/v1/gl-accounts/`, {
     params: {
       search: JSON.stringify(payload),
     },
   });
 };
+
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/invoice-item-definitions/`, {
     params: {
@@ -59,6 +66,7 @@ export {
   destroy,
   search,
   itemdefinitions,
-  glAccounts,
+  fundingSource,
+  glAccount,
   activation,
 };
