@@ -39,11 +39,13 @@ import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
 import { paymentVoucherRoutes } from "@/components/payable/payment-voucher";
 import { paymentRoutes } from "@/components/payable/payment";
 import { reportRoutes } from "@/components/report";
+//import { testRoutes } from "@/components/test";
 import { creditorRoutes } from "@/components/payable/creditor";
 import { chequeListRoutes } from "@/components/payable/cheque-list";
 //import { testRoutes } from "@/components/test";
 import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
 import { notFoundRoute } from "@/components/404";
+import { receiptRoutes } from "@/components/payable/receipt";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -108,6 +110,7 @@ const routes: Array<RouteConfig> = [
       //...testRoutes,
       ...creditorRoutes,
       ...chequeListRoutes,
+      ...receiptRoutes,
       ...bankReconciliationRoutes,
       ...notFoundRoute,
     ],
@@ -120,6 +123,29 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach(VueRouteMiddleware({setTitle, validateToken, setHeaders, auth }));
+// middlewares
+const isLoggedIn = (to, _, next) => {
+  const loginStatus = store.getters["Auth/getLoginStatus"];
+  const loggedIn = loginStatus ? loginStatus.isLoggedIn : false;
+  const currentUser = store.getters["Auth/getCurrentUser"];
+
+  if (to.matched.some((record: any) => record.meta.requiresAuth)) {
+    if (loggedIn && currentUser) {
+      console.log("user is logged in");
+      next();
+    } else {
+      console.log("redirect to login page");
+    }
+  } else {
+    next();
+  }
+};
+
+router.beforeEach(
+  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
+);
+router.beforeEach(
+  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
+);
 
 export default router;

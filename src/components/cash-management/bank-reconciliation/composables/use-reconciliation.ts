@@ -6,6 +6,7 @@ import {
   getReport,
   reconcileEntries as reconcile,
   confirmReport,
+  unlock as unlockReport,
 } from "../services/bank-reconciliation-service";
 import { Params } from "../types";
 import moment from "moment";
@@ -18,6 +19,7 @@ export const useBankReconciliation = ({ root }): any => {
     selectedEntries: [],
     valid: true,
     isOpen: false,
+    isUnlockOpen: false,
     showSelect: true,
     report: null,
     selectedDate: null,
@@ -35,6 +37,7 @@ export const useBankReconciliation = ({ root }): any => {
     dialogTitle: "",
     buttonTitle: "",
     dialog: false,
+    showEdit: false,
     showBalance: true,
     rows: ["10", "20", "50", "60", "100"],
     headers: [
@@ -66,6 +69,7 @@ export const useBankReconciliation = ({ root }): any => {
     const date = root.$route.query.date ? root.$route.query.date : null;
     const bankAccountId = root.$route.query.bank_account_id ? root.$route.query.bank_account_id : null;
     const params = { date: date, bank_account_id: bankAccountId };
+    data.selectedEntries = [];
     if (date && bankAccountId) {
       data.formData.bank_account_id = parseInt(bankAccountId);
       data.formData.date = date;
@@ -95,7 +99,6 @@ export const useBankReconciliation = ({ root }): any => {
             if (response.data.data.balance_required) {
               openDialog("BALANCE");
             } else {
-              console.log("diff", response.data.data.diff);
               if (response.data.data.diff === 0) {
                 showConfirmDialog();
               }
@@ -113,8 +116,16 @@ export const useBankReconciliation = ({ root }): any => {
     data.isOpen = true;
   };
 
-  const closeConfirmDialog = async () => {
+  const closeConfirmDialog = () => {
     data.isOpen = false;
+  };
+
+  const closeUnlockDialog = () => {
+    data.isUnlockOpen = false;
+  };
+
+  const openUnlockDialog = () => {
+    data.isUnlockOpen = true;
   };
 
   const fetchData = async () => {
@@ -135,7 +146,7 @@ export const useBankReconciliation = ({ root }): any => {
     };
     reconcile(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
-        router.go(0);
+        loadComponent();
       }
     });
   };
@@ -183,9 +194,10 @@ export const useBankReconciliation = ({ root }): any => {
     if (data.showBalance) {
       addBalance(data.formData).then((response: AxiosResponse) => {
         if (response.status === 200) {
+          data.showEdit = false;
           data.formData = { date: null, balance: null, bank_account_id: null };
           cancelDialog();
-          router.go(0);
+          loadComponent();
         }
       });
     } else {
@@ -228,6 +240,22 @@ export const useBankReconciliation = ({ root }): any => {
     }
   };
 
+  const updateBalance = () => {
+    const payload = {
+      balance: data.report.bank_balance,
+      date: root.$route.query.date,
+      bank_account_id: root.$route.query.bank_account_id,
+    };
+
+    addBalance(payload).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        data.showEdit = false;
+        data.formData = { date: null, balance: null, bank_account_id: null };
+        loadComponent();
+      }
+    });
+  };
+
   const outstandingDeposits = computed(() => {
     const sum = data.entries.reduce((acc, entry) => {
       return acc + parseInt(entry.dr_amount);
@@ -254,20 +282,69 @@ export const useBankReconciliation = ({ root }): any => {
       bank_account_id: root.$root.$route.query.bank_account_id,
       date: root.$root.$route.query.date,
     };
-    console.log("confirmReconciliation", payload);
     confirmReport(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
         data.isOpen = false;
-        router.go(0);
+        loadComponent();
       }
     });
   };
+
+  const unlock = async () => {
+    const payload = {
+      bank_account_id: root.$route.query.bank_account_id,
+      start_date: root.$route.query.date,
+    };
+    console.log("payload", payload);
+
+    unlockReport(payload).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        loadComponent();
+      }
+    });
+  };
+
+  const rowClicked = (item: any) => {
+    data.formData.balance = data.report.bank_balance;
+    if (item.confirmed) {
+      data.showEdit = false;
+    } else {
+      data.showEdit = true;
+    }
+  };
+
+  const currentDate = computed(() => {
+    const date = new Date();
+    return moment(date).format("YYYY-MM");
+  });
+
+  const getType = (transaction_type: string): string => {
+    const type = transaction_type.split("\\")[2];
+    switch (type) {
+      case "Payment":
+        return "OUTSTANDING PAYMENTS";
+      case "Receipt":
+        return "OUTSTANDING DEPOSITS";
+      default:
+        return "NO TYPE";
+    }
+  };
+
+  const entries = computed(() => {
+    return data.entries.map((entry: any) => {
+      return {
+        ...entry,
+        type: getType(entry.transaction_type),
+      };
+    });
+  });
 
   return {
     data,
     fetchData,
     openDialog,
     cancelDialog,
+    currentDate,
     save,
     reconcileEntries,
     outstandingDeposits,
@@ -276,5 +353,11 @@ export const useBankReconciliation = ({ root }): any => {
     showConfirmDialog,
     closeConfirmDialog,
     confirmReconciliation,
+    closeUnlockDialog,
+    openUnlockDialog,
+    rowClicked,
+    entries,
+    unlock,
+    updateBalance,
   };
 };

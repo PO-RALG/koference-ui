@@ -36,12 +36,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.activation = exports.glAccount = exports.fundingSource = exports.itemdefinitions = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
+exports.printReceipt = exports.receiptcreate = exports.viewinvoice = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
 var axios_1 = require("axios");
 var get = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoice-item-definitions", {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/receipts", {
                     params: payload
                 })];
             case 1: return [2 /*return*/, _a.sent()];
@@ -49,45 +49,13 @@ var get = function (payload) { return __awaiter(void 0, void 0, void 0, function
     });
 }); };
 exports.get = get;
-var itemdefinitions = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoice-item-definitions", {
-                    params: payload
-                })];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.itemdefinitions = itemdefinitions;
-var fundingSource = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/funding-sources", payload)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.fundingSource = fundingSource;
-var glAccount = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/gl-accounts/", {
-                    params: {
-                        search: JSON.stringify(payload)
-                    }
-                })];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.glAccount = glAccount;
 var search = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoice-item-definitions/", {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/receipts/", {
                     params: {
-                        search: JSON.stringify(payload)
+                        search: JSON.stringify(payload),
+                        pending: true
                     }
                 })];
             case 1: return [2 /*return*/, _a.sent()];
@@ -98,7 +66,7 @@ exports.search = search;
 var find = function (id) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/invoice-item-definitions/" + id)];
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/receipts/" + id)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -107,7 +75,7 @@ exports.find = find;
 var create = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/invoice-item-definitions", payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/receipts", payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
@@ -116,29 +84,42 @@ exports.create = create;
 var update = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].put("/api/v1/invoice-item-definitions/" + payload.id, payload)];
+            case 0: return [4 /*yield*/, axios_1["default"].put("/api/v1/receipts/" + payload.id, payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
 exports.update = update;
+var viewinvoice = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, axios_1["default"].get("/api/v1/receipts/" + payload.id, payload)];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.viewinvoice = viewinvoice;
 var destroy = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 console.log("payload", payload);
-                return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/invoice-item-definitions/" + payload)];
+                return [4 /*yield*/, axios_1["default"]["delete"]("/api/v1/receipts/" + payload)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
 exports.destroy = destroy;
-var activation = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
+var receiptcreate = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1["default"].post("/api/v1/invoice-item-definitions/" + payload.id + "/change-status", payload)];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
+        console.log("payload", payload);
+        return [2 /*return*/];
     });
 }); };
-exports.activation = activation;
+exports.receiptcreate = receiptcreate;
+var printReceipt = function (id) {
+    var user = JSON.parse(localStorage.getItem("FFARS_USER"));
+    var url = process.env.VUE_APP_SERVER_URL + "/api/v1/receipts/" + id + "?token=" + user.token;
+    return window.open(url);
+};
+exports.printReceipt = printReceipt;

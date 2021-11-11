@@ -4,16 +4,21 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
-        v-if="(!data.report || !data.report.confirmed)"
+        v-if="!data.report || !data.report.confirmed"
         color="primary"
         @click="openDialog('BALANCE')"
-        :disabled="cant('addBalance', 'Reconciliation')">
+        :disabled="cant('addBalance', 'Reconciliation')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add Bank Balance
       </v-btn>
       <v-btn v-if="data.report && data.report.confirmed" color="green">
         <v-icon small>mdi-lock</v-icon>
         Report Locked
+      </v-btn>
+      <v-btn v-if="data.report && data.report.confirmed" color="red" @click="openUnlockDialog()">
+        <v-icon small>mdi-lock-open-outline</v-icon>
+        Unlock Report
       </v-btn>
     </v-card-actions>
     <v-card class="elevation-0">
@@ -23,7 +28,8 @@
           class="ma-2"
           outlined
           color="black"
-          v-if="(!data.report || !data.report.confirmed)">
+          v-if="!data.report || !data.report.confirmed"
+        >
           <v-icon>mdi-progress-download</v-icon>
           Load Cashbook Entries
         </v-btn>
@@ -42,8 +48,18 @@
           </thead>
           <tbody>
             <tr class="border-bottom">
-              <td class="border-right">
-                <strong>{{ data.report.bank_balance | toCurrency }}</strong>
+              <td class="border-right adjustable" @click="rowClicked(data.report)">
+                <strong v-if="!data.showEdit">{{ data.report.bank_balance | toCurrency }}</strong>
+                <v-form v-else ref="form" @submit.prevent="updateBalance">
+                  <v-row>
+                    <v-col cols="6" md="5" sm="3">
+                      <v-text-field v-model="data.report.bank_balance" dense> </v-text-field>
+                    </v-col>
+                    <v-col cols="6" md="1" sm="3" class="mt-1">
+                      <v-btn color="green" class="white--text" type="submit" dense> Save </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-form>
               </td>
               <td class="border-right">
                 <strong>{{ outstandingDeposits | toCurrency }}</strong>
@@ -74,10 +90,10 @@
         </v-btn>
       </v-card-actions>
       <v-data-table
-        v-if="data.entries.length"
+        v-if="entries.length"
         class="elevation-2"
         :headers="data.headers"
-        :items="data.entries"
+        :items="entries"
         show-select
         hide-default-footer
         v-model="data.selectedEntries"
@@ -93,7 +109,7 @@
           <span>{{ item.cr_amount | toCurrency }}</span>
         </template>
         <template v-slot:[`item.status`]="{ item }">
-          <span>{{ item.status ? "RECONCILED" : "OUTSTANDING DEPOSITS" }}</span>
+          <span>{{ item.type }}</span>
         </template>
         <template v-slot:footer>
           <!--<Paginate :params="data.response" :rows="data.rows" @onPageChange="fetchData" />-->
@@ -153,7 +169,7 @@
                         >
                         </v-text-field>
                       </template>
-                      <v-date-picker v-model="data.formData.date" type="month" scrollable>
+                      <v-date-picker v-model="data.formData.date" type="month" :max="currentDate" scrollable>
                         <v-spacer></v-spacer>
                         <v-btn text color="primary" @click="data.modal = false"> Cancel </v-btn>
                         <v-btn text color="primary" @click="$refs.dialog.save(data.date)"> OK</v-btn>
@@ -181,13 +197,21 @@
         :isOpen="data.isOpen"
         :title="`Confirm Reconciliation`"
       />
+
+      <ConfirmDialog
+        @rejectFunction="closeUnlockDialog"
+        @acceptFunction="unlock"
+        :message="'Are you sure you want to unlock?'"
+        :isOpen="data.isUnlockOpen"
+        :title="`Unlock Report`"
+      />
     </v-card>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import { useBankReconciliation } from "./composables/use-reconciliatoin";
+import { useBankReconciliation } from "./composables/use-reconciliation";
 export default defineComponent({
   setup(_, context) {
     const {
@@ -203,6 +227,13 @@ export default defineComponent({
       closeConfirmDialog,
       confirmReconciliation,
       diff,
+      rowClicked,
+      currentDate,
+      entries,
+      closeUnlockDialog,
+      openUnlockDialog,
+      unlock,
+      updateBalance,
     } = useBankReconciliation(context);
 
     return {
@@ -218,6 +249,13 @@ export default defineComponent({
       closeConfirmDialog,
       confirmReconciliation,
       diff,
+      rowClicked,
+      currentDate,
+      entries,
+      closeUnlockDialog,
+      openUnlockDialog,
+      unlock,
+      updateBalance,
     };
   },
 });
@@ -232,5 +270,8 @@ export default defineComponent({
 }
 .border-top {
   background: #efedec;
+}
+.adjustable {
+  cursor: pointer;
 }
 </style>

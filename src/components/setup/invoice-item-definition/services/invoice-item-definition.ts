@@ -5,24 +5,31 @@ const get = async (payload: any) => {
     params: payload,
   });
 };
+
 const itemdefinitions = async (payload: any) => {
   return await axios.get("/api/v1/invoice-item-definitions", {
     params: payload,
   });
 };
-const search = async (payload: any) => {
-  return await axios.get(`/api/v1/invoice-item-definitions/`, {
+
+const fundingSource = async (payload: any) => {
+  return await axios.get(`/api/v1/funding-sources`, payload);
+};
+
+const glAccount = async (payload: any) => {
+  return await axios.get(`/api/v1/gl-accounts/`, {
     params: {
       search: JSON.stringify(payload),
     },
   });
 };
 
-const activation = async (payload: any) => {
-  return await axios.post(
-    `/api/v1/invoice-item-definitions/` + payload.id + "/change-status",
-    payload
-  );
+const search = async (payload: any) => {
+  return await axios.get(`/api/v1/invoice-item-definitions/`, {
+    params: {
+      search: JSON.stringify(payload),
+    },
+  });
 };
 
 const find = async (id: string | number) => {
@@ -44,6 +51,13 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/invoice-item-definitions/` + payload);
 };
 
+const activation = async (payload: any) => {
+  return await axios.post(
+    `/api/v1/invoice-item-definitions/` + payload.id + "/change-status",
+    payload
+  );
+};
+
 export {
   get,
   find,
@@ -51,6 +65,8 @@ export {
   update,
   destroy,
   search,
-  activation,
   itemdefinitions,
+  fundingSource,
+  glAccount,
+  activation,
 };
