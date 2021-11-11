@@ -69,6 +69,7 @@ export const useBankReconciliation = ({ root }): any => {
     const date = root.$route.query.date ? root.$route.query.date : null;
     const bankAccountId = root.$route.query.bank_account_id ? root.$route.query.bank_account_id : null;
     const params = { date: date, bank_account_id: bankAccountId };
+    data.selectedEntries = [];
     if (date && bankAccountId) {
       data.formData.bank_account_id = parseInt(bankAccountId);
       data.formData.date = date;
