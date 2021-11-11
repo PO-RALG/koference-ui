@@ -145,7 +145,7 @@ export const useBankReconciliation = ({ root }): any => {
     };
     reconcile(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
-        router.go(0);
+        loadComponent();
       }
     });
   };
@@ -196,7 +196,7 @@ export const useBankReconciliation = ({ root }): any => {
           data.showEdit = false;
           data.formData = { date: null, balance: null, bank_account_id: null };
           cancelDialog();
-          router.go(0);
+          loadComponent();
         }
       });
     } else {
@@ -268,7 +268,7 @@ export const useBankReconciliation = ({ root }): any => {
     confirmReport(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
         data.isOpen = false;
-        router.go(0);
+        loadComponent();
       }
     });
   };
@@ -277,12 +277,12 @@ export const useBankReconciliation = ({ root }): any => {
     const payload = {
       bank_account_id: root.$route.query.bank_account_id,
       start_date: root.$route.query.date,
-    }
+    };
     console.log("payload", payload);
 
     unlockReport(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
-        router.go(0);
+        loadComponent();
       }
     });
   };
@@ -302,7 +302,7 @@ export const useBankReconciliation = ({ root }): any => {
   });
 
   const getType = (transaction_type: string): string => {
-    const type =  transaction_type.split("\\")[2];
+    const type = transaction_type.split("\\")[2];
     switch (type) {
       case "Payment":
         return "OUTSTANDING PAYMENTS";
