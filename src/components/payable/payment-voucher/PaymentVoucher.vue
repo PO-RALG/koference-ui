@@ -216,7 +216,7 @@
                               outlined
                               :hint="'Available amount: ' + item.balance"
                               persistent-hint
-                              type="number"
+                              type="text"
                               :rules="[maxRules(item.balance)]"
                               v-model="item.amount"
                               ></v-text-field>

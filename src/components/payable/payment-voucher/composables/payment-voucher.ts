@@ -264,7 +264,7 @@ export const usePaymentVoucher = (): any => {
 
   const maxRules = (propertyType: number) => {
     return (v: number) =>
-      (v && v <= propertyType) ||
+      (v && v <= propertyType && propertyType >= 0) ||
       `Amount must be less or equal to ${propertyType}`;
   };
 

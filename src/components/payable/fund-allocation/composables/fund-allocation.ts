@@ -73,7 +73,7 @@ export const useFundAllocation = (): any => {
 
   const maxRules = (propertyType: number) => {
     return (v: number) =>
-      (v && v <= propertyType) ||
+      (v && v <= propertyType && (v >= propertyType * -1)) ||
       `Amount must be less or equal to ${propertyType}`;
   };
 

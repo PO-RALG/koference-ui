@@ -105,10 +105,10 @@
                     <v-text-field
                       dense
                       outlined
-                      :rules="[maxRules(item.budget - item.allocation)]"
+                      :rules="[maxRules(item.allocation - item.totalExpenditure)]"
                       v-model="item.allocation_amount"
                       @input="newAllocation(item.allocation_amount)"
-                      type="number"
+                      type="text"
                     ></v-text-field>
                   </td>
                 </tr>
