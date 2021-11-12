@@ -225,16 +225,6 @@ export const useReceipt = (): any => {
   };
 
   const save = () => {
-    const lines = data.receipt.lines.map((line) => {
-      return {
-        funding_source_code: line.funding_source_code.code,
-        gl_account_id: line.gl_account_id,
-        amount: line.amount,
-      };
-    });
-
-    data.receipt.lines = lines;
-
     if (data.receipt.id) {
       updateInvoiceItemDefinition(data.receipt);
     } else {
@@ -264,11 +254,11 @@ export const useReceipt = (): any => {
     });
   };
 
-  const loadGLAccounts = async (fundSource, index) => {
+  const loadGLAccounts = async (fundSourceCode, index) => {
     const params = {
       per_page: 10,
       gl_account_type: "REVENUE",
-      fund_code: fundSource.code,
+      fund_code: fundSourceCode,
     };
 
     glAccount(params).then((response: AxiosResponse) => {

@@ -145,14 +145,13 @@
                             v-model="line.funding_source_code"
                             :name="`data.receipt.lines[${index}][fund_source_code]`"
                             label="Select Fund Source"
-                            item-value="id"
+                            item-value="code"
                             full-width
                             dense
                             outlined
                             item-disabled="disabled"
                             @change="loadGLAccounts($event, index)"
                             hide-details
-                            return-object
                           ></v-select>
                         </td>
 

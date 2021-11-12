@@ -19,6 +19,7 @@ export const usePayment = (): any => {
     valid: false,
     isOpen: false,
     node: null,
+    maxDate: null,
     response: {},
     modalTitle: "",
     headers: [
@@ -175,6 +176,8 @@ export const usePayment = (): any => {
   };
 
   const setPayableItems = (id: number) => {
+    const payable = data.paymentVouchers.find((item) => item.id === id);
+    data.maxDate = moment(payable.date).format("YYYY-MM-DD");
     findPaymentVoucher(id).then((response: AxiosResponse) => {
       const pvData = response.data.data;
       for (let j = 0; j < pvData.payables.length; j++) {
