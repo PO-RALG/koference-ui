@@ -19,7 +19,7 @@ export const usePayment = (): any => {
     valid: false,
     isOpen: false,
     node: null,
-    maxDate: null,
+    maxDate: moment(new Date()).format("YYYY-MM-DD"),
     response: {},
     modalTitle: "",
     headers: [
