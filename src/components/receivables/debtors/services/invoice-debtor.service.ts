@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const get = async (payload: any) => {
-  return await axios.post("/api/v1/invoices/debtors", { params: payload });
+  return await axios.get("/api/v1/invoices/debtors", { params: payload });
 };
 
 const search = async (payload: any) => {

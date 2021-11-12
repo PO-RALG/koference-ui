@@ -2,17 +2,11 @@ import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import moment from "moment";
 
-import {
-  get,
-  create,
-  destroy,
-  find,
-  printPdf,
-} from "../services/payment.services";
+import { get, create, destroy, find, printPdf } from "../services/payment.services";
 import { Payment } from "../types/Payment";
-import { find as findPaymentVoucher } from "@/components/payable/payment-voucher/services/payment-voucher.services";
-import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
-import { get as getPaymentVouchers } from "@/components/payable/payment-voucher/services/payment-voucher.services";
+import { find as findPaymentVoucher } from "@/components/payable/voucher/services/payment-voucher.services";
+import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
+import { get as getPaymentVouchers } from "@/components/payable/voucher/services/payment-voucher.services";
 import { FundSources } from "@/components/coa/funding-source/types/index";
 
 export const usePayment = (): any => {
@@ -93,8 +87,7 @@ export const usePayment = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
@@ -178,9 +171,7 @@ export const usePayment = (): any => {
   };
 
   const maxRules = (propertyType: number) => {
-    return (v: number) =>
-      (v && v <= propertyType) ||
-      `Amount must be less or equal to ${propertyType}`;
+    return (v: number) => (v && v <= propertyType) || `Amount must be less or equal to ${propertyType}`;
   };
 
   const setPayableItems = (id: number) => {

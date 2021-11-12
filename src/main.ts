@@ -5,12 +5,12 @@ import VueAxios from "vue-axios";
 import PerfectScrollbar from "vue2-perfect-scrollbar";
 import VueCompositionAPI from "@vue/composition-api";
 import moment from "moment"; //require
+import VueCurrencyInput from "vue-currency-input";
 
 import App from "@/App.vue";
 import router from "@/router";
 import store from "@/store";
 import vuetify from "@/plugins/vuetify";
-import "@/plugins/VuetifyMoney";
 
 import "@/mixins";
 import filters from "./filters";

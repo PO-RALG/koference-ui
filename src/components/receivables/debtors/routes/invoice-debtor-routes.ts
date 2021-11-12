@@ -1,16 +1,15 @@
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
-const invoiceDebtorsRoutes = [
+const debtorRoutes = [
   {
     path: "manage-invoice-debtors",
-    component: () =>
-      import(/* webpackChunkName: "InvoiceDebtor" */ "../InvoiceDebtor.vue"),
+    component: () => import(/* webpackChunkName: "InvoiceDebtor" */ "../InvoiceDebtor.vue"),
     meta: {
       requiresAuth: true,
-      title: "Manage Invoice Debtors",
+      title: "Manage Debtors",
       middleware: [setTitle, validateToken, setHeaders, auth],
     },
   },
 ];
 
-export default invoiceDebtorsRoutes;
+export default debtorRoutes;

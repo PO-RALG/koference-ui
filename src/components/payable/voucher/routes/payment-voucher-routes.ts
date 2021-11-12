@@ -1,6 +1,6 @@
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
-const paymentVoucherRoutes = [
+const voucherRoutes = [
   {
     path: "/payment-vouchers",
     component: () => import("../PaymentVoucher.vue"),
@@ -12,4 +12,4 @@ const paymentVoucherRoutes = [
   },
 ];
 
-export default paymentVoucherRoutes;
+export default voucherRoutes;

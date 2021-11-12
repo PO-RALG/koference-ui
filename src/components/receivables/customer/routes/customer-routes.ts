@@ -1,6 +1,6 @@
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
-const customersRoutes = [
+const customerRoutes = [
   {
     path: "/manage-customers",
     component: () => import(/* webpackChunkName: "Customer" */ "../Customer.vue"),
@@ -12,4 +12,4 @@ const customersRoutes = [
   },
 ];
 
-export default customersRoutes;
+export default customerRoutes;

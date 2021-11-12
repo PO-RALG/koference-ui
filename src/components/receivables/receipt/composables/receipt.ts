@@ -2,9 +2,12 @@ import { AxiosResponse } from "axios";
 import { Receipt } from "../types";
 import { reactive, onMounted, computed } from "@vue/composition-api";
 import { get, create, update, destroy, search, printReceipt } from "../services/invoice";
-import { customers } from "@/components/setup/customer/services/customer.service";
-import { bankaccounts } from "@/components/setup/bank-account/services/back-accounts.service";
-import { fundingSource, glAccount } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
+import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
+import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
+import {
+  fundingSource,
+  glAccount,
+} from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
 
 export const useReceipt = (): any => {
   const receipt = reactive({
@@ -147,7 +150,7 @@ export const useReceipt = (): any => {
       data.loading = false;
     });
 
-    customers({ per_page: 2000, active: true }).then((response: AxiosResponse) => {
+    getCustomers({ per_page: 2000, active: true }).then((response: AxiosResponse) => {
       data.customers = response.data.data.data;
     });
   });
@@ -248,7 +251,7 @@ export const useReceipt = (): any => {
     }
     data.modal = !data.modal;
 
-    bankaccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
+    getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
     });
 

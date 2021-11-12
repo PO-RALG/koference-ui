@@ -1,19 +1,11 @@
 import { AxiosResponse } from "axios";
 import { Invoice } from "../types";
 import { reactive, onMounted, ref, computed } from "@vue/composition-api";
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-  viewinvoice,
-  receiptcreate,
-} from "../services/invoice";
+import { get, create, update, destroy, search, viewinvoice, receiptcreate } from "../services/invoice";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
-import { customers } from "@/components/setup/customer/services/customer.service";
-import { bankaccounts } from "@/components/setup/bank-account/services/back-accounts.service";
-import { itemdefinitions } from "@/components/setup/invoice-item-definition/services/invoice-item-definition";
+import { customers } from "@/components/receivables/customer/services/customer.service";
+import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
+import { itemdefinitions } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
 
 export const useInvoice = (): any => {
   const dataItems: Array<Invoice> = [];
@@ -196,8 +188,7 @@ export const useInvoice = (): any => {
   onMounted(() => {
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
@@ -208,11 +199,9 @@ export const useInvoice = (): any => {
       data.bankName = response.data.data.data;
     });
 
-    customers({ per_page: 2000, active: true }).then(
-      (response: AxiosResponse) => {
-        data.customers = response.data.data.data;
-      }
-    );
+    customers({ per_page: 2000, active: true }).then((response: AxiosResponse) => {
+      data.customers = response.data.data.data;
+    });
 
     itemdefinitions({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.itemdefinitions = response.data.data.data;
@@ -221,11 +210,9 @@ export const useInvoice = (): any => {
 
   const searchCategory = (categoryName) => {
     if (categoryName != null) {
-      search({ invoice_number: categoryName.invoice_number }).then(
-        (response: AxiosResponse) => {
-          data.items = response.data.data.data;
-        }
-      );
+      search({ invoice_number: categoryName.invoice_number }).then((response: AxiosResponse) => {
+        data.items = response.data.data.data;
+      });
     } else {
       reloadData();
     }
@@ -233,8 +220,7 @@ export const useInvoice = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -292,7 +278,7 @@ export const useInvoice = (): any => {
         data.invoicereceip.items.push(one_item);
       });
 
-      bankaccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
+      getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
         data.bankaccounts = response.data.data.data;
       });
     }
@@ -319,20 +305,12 @@ export const useInvoice = (): any => {
       sumamount: invoicedAmount.value.reduce(function (sum, totalAmount) {
         return sum + Number(totalAmount.amount);
       }, 0),
-      sumamountReceived: invoicedAmount.value.reduce(function (
-        sum,
-        totalAmount
-      ) {
+      sumamountReceived: invoicedAmount.value.reduce(function (sum, totalAmount) {
         return sum + Number(totalAmount.received_amount);
-      },
-      0),
-      sumamountPending: invoicedAmount.value.reduce(function (
-        sum,
-        totalAmount
-      ) {
+      }, 0),
+      sumamountPending: invoicedAmount.value.reduce(function (sum, totalAmount) {
         return sum + Number(totalAmount.amount - totalAmount.received_amount);
-      },
-      0),
+      }, 0),
     };
   });
 
@@ -376,9 +354,7 @@ export const useInvoice = (): any => {
   };
 
   const createReceipt = () => {
-    const invoiceItems = data.invoicereceip.items.filter(
-      (item) => item.cleared !== true
-    );
+    const invoiceItems = data.invoicereceip.items.filter((item) => item.cleared !== true);
     data.invoicereceip.items = invoiceItems;
     receiptcreate(data.invoicereceip).then(() => {
       data.invoicereceipt = false;
@@ -419,9 +395,7 @@ export const useInvoice = (): any => {
   };
 
   const checkDublicate = (value, index) => {
-    const obj = data.invoice_items.filter(
-      (o) => o.invoice_item_definition_id === value
-    );
+    const obj = data.invoice_items.filter((o) => o.invoice_item_definition_id === value);
     if (obj.length < 2) {
       // addRow();
     } else {

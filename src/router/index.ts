@@ -2,7 +2,6 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import VueRouteMiddleware from "vue-route-middleware";
 import store from "@/store";
-import { computed } from "@vue/composition-api";
 
 import { dashboardRoutes } from "@/components/dashboard";
 import { userRoutes } from "@/components/user";
@@ -14,7 +13,7 @@ import { financialYearRoutes } from "@/components/setup/financial-year";
 import { fundTypesRoutes } from "@/components/coa/fund-type";
 import { gfsCategoriesRoutes } from "@/components/coa/gfs-category";
 import { projectRoutes } from "@/components/coa/project";
-import { customersRoutes } from "@/components/setup/customer";
+import { customerRoutes } from "@/components/receivables/customer";
 import { documentCategoryRoutes } from "@/components/setup/document-category";
 import { documentRoutes } from "@/components/setup/document";
 import { fundingSourceRoutes } from "@/components/coa/funding-source";
@@ -24,19 +23,19 @@ import { facilityTypeRoutes } from "@/components/facility/facility-type";
 import { menuRoutes } from "@/components/menu";
 import { facilityRoutes } from "@/components/facility/facility";
 import { bankAccountTypesRoutes } from "@/components/setup/bank-account-type";
-import { invoiceItemDefinitionRoutes } from "@/components/setup/invoice-item-definition";
+import { invoiceItemDefinitionRoutes } from "@/components/receivables/invoice-item-definition";
 import { activityRoutes } from "@/components/planning/activity";
 import { activityCostingRoutes } from "@/components/planning/activity-costing";
-import { invoiceRoutes } from "@/components/invoice";
+import { invoiceRoutes } from "@/components/receivables/invoice";
 import { revenueProjectionRoutes } from "@/components/planning/revenue-projection";
 import { supplierRoutes } from "@/components/payable/supplier";
 import { glAccountRoutes } from "@/components/general-ledger/gl-account";
 import { glTransactionRoutes } from "@/components/general-ledger/transaction";
 import { glReportRoutes } from "@/components/general-ledger/report";
-import { invoiceDebtorsRoutes } from "@/components/invoice-debtors";
+import { debtorRoutes } from "@/components/receivables/debtors";
 import { jvRoutes } from "@/components/general-ledger/journal-voucher";
 import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
-import { paymentVoucherRoutes } from "@/components/payable/payment-voucher";
+import { voucherRoutes } from "@/components/payable/voucher";
 import { paymentRoutes } from "@/components/payable/payment";
 import { reportRoutes } from "@/components/report";
 //import { testRoutes } from "@/components/test";
@@ -45,7 +44,7 @@ import { chequeListRoutes } from "@/components/payable/cheque-list";
 //import { testRoutes } from "@/components/test";
 import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
 import { notFoundRoute } from "@/components/404";
-import { receiptRoutes } from "@/components/payable/receipt";
+import { receiptRoutes } from "@/components/receivables/receipt";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -81,7 +80,7 @@ const routes: Array<RouteConfig> = [
       ...fundTypesRoutes,
       ...gfsCategoriesRoutes,
       ...projectRoutes,
-      ...customersRoutes,
+      ...customerRoutes,
       ...documentCategoryRoutes,
       ...documentRoutes,
       ...fundingSourceRoutes,
@@ -101,10 +100,10 @@ const routes: Array<RouteConfig> = [
       ...glAccountRoutes,
       ...glTransactionRoutes,
       ...glReportRoutes,
-      ...invoiceDebtorsRoutes,
+      ...debtorRoutes,
       ...jvRoutes,
       ...fundAllocationRoutes,
-      ...paymentVoucherRoutes,
+      ...voucherRoutes,
       ...paymentRoutes,
       ...reportRoutes,
       //...testRoutes,
@@ -141,11 +140,7 @@ const isLoggedIn = (to, _, next) => {
   }
 };
 
-router.beforeEach(
-  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
-);
-router.beforeEach(
-  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
-);
+router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
+router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
 
 export default router;

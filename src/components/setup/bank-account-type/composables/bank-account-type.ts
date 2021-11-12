@@ -2,13 +2,7 @@ import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
 import { BanckAccountType } from "../types";
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-} from "../services/banck-account-types.service";
+import { get, create, update, destroy, search } from "../services/bank-account-types.service";
 import { useGfsCode } from "@/components/coa/gfs-code/composables/gfs-code";
 
 export const useBankAccountType = (): any => {
@@ -47,8 +41,7 @@ export const useBankAccountType = (): any => {
 
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
@@ -68,8 +61,7 @@ export const useBankAccountType = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });

@@ -1,14 +1,8 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import {
-  get,
-  getPayments,
-  create,
-  destroy,
-  printPdf,
-} from "../services/cheque-list.services";
+import { get, getPayments, create, destroy, printPdf } from "../services/cheque-list.services";
 import { ChequeList } from "../types/ChequeList";
-import { get as getBankAccounts } from "@/components/setup/bank-account/services/back-accounts.service";
+import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 
 export const useChequeList = (): any => {
   const dataItems: Array<ChequeList> = [];
@@ -101,8 +95,7 @@ export const useChequeList = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
