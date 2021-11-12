@@ -89,10 +89,10 @@
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
-          <v-form>
+          <v-form v-model="data.valid">
             <v-container>
               <v-row>
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="8" sm="12">
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
@@ -101,14 +101,14 @@
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field
-                    v-model="data.formData.email"
-                    label="Email"
+                    v-model="data.formData.tin"
+                    label="TIN"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field
-                    v-model="data.formData.tin"
-                    label="TIN"
+                    v-model="data.formData.email"
+                    label="Email"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
@@ -121,6 +121,12 @@
                   <v-text-field
                     v-model="data.formData.address"
                     label="Address"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
+                  <v-text-field
+                    v-model="data.formData.bank_name"
+                    label="Bank Name"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
@@ -143,7 +149,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save">
+          <v-btn color="green darken-1" text @click="save" :disabled="!data.valid">
             {{ data.modalTitle }}
           </v-btn>
         </ModalFooter>

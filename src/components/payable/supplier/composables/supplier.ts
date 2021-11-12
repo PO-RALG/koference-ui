@@ -17,7 +17,7 @@ export const useSupplier = (): any => {
 
   const data = reactive({
     title: "Suppliers",
-    valid: true,
+    valid: false,
     isOpen: false,
     node: null,
     response: {},
@@ -52,6 +52,12 @@ export const useSupplier = (): any => {
         align: "start",
         sortable: false,
         value: "address",
+      },
+      {
+        text: "Bank Name",
+        align: "start",
+        sortable: false,
+        value: "bank_name",
       },
       {
         text: "Bank Account Name",
