@@ -8,6 +8,7 @@ import {
   fundingSource,
   glAccount,
 } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
+import moment from "moment";
 
 export const useReceipt = (): any => {
   const receipt = reactive({
@@ -55,6 +56,7 @@ export const useReceipt = (): any => {
   const data = reactive({
     title: "Manage Receipts",
     modalTitle: "",
+    maxDate: moment(new Date()).format("YYYY-MM-DD"),
     headers: [
       {
         text: "Receipt Number",

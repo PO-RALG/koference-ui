@@ -3,11 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        :disabled="cant('create', 'Invoice')"
-        color="primary"
-        @click="openDialog"
-      >
+      <v-btn :disabled="cant('create', 'Invoice')" color="primary" @click="openDialog">
         <v-icon>mdi-plus</v-icon>
         Create Invoice
       </v-btn>
@@ -66,11 +62,7 @@
         </template>
 
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -94,16 +86,10 @@
                   ></v-autocomplete>
                 </v-col>
                 <v-col class="pt-6" cols="12" md="6">
-                  <DatePicker
-                    :label="'Invoice Date'"
-                    v-model="data.formData.date"
-                  />
+                  <DatePicker :label="'Invoice Date'" :max="data.maxDate" v-model="data.formData.date" />
                 </v-col>
                 <v-col cols="12" md="12" class="mt-n8">
-                  <v-text-field
-                    label="Description"
-                    v-model="data.formData.description"
-                  ></v-text-field>
+                  <v-text-field label="Description" v-model="data.formData.description"></v-text-field>
                 </v-col>
                 <v-col class="pt-2" cols="12" md="12">
                   <tr class="heading blue-grey lighten-5">
@@ -111,26 +97,16 @@
                       Add invoice item {{ " " }}{{ "by pressing" }}
                       <v-icon small color="success"> mdi-plus-circle </v-icon>
                       {{ " " }} {{ "or" }} {{ "remove by pressing " }}{{ " " }}
-                      <v-icon small color="red"> mdi-minus-circle </v-icon
-                      >{{ " " }}{{ "sign in the right" }}
+                      <v-icon small color="red"> mdi-minus-circle </v-icon>{{ " " }}{{ "sign in the right" }}
                       {{ " " }}
                       <v-icon color=""> mdi-arrow-right-bold </v-icon>
                     </td>
                   </tr>
                 </v-col>
                 <v-col class="pt-2 invoice-table" cols="12" md="12">
-                  <v-data-table
-                    :headers="HEADERS"
-                    :items="data.items"
-                    disable-pagination
-                    hide-default-footer
-                  >
+                  <v-data-table :headers="HEADERS" :items="data.items" disable-pagination hide-default-footer>
                     <template v-slot:body>
-                      <tr
-                        v-for="(invoice, index) in data.invoice_items"
-                        :key="index"
-                        class="invoice-tr"
-                      >
+                      <tr v-for="(invoice, index) in data.invoice_items" :key="index" class="invoice-tr">
                         <td>
                           <v-select
                             :items="data.itemdefinitions"
@@ -163,14 +139,10 @@
                             color="blue darken-1"
                             small
                             text
-                            v-if="
-                              index || (!index && data.invoice_items.length > 1)
-                            "
+                            v-if="index || (!index && data.invoice_items.length > 1)"
                             @click="removeRow(index)"
                           >
-                            <v-icon small color="red">
-                              mdi-minus-circle
-                            </v-icon>
+                            <v-icon small color="red"> mdi-minus-circle </v-icon>
                           </v-btn>
                           <v-btn
                             small
@@ -179,9 +151,7 @@
                             @click="addRow"
                             v-if="index == data.invoice_items.length - 1"
                           >
-                            <v-icon small color="success">
-                              mdi-plus-circle
-                            </v-icon>
+                            <v-icon small color="success"> mdi-plus-circle </v-icon>
                           </v-btn>
                         </td>
                       </tr>
@@ -199,9 +169,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -216,9 +184,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
-            >No</v-btn
-          >
+          <v-btn color="blue darken-1" text @click="cancelConfirmDialog">No</v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -249,9 +215,7 @@
                 text
                 ><v-icon>mdi-arrow-u-left-top-bold</v-icon> Cancel</v-btn
               >
-              <v-btn color="red darken-1" text @click="cancelInvoiceDialog"
-                >Close</v-btn
-              >
+              <v-btn color="red darken-1" text @click="cancelInvoiceDialog">Close</v-btn>
             </td>
             <table cellpadding="0" cellspacing="0">
               <v-col class="pa-9" cols="12" sm="12" md="12">
@@ -266,9 +230,7 @@
                 </v-layout>
                 <v-layout justify-center align="center">
                   <strong>
-                    {{
-                      "President's Office, Regional Administration and Local Government(PO-RALG)"
-                    }}
+                    {{ "President's Office, Regional Administration and Local Government(PO-RALG)" }}
                   </strong>
                   <br />
                 </v-layout>
@@ -280,46 +242,26 @@
                 </v-layout>
                 <v-layout justify-center align="center ">
                   <strong>
-                    {{
-                      data.invoicedata.facility
-                        ? data.invoicedata.facility.name
-                        : ""
-                    }}
+                    {{ data.invoicedata.facility ? data.invoicedata.facility.name : "" }}
                   </strong>
                 </v-layout>
                 <v-layout justify-center align="center ">
                   <strong> <small>Address:</small> </strong>
                   <strong>
-                    <small>
-                      {{
-                        data.invoicedata.facility
-                          ? data.invoicedata.facility.postal_address
-                          : ""
-                      }}</small
+                    <small> {{ data.invoicedata.facility ? data.invoicedata.facility.postal_address : "" }}</small
                     ><br />
                   </strong>
                 </v-layout>
                 <v-layout justify-center align="center ">
                   <strong> <small>Email:</small> </strong>
                   <strong>
-                    <small>
-                      {{
-                        data.invoicedata.facility
-                          ? data.invoicedata.facility.email
-                          : ""
-                      }}</small
+                    <small> {{ data.invoicedata.facility ? data.invoicedata.facility.email : "" }}</small
                     ><br />
                   </strong>
                 </v-layout>
                 <v-layout justify-center align="center ">
                   <strong> <small>Phone:</small> </strong>
-                  <em>
-                    {{
-                      data.invoicedata.facility
-                        ? data.invoicedata.facility.phone_number
-                        : ""
-                    }}<br />
-                  </em>
+                  <em> {{ data.invoicedata.facility ? data.invoicedata.facility.phone_number : "" }}<br /> </em>
                 </v-layout>
 
                 <v-divider class="underline-title"></v-divider>
@@ -334,20 +276,11 @@
                   <v-col cols="6" md="4">
                     <div class="text-xs-left">
                       <v-card flat align="right" class="pr-12" tile>
-                        <strong>
-                          Invoice #:{{
-                            data.invoicedata
-                              ? data.invoicedata.invoice_number
-                              : ""
-                          }}</strong
+                        <strong> Invoice #:{{ data.invoicedata ? data.invoicedata.invoice_number : "" }}</strong
                         ><br />
                         <strong>
                           Created:
-                          {{
-                            data.invoicedata
-                              ? data.invoicedata.date
-                              : "" | format
-                          }}<br />
+                          {{ data.invoicedata ? data.invoicedata.date : "" | format }}<br />
                         </strong>
                       </v-card>
                     </div>
@@ -407,11 +340,7 @@
 
                 <template v-slot:[`body.append`]="{ headers }">
                   <tr>
-                    <th
-                      class="grey lighten-5"
-                      v-for="(header, i) in headers"
-                      :key="i"
-                    >
+                    <th class="grey lighten-5" v-for="(header, i) in headers" :key="i">
                       <div v-if="header.value == 'no'">
                         <h2>
                           {{ "TOTAL" }}
@@ -439,21 +368,11 @@
               <v-sheet class="text-capitalize pt-8">
                 <strong> Created By:</strong>
                 <em>
-                  {{
-                    data.invoicedata.user
-                      ? data.invoicedata.user.first_name
-                      : ""
-                  }}
+                  {{ data.invoicedata.user ? data.invoicedata.user.first_name : "" }}
                   {{ " " }}
-                  {{
-                    data.invoicedata.user
-                      ? data.invoicedata.user.middle_name
-                      : ""
-                  }}
+                  {{ data.invoicedata.user ? data.invoicedata.user.middle_name : "" }}
                   {{ " " }}
-                  {{
-                    data.invoicedata.user ? data.invoicedata.user.last_name : ""
-                  }}
+                  {{ data.invoicedata.user ? data.invoicedata.user.last_name : "" }}
                 </em>
               </v-sheet>
             </table>
@@ -492,10 +411,7 @@
                   ></v-autocomplete>
                 </v-col>
                 <v-col class="pt-6" cols="12" md="6">
-                  <DatePicker
-                    v-model="data.invoicereceip.date"
-                    :label="'Receipt Date'"
-                  />
+                  <DatePicker v-model="data.invoicereceip.date" :label="'Receipt Date'" />
                 </v-col>
                 <v-col cols="12" md="12">
                   <v-text-field
@@ -523,18 +439,9 @@
 
                 <v-col class="pt-2" cols="12" md="12"> </v-col>
                 <v-col class="pt-2 invoice-table" cols="12" md="12">
-                  <v-data-table
-                    :headers="RECEIPTHEADERS"
-                    :items="data.items"
-                    disable-pagination
-                    hide-default-footer
-                  >
+                  <v-data-table :headers="RECEIPTHEADERS" :items="data.items" disable-pagination hide-default-footer>
                     <template v-slot:body>
-                      <tr
-                        v-for="(invoice, index) in newInvoiceItems"
-                        :key="index"
-                        class="invoice-tr"
-                      >
+                      <tr v-for="(invoice, index) in newInvoiceItems" :key="index" class="invoice-tr">
                         <td>
                           <v-text-field
                             outlined
@@ -594,15 +501,8 @@
             </v-container>
             <v-card-actions class="pr-4">
               <v-spacer></v-spacer>
-              <v-btn color="red darken-1" text @click="cancelInvoiceReceipt"
-                >Close</v-btn
-              >
-              <v-btn
-                v-show="can('create', 'Receipt')"
-                color="green darken-1"
-                text
-                @click="createReceipt"
-              >
+              <v-btn color="red darken-1" text @click="cancelInvoiceReceipt">Close</v-btn>
+              <v-btn v-show="can('create', 'Receipt')" color="green darken-1" text @click="createReceipt">
                 Create</v-btn
               >
             </v-card-actions>

@@ -6,6 +6,7 @@ import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import { customers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import { itemdefinitions } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
+import moment from "moment";
 
 export const useInvoice = (): any => {
   const dataItems: Array<Invoice> = [];
@@ -115,7 +116,7 @@ export const useInvoice = (): any => {
       invoice_number: "",
       items: [],
     },
-
+    maxDate: moment(new Date()).format("YYYY-MM-DD"),
     title: "Manage Invoice",
     modalTitle: "",
     headers: [

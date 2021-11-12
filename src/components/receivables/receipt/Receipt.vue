@@ -100,19 +100,13 @@
                   ></v-autocomplete>
                 </v-col>
                 <v-col class="pt-6" cols="12" md="6">
-                  <DatePicker :label="'Ivoice Date'" v-model="data.receipt.date" />
-                </v-col>
-                <v-col cols="12" md="6" class="mt-n8">
-                  <v-text-field
-                    label="Bank Reference Number"
-                    v-model="data.receipt.bank_reference_number"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6" class="mt-n8">
-                  <v-text-field label="Description" v-model="data.receipt.description"></v-text-field>
+                  <DatePicker
+                    :label="'Receipt Date'"
+                    :max="data.maxDate"
+                    v-model="data.receipt.date" />
                 </v-col>
 
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="6" class="mt-n8">
                   <v-autocomplete
                     v-model="data.receipt.bank_account_id"
                     label="Select Bank Account"
@@ -122,7 +116,18 @@
                   ></v-autocomplete>
                 </v-col>
 
-                <v-col class="pt-2" cols="12" md="12">
+                <v-col cols="12" md="6" class="mt-n8">
+                  <v-text-field
+                    label="Bank Reference Number"
+                    v-model="data.receipt.bank_reference_number"
+                  ></v-text-field>
+                </v-col>
+
+                <v-col cols="12" md="12" class="mt-n8">
+                  <v-text-field label="Description" v-model="data.receipt.description"></v-text-field>
+                </v-col>
+
+                <v-col class="pt-0" cols="12" md="12">
                   <tr class="heading blue-grey lighten-5">
                     <td colspan="3">
                       Add GLAccount {{ " " }}{{ "by pressing" }}
@@ -134,7 +139,7 @@
                     </td>
                   </tr>
                 </v-col>
-                <v-col class="pt-2 invoice-table" cols="12" md="12">
+                <v-col class="pt-0 invoice-table" cols="12" md="12">
                   <v-data-table :headers="HEADERS" :items="data.lines" disable-pagination hide-default-footer>
                     <template v-slot:body>
                       <tr v-for="(line, index) in data.receipt.lines" :key="index" class="invoice-tr">
