@@ -4,13 +4,13 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
-        v-if="!data.report || !data.report.confirmed"
-        color="primary"
-        @click="openDialog('BALANCE')"
-        :disabled="cant('addBalance', 'Reconciliation')"
+        @click="openDialog('LOAD')"
+        class="ma-2"
+        outlined
+        color="black"
       >
-        <v-icon>mdi-plus</v-icon>
-        Add Bank Balance
+        <v-icon>mdi-progress-download</v-icon>
+        Load Cashbook Entries
       </v-btn>
       <v-btn v-if="data.report && data.report.confirmed" color="green">
         <v-icon small>mdi-lock</v-icon>
@@ -22,18 +22,6 @@
       </v-btn>
     </v-card-actions>
     <v-card class="elevation-0">
-      <v-card-actions class="justify-center" v-if="!data.selectedEntries.length">
-        <v-btn
-          @click="openDialog('LOAD')"
-          class="ma-2"
-          outlined
-          color="black"
-          v-if="!data.report || !data.report.confirmed"
-        >
-          <v-icon>mdi-progress-download</v-icon>
-          Load Cashbook Entries
-        </v-btn>
-      </v-card-actions>
       <v-simple-table v-if="data.report">
         <template v-slot:default>
           <thead>

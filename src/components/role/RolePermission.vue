@@ -54,7 +54,7 @@ export default defineComponent({
 <style lang="scss">
 .button-container {
   position: fixed;
-  z-index: 1000;
+  z-index: 7;
   right: 0;
 }
 </style>
