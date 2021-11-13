@@ -21,6 +21,7 @@ export const useBankReconciliation = ({ root }): any => {
     isOpen: false,
     isUnlockOpen: false,
     showSelect: true,
+    singleSelect: true,
     report: null,
     selectedDate: null,
     selectedBankAcc: null,

@@ -4,11 +4,15 @@
     <v-row class="top-header d-flex justify-space-between" cols="12">
       <v-col cols="12" sm="12" md="3" class="hierarchy-container elevation-1">
         <v-label><h5>SELECT LOCATION</h5></v-label>
-        <TreeBrowser @onClick="loadLocationChildren" :node="data.node" :current-item="data.currentItem" />
+        <TreeBrowser
+        @onClick="loadLocationChildren"
+        :node="data.node"
+        :current-item="data.currentItem"
+        />
       </v-col>
       <v-col cols="12" sm="12" md="3" class="hierarchy-container elevation-1" v-if="data.location">
         <v-label><h5>SELECT REPORT CATEGORY</h5></v-label>
-        <TreeBrowser
+        <ReportTreeBrowser
           :attachment-icon="data.reportIcon"
           @onClick="loadReportCategories"
           :node="data.report"

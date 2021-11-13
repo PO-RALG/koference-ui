@@ -8,11 +8,11 @@
         {{ node.name }}
       </span>
       <span v-else @click="nodeClicked()" :class="{ active: isActiveItem }" class="name" :value="node">
-        <v-icon small v-if="hasExtraIcon">{{ icon }}</v-icon>
+        <v-icon small>mdi-attachment</v-icon>
         {{ node.name }}
       </span>
 
-      <TreeBrowser
+      <ReportTreeBrowser
         v-show="data.expanded"
         v-for="child in node.children"
         :key="child.id"
@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "@vue/composition-api";
-import { useTree } from "./composables/use-tree";
+import { useReportTree } from "./composables/use-report-tree";
 
 import { TreeNode } from "./types";
 
@@ -56,10 +56,10 @@ export default defineComponent({
       required: false,
       default: "children",
     },
-    icon: {
+    attachmentIcon: {
       type: String,
       required: false,
-      default: null,
+      default: "",
     },
     currentItem: {
       type: Object as PropType<TreeNode>,
@@ -67,16 +67,7 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const {
-      data,
-      nodeClicked,
-      hasChildren,
-      isActiveItem,
-      level,
-      hasAttachment,
-      hasExtraIcon,
-
-    } = useTree(props, context);
+    const { data, nodeClicked, hasChildren, isActiveItem, level, hasAttachment } = useReportTree(props, context);
     return {
       data,
       nodeClicked,
@@ -84,7 +75,6 @@ export default defineComponent({
       isActiveItem,
       level,
       hasAttachment,
-      hasExtraIcon,
     };
   },
 });

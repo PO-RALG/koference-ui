@@ -1,6 +1,6 @@
 import { reactive, computed, onMounted } from "@vue/composition-api";
 
-export const useTree = (props, { emit }): any => {
+export const useReportTree = (props, { emit }): any => {
   onMounted(() => {
     if (props.currentItem) {
       data.expanded = true;
@@ -19,10 +19,6 @@ export const useTree = (props, { emit }): any => {
       emit("onClick", props.node);
     }
   };
-
-  const hasExtraIcon = computed(() => {
-    return props.icon? true : false;
-  });
 
   const hasChildren = computed(() => {
     return props.node && "children" in props.node ? true : false;
@@ -60,6 +56,5 @@ export const useTree = (props, { emit }): any => {
 
     caption,
     children,
-    hasExtraIcon,
   };
 };

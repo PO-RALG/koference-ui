@@ -50,7 +50,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="600">
+    <Modal :modal="data.modal" :width="900">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} User`" />
       </template>
@@ -64,21 +64,27 @@
                     label="First Name"
                     v-model="data.formData.first_name"
                     :rules="data.requiredRules"
-                    required> </v-text-field>
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12">
                   <v-text-field
                     label="Midde Name"
                     v-model="data.formData.middle_name"
                     :rules="data.requiredRules"
-                    required> </v-text-field>
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12">
                   <v-text-field
                     label="Last Name"
                     v-model="data.formData.last_name"
                     :rules="data.requiredRules"
-                    required> </v-text-field>
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -99,11 +105,13 @@
                     label="Check Number"
                     v-model="data.formData.check_number"
                     :rules="data.requiredRules"
-                    required> </v-text-field>
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="12" sm="12" md="6">
+                <v-col cols="12" sm="12" md="6" class="pb-6 pt-5">
                   <v-label v-if="data.formData.location">
                     <h5 class="tree-title">SELECTED USER LOCATION ({{ data.formData.location.name }})</h5>
                   </v-label>

@@ -95,6 +95,7 @@
         :headers="data.headers"
         :items="entries"
         show-select
+        single-select="data.singleSelect"
         hide-default-footer
         v-model="data.selectedEntries"
         disable-pagination
