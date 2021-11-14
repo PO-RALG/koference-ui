@@ -1,14 +1,7 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import {
-  get,
-  create,
-  update,
-  destroy,
-  search,
-  activation
-} from "../services/supplier.services";
+import { get, create, update, destroy, search, activation } from "../services/supplier.services";
 import { Supplier } from "../types/Supplier";
 
 export const useSupplier = (): any => {
@@ -16,7 +9,7 @@ export const useSupplier = (): any => {
   const supplyData = {} as Supplier;
 
   const data = reactive({
-    title: "Suppliers",
+    title: "Manage Suppliers",
     valid: false,
     isOpen: false,
     node: null,
@@ -103,8 +96,7 @@ export const useSupplier = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-       response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };

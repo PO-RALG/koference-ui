@@ -9,7 +9,7 @@ export const useCreditor = (): any => {
   const creditorData = {} as Creditor;
 
   const data = reactive({
-    title: "Creditors",
+    title: "Manage Creditors",
     valid: false,
     isOpen: false,
     node: null,
@@ -64,7 +64,6 @@ export const useCreditor = (): any => {
         sortable: false,
         value: "above_120",
       },
-      
     ],
     items: dataItems,
     itemsToFilter: [],
@@ -86,8 +85,7 @@ export const useCreditor = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
@@ -129,13 +127,11 @@ export const useCreditor = (): any => {
       width: "",
     },
   ];
-  
+
   const previewCreditor = (id: number) => {
     find(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
-      data.pvDetails.printDate = moment(new Date()).format(
-        "DD/MM/YYYY H:mm:ss"
-      );
+      data.pvDetails.printDate = moment(new Date()).format("DD/MM/YYYY H:mm:ss");
       data.CreditorModal = !data.CreditorModal;
     });
   };

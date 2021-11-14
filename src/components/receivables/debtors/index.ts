@@ -1,1 +1,1 @@
-export { default as debtorRoutes } from "./routes/invoice-debtor-routes";
+export { default as debtorRoutes } from "./routes/debtor-routes";

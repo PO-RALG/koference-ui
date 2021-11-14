@@ -2,8 +2,8 @@ import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
 const debtorRoutes = [
   {
-    path: "manage-invoice-debtors",
-    component: () => import(/* webpackChunkName: "InvoiceDebtor" */ "../InvoiceDebtor.vue"),
+    path: "manage-debtors",
+    component: () => import(/* webpackChunkName: "Debtor" */ "../Debtor.vue"),
     meta: {
       requiresAuth: true,
       title: "Manage Debtors",
