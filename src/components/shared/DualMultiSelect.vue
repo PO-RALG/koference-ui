@@ -289,19 +289,6 @@ export default defineComponent({
       //refreshList();
     });
 
-    const refreshList = () => {
-      console.log("refreshList");
-      props.destination.forEach((entry) => {
-        props.source = _.filter(props.source, { id: entry.id });
-      });
-
-      let source = [...props.source];
-      let destination = props.destination;
-      data.searchSource = "";
-      data.searchDestination = "";
-      context.emit("onChangeList", { source, destination });
-    };
-
     return {
       data,
 
@@ -310,7 +297,6 @@ export default defineComponent({
       addItems,
       removeItems,
       addItem,
-      refreshList,
       removeAll,
       addAll,
       selectSource,
