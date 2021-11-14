@@ -41,12 +41,6 @@ export const useSupplier = (): any => {
         value: "phone",
       },
       {
-        text: "Address",
-        align: "start",
-        sortable: false,
-        value: "address",
-      },
-      {
         text: "Bank Name",
         align: "start",
         sortable: false,
