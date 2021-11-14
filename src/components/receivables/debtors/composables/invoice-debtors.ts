@@ -112,7 +112,6 @@ export const useDebtor = (): any => {
       const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.invoices = response.data.data.data;
-      data.itemsToFilter = response.data.data.data;
     });
   };
 
@@ -148,8 +147,8 @@ export const useDebtor = (): any => {
         receivedAmt: getReceivedAmount(invoice.receipts),
         pendingAmt: getPendingAmount(invoice),
         invoiceItems: getItems(invoice),
-      }
-    })
+      };
+    });
   });
 
   const getItems = (invoice: any) => {
@@ -159,9 +158,9 @@ export const useDebtor = (): any => {
         index: index++,
         amount: parseFloat(item.amount),
         received_amount: parseFloat(item.received_amount),
-        name: (item.definition.name),
-      }
-    })
+        name: item.definition.name,
+      };
+    });
   };
 
   const getReceivedAmount = (receipts: any[]) => {
@@ -179,7 +178,6 @@ export const useDebtor = (): any => {
     const invoiceAmt = parseFloat(invoice.amount);
     return invoiceAmt - receivedAmt;
   };
-
 
   return {
     data,
