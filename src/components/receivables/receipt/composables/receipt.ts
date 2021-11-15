@@ -247,7 +247,7 @@ export const useReceipt = (): any => {
   };
 
   const geGlAccountId = (account: any): string => {
-    const ac =  data.glAccounts.find((glAccount) => glAccount.code === account);
+    const ac = data.glAccounts.find((glAccount) => glAccount.code === account);
     return ac.id;
   };
 
@@ -255,7 +255,6 @@ export const useReceipt = (): any => {
     const fs = data.fundingSources.find((fs) => fs.id === id);
     return fs.code;
   };
-
 
   const save = () => {
     let payload = {};
@@ -269,12 +268,13 @@ export const useReceipt = (): any => {
         description: data.receipt.description,
         items: data.selectedInvoice.invoice_items.map((item: any) => {
           return {
+            invoice_item_id: item.id,
             amount: item.pay_amount,
             gl_account_id: geGlAccountId(item.gl_account),
             funding_source_code: getFundingSource(item.definition.funding_source_id),
-          }
-        })
-      }
+          };
+        }),
+      };
     } else {
       if (data.receipt.invoice_id) {
         delete data.receipt.invoice_id;

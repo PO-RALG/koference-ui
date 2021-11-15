@@ -10,7 +10,12 @@
       </v-btn>
     </v-card-actions>
     <v-card>
-      <AppLocationHeader :facility="facility" v-if="facility" />
+      <AppLocationHeader
+        :facility="facility"
+        :facility-type="facility.facility_type"
+        :location="facility.location"
+        v-if="facility"
+      />
       <v-simple-table>
         <template v-slot:top>
           <v-card-actions class="d-print-none">
