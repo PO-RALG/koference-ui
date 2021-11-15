@@ -217,6 +217,7 @@ export default defineComponent({
       updateBalance,
       title,
       reconcileEntry,
+      selected,
     } = useBankReconciliation(context);
 
     return {
@@ -240,6 +241,7 @@ export default defineComponent({
       updateBalance,
       title,
       reconcileEntry,
+      selected,
     };
   },
 });

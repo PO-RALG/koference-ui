@@ -41,12 +41,12 @@ export const useBankReconciliation = ({ root }): any => {
     rows: ["10", "20", "50", "60", "100"],
     headers: [
       { text: "Ref Number", value: "reference_no" },
+      { text: "Reconciled?", value: "status", sortable: false },
       { text: "Date", value: "date" },
+      { text: "Acc", value: "account", sortable: false },
+      { text: "Type", value: "type", sortable: false },
       { text: "DR Amount", align: "start", sortable: false, value: "dr_amount" },
       { text: "CR Amount", align: "start", sortable: false, value: "cr_amount" },
-      { text: "Type", value: "type", sortable: false },
-      { text: "Acc", value: "account", sortable: false },
-      { text: "Reconciled?", value: "status", sortable: false },
     ],
     statuses: ["RECONCILE"],
     balanceRules: [(v: string) => !!v || "Bank Balance is Required"],
@@ -343,8 +343,8 @@ export const useBankReconciliation = ({ root }): any => {
   });
 
   const reconcileEntry = (entry: any) => {
-    const status = entry.item.is_reconciled? false : true;
-    const item = [{ id: entry.item.id, status: status }]
+    const status = entry.item.is_reconciled ? false : true;
+    const item = [{ id: entry.item.id, status: status }];
     const payload = {
       date: root.$root.$route.query.date,
       bank_account_id: root.$root.$route.query.bank_account_id,
@@ -352,12 +352,18 @@ export const useBankReconciliation = ({ root }): any => {
     };
 
     reconcile(payload).then((response: AxiosResponse) => {
+      console.log("payload", payload);
       if (response.status === 200) {
         loadComponent();
       }
     });
   };
 
+  const selected = computed(() => {
+    return data.entries.filter((entry) => {
+      return entry.status === true;
+    });
+  });
 
   return {
     data,
@@ -380,5 +386,6 @@ export const useBankReconciliation = ({ root }): any => {
     updateBalance,
     title,
     reconcileEntry,
+    selected,
   };
 };
