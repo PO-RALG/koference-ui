@@ -80,14 +80,29 @@
           <v-form v-model="data.valid">
             <v-container>
               <v-row>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="4" sm="12">
                   <v-text-field v-model="data.formData.name" label="Name" required></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="4" sm="12">
                   <v-text-field v-model="data.formData.email" label="Email"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
+                  <v-select
+                    v-model="data.formData.supplier_type"
+                    :items="data.supplierTypes"
+                    label="Select Type"
+                    required
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="12" md="4" sm="12" v-if="data.formData.supplier_type === 'Contractor'">
                   <v-text-field v-model="data.formData.tin" label="TIN"></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12" v-if="data.formData.supplier_type === 'Employee'">
+                  <v-text-field v-model="data.formData.check_number" label="Check Number"></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12" v-if="data.formData.supplier_type === 'Others'">
+                  <v-text-field v-model="data.formData.id_number" label="ID number"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field v-model="data.formData.phone" label="Phone"></v-text-field>
@@ -95,10 +110,13 @@
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field v-model="data.formData.address" label="Address"></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="4" sm="12">
+                  <v-text-field v-model="data.formData.account_name" label="Account Name"></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4" sm="12">
                   <v-text-field v-model="data.formData.bank_account_name" label="Bank Account Name"></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="4" sm="12">
                   <v-text-field v-model="data.formData.bank_account_number" label="Bank Account Number"></v-text-field>
                 </v-col>
               </v-row>

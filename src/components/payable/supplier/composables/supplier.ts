@@ -41,6 +41,12 @@ export const useSupplier = (): any => {
         value: "phone",
       },
       {
+        text: "Type",
+        align: "start",
+        sortable: false,
+        value: "supplier_type",
+      },
+      {
         text: "Bank Name",
         align: "start",
         sortable: false,
@@ -82,6 +88,7 @@ export const useSupplier = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     searchTerm: "",
+    supplierTypes: ["Contractor", "Employee", "Others"],
   });
 
   onMounted(() => {
