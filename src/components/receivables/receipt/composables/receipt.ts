@@ -93,6 +93,7 @@ export const useReceipt = (): any => {
     selectedInvoice: null,
     modalTitle: "",
     maxDate: moment(new Date()).format("YYYY-MM-DD"),
+    minDate: moment(new Date()).format("YYYY-MM-DD"),
     headers: [
       {
         text: "Receipt Number",
@@ -374,19 +375,20 @@ export const useReceipt = (): any => {
   });
 
   const setCustomer = (invoice) => {
-    console.log(invoice);
     data.selectedUser = invoice.customer;
     data.selectedInvoice = invoice;
     data.receipt.customer_id = invoice.customer_id;
     data.receipt.invoice_id = invoice.id;
-    data.maxDate = moment(invoice.date).format("YYYY-MM-DD");
+    data.minDate = moment(invoice.date).format("YYYY-MM-DD");
   };
 
   const resetDate = () => {
     if (data.isInvoice === "NO") {
+      data.selectedInvoice = null;
+      data.minDate = null;
       data.maxDate = moment(new Date()).format("YYYY-MM-DD");
     } else {
-      data.maxDate = data.selectedInvoice
+      data.minDate = data.selectedInvoice
         ? moment(data.selectedInvoice.date).format("YYYY-MM-DD")
         : moment(new Date()).format("YYYY-MM-DD");
     }

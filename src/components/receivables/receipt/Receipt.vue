@@ -128,7 +128,12 @@
                   ></v-autocomplete>
                 </v-col>
                 <v-col class="pt-6" cols="12" md="6">
-                  <DatePicker :label="'Receipt Date'" :max="data.maxDate" v-model="data.receipt.date" />
+                  <DatePicker
+                    :label="'Receipt Date'"
+                    :max="data.maxDate"
+                    :min="data.minDate"
+                    v-model="data.receipt.date"
+                  />
                 </v-col>
 
                 <v-col cols="12" md="6" class="mt-n8">
