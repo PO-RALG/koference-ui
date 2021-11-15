@@ -1,14 +1,9 @@
 <template>
   <div>
     <v-card-actions class="pa-0">
-      <h2>{{ data.title }}</h2>
+      <h2>{{ title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        @click="openDialog('LOAD')"
-        class="ma-2"
-        outlined
-        color="black"
-      >
+      <v-btn @click="openDialog('LOAD')" class="ma-2" outlined color="black">
         <v-icon>mdi-progress-download</v-icon>
         Load Cashbook Entries
       </v-btn>
@@ -223,6 +218,7 @@ export default defineComponent({
       openUnlockDialog,
       unlock,
       updateBalance,
+      title,
     } = useBankReconciliation(context);
 
     return {
@@ -245,6 +241,7 @@ export default defineComponent({
       openUnlockDialog,
       unlock,
       updateBalance,
+      title,
     };
   },
 });

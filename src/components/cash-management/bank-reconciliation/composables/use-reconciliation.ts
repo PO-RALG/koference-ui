@@ -10,8 +10,6 @@ import {
 } from "../services/bank-reconciliation-service";
 import { Params } from "../types";
 import moment from "moment";
-import router from "@/router";
-import json from "../sample/json";
 
 export const useBankReconciliation = ({ root }): any => {
   const data = reactive({
@@ -300,6 +298,7 @@ export const useBankReconciliation = ({ root }): any => {
 
     unlockReport(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
+        data.isUnlockOpen = false;
         loadComponent();
       }
     });
@@ -331,6 +330,14 @@ export const useBankReconciliation = ({ root }): any => {
     }
   };
 
+  const title = computed(() => {
+    const reportUnlocked = data.report ? data.report.confirmed : false;
+    const title = reportUnlocked
+      ? `Bank Reconciliation locked as of ${moment(data.report.month).format("YYYY-MM-DD")}`
+      : data.title;
+    return title;
+  });
+
   const entries = computed(() => {
     return data.entries.map((entry: any) => {
       return {
@@ -360,5 +367,6 @@ export const useBankReconciliation = ({ root }): any => {
     entries,
     unlock,
     updateBalance,
+    title,
   };
 };

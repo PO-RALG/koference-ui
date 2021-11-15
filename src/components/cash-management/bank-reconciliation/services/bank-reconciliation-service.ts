@@ -36,7 +36,7 @@ const confirmReport = async (payload: any): Promise<AxiosResponse> => {
 };
 
 const unlock = async (payload: any): Promise<AxiosResponse> => {
-  return await axios.post(`${API}/open`, payload);
+  return await axios.post(`${API}/unlock-report`, payload);
 };
 
 export { get, find, create, addBalance, getEntries, getReport, reconcileEntries, confirmReport, unlock };
