@@ -39,7 +39,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="1200">
+    <Modal :modal="data.modal" :width="1400">
       <template v-slot:header>
         <ModalHeader :title="`Create Journal Voucher`" />
       </template>
@@ -74,7 +74,23 @@
                       <tr v-for="(item, index) in data.jv.lines" :key="index" class="invoice-tr">
                         <td>
                           <v-select
-                            :items="accounts"
+                            :items="data.fundingSources"
+                            :item-text="'description'"
+                            v-model="item.funding_source_code"
+                            :name="`data.jv.lines[${index}][fund_source_code]`"
+                            label="Select Fund Source"
+                            item-value="code"
+                            full-width
+                            dense
+                            outlined
+                            item-disabled="disabled"
+                            @change="loadGLAccounts($event, index)"
+                            hide-details
+                          ></v-select>
+                        </td>
+                        <td>
+                          <v-select
+                            :items="data.gl_accounts[index]"
                             :item-text="'code'"
                             v-model="item.account"
                             :name="`data.jv.lines[${index}][account]`"
@@ -175,6 +191,7 @@ export default defineComponent({
       checkDrAmount,
       refillAccounts,
       total,
+      loadGLAccounts,
     } = useJv();
 
     const headers = [
@@ -206,6 +223,7 @@ export default defineComponent({
       checkDrAmount,
       refillAccounts,
       total,
+      loadGLAccounts,
     };
   },
 });
@@ -333,9 +351,9 @@ input[type="number"]::-webkit-inner-spin-button {
   min-width: 133%; /* This makes label same width as input when transformed above the input */
 }
 // remove elipsis from select menu
-.v-select.v-text-field input {
-  width: 64px !important;
-}
+// .v-select.v-text-field input {
+  // width: 64px !important;
+//}
 
 .ledger-summary {
   background: #eeeeee;
