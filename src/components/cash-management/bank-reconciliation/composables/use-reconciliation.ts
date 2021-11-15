@@ -44,7 +44,9 @@ export const useBankReconciliation = ({ root }): any => {
       { text: "Date", value: "date" },
       { text: "DR Amount", align: "start", sortable: false, value: "dr_amount" },
       { text: "CR Amount", align: "start", sortable: false, value: "cr_amount" },
-      { text: "Status", value: "status", sortable: false },
+      { text: "Type", value: "type", sortable: false },
+      { text: "Acc", value: "account", sortable: false },
+      { text: "Reconciled?", value: "status", sortable: false },
     ],
     statuses: ["RECONCILE"],
     balanceRules: [(v: string) => !!v || "Bank Balance is Required"],
@@ -129,25 +131,6 @@ export const useBankReconciliation = ({ root }): any => {
 
   const fetchData = async () => {
     console.log("get data");
-  };
-
-  const reconcileEntries = () => {
-    const entries = data.selectedEntries.map((entry) => {
-      return {
-        id: entry.id,
-        status: true,
-      };
-    });
-    const payload = {
-      date: root.$root.$route.query.date,
-      bank_account_id: root.$root.$route.query.bank_account_id,
-      entries,
-    };
-    reconcile(payload).then((response: AxiosResponse) => {
-      if (response.status === 200) {
-        loadComponent();
-      }
-    });
   };
 
   const openDialog = async (type: string) => {
@@ -294,7 +277,6 @@ export const useBankReconciliation = ({ root }): any => {
       bank_account_id: root.$route.query.bank_account_id,
       start_date: root.$route.query.date,
     };
-    console.log("payload", payload);
 
     unlockReport(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
@@ -330,6 +312,18 @@ export const useBankReconciliation = ({ root }): any => {
     }
   };
 
+  const getAccount = (transaction_type: string): string => {
+    const type = transaction_type.split("\\")[2];
+    switch (type) {
+      case "Payment":
+        return "AP";
+      case "Receipt":
+        return "AR";
+      default:
+        return "NO ACC";
+    }
+  };
+
   const title = computed(() => {
     const reportUnlocked = data.report ? data.report.confirmed : false;
     const title = reportUnlocked
@@ -343,9 +337,27 @@ export const useBankReconciliation = ({ root }): any => {
       return {
         ...entry,
         type: getType(entry.transaction_type),
+        account: getAccount(entry.transaction_type),
       };
     });
   });
+
+  const reconcileEntry = (entry: any) => {
+    const status = entry.item.is_reconciled? false : true;
+    const item = [{ id: entry.item.id, status: status }]
+    const payload = {
+      date: root.$root.$route.query.date,
+      bank_account_id: root.$root.$route.query.bank_account_id,
+      entries: item,
+    };
+
+    reconcile(payload).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        loadComponent();
+      }
+    });
+  };
+
 
   return {
     data,
@@ -354,7 +366,6 @@ export const useBankReconciliation = ({ root }): any => {
     cancelDialog,
     currentDate,
     save,
-    reconcileEntries,
     outstandingDeposits,
     outstandingPayments,
     diff,
@@ -368,5 +379,6 @@ export const useBankReconciliation = ({ root }): any => {
     unlock,
     updateBalance,
     title,
+    reconcileEntry,
   };
 };

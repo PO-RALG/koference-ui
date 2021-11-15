@@ -45,10 +45,10 @@
                 </v-form>
               </td>
               <td class="border-right">
-                <strong>{{ outstandingDeposits | toCurrency }}</strong>
+                <strong>{{ data.report.cash_on_transit | toCurrency }}</strong>
               </td>
               <td class="border-right">
-                <strong>{{ outstandingPayments | toCurrency }}</strong>
+                <strong>{{ data.report.un_presented_cheque | toCurrency }}</strong>
               </td>
               <td class="border-right">
                 <strong>{{ data.report.adjusted_balance | toCurrency }}</strong>
@@ -57,29 +57,22 @@
                 <strong>{{ data.report.cash_balance | toCurrency }}</strong>
               </td>
               <td>
-                <strong>{{ diff | toCurrency }}</strong>
+                <strong>{{ data.report.diff | toCurrency }}</strong>
               </td>
             </tr>
           </tbody>
         </template>
       </v-simple-table>
       <v-divider></v-divider>
-      <v-card-actions class="pa-4 elevation-4" v-if="data.selectedEntries.length">
-        <v-btn text color="primary"> {{ data.selectedEntries.length }} Entries Selected </v-btn>
-        <v-spacer v-if="data.report"></v-spacer>
-        <v-btn @click="reconcileEntries(status)" color="primary" v-for="status in data.statuses" :key="status">
-          <v-icon>mdi-plus</v-icon>
-          {{ status }}
-        </v-btn>
-      </v-card-actions>
       <v-data-table
         v-if="entries.length"
         class="elevation-2"
         :headers="data.headers"
         :items="entries"
         show-select
-        single-select="data.singleSelect"
+        single-select
         hide-default-footer
+        @item-selected="reconcileEntry"
         v-model="data.selectedEntries"
         disable-pagination
       >
@@ -94,6 +87,10 @@
         </template>
         <template v-slot:[`item.status`]="{ item }">
           <span>{{ item.type }}</span>
+        </template>
+        <template v-slot:[`item.status`]="{ item }">
+          <v-icon v-if="item.status" medium color="success">mdi-check</v-icon>
+          <v-icon v-else medium color="warning">mdi-close</v-icon>
         </template>
         <template v-slot:footer>
           <!--<Paginate :params="data.response" :rows="data.rows" @onPageChange="fetchData" />-->
@@ -219,6 +216,7 @@ export default defineComponent({
       unlock,
       updateBalance,
       title,
+      reconcileEntry,
     } = useBankReconciliation(context);
 
     return {
@@ -227,7 +225,6 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       save,
-      reconcileEntries,
       outstandingDeposits,
       outstandingPayments,
       showConfirmDialog,
@@ -242,6 +239,7 @@ export default defineComponent({
       unlock,
       updateBalance,
       title,
+      reconcileEntry,
     };
   },
 });
