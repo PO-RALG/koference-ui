@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import { Receipt } from "../types";
 import { reactive, onMounted, computed } from "@vue/composition-api";
-import { get, create, update, destroy, search, printReceipt } from "../services/invoice";
+import { get, create, update, destroy, search, printReceipt } from "../services/receipt-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import {
@@ -11,14 +11,47 @@ import {
 import moment from "moment";
 
 export const useReceipt = (): any => {
+  const INVOICE_ITEM_HEADERS = [
+    {
+      text: "Item",
+      align: "start",
+      sortable: false,
+      value: "invoice_number",
+      width: "30%",
+    },
+
+    {
+      text: "Amount",
+      align: "start",
+      sortable: false,
+      value: "amount",
+      width: "20%",
+    },
+    {
+      text: "Amount Received",
+      align: "start",
+      sortable: false,
+      value: "amount",
+      width: "20%",
+    },
+    {
+      text: "Add Amount",
+      align: "start",
+      sortable: false,
+      value: "amount",
+      width: "20%",
+    },
+  ];
+
   const receipt = reactive({
     id: null,
     customer_id: null,
+    invoice_id: null,
     date: null,
     bank_reference_number: null,
     description: null,
     bank_account_id: null,
-    lines: [
+    items: [
       {
         funding_source_code: null,
         gl_account_id: null,
@@ -55,6 +88,9 @@ export const useReceipt = (): any => {
 
   const data = reactive({
     title: "Manage Receipts",
+    isInvoice: "NO",
+    selectedUser: null,
+    selectedInvoice: null,
     modalTitle: "",
     maxDate: moment(new Date()).format("YYYY-MM-DD"),
     headers: [
@@ -108,11 +144,12 @@ export const useReceipt = (): any => {
     receipt: {
       id: null,
       customer_id: null,
+      invoice_id: null,
       date: null,
       bank_reference_number: null,
       description: null,
       bank_account_id: null,
-      lines: [
+      items: [
         {
           funding_source_code: null,
           gl_account_id: null,
@@ -124,7 +161,7 @@ export const useReceipt = (): any => {
     rows: ["10", "20", "50", "100"],
     itemTodelete: "",
     response: {},
-    bankName: [],
+    accounts: [],
     customers: [],
     fundingSources: [],
     glAccounts: [],
@@ -143,6 +180,10 @@ export const useReceipt = (): any => {
   });
 
   onMounted(() => {
+    init();
+  });
+
+  const init = () => {
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } = response.data.data;
@@ -155,10 +196,9 @@ export const useReceipt = (): any => {
     getCustomers({ per_page: 2000, active: true }).then((response: AxiosResponse) => {
       data.customers = response.data.data.data;
     });
-  });
+  };
 
   const searchCategory = (categoryName) => {
-    console.log("receipt_number", categoryName);
     if (categoryName != null) {
       search({ receipt_number: categoryName.receipt_number }).then((response: AxiosResponse) => {
         data.items = response.data.data.data;
@@ -176,16 +216,6 @@ export const useReceipt = (): any => {
     });
   };
 
-  const deleteInvoiceItemdefinition = (deleteId: any) => {
-    data.deletemodal = !data.modal;
-    data.itemTodelete = deleteId;
-    data.invoicedetails = false;
-  };
-
-  const getInvoiceItemdefinition = () => {
-    get(data);
-  };
-
   const cancelDialog = () => {
     data.receipt = receipt;
     (data.receipt_items = [
@@ -197,17 +227,7 @@ export const useReceipt = (): any => {
       (data.modal = !data.modal);
   };
 
-  const cancelInvoiceDialog = () => {
-    data.invoicedetails = false;
-    data.receipt = receipt;
-  };
-
-  const cancelInvoiceReceipt = () => {
-    data.invoicedetails = true;
-    data.receipt = receipt;
-  };
-
-  const bankName = computed(() => {
+  const accounts = computed(() => {
     return data.bankaccounts.map((account) => {
       account.fullName = `Account Number -${account.number}  ${account.bank} - ${account.branch}`;
       return account;
@@ -226,21 +246,51 @@ export const useReceipt = (): any => {
     });
   };
 
+  const geGlAccountId = (account: any): string => {
+    const ac =  data.glAccounts.find((glAccount) => glAccount.code === account);
+    return ac.id;
+  };
+
+  const getFundingSource = (id: number): number => {
+    const fs = data.fundingSources.find((fs) => fs.id === id);
+    return fs.code;
+  };
+
+
   const save = () => {
-    if (data.receipt.id) {
-      updateInvoiceItemDefinition(data.receipt);
+    let payload = {};
+    if (isInvoice && data.selectedInvoice) {
+      payload = {
+        customer_id: data.receipt.customer_id,
+        invoice_id: data.selectedInvoice.id,
+        date: data.receipt.date,
+        bank_account_id: data.receipt.bank_account_id,
+        bank_reference_number: data.receipt.bank_reference_number,
+        description: data.receipt.description,
+        items: data.selectedInvoice.invoice_items.map((item: any) => {
+          return {
+            amount: item.pay_amount,
+            gl_account_id: geGlAccountId(item.gl_account),
+            funding_source_code: getFundingSource(item.definition.funding_source_id),
+          }
+        })
+      }
     } else {
-      createInvoice(data.receipt);
+      if (data.receipt.invoice_id) {
+        delete data.receipt.invoice_id;
+      }
+      payload = data.receipt;
     }
+    create(payload).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        init();
+        data.modal = false;
+      }
+    });
   };
 
   const openDialog = (formData?: any) => {
-    if (formData.id) {
-      data.receipt = formData;
-      data.modalTitle = "Update";
-    } else {
-      data.modalTitle = "Create";
-    }
+    data.modalTitle = "Create";
     data.modal = !data.modal;
 
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
@@ -270,15 +320,6 @@ export const useReceipt = (): any => {
     });
   };
 
-  const fundingSourceName = computed(() => {
-    return data.fundingSources.map((fundsource) => {
-      fundsource.fullName = `${fundsource.code}  ${fundsource.description}`;
-      fundsource.filteredGL = data.glAccounts.find((o) => o.fund_code === "10C");
-
-      return fundsource;
-    });
-  });
-
   const newreceiptItem: any = computed(() => {
     return data.items
       ? data.items.map((data, index) => ({
@@ -290,14 +331,14 @@ export const useReceipt = (): any => {
       : [];
   });
 
-  const updateInvoiceItemDefinition = (data: any) => {
+  const updateReceipt = (data: any) => {
     update(data).then(() => {
       reloadData();
       cancelDialog();
     });
   };
 
-  const createInvoice = (data: any) => {
+  const createReceipt = (data: any) => {
     create(data).then(() => {
       reloadData();
       cancelDialog();
@@ -313,7 +354,7 @@ export const useReceipt = (): any => {
   };
 
   const addRow = () => {
-    data.receipt.lines.push({
+    data.receipt.items.push({
       funding_source_code: null,
       gl_account_id: null,
       amount: null,
@@ -321,11 +362,34 @@ export const useReceipt = (): any => {
   };
 
   const removeRow = (index: number) => {
-    data.receipt.lines.splice(index, 1);
+    data.receipt.items.splice(index, 1);
   };
 
   const print = (id: number) => {
     printReceipt(id);
+  };
+
+  const isInvoice = computed(() => {
+    return data.isInvoice === "YES" ? true : false;
+  });
+
+  const setCustomer = (invoice) => {
+    console.log(invoice);
+    data.selectedUser = invoice.customer;
+    data.selectedInvoice = invoice;
+    data.receipt.customer_id = invoice.customer_id;
+    data.receipt.invoice_id = invoice.id;
+    data.maxDate = moment(invoice.date).format("YYYY-MM-DD");
+  };
+
+  const resetDate = () => {
+    if (data.isInvoice === "NO") {
+      data.maxDate = moment(new Date()).format("YYYY-MM-DD");
+    } else {
+      data.maxDate = data.selectedInvoice
+        ? moment(data.selectedInvoice.date).format("YYYY-MM-DD")
+        : moment(new Date()).format("YYYY-MM-DD");
+    }
   };
 
   return {
@@ -335,21 +399,19 @@ export const useReceipt = (): any => {
     removeRow,
     openDialog,
     cancelDialog,
-    deleteInvoiceItemdefinition,
-    getInvoiceItemdefinition,
-    updateInvoiceItemDefinition,
     save,
     reloadData,
     remove,
     cancelConfirmDialog,
     searchCategory,
-    cancelInvoiceDialog,
-    cancelInvoiceReceipt,
-    bankName,
+    accounts,
     newreceiptItem,
     print,
-    fundingSourceName,
     HEADERS,
+    INVOICE_ITEM_HEADERS,
     loadGLAccounts,
+    isInvoice,
+    setCustomer,
+    resetDate,
   };
 };

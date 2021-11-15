@@ -1,11 +1,10 @@
 import { reactive, onMounted, computed } from "@vue/composition-api";
 import { get, create } from "../services/jv-service";
 import { get as getAccounts } from "@/components/general-ledger/gl-account/services/gl.account.service";
-
 import { AxiosResponse } from "axios";
-
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 const { useState } = createNamespacedHelpers("Auth");
+import moment from "moment";
 
 export const useJv = (): any => {
   const { currentUser } = useState(["currentUser"]);
@@ -47,6 +46,7 @@ export const useJv = (): any => {
     items: [],
     accounts: [],
     modal: false,
+    maxDate: moment(new Date()).format("YYYY-MM-DD"),
     params: {},
     response: {
       total: 100,

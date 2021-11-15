@@ -91,9 +91,10 @@
         <ModalBody v-if="data.formData">
           <v-form v-model="data.valid">
             <v-container>
-              <v-row class="pa-2 pb-5">
-                <v-col cols="12" md="6" sm="12">
+              <v-row class="pa-2">
+                <v-col cols="12" :md="data.showDate ? '6': '12'" sm="12">
                   <v-select
+                    :outlined="!data.showDate"
                     v-model="data.formData.voucher_id"
                     :items="data.paymentVouchers"
                     item-text="reference_no"
@@ -103,7 +104,7 @@
                   >
                   </v-select>
                 </v-col>
-                <v-col class="pt-6" cols="12" md="6">
+                <v-col class="pt-6" cols="12" md="6" v-if="data.showDate">
                   <DatePicker
                     :label="'Date'"
                     v-model="data.formData.payment_date"

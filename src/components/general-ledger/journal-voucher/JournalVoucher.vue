@@ -48,11 +48,11 @@
           <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row class="pa-3">
-                <v-col cols="12" lg="4" md="4" sm="12">
-                  <DatePicker :label="'JV Date'" v-model="data.jv.date" />
+                <v-col class="pt-6" cols="12" lg="6" md="6" sm="12">
+                  <DatePicker :max="data.maxDate" :label="'JV Date'" v-model="data.jv.date" />
                 </v-col>
-                <v-col cols="12" lg="8" md="8" sm="12">
-                  <v-text-field label="Description" outlined v-model="data.jv.descriptions"></v-text-field>
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <v-text-field label="Description" v-model="data.jv.descriptions"></v-text-field>
                 </v-col>
               </v-row>
               <v-row class="pa-3 mt-n12">
