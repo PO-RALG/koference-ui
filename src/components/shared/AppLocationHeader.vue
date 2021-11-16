@@ -7,9 +7,11 @@
       <strong>{{ facility.location.name }} {{ facility.postal_address }}</strong>
     </div>
     <div class="facility-name">
-      <strong>{{ facility.name }} {{ facility.facility_type.name }}</strong>
+      <strong>{{ facility.name }} {{ facilityType.name }}</strong>
     </div>
-    <div class="source" v-if="title"><strong> {{ title }}</strong></div>
+    <div class="source" v-if="title">
+      <strong> {{ title }}</strong>
+    </div>
     <div v-if="isDemo()" style="color: #ffc13e; font-size: 1.2em">(Specimen)</div>
   </v-col>
 </template>
@@ -19,6 +21,10 @@ import { defineComponent, reactive } from "@vue/composition-api";
 export default defineComponent({
   props: {
     facility: {
+      type: Object,
+      required: true,
+    },
+    facilityType: {
       type: Object,
       required: true,
     },

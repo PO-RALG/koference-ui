@@ -1,36 +1,43 @@
 import { reactive, onMounted, computed } from "@vue/composition-api";
 import { get, create } from "../services/jv-service";
-import { get as getAccounts } from "@/components/general-ledger/gl-account/services/gl.account.service";
-
+import { glAccount as getGLAccounts } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
+import { get as getFundingSources } from "@/components/coa/funding-source/services/funding-sources";
 import { AxiosResponse } from "axios";
-
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 const { useState } = createNamespacedHelpers("Auth");
+import moment from "moment";
 
 export const useJv = (): any => {
   const { currentUser } = useState(["currentUser"]);
 
   const HEADERS = [
     {
+      text: "FUND SOURCE",
+      align: "start",
+      sortable: false,
+      value: "",
+      width: "25%",
+    },
+    {
       text: "ACCOUNT",
       align: "start",
       sortable: false,
       value: "",
-      width: "40%",
+      width: "25%",
     },
     {
       text: "DEBIT",
       align: "start",
       sortable: false,
       value: "",
-      width: "25%",
+      width: "20%",
     },
     {
       text: "CREDIT",
       align: "center",
       sortable: false,
       value: "",
-      width: "25%",
+      width: "20%",
     },
 
     {
@@ -38,7 +45,7 @@ export const useJv = (): any => {
       align: "center",
       sortable: false,
       value: "",
-      width: "15%",
+      width: "10%",
     },
   ];
 
@@ -46,7 +53,10 @@ export const useJv = (): any => {
     title: "Manage Journal Vouchers",
     items: [],
     accounts: [],
+    gl_accounts: [],
+    fundingSources: [],
     modal: false,
+    maxDate: moment(new Date()).format("YYYY-MM-DD"),
     params: {},
     response: {
       total: 100,
@@ -62,6 +72,7 @@ export const useJv = (): any => {
           account: "",
           dr_amount: 0,
           cr_amount: 0,
+          funding_source_code: "",
         },
       ],
     },
@@ -77,13 +88,16 @@ export const useJv = (): any => {
       data.items = response.data.data.data;
     });
 
-    getAccounts({ per_page: 200 }).then((response: AxiosResponse) => {
+    getGLAccounts({ per_page: 200 }).then((response: AxiosResponse) => {
       data.accounts = response.data.data.data;
     });
   };
 
   const openDialog = () => {
     data.modal = !data.modal;
+    getFundingSources({ per_page: 2000 }).then((response: AxiosResponse) => {
+      data.fundingSources = response.data.data.data;
+    });
   };
 
   const getData = (params: any) => {
@@ -103,6 +117,7 @@ export const useJv = (): any => {
       account: "",
       dr_amount: 0,
       cr_amount: 0,
+      funding_source_code: "",
     });
   };
 
@@ -167,6 +182,20 @@ export const useJv = (): any => {
     }
   };
 
+  const loadGLAccounts = async (fundSourceCode, index) => {
+    const params = {
+      per_page: 10,
+      gl_account_type: "REVENUE",
+      fund_code: fundSourceCode,
+    };
+
+    getGLAccounts(params).then((response: AxiosResponse) => {
+      if (response.data.data.data.length > 0) {
+        data.gl_accounts.push(response.data.data.data);
+      }
+    });
+  };
+
   return {
     data,
     accounts,
@@ -182,5 +211,6 @@ export const useJv = (): any => {
     checkDrAmount,
     refillAccounts,
     total,
+    loadGLAccounts,
   };
 };

@@ -172,7 +172,7 @@ export const useInvoice = (): any => {
     bankName: [],
     customers: [],
     itemdefinitions: [],
-    invoicedata: invoiceData,
+    invoiceData: invoiceData,
     bankaccounts: [],
     customer: [],
     invoice_items: [
@@ -267,8 +267,8 @@ export const useInvoice = (): any => {
     data.invoicereceip.invoice_id = invoiceData.id;
     data.invoicereceip.invoice_number = invoiceData.invoice_number;
 
-    if (data.invoicedata.invoice_items) {
-      data.invoicedata.invoice_items.forEach((value) => {
+    if (data.invoiceData.invoice_items) {
+      data.invoiceData.invoice_items.forEach((value) => {
         const one_item = {
           invoicedAmount: value.amount,
           received: value.received_amount,
@@ -293,7 +293,7 @@ export const useInvoice = (): any => {
   });
 
   const newInvoiceItem: any = computed(() => {
-    return data.invoicedata.invoice_items.map((data, index) => ({
+    return data.invoiceData.invoice_items.map((data, index) => ({
       ...data,
       index: ++index,
     }));
@@ -408,11 +408,9 @@ export const useInvoice = (): any => {
     data.invoice_items.splice(index, 1);
   };
 
-  const previewInvoice = (item: any) => {
-    viewinvoice(item).then((response: AxiosResponse) => {
-      data.invoicedata = response.data.data;
-      data.invoicedetails = true;
-    });
+  const previewInvoice = (invoice: any) => {
+    data.invoiceData = invoice;
+    data.invoicedetails = true;
   };
 
   const newInvoiceItems = computed(() => {

@@ -10,8 +10,6 @@ import {
 } from "../services/bank-reconciliation-service";
 import { Params } from "../types";
 import moment from "moment";
-import router from "@/router";
-import json from "../sample/json";
 
 export const useBankReconciliation = ({ root }): any => {
   const data = reactive({
@@ -43,10 +41,12 @@ export const useBankReconciliation = ({ root }): any => {
     rows: ["10", "20", "50", "60", "100"],
     headers: [
       { text: "Ref Number", value: "reference_no" },
+      { text: "Reconciled?", value: "status", sortable: false },
       { text: "Date", value: "date" },
+      { text: "Acc", value: "account", sortable: false },
+      { text: "Type", value: "type", sortable: false },
       { text: "DR Amount", align: "start", sortable: false, value: "dr_amount" },
       { text: "CR Amount", align: "start", sortable: false, value: "cr_amount" },
-      { text: "Status", value: "status", sortable: false },
     ],
     statuses: ["RECONCILE"],
     balanceRules: [(v: string) => !!v || "Bank Balance is Required"],
@@ -131,25 +131,6 @@ export const useBankReconciliation = ({ root }): any => {
 
   const fetchData = async () => {
     console.log("get data");
-  };
-
-  const reconcileEntries = () => {
-    const entries = data.selectedEntries.map((entry) => {
-      return {
-        id: entry.id,
-        status: true,
-      };
-    });
-    const payload = {
-      date: root.$root.$route.query.date,
-      bank_account_id: root.$root.$route.query.bank_account_id,
-      entries,
-    };
-    reconcile(payload).then((response: AxiosResponse) => {
-      if (response.status === 200) {
-        loadComponent();
-      }
-    });
   };
 
   const openDialog = async (type: string) => {
@@ -296,10 +277,10 @@ export const useBankReconciliation = ({ root }): any => {
       bank_account_id: root.$route.query.bank_account_id,
       start_date: root.$route.query.date,
     };
-    console.log("payload", payload);
 
     unlockReport(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
+        data.isUnlockOpen = false;
         loadComponent();
       }
     });
@@ -331,12 +312,56 @@ export const useBankReconciliation = ({ root }): any => {
     }
   };
 
+  const getAccount = (transaction_type: string): string => {
+    const type = transaction_type.split("\\")[2];
+    switch (type) {
+      case "Payment":
+        return "AP";
+      case "Receipt":
+        return "AR";
+      default:
+        return "NO ACC";
+    }
+  };
+
+  const title = computed(() => {
+    const reportUnlocked = data.report ? data.report.confirmed : false;
+    const title = reportUnlocked
+      ? `Bank Reconciliation locked as of ${moment(data.report.month).format("YYYY-MM-DD")}`
+      : data.title;
+    return title;
+  });
+
   const entries = computed(() => {
     return data.entries.map((entry: any) => {
       return {
         ...entry,
         type: getType(entry.transaction_type),
+        account: getAccount(entry.transaction_type),
       };
+    });
+  });
+
+  const reconcileEntry = (entry: any) => {
+    const status = entry.item.is_reconciled ? false : true;
+    const item = [{ id: entry.item.id, status: status }];
+    const payload = {
+      date: root.$root.$route.query.date,
+      bank_account_id: root.$root.$route.query.bank_account_id,
+      entries: item,
+    };
+
+    reconcile(payload).then((response: AxiosResponse) => {
+      console.log("payload", payload);
+      if (response.status === 200) {
+        loadComponent();
+      }
+    });
+  };
+
+  const selected = computed(() => {
+    return data.entries.filter((entry) => {
+      return entry.status === true;
     });
   });
 
@@ -347,7 +372,6 @@ export const useBankReconciliation = ({ root }): any => {
     cancelDialog,
     currentDate,
     save,
-    reconcileEntries,
     outstandingDeposits,
     outstandingPayments,
     diff,
@@ -360,5 +384,8 @@ export const useBankReconciliation = ({ root }): any => {
     entries,
     unlock,
     updateBalance,
+    title,
+    reconcileEntry,
+    selected,
   };
 };
