@@ -141,38 +141,6 @@
                       <tr>
                         <td>
                           <v-row>
-                            <v-col md="12" sm="12" cols="12">
-                              <v-select
-                                :items="data.activities"
-                                item-text="name"
-                                label="Select Activity"
-                                @change="searchFundingSource($event)"
-                                required
-                              >
-                                <template v-slot:selection="{ item }">
-                                  {{ item.description }} ({{
-                                    item.sub_budget_class.description
-                                  }})
-                                </template>
-                                <template v-slot:item="{ item }">
-                                  {{ item.description }} ({{
-                                    item.sub_budget_class.description
-                                  }})
-                                </template>
-                                <template v-slot:prepend-item>
-                                  <v-list-item>
-                                    <v-list-item-content>
-                                      <v-text-field
-                                        v-model="data.searchTerm"
-                                        placeholder="Search"
-                                        @input="searchActivities"
-                                      ></v-text-field>
-                                    </v-list-item-content>
-                                  </v-list-item>
-                                  <v-divider></v-divider>
-                                </template>
-                              </v-select>
-                            </v-col>
                             <v-col md="6" sm="12" cols="12">
                               <v-select
                                 :items="data.fundingSources"
@@ -202,6 +170,38 @@
                                 </template>
                                 <template v-slot:item="{ item }">
                                   {{ item.code }} - {{ item.name }}
+                                </template>
+                              </v-select>
+                            </v-col>
+                            <v-col md="12" sm="12" cols="12">
+                              <v-select
+                                :items="data.activities"
+                                item-text="name"
+                                label="Select Activity"
+                                @change="searchFundingSource($event)"
+                                required
+                              >
+                                <template v-slot:selection="{ item }">
+                                  {{ item.description }} ({{
+                                    item.sub_budget_class.description
+                                  }})
+                                </template>
+                                <template v-slot:item="{ item }">
+                                  {{ item.description }} ({{
+                                    item.sub_budget_class.description
+                                  }})
+                                </template>
+                                <template v-slot:prepend-item>
+                                  <v-list-item>
+                                    <v-list-item-content>
+                                      <v-text-field
+                                        v-model="data.searchTerm"
+                                        placeholder="Search"
+                                        @input="searchActivities"
+                                      ></v-text-field>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                  <v-divider></v-divider>
                                 </template>
                               </v-select>
                             </v-col>

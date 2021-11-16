@@ -31,16 +31,16 @@ export const usePayment = (): any => {
         value: "voucher",
       },
       {
+        text: "Payment #",
+        align: "start",
+        sortable: false,
+        value: "reference_no",
+      },
+      {
         text: "Date",
         align: "start",
         sortable: false,
         value: "payment_date",
-      },
-      {
-        text: "Amount",
-        align: "start",
-        sortable: false,
-        value: "amount",
       },
       {
         text: "Payee",
@@ -49,10 +49,22 @@ export const usePayment = (): any => {
         value: "voucher.supplier.name",
       },
       {
+        text: "Cheque #",
+        align: "start",
+        sortable: false,
+        value: "cheque",
+      },
+      {
         text: "Bank Account",
         align: "start",
         sortable: false,
         value: "bank_account",
+      },
+      {
+        text: "Amount",
+        align: "end",
+        sortable: false,
+        value: "amount",
       },
       {
         text: "Actions",
@@ -168,7 +180,13 @@ export const usePayment = (): any => {
 
   const getPaymentVoucherData = () => {
     getPaymentVouchers({ per_page: 10 }).then((response: AxiosResponse) => {
-      data.paymentVouchers = response.data.data.data;
+      const vouchers = response.data.data.data;
+      for (let i = 0; i < vouchers.length; i++) {
+        const element = vouchers[i];
+        if (element.amount_paid != element.amount) {
+          data.paymentVouchers.push(element);
+        }
+      }
     });
   };
 
@@ -180,6 +198,7 @@ export const usePayment = (): any => {
     data.showDate = true;
     const payable = data.paymentVouchers.find((item) => item.id === id);
     data.maxDate = moment(payable.date).format("YYYY-MM-DD");
+    data.payableItems = [];
     findPaymentVoucher(id).then((response: AxiosResponse) => {
       const pvData = response.data.data;
       for (let j = 0; j < pvData.payables.length; j++) {
