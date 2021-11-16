@@ -96,16 +96,16 @@
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="4" sm="12" v-if="data.formData.supplier_type === 'Contractor'">
-                  <v-text-field v-model="data.formData.tin" label="TIN"></v-text-field>
+                  <v-text-field v-model="data.formData.tin" :rules="data.tinRules" label="TIN"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12" v-if="data.formData.supplier_type === 'Employee'">
-                  <v-text-field v-model="data.formData.check_number" label="Check Number"></v-text-field>
+                  <v-text-field v-model="data.formData.check_number" :rules="data.checkRules" label="Check Number"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12" v-if="data.formData.supplier_type === 'Others'">
                   <v-text-field v-model="data.formData.id_number" label="ID number"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.phone" label="Phone"></v-text-field>
+                  <v-text-field v-model="data.formData.phone" :rules="data.phoneRules" label="Phone"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field v-model="data.formData.address" label="Address"></v-text-field>
