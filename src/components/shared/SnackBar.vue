@@ -7,7 +7,7 @@
     :bottom="true"
     :right="true"
     :vertical="message.color !== 'success'"
-    :multiline="data.multiline"
+    :multi-line="data.multiline"
     timeout="-1"
   >
     <v-row v-if="message.color === 'success'" @click="dismiss">
@@ -89,5 +89,8 @@ ul {
 
 .v-sheet.v-snack__wrapper {
   border-radius: 0;
+}
+.v-application ul {
+  padding-left: 0 !important;
 }
 </style>

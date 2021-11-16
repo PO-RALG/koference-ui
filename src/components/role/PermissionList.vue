@@ -41,12 +41,11 @@ export default defineComponent({
       selectedItems: props.selected,
     });
 
-    const selectItem = (val: any) => {
-      emit("itemSelected", val.item);
+    const selectItem = ({ item }) => {
+      emit("itemSelected", item);
     };
 
     const rowClick = (item, row) => {
-      console.log("item", item);
       let selectState = row.isSelected ? false : true;
       row.select(selectState);
     };

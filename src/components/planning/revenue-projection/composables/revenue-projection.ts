@@ -79,7 +79,7 @@ export const useRevenueProjection = (): any => {
 
   const selectFinancialYear = (year: FinancialYear) => {
     if (year != null) {
-      search({ financial_year_id: year.id }).then((response: AxiosResponse) => {
+      get({ financial_year_id: year.id }).then((response: AxiosResponse) => {
         const { from, to, total, current_page, per_page, last_page } = response.data.data;
         data.items = response.data.data.data;
         data.response = {

@@ -1,16 +1,16 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, update, destroy, search } from "../services/supplier.service";
+import { get, create, update, destroy, search, activation } from "../services/supplier.services";
 import { Supplier } from "../types/Supplier";
 
 export const useSupplier = (): any => {
   const dataItems: Array<Supplier> = [];
-  const activityData = {} as Supplier;
+  const supplyData = {} as Supplier;
 
   const data = reactive({
-    title: "Suppliers",
-    valid: true,
+    title: "Manage Suppliers",
+    valid: false,
     isOpen: false,
     node: null,
     response: {},
@@ -41,10 +41,10 @@ export const useSupplier = (): any => {
         value: "phone",
       },
       {
-        text: "Address",
+        text: "Bank Name",
         align: "start",
         sortable: false,
-        value: "address",
+        value: "bank_name",
       },
       {
         text: "Bank Account Name",
@@ -59,6 +59,12 @@ export const useSupplier = (): any => {
         value: "bank_account_number",
       },
       {
+        text: "Activation",
+        align: "start",
+        sortable: false,
+        value: "activations",
+      },
+      {
         text: "Actions",
         value: "actions",
         sortable: false,
@@ -68,7 +74,7 @@ export const useSupplier = (): any => {
     deletemodal: false,
     items: dataItems,
     itemsToFilter: [],
-    formData: activityData,
+    formData: supplyData,
     params: {
       total: 100,
       size: 10,
@@ -131,9 +137,9 @@ export const useSupplier = (): any => {
 
   const save = () => {
     if (data.formData.id) {
-      updateActivity(data.formData);
+      updateSupplier(data.formData);
     } else {
-      createActivity(data.formData);
+      createSupplier(data.formData);
     }
   };
 
@@ -148,16 +154,22 @@ export const useSupplier = (): any => {
     data.modal = !data.modal;
   };
 
-  const updateActivity = (data: Supplier) => {
+  const updateSupplier = (data: Supplier) => {
     update(data).then(() => {
       cancelDialog();
       getTableData();
     });
   };
 
-  const createActivity = (data: Supplier) => {
+  const createSupplier = (data: Supplier) => {
     create(data).then(() => {
       cancelDialog();
+      getTableData();
+    });
+  };
+
+  const setActivation = (item: string) => {
+    activation(item).then(() => {
       getTableData();
     });
   };
@@ -167,11 +179,12 @@ export const useSupplier = (): any => {
     openDialog,
     cancelDialog,
     openConfirmDialog,
-    updateActivity,
+    updateSupplier,
     save,
     remove,
     cancelConfirmDialog,
     searchItem,
     getData,
+    setActivation,
   };
 };

@@ -3,11 +3,11 @@ import { reactive, onMounted, ref } from "@vue/composition-api";
 
 import { GfsCategories } from "../types/";
 import { get, create, update, destroy, search } from "../service/gfs-categories.service";
+import { getTypes, getNature } from "../../account/services/account.service";
 
 export const useGfsCategory = (): any => {
   const dataItems: Array<GfsCategories> = [];
   let documentCategoryData: GfsCategories;
-  const fileToupload = ref("");
   const imageUrl: any = ref("");
 
   const data = reactive({
@@ -15,16 +15,28 @@ export const useGfsCategory = (): any => {
     modalTitle: "",
     headers: [
       {
+        text: "Open to View Gfs Codes",
+        align: "start",
+        sortable: false,
+        value: "code",
+      },
+      {
         text: "Category Name",
         align: "start",
         sortable: false,
         value: "name",
       },
       {
-        text: "Gfs Codes List",
+        text: "Nature",
         align: "start",
         sortable: false,
-        value: "code",
+        value: "account_nature",
+      },
+      {
+        text: "Type",
+        align: "start",
+        sortable: false,
+        value: "account_type",
       },
 
       { text: "Actions", value: "actions", sortable: false },
@@ -36,6 +48,8 @@ export const useGfsCategory = (): any => {
     modal: false,
     deletemodal: false,
     items: dataItems,
+    ACCOUNT_TYPES: [],
+    ACCOUNT_NATURE: [],
     itemsToFilter: [],
     formData: documentCategoryData,
     params: {
@@ -62,7 +76,19 @@ export const useGfsCategory = (): any => {
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
     });
+
+    getAccounts();
   });
+
+  const getAccounts = () => {
+    getTypes().then(response => {
+      data.ACCOUNT_TYPES = response.data.data;
+    });
+
+    getNature().then(response => {
+      data.ACCOUNT_NATURE = response.data.data;
+    });
+  };
 
   const searchCategory = (categoryName) => {
     console.log("argument", categoryName);

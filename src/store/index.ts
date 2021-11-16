@@ -7,6 +7,8 @@ import Auth from "./modules/Auth";
 import SnackBar from "./modules/SnackBar";
 import Loader from "./modules/Loader";
 import LoginDialog from "./modules/LoginDialog";
+import Drawer from "./modules/Drawer";
+import ChangePasswordDialog from "./modules/ChangePasswordDialog";
 
 export default new Vuex.Store({
   modules: {
@@ -14,5 +16,7 @@ export default new Vuex.Store({
     SnackBar,
     Loader,
     LoginDialog,
+    Drawer,
+    ChangePasswordDialog,
   },
 });

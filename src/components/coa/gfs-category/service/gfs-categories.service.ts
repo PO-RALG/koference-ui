@@ -3,12 +3,15 @@ import axios from "axios";
 const get = async (payload: any) => {
   return await axios.get("/api/v1/gfs-categories", { params: payload });
 };
+
 const gfscategories = async (payload: any) => {
   return await axios.get("/api/v1/gfs-categories", { params: payload });
 };
+
 const documentcategoried = async () => {
   return await axios.get("/api/v1/gfs-categories");
 };
+
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/gfs-categories/`, {
     params: {
@@ -28,18 +31,10 @@ const create = async (payload: any) => {
 const update = async (payload: any) => {
   return await axios.put(`/api/v1/gfs-categories/` + payload.id, payload);
 };
+
 const destroy = async (payload: any) => {
   console.log("payload", payload);
   return await axios.delete(`/api/v1/gfs-categories/` + payload);
 };
 
-export {
-  get,
-  find,
-  create,
-  update,
-  destroy,
-  search,
-  documentcategoried,
-  gfscategories,
-};
+export { get, find, create, update, destroy, search, documentcategoried, gfscategories };

@@ -11,18 +11,46 @@
 
     <v-card>
       <v-data-table :headers="data.headers" :items="users" hide-default-footer class="elevation-1">
+        <template v-slot:[`item.displayRoles`]="{ item }">
+          <span>{{ item.displayRoles }}</span>
+        </template>
+        <template v-slot:[`item.activations`]="{ item }">
+          <v-switch
+            :input-value="item.active"
+            @click.native.stop
+            v-model="item.active"
+            @change="openActivationDialog(item)"
+            :disabled="cant('activateDeactivate', 'User') || item.id === data.currentUser.id"
+            value
+          >
+          </v-switch>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="resetPasswd(item)" :disabled="cant('edit', 'User')">
+                mdi-lock-reset
+              </v-icon>
+            </template>
+            <span>Reset Password</span>
+          </v-tooltip>
+
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'User')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'User')"> mdi-trash-can-outline </v-icon>
+          <v-icon
+            @click="openConfirmDialog(item)"
+            :disabled="cant('delete', 'User') || item.id === data.currentUser.id"
+          >
+            mdi-trash-can-outline
+          </v-icon>
         </template>
         <template v-slot:footer>
           <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="600">
+    <Modal :modal="data.modal" :width="900">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} User`" />
       </template>
@@ -32,13 +60,31 @@
             <v-container>
               <v-row>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="First Name" v-model="data.formData.first_name" required> </v-text-field>
+                  <v-text-field
+                    label="First Name"
+                    v-model="data.formData.first_name"
+                    :rules="data.requiredRules"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="Midde Name" v-model="data.formData.middle_name" required> </v-text-field>
+                  <v-text-field
+                    label="Midde Name"
+                    v-model="data.formData.middle_name"
+                    :rules="data.requiredRules"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="Last Name" v-model="data.formData.last_name" required> </v-text-field>
+                  <v-text-field
+                    label="Last Name"
+                    v-model="data.formData.last_name"
+                    :rules="data.requiredRules"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -55,25 +101,17 @@
                   <v-text-field label="Phone Number" v-model="data.formData.phone_number" required> </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field label="Check Number" v-model="data.formData.check_number" required> </v-text-field>
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
-                  <DualMultiSelect
-                    :items="data.roles"
-                    :label="'Filter Roles'"
-                    :title="'Add Roles'"
-                    :item-name="data.itemName"
-                    :selectedItems="selectedRoles"
-                    @filterFunction="filterRoles"
-                    v-model="data.selectedRoles"
-                  />
+                  <v-text-field
+                    label="Check Number"
+                    v-model="data.formData.check_number"
+                    :rules="data.requiredRules"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="12" sm="12" md="6">
+                <v-col cols="12" sm="12" md="6" class="pb-6 pt-5">
                   <v-label v-if="data.formData.location">
                     <h5 class="tree-title">SELECTED USER LOCATION ({{ data.formData.location.name }})</h5>
                   </v-label>
@@ -84,6 +122,7 @@
                     v-if="data.node"
                     @onClick="loadLocationChildren"
                     v-model="data.formData.location"
+                    :current-item="data.currentItem"
                     :node="data.node"
                   />
                 </v-col>
@@ -109,14 +148,27 @@
                   </v-row>
                 </v-col>
               </v-row>
+              <v-row>
+                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+                  <DualMultiSelect
+                    :source="data.roles"
+                    :destination="data.selectedRoles"
+                    v-model="data.formData.roles"
+                    :label="'name'"
+                    :modelName="'roles'"
+                    @onChangeList="onChangeList"
+                  />
+                </v-col>
+              </v-row>
             </v-container>
+            <!--<pre>{{ data.formData }}</pre>-->
           </v-form>
         </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save">
+          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="save" :disabled="!data.valid">
             {{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -125,10 +177,18 @@
     <ConfirmDialog
       @rejectFunction="closeConfirmDialog"
       @acceptFunction="deleteItem"
-      :message="'Are you sure you want to delete this user?'"
+      :message="message"
       :data="data.item"
       :isOpen="data.isOpen"
-      :title="'Delete User'"
+      :title="`Delete User`"
+    />
+    <ConfirmDialog
+      @rejectFunction="closeActivationDialog"
+      @acceptFunction="toggleStatus"
+      :message="message"
+      :data="data.item"
+      :isOpen="data.show"
+      :title="`${data.status} User`"
     />
   </div>
 </template>
@@ -145,8 +205,11 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       closeConfirmDialog,
+      closeActivationDialog,
       openConfirmDialog,
+      openActivationDialog,
       filterRoles,
+      toggleStatus,
       selectedRoles,
 
       loadLocationChildren,
@@ -159,15 +222,29 @@ export default defineComponent({
       updateUser,
       save,
       deleteItem,
+      onChangeList,
+      status,
+      confirmTitle,
+      message,
+      resetPasswd,
     } = useUser();
+
+    const showRoles = (roles) => {
+      return roles.map((r) => r.name);
+    };
 
     return {
       data,
+      message,
+      confirmTitle,
 
+      showRoles,
       openDialog,
       cancelDialog,
       closeConfirmDialog,
+      closeActivationDialog,
       openConfirmDialog,
+      openActivationDialog,
       filterRoles,
       selectedRoles,
 
@@ -181,6 +258,10 @@ export default defineComponent({
       updateUser,
       save,
       deleteItem,
+      onChangeList,
+      toggleStatus,
+      status,
+      resetPasswd,
     };
   },
 });

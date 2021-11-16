@@ -1,18 +1,25 @@
 <template>
   <div id="inspire">
-    <Sidebar :drawer="data.drawer" @toggle="toggleSidebar" :user="user" />
-    <Header @logoutFunction="logout" @sidebarToggle="toggleSidebar" :drawer="data.drawer" />
-    <v-content>
+    <Sidebar :drawer="data.drawer" @toggle="toggleSidebar" :user="user" class="d-print-none" />
+    <Header
+      @logoutFunction="logout"
+      @sidebarToggle="toggleSidebar"
+      :user="user"
+      :drawer="data.drawer"
+      class="d-print-none"
+    />
+    <v-main>
       <v-container class="fill-height" fluid>
-        <v-layout>
-        </v-layout>
+        <v-layout> </v-layout>
       </v-container>
-    </v-content>
+    </v-main>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+const { useState } = createNamespacedHelpers("Drawer");
 import store from "@/store";
 
 import Sidebar from "./shared/Sidebar.vue";
@@ -26,16 +33,18 @@ export default defineComponent({
   props: {
     user: Object,
   },
+
   setup() {
+    let { isOpen } = useState(["isOpen"]);
     // state  => formally data
     let data = reactive({
-      drawer: true,
+      drawer: isOpen,
       currentUser: null,
     });
 
     // methods
     const toggleSidebar = (drawer: boolean) => {
-      data.drawer = !drawer;
+      data.drawer ? store.dispatch("Drawer/CLOSE") : store.dispatch("Drawer/OPEN");
     };
 
     const logout = () => {
@@ -58,3 +67,11 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+@media print {
+  #content {
+    padding: 0 !important;
+  }
+}
+</style>

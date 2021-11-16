@@ -2,7 +2,7 @@ import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
 import { BanckAccountType } from "../types";
-import { get, create, update, destroy, search } from "../services/banck-account-types.service";
+import { get, create, update, destroy, search } from "../services/bank-account-types.service";
 import { useGfsCode } from "@/components/coa/gfs-code/composables/gfs-code";
 
 export const useBankAccountType = (): any => {
@@ -11,7 +11,7 @@ export const useBankAccountType = (): any => {
   const { getGfsCodes } = useGfsCode();
 
   const data = reactive({
-    title: "Manage Bank Account Type",
+    title: "Manage Bank Account Types",
     modalTitle: "",
     headers: [
       { text: "Name", align: "start", sortable: false, value: "name" },
@@ -48,10 +48,6 @@ export const useBankAccountType = (): any => {
     });
   };
 
-  computed(() => {
-    return "test";
-  });
-
   const searchCategory = (categoryName: any) => {
     if (categoryName != null) {
       search({ name: categoryName.name }).then((response: any) => {
@@ -71,16 +67,9 @@ export const useBankAccountType = (): any => {
     });
   };
 
-  const deleteCustomer = (deleteId: any) => {
+  const deleteBankAccountType = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
-    // console.log("delete year", data);
-  };
-
-  const getCustomer = () => {
-    get(data).then((response) => {
-      console.log("data", response.data);
-    });
   };
 
   const cancelDialog = () => {
@@ -165,7 +154,7 @@ export const useBankAccountType = (): any => {
     getData,
     openDialog,
     cancelDialog,
-    deleteCustomer,
+    deleteBankAccountType,
     save,
     reloadData,
     remove,

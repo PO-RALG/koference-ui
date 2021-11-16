@@ -1,13 +1,8 @@
 <template>
   <li class="list-group-item group-item">
-    <div
-      :class="{ active:item.id === isActiveItem }"
-      @click="selectGroup(item)"
-    >
+    <div :class="{ active: item.id === isActiveItem }" @click="selectGroup(item)">
       {{ item.name }}
-      <span v-if="isFolder" @click="toggle">
-        [{{ data.isOpen ? "-" : "+" }}]
-      </span>
+      <span v-if="isFolder" @click="toggle"> [{{ data.isOpen ? "-" : "+" }}] </span>
     </div>
     <ul v-show="data.isOpen" v-if="isFolder" class="list-group">
       <tree

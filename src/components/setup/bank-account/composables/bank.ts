@@ -1,7 +1,7 @@
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "@vue/composition-api";
 
-import { get, create, update, destroy, search } from "../services/back-accounts.service";
-import { bankaccounttypes } from "@/components/setup/bank-account-type/services/banck-account-types.service";
+import { get, create, update, destroy, search } from "../services/bank-account.service";
+import { bankaccounttypes } from "@/components/setup/bank-account-type/services/bank-account-types.service";
 import { BackAccount } from "../types/BackAccount";
 
 export const useBank = (): any => {
@@ -81,22 +81,29 @@ export const useBank = (): any => {
       size: 10,
     };
     get(params).then((response: any) => {
-      console.log("data to render", response.data.data);
+      console.log("data to filter", response.data.data.data);
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
     });
     bankaccounttypes().then((response: any) => {
-      console.log("gfs codes", response.data.data.data);
+      // console.log("bank account", response.data.data.data);
       data.accounttypes = response.data.data.data;
     });
   };
 
+  const bankName = computed(() => {
+    return data.itemsToFilter.map((account) => {
+      account.fullName = `Account Number -${account.number}  ${account.bank} - ${account.branch}`;
+      return account;
+    });
+  });
+
   const searchCategory = (categoryName) => {
-    console.log("argument", categoryName);
+    // console.log("argument", categoryName);
 
     if (categoryName != null) {
       search({ name: categoryName.name }).then((response: any) => {
-        console.log("response data", response);
+        // console.log("response data", response);
         data.items = response.data.data.data;
       });
     } else {
@@ -110,8 +117,9 @@ export const useBank = (): any => {
       size: 10,
     };
     get(params).then((response: any) => {
-      console.log("data", response.data.data);
+      // console.log("data", response.data.data);
       data.items = response.data.data.data;
+      data.itemsToFilter = response.data.data.data;
     });
   };
 
@@ -123,7 +131,7 @@ export const useBank = (): any => {
 
   const getSubBudgetClass = () => {
     get(data).then((response) => {
-      console.log("data", response.data);
+      // console.log("data", response.data);
     });
   };
 
@@ -143,7 +151,7 @@ export const useBank = (): any => {
   };
 
   const remove = () => {
-    console.log("delete data with id", data.itemtodelete);
+    // console.log("delete data with id", data.itemtodelete);
     destroy(data.itemtodelete).then(() => {
       reloadData();
       data.deletemodal = false;
@@ -172,7 +180,7 @@ export const useBank = (): any => {
 
   const updateFinancialYear = (data: any) => {
     update(data).then((response) => {
-      console.log("Updated data", response.data);
+      // console.log("Updated data", response.data);
       reloadData();
       cancelDialog();
     });
@@ -180,7 +188,7 @@ export const useBank = (): any => {
 
   const createUser = (data: any) => {
     create(data).then((response) => {
-      console.log("Created data", response.data);
+      // console.log("Created data", response.data);
       reloadData();
       cancelDialog();
     });
@@ -218,5 +226,6 @@ export const useBank = (): any => {
     openFilterDialog,
     cancelFilterDialog,
     resumeDialog,
+    bankName,
   };
 };
