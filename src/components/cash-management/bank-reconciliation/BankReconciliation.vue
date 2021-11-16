@@ -57,7 +57,7 @@
                 <strong>{{ data.report.cash_balance | toCurrency }}</strong>
               </td>
               <td>
-                <strong>{{ data.report.diff | toCurrency }}</strong>
+                <strong>{{ data.report.diff ? data.report.diff : diff | toCurrency }}</strong>
               </td>
             </tr>
           </tbody>
