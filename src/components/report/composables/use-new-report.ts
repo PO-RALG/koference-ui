@@ -12,6 +12,8 @@ import {
 export const useNewReport = () => {
   const data = reactive({
     formData: {},
+    code: "",
+    editQuery: false,
     modal: false,
     deleteModal: false,
     report: null,
@@ -166,6 +168,16 @@ export const useNewReport = () => {
     data.deleteModal = false;
   };
 
+  const openCodeEditor = (data: any) => {
+    data.formData = data;
+    data.editQuery = true;
+  }
+
+  const closeCodeEditor = () => {
+    data.editQuery = false;
+  }
+
+
   return {
     data,
     deleteItem,
@@ -181,5 +193,7 @@ export const useNewReport = () => {
     remove,
     getReport,
     cancelConfirmDialog,
+    openCodeEditor,
+    closeCodeEditor,
   };
 };

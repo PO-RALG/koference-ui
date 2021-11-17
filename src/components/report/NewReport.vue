@@ -45,7 +45,7 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon v-if="item.query" class="mr-2" @click="openDialog(item)" :disabled="cant('writeQuery', 'Report')">
+          <v-icon v-if="item.query" class="mr-2" @click="openCodeEditor(item)" :disabled="cant('edit', 'Report')">
             mdi-code-tags
           </v-icon>
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Report')">
@@ -142,6 +142,23 @@
         </ModalFooter>
       </template>
     </Modal>
+
+    <Modal :modal="data.editQuery" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Edit Query`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+        <div>Editor</div>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="closeCodeEditor">Cancel </v-btn>
+          <v-btn color="green darken-1" text @click="save">Yes</v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -160,7 +177,9 @@ export default defineComponent({
       save,
       remove,
       loadReports,
-      cancelConfirmDialog
+      cancelConfirmDialog,
+      openCodeEditor,
+      closeCodeEditor,
     } = useNewReport();
 
     return {
@@ -172,6 +191,8 @@ export default defineComponent({
       loadReports,
       remove,
       cancelConfirmDialog,
+      openCodeEditor,
+      closeCodeEditor,
     };
   },
 });
