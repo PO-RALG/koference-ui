@@ -10,6 +10,7 @@ import {
 } from "../services/bank-reconciliation-service";
 import { Params } from "../types";
 import moment from "moment";
+import sortBy from "lodash/sortBy";
 
 export const useBankReconciliation = ({ root }): any => {
   const data = reactive({
@@ -45,8 +46,7 @@ export const useBankReconciliation = ({ root }): any => {
       { text: "Date", value: "date" },
       { text: "Acc", value: "account", sortable: false },
       { text: "Type", value: "type", sortable: false },
-      { text: "DR Amount", align: "start", sortable: false, value: "dr_amount" },
-      { text: "CR Amount", align: "start", sortable: false, value: "cr_amount" },
+      { text: "Amount", align: "start", sortable: true, value: "amount" },
     ],
     statuses: ["RECONCILE"],
     balanceRules: [(v: string) => !!v || "Bank Balance is Required"],
@@ -70,11 +70,14 @@ export const useBankReconciliation = ({ root }): any => {
     const date = root.$route.query.date ? root.$route.query.date : null;
     const bankAccountId = root.$route.query.bank_account_id ? root.$route.query.bank_account_id : null;
     const params = { date: date, bank_account_id: bankAccountId };
+    const query = {
+      ...params,
+    };
     data.selectedEntries = [];
     if (date && bankAccountId) {
       data.formData.bank_account_id = parseInt(bankAccountId);
       data.formData.date = date;
-      init(params);
+      init(query);
     }
   };
 
@@ -91,9 +94,16 @@ export const useBankReconciliation = ({ root }): any => {
 
   const init = async (params: Params) => {
     if (params.bank_account_id && params.date) {
-      getEntries(params)
+      const query = {
+        ...params,
+        per_page: 10,
+      };
+      getEntries(query)
         .then((response: AxiosResponse) => {
-          data.entries = response.data.data;
+          console.log("response: ", response);
+          const { from, to, total, current_page, per_page, last_page } = response.data.data;
+          data.response = { from, to, total, current_page, per_page, last_page };
+          data.entries = response.data.data.data;
         })
         .then(() => {
           getReport(params.bank_account_id, { date: params.date }).then((response: AxiosResponse) => {
@@ -129,8 +139,17 @@ export const useBankReconciliation = ({ root }): any => {
     data.isUnlockOpen = true;
   };
 
-  const fetchData = async () => {
-    console.log("get data");
+  const fetchData = async (params: any) => {
+    const query = {
+      ...params,
+      date: root.$root.$route.query.date,
+      bank_account_id: root.$root.$route.query.bank_account_id,
+    };
+    data.response = query;
+    getEntries(query).then((response: AxiosResponse) => {
+      data.response = response.data.data;
+      data.entries = response.data.data.data;
+    });
   };
 
   const openDialog = async (type: string) => {
@@ -188,7 +207,11 @@ export const useBankReconciliation = ({ root }): any => {
       const date = root.$route.query.date ? root.$route.query.date : null;
       const bankAccountId = root.$route.query.bank_account_id ? root.$route.query.bank_account_id : null;
 
-      getEntries(data.formData)
+      const query = {
+        ...data.formData,
+      };
+
+      getEntries(query)
         .then((response: AxiosResponse) => {
           if (response.status === 200) {
             if (data.formData.bank_account_id !== bankAccountId || data.formData.date !== date) {
@@ -201,7 +224,9 @@ export const useBankReconciliation = ({ root }): any => {
             } else {
               return null;
             }
-            data.entries = response.data.data;
+            const { from, to, total, current_page, per_page, last_page } = response.data.data;
+            data.response = { from, to, total, current_page, per_page, last_page };
+            data.entries = response.data.data.data;
           }
         })
         .then(() => {
@@ -332,14 +357,28 @@ export const useBankReconciliation = ({ root }): any => {
     return title;
   });
 
+  const getAmount = (entry) => {
+    const dr = parseInt(entry.dr_amount);
+    const cr = parseInt(entry.cr_amount);
+    if (cr > dr) {
+      return cr;
+    } else {
+      return dr;
+    }
+  };
+
   const entries = computed(() => {
-    return data.entries.map((entry: any) => {
-      return {
-        ...entry,
-        type: getType(entry.transaction_type),
-        account: getAccount(entry.transaction_type),
-      };
-    });
+    return sortBy(
+      data.entries.map((entry: any) => {
+        return {
+          ...entry,
+          type: getType(entry.transaction_type),
+          account: getAccount(entry.transaction_type),
+          amount: getAmount(entry),
+        };
+      }),
+      "date"
+    ).reverse();
   });
 
   const reconcileEntry = (entry: any) => {

@@ -82,10 +82,10 @@
         <template v-slot:[`item.dr_amount`]="{ item }">
           <span>{{ item.dr_amount | toCurrency }}</span>
         </template>
-        <template v-slot:[`item.cr_amount`]="{ item }">
-          <span>{{ item.cr_amount | toCurrency }}</span>
+        <template v-slot:[`item.amount`]="{ item }">
+          <span>{{ item.amount | toCurrency }}</span>
         </template>
-        <template v-slot:[`item.status`]="{ item }">
+        <template v-slot:[`item.type`]="{ item }">
           <span>{{ item.type }}</span>
         </template>
         <template v-slot:[`item.status`]="{ item }">
@@ -93,7 +93,7 @@
           <v-icon v-else medium color="warning">mdi-close</v-icon>
         </template>
         <template v-slot:footer>
-          <!--<Paginate :params="data.response" :rows="data.rows" @onPageChange="fetchData" />-->
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="fetchData" />
         </template>
       </v-data-table>
 
@@ -201,7 +201,6 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       save,
-      reconcileEntries,
       outstandingDeposits,
       outstandingPayments,
       showConfirmDialog,
