@@ -202,6 +202,7 @@ export default defineComponent({
   height: 30px;
   width: 30px;
   border: 2px solid #ccc;
+  cursor: pointer;
 }
 
 .clickable {
