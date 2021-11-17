@@ -10,7 +10,7 @@ import {
 } from "../services/bank-reconciliation-service";
 import { Params } from "../types";
 import moment from "moment";
-import sortBy  from "lodash/sortBy";
+import sortBy from "lodash/sortBy";
 
 export const useBankReconciliation = ({ root }): any => {
   const data = reactive({
@@ -347,13 +347,16 @@ export const useBankReconciliation = ({ root }): any => {
   });
 
   const entries = computed(() => {
-    return sortBy(data.entries.map((entry: any) => {
-      return {
-        ...entry,
-        type: getType(entry.transaction_type),
-        account: getAccount(entry.transaction_type),
-      };
-    }), "date");
+    return sortBy(
+      data.entries.map((entry: any) => {
+        return {
+          ...entry,
+          type: getType(entry.transaction_type),
+          account: getAccount(entry.transaction_type),
+        };
+      }),
+      "date"
+    ).reverse();
   });
 
   const reconcileEntry = (entry: any) => {
