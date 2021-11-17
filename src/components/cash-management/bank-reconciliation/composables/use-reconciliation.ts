@@ -73,7 +73,6 @@ export const useBankReconciliation = ({ root }): any => {
     const params = { date: date, bank_account_id: bankAccountId };
     const query = {
       ...params,
-      asc: "date",
     };
     data.selectedEntries = [];
     if (date && bankAccountId) {
@@ -98,11 +97,14 @@ export const useBankReconciliation = ({ root }): any => {
     if (params.bank_account_id && params.date) {
       const query = {
         ...params,
-        asc: "date",
+        per_page: 10,
       };
       getEntries(query)
         .then((response: AxiosResponse) => {
-          data.entries = response.data.data;
+          console.log("response: ", response);
+          const { from, to, total, current_page, per_page, last_page } = response.data.data;
+          data.response = { from, to, total, current_page, per_page, last_page };
+          data.entries = response.data.data.data;
         })
         .then(() => {
           getReport(params.bank_account_id, { date: params.date }).then((response: AxiosResponse) => {
@@ -138,8 +140,17 @@ export const useBankReconciliation = ({ root }): any => {
     data.isUnlockOpen = true;
   };
 
-  const fetchData = async () => {
-    console.log("get data");
+  const fetchData = async (params: any) => {
+    const query = {
+      ...params,
+      date: root.$root.$route.query.date,
+      bank_account_id: root.$root.$route.query.bank_account_id,
+    };
+    data.response = query;
+    getEntries(query).then((response: AxiosResponse) => {
+      data.response = response.data.data;
+      data.entries = response.data.data.data;
+    });
   };
 
   const openDialog = async (type: string) => {
@@ -199,7 +210,6 @@ export const useBankReconciliation = ({ root }): any => {
 
       const query = {
         ...data.formData,
-        asc: "date",
       };
 
       getEntries(query)
@@ -215,7 +225,9 @@ export const useBankReconciliation = ({ root }): any => {
             } else {
               return null;
             }
-            data.entries = response.data.data;
+            const { from, to, total, current_page, per_page, last_page } = response.data.data;
+            data.response = { from, to, total, current_page, per_page, last_page };
+            data.entries = response.data.data.data;
           }
         })
         .then(() => {
