@@ -111,7 +111,7 @@
                   <v-text-field v-model="data.formData.address" label="Address"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.account_name" label="Account Name"></v-text-field>
+                  <v-text-field v-model="data.formData.bank_name" label="Bank Name"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field v-model="data.formData.bank_account_name" label="Bank Account Name"></v-text-field>

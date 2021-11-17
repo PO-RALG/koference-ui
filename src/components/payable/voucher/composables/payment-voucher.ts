@@ -161,7 +161,7 @@ export const usePaymentVoucher = (): any => {
     }
     data.formData.payables = payableData;
 
-    createActivity(data.formData);
+    createVoucher(data.formData);
   };
 
   const openDialog = () => {
@@ -177,7 +177,7 @@ export const usePaymentVoucher = (): any => {
     data.modal = !data.modal;
   };
 
-  const createActivity = (data: PaymentVoucher) => {
+  const createVoucher = (data: PaymentVoucher) => {
     create(data).then(() => {
       cancelDialog();
       getTableData();

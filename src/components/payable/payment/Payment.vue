@@ -362,8 +362,8 @@
                         {{ data.pvDetails.user ? data.pvDetails.user.last_name : "" }}
                       </span>
                     </td>
-                    <td class="text-left">Verified By:</td>
                     <td class="text-left">Approved By:</td>
+                    <td class="text-left">Authorized By:</td>
                   </tr>
                   <tr>
                     <td class="text-left pt-10"><hr width="80%" /></td>
@@ -371,9 +371,9 @@
                     <td class="text-left pt-10"><hr width="80%" /></td>
                   </tr>
                   <tr>
-                    <td class="text-left">Signature of Originating Officer</td>
-                    <td class="text-left">Signature of Verifying Officer</td>
-                    <td class="text-left">Signature of Authorizing Officer</td>
+                    <td class="text-left">Signature</td>
+                    <td class="text-left">Signature</td>
+                    <td class="text-left">Signature</td>
                   </tr>
                   <tr>
                     <td class="text-left pt-10">Date: ..............................</td>
