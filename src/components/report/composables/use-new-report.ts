@@ -45,6 +45,7 @@ export const useNewReport = () => {
       per_page: null,
       last_page: null,
     },
+    rows: ["5", "10", "20", "50", "100"],
   });
 
   const deleteItem = (item: number | string) => {

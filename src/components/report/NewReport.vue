@@ -45,6 +45,9 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
+          <v-icon v-if="item.query" class="mr-2" @click="openDialog(item)" :disabled="cant('writeQuery', 'Report')">
+            mdi-code-tags
+          </v-icon>
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Report')">
             mdi-pencil-box-outline
           </v-icon>
