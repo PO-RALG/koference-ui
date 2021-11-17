@@ -105,7 +105,7 @@
                     <v-text-field
                       dense
                       outlined
-                      :rules="[maxRules(item.allocation - item.totalExpenditure)]"
+                      :rules="[maxAllocation(item.budget - item.allocation),maxAvailable(item.allocation - item.totalExpenditure)]"
                       v-model="item.allocation_amount"
                       @input="newAllocation(item.allocation_amount)"
                       type="text"
@@ -122,7 +122,6 @@
             color="primary"
             @click="save"
             v-if="data.items.length"
-            :disabled="!data.valid"
           >
             save
           </v-btn>
@@ -145,7 +144,8 @@ export default defineComponent({
       searchFundingSources,
       searchBudgets,
       newAllocation,
-      maxRules,
+      maxAllocation,
+      maxAvailable,
     } = useFundAllocation();
 
     return {
@@ -154,7 +154,8 @@ export default defineComponent({
       searchFundingSources,
       searchBudgets,
       newAllocation,
-      maxRules,
+      maxAllocation,
+      maxAvailable,
     };
   },
 });
