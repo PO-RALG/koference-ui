@@ -82,8 +82,8 @@
         <template v-slot:[`item.dr_amount`]="{ item }">
           <span>{{ item.dr_amount | toCurrency }}</span>
         </template>
-        <template v-slot:[`item.cr_amount`]="{ item }">
-          <span>{{ item.cr_amount | toCurrency }}</span>
+        <template v-slot:[`item.amount`]="{ item }">
+          <span>{{ item.amount | toCurrency }}</span>
         </template>
         <template v-slot:[`item.type`]="{ item }">
           <span>{{ item.type }}</span>

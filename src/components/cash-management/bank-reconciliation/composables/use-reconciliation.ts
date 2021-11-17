@@ -46,8 +46,7 @@ export const useBankReconciliation = ({ root }): any => {
       { text: "Date", value: "date" },
       { text: "Acc", value: "account", sortable: false },
       { text: "Type", value: "type", sortable: false },
-      { text: "DR Amount", align: "start", sortable: false, value: "dr_amount" },
-      { text: "CR Amount", align: "start", sortable: false, value: "cr_amount" },
+      { text: "Amount", align: "start", sortable: true, value: "amount" },
     ],
     statuses: ["RECONCILE"],
     balanceRules: [(v: string) => !!v || "Bank Balance is Required"],
@@ -358,6 +357,16 @@ export const useBankReconciliation = ({ root }): any => {
     return title;
   });
 
+  const getAmount = (entry) => {
+    const dr = parseInt(entry.dr_amount);
+    const cr = parseInt(entry.cr_amount);
+    if (cr > dr) {
+      return cr;
+    } else {
+      return dr;
+    }
+  };
+
   const entries = computed(() => {
     return sortBy(
       data.entries.map((entry: any) => {
@@ -365,6 +374,7 @@ export const useBankReconciliation = ({ root }): any => {
           ...entry,
           type: getType(entry.transaction_type),
           account: getAccount(entry.transaction_type),
+          amount: getAmount(entry),
         };
       }),
       "date"
