@@ -168,15 +168,15 @@ export const useNewReport = () => {
     data.deleteModal = false;
   };
 
-  const openCodeEditor = (data: any) => {
-    data.formData = data;
+  const openCodeEditor = (entry: any) => {
+    console.log("entry", entry);
+    data.formData = entry;
     data.editQuery = true;
-  }
+  };
 
   const closeCodeEditor = () => {
     data.editQuery = false;
-  }
-
+  };
 
   return {
     data,
