@@ -10,6 +10,7 @@ import {
 } from "../services/bank-reconciliation-service";
 import { Params } from "../types";
 import moment from "moment";
+import sortBy  from "lodash/sortBy";
 
 export const useBankReconciliation = ({ root }): any => {
   const data = reactive({
@@ -70,11 +71,15 @@ export const useBankReconciliation = ({ root }): any => {
     const date = root.$route.query.date ? root.$route.query.date : null;
     const bankAccountId = root.$route.query.bank_account_id ? root.$route.query.bank_account_id : null;
     const params = { date: date, bank_account_id: bankAccountId };
+    const query = {
+      ...params,
+      asc: "date",
+    };
     data.selectedEntries = [];
     if (date && bankAccountId) {
       data.formData.bank_account_id = parseInt(bankAccountId);
       data.formData.date = date;
-      init(params);
+      init(query);
     }
   };
 
@@ -91,7 +96,11 @@ export const useBankReconciliation = ({ root }): any => {
 
   const init = async (params: Params) => {
     if (params.bank_account_id && params.date) {
-      getEntries(params)
+      const query = {
+        ...params,
+        asc: "date",
+      };
+      getEntries(query)
         .then((response: AxiosResponse) => {
           data.entries = response.data.data;
         })
@@ -188,7 +197,12 @@ export const useBankReconciliation = ({ root }): any => {
       const date = root.$route.query.date ? root.$route.query.date : null;
       const bankAccountId = root.$route.query.bank_account_id ? root.$route.query.bank_account_id : null;
 
-      getEntries(data.formData)
+      const query = {
+        ...data.formData,
+        asc: "date",
+      };
+
+      getEntries(query)
         .then((response: AxiosResponse) => {
           if (response.status === 200) {
             if (data.formData.bank_account_id !== bankAccountId || data.formData.date !== date) {
@@ -333,13 +347,13 @@ export const useBankReconciliation = ({ root }): any => {
   });
 
   const entries = computed(() => {
-    return data.entries.map((entry: any) => {
+    return sortBy(data.entries.map((entry: any) => {
       return {
         ...entry,
         type: getType(entry.transaction_type),
         account: getAccount(entry.transaction_type),
       };
-    });
+    }), "date");
   });
 
   const reconcileEntry = (entry: any) => {
