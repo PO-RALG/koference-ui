@@ -71,10 +71,16 @@ export const useFundAllocation = (): any => {
     getTableData();
   });
 
-  const maxRules = (propertyType: number) => {
+  const maxAllocation = (unallocated: number) => {
     return (v: number) =>
-      (v && v <= propertyType && (v >= propertyType * -1)) ||
-      `Amount must be less or equal to ${propertyType}`;
+      (v && v <= unallocated) ||
+      `Amount must be less or equal to ${unallocated}`;
+  };
+
+  const maxAvailable = (available: number) => {
+    return (v: number) =>
+      (v && v >= available * -1) ||
+      `Amount must be less or equal to ${available}`;
   };
 
   const getTableData = () => {
@@ -169,6 +175,7 @@ export const useFundAllocation = (): any => {
     searchFundingSources,
     searchBudgets,
     newAllocation,
-    maxRules,
+    maxAllocation,
+    maxAvailable,
   };
 };
