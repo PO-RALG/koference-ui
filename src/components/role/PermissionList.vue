@@ -6,6 +6,7 @@
       :items="item[columnName]"
       hide-default-header
       hide-default-footer
+      disable-pagination
       v-model="data.selectedItems"
       @item-selected="selectItem"
       @click:row="rowClick"
@@ -35,6 +36,7 @@ export default defineComponent({
       default: "entries",
     },
   },
+
   setup(props, { emit }) {
     let data = reactive({
       headers: [{ text: "Name", value: "name", align: "start" }],

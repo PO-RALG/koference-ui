@@ -60,6 +60,10 @@ const fetchReportParams = async (id) => {
   return axios.get(END_POINT);
 };
 
+const updateQuery = async (payload) => {
+  return await axios.put(`${API}/${payload.id}/write-query`, payload);
+};
+
 export {
   getReports,
   fetchReportTree,
@@ -70,4 +74,5 @@ export {
   fetchReportParams,
   getParams,
   printReport,
+  updateQuery,
 };

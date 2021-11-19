@@ -45,7 +45,7 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon v-if="item.query" class="mr-2" @click="openCodeEditor(item)" :disabled="cant('edit', 'Report')">
+          <v-icon v-if="can('writeQuery', 'Report') && item.query" class="mr-2" @click="openCodeEditor(item)">
             mdi-code-tags
           </v-icon>
           <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Report')">
@@ -114,7 +114,6 @@
                 </v-col>
               </v-row>
             </v-container>
-            <!--<pre>{{ data.formData }}</pre>-->
           </v-form>
         </ModalBody>
       </template>
@@ -143,19 +142,37 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.editQuery" :width="600">
+    <Modal :modal="data.editQuery" :width="1200">
       <template v-slot:header>
-        <ModalHeader :title="`Edit Query`" />
+        <ModalHeader :showTitleBg="false" :title="reportTitle" />
       </template>
       <template v-slot:body>
         <ModalBody>
-        <div>Editor</div>
+          <AceEditor
+            v-if="data.selectedReport"
+            :fontSize="20"
+            :showPrintMargin="true"
+            :showGutter="true"
+            :highlightActiveLine="true"
+            width="auto%"
+            height="600px"
+            v-model="data.selectedReport.query"
+            mode="sql"
+            theme="github"
+            name="editor"
+            tabindex="0"
+            :onChange="onChange"
+            @keydown.ctrl.83.prevent.stop="saveReportQuery"
+            @keyup.ctrl.83.prevent.stop="saveReportQuery"
+            @keyup.alt.83.prevent.stop="saveReportQuery"
+            :editorProps="{ $blockScrolling: true }"
+          />
         </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="closeCodeEditor">Cancel </v-btn>
-          <v-btn color="green darken-1" text @click="save">Yes</v-btn>
+          <v-btn color="green darken-1" text @click="saveReportQuery">Yes</v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -166,8 +183,17 @@
 import { defineComponent } from "@vue/composition-api";
 import { useNewReport } from "./composables/use-new-report";
 
+import brace from "brace";
+import { Ace as AceEditor, Split as SplitEditor } from "vue2-brace-editor";
+import "brace/mode/sql";
+import "brace/theme/github";
+
 export default defineComponent({
   name: "NewReport",
+  components: {
+    AceEditor,
+    SplitEditor,
+  },
   setup() {
     const {
       data,
@@ -180,6 +206,9 @@ export default defineComponent({
       cancelConfirmDialog,
       openCodeEditor,
       closeCodeEditor,
+      saveReportQuery,
+      reportTitle,
+      onChange,
     } = useNewReport();
 
     return {
@@ -193,6 +222,9 @@ export default defineComponent({
       cancelConfirmDialog,
       openCodeEditor,
       closeCodeEditor,
+      saveReportQuery,
+      reportTitle,
+      onChange,
     };
   },
 });
@@ -201,5 +233,9 @@ export default defineComponent({
 <style scoped>
 .tree-title {
   padding: 0 0 5px 0;
+}
+.ace_content {
+  padding: 20px !important;
+  overflow: hidden;
 }
 </style>
