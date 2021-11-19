@@ -19,16 +19,16 @@ const addBalance = async (payload: any): Promise<AxiosResponse> => {
   return await axios.post(`${API}/add-balance`, payload);
 };
 
-const getReport = async (accountId: number, params: any): Promise<AxiosResponse> => {
-  return await axios.get(`${API}/${accountId}/report`, { params });
+const getReport = async (params: any): Promise<AxiosResponse> => {
+  return await axios.get(`${API}/statement`, { params });
 };
 
 const reconcileEntries = async (payload: any): Promise<AxiosResponse> => {
   return await axios.post(`${API}/reconcile`, payload);
 };
 
-const getEntries = async (payload: any): Promise<AxiosResponse> => {
-  return await axios.get(`${API}/get-entries`, { params: payload });
+const getEntries = async (params: any): Promise<AxiosResponse> => {
+  return await axios.get(`${API}/get-entries`, { params });
 };
 
 const confirmReport = async (payload: any): Promise<AxiosResponse> => {
