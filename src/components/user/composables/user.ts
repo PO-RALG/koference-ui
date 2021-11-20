@@ -1,16 +1,25 @@
 import { reactive, onMounted, set, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import { get, create, update, deleteUser, toggleActive, resetPassword } from "../services/user.service";
+import {
+  get,
+  create,
+  update,
+  deleteUser,
+  toggleActive,
+  resetPassword,
+  addApprovalRoles,
+} from "../services/user.service";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getRoles } from "@/components/role/services/role-services";
 import { get as getLevels } from "@/components/admin-area/level/services/level-services";
+import { get as getApprovalRoles } from "@/components/approval/role/services/approval-role-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
 import { User } from "../types/User";
 
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 const { useState } = createNamespacedHelpers("Auth");
 
-export const useUser = (): any => {
+export const useUser = (type?: string): any => {
   const { currentUser } = useState(["currentUser"]);
   const dataItems: Array<User> = [];
   const userData = {} as User;
@@ -21,6 +30,8 @@ export const useUser = (): any => {
     status: "",
     isOpen: false,
     selectedRoles: [],
+    approvalRoles: [],
+    filteredRoles: [],
     levels: [],
     source: [],
     user: null,
@@ -48,6 +59,12 @@ export const useUser = (): any => {
       { text: "Activation", value: "activations", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
+    approval_header: [
+      { text: "Name", align: "start", sortable: false, value: "fullName" },
+      { text: "Email", value: "email" },
+      { text: "Approval Roles", value: "displayRoles" },
+      { text: "Actions", value: "actions", sortable: false },
+    ],
     modal: false,
     items: dataItems,
     formData: userData,
@@ -60,19 +77,38 @@ export const useUser = (): any => {
       (v: string) => !!v || "Name is required",
       (v: string) => (v && v.length <= 10) || "Name must be less than 10 characters",
     ],
-    requiredRules: [
-      (v: string) => !!v || "Field is required",
-    ],
+    requiredRules: [(v: string) => !!v || "Field is required"],
     email: "",
     emailRules: [
       (v: string) => !!v || "E-mail is required",
       (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid",
     ],
+    showApprovalDialog: false,
+    payload: {
+      user_id: null,
+      role_id: null,
+      entries: [],
+    },
+    search: { can_approve: false },
   });
 
   onMounted(() => {
-    initialize();
+    if (type === "APPROVAL") {
+      initializeApproval();
+    } else {
+      initialize();
+    }
   });
+
+  const initializeApproval = () => {
+    get({ per_page: 10, search: { can_approve: true } }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+    loadApprovalRoles();
+  };
 
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
@@ -84,16 +120,6 @@ export const useUser = (): any => {
     getNodes();
     loadRoles({});
     data.currentUser = currentUser;
-    data.source = [
-      { label: "WHITE", code: "#FFFFFF" },
-      { label: "SILVER", code: "#C0C0C0" },
-      { label: "GRAY", code: "#808080" },
-    ];
-
-    data.destination = [
-      { label: "BLACK", code: "#000000" },
-      { label: "RED", code: "#FF0000" },
-    ];
   };
 
   const cancelDialog = () => {
@@ -117,6 +143,26 @@ export const useUser = (): any => {
       fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
       displayRoles: user.roles.map((r: any) => r.name),
     }));
+  });
+
+  const approvalUsers = computed(() => {
+    return data.items.map((user: any) => ({
+      ...user,
+      fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
+      displayRoles: user.approval_roles.map((r: any) => r.name),
+    })).filter((user: any) => {
+      return user.can_approve === true;
+    });
+  });
+
+  const usersToAssign = computed(() => {
+    return data.items.map((user: any) => ({
+      ...user,
+      fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
+      displayRoles: user.roles.map((r: any) => r.name),
+    })).filter((user) => {
+      return user.can_approve === false;
+    })
   });
 
   const selectedRoles = computed(() => {
@@ -321,9 +367,47 @@ export const useUser = (): any => {
     data.show = true;
   };
 
+  const openApprovalRoleDialog = (user) => {
+    data.user = user;
+    data.showApprovalDialog = true;
+  };
+
+  const loadApprovalRoles = () => {
+    getApprovalRoles({}).then((response: AxiosResponse) => {
+      data.approvalRoles = response.data.data.data;
+    });
+  };
+
+  const onUserSelection = (user) => {
+    data.payload.user_id = user.id;
+    const userLevel = user.location.level_id;
+    data.filteredRoles = data.approvalRoles.filter((r: any) => {
+      return r.level_id === userLevel;
+    });
+  };
+
+  const addApprovalRole = (type: string) => {
+    if (type === "CREATE") {
+      data.payload.entries.push(data.payload.role_id);
+      delete data.payload.role_id;
+    } else {
+      data.payload = { user_id: data.item.id, entries: [], role_id: null};
+      delete data.payload.role_id;
+      closeConfirmDialog();
+    }
+
+    addApprovalRoles(data.payload).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        initializeApproval();
+        data.modal = false;
+      }
+    });
+  };
+
   return {
     data,
     openActivationDialog,
+    openApprovalRoleDialog,
 
     openDialog,
     toggleStatus,
@@ -349,5 +433,9 @@ export const useUser = (): any => {
     deleteItem,
     status,
     resetPasswd,
+    approvalUsers,
+    usersToAssign,
+    onUserSelection,
+    addApprovalRole,
   };
 };

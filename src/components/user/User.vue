@@ -190,6 +190,51 @@
       :isOpen="data.show"
       :title="`${data.status} User`"
     />
+    <Modal v-if="data.showApprovalDialog" :modal="data.showApprovalDialog" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="'Add Approval Role'" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-form ref="form">
+            <v-container>
+              <v-row>
+                <v-col cols="12" lg="12" md="12" sm="12">
+                  <v-text-field label="Name" v-model="data.user.fullName" required disabled> </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="12" md="12" sm="12">
+                  <fetcher :api="'/api/v1/approval-roles'">
+                    <div slot-scope="{ json: roles, loading }">
+                      <div v-if="loading">Loading...</div>
+                      <v-autocomplete
+                        v-else
+                        v-model="data.user.approval_roles"
+                        label="Select Approval Role"
+                        :items="roles"
+                        :item-text="'name'"
+                        item-value="id"
+                        return-object
+                        outlined
+                        small
+                      >
+                      </v-autocomplete>
+                    </div>
+                  </fetcher>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter class="mt-n8">
+          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="save">
+            {{ data.modalTitle }}
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -201,6 +246,7 @@ export default defineComponent({
   setup() {
     const {
       data,
+      openApprovalRoleDialog,
 
       openDialog,
       cancelDialog,
@@ -262,6 +308,7 @@ export default defineComponent({
       toggleStatus,
       status,
       resetPasswd,
+      openApprovalRoleDialog,
     };
   },
 });
