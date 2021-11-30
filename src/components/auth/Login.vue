@@ -1,6 +1,18 @@
 <template>
   <v-app justify-center class="grey lighten-3 pa-2 text-center main-body" fluid fill-height>
     <v-layout justify-center align-center class="body_bg">
+      <v-app-bar app color="primary" class="elevation-0">
+        <v-toolbar-title class="title-header d-none d-sm-flex white--text mt-n4 font-weight-bold">FFARS</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <div class="text-center">
+            <v-btn x-small class="mx-2 d-none d-sm-flex mt-n4" fab outlined dark color="white">
+              <a href="http://196.192.73.13/docs" target="_blank">
+                <v-icon small color="white">mdi-help</v-icon>
+              </a>
+            </v-btn>
+        </div>
+      </v-app-bar>
+
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
           <v-col cols="8" sm="8" md="7">
@@ -40,17 +52,18 @@
                         outlined
                         class="mr-3 ml-3"
                       ></v-text-field>
-                    <v-card-actions class="mr-1 ml-3 mt-n4">
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="primary"
-                        class="white--text"
-                        type="submit"
-                        :disabled="!data.valid || data.loading"
-                        :loading="data.loading">
-                        <v-icon left>mdi-login</v-icon>LOGIN
-                      </v-btn>
-                    </v-card-actions>
+                      <v-card-actions class="mr-1 ml-3 mt-n4">
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="primary"
+                          class="white--text"
+                          type="submit"
+                          :disabled="!data.valid || data.loading"
+                          :loading="data.loading"
+                        >
+                          <v-icon left>mdi-login</v-icon>LOGIN
+                        </v-btn>
+                      </v-card-actions>
                     </v-form>
                   </v-card-text>
                 </v-col>
