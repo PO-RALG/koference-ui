@@ -9880,6 +9880,11 @@ vuetify-loader@^1.7.0:
     file-loader "^6.2.0"
     loader-utils "^2.0.0"
 
+vuetify-mask@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/vuetify-mask/-/vuetify-mask-1.1.2.tgz#f00901d07b2bcc92bb1791a080a8483d27660f31"
+  integrity sha512-VDZscPWGrharoLgBpVIup1KPDZYACN0x4vwIMWst/7cZxDb4gmfQhPxYDcRM1hYw3/F+da4augcIKCP4SYlPLQ==
+
 vuetify@^2.4.0:
   version "2.5.8"
   resolved "https://registry.npmjs.org/vuetify/-/vuetify-2.5.8.tgz"

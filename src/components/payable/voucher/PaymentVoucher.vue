@@ -3,11 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        color="primary"
-        @click="openDialog"
-        :disabled="cant('create', 'Voucher')"
-      >
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Voucher')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -39,12 +35,7 @@
         </template>
         <template v-slot:[`item.reference_no`]="{ item }">
           <span>
-            <v-list-item
-              class="text-link"
-              exact
-              light
-              @click="previewPaymentVoucher(item.id)"
-            >
+            <v-list-item class="text-link" exact light @click="previewPaymentVoucher(item.id)">
               {{ item.reference_no }}
             </v-list-item>
           </span>
@@ -59,9 +50,7 @@
           {{ item.amount_paid | toCurrency() }}
         </template>
         <template v-slot:[`item.full_paid`]="{ item }">
-          <v-icon v-if="fullPaid(item)" medium color="success"
-            >mdi-check</v-icon
-          >
+          <v-icon v-if="fullPaid(item)" medium color="success">mdi-check</v-icon>
           <v-icon v-else medium color="warning">mdi-close</v-icon>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
@@ -80,11 +69,7 @@
           </v-tooltip>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -96,15 +81,11 @@
         <ModalBody v-if="data.formData">
           <v-form v-model="data.valid">
             <v-container>
-              <v-row class="pa-2 pb-5">
-                <v-col cols="12" md="12">
-                  <DatePicker
-                    :label="'Date'"
-                    v-model="data.formData.date"
-                    required
-                  />
-                </v-col>
+              <v-row class="pt-5 pl-5 pr-5">
                 <v-col cols="12" md="6" sm="12">
+                  <DatePicker :label="'Date'" v-model="data.formData.date" required />
+                </v-col>
+                <v-col cols="12" md="6" class="mt-n3">
                   <v-select
                     v-model="data.formData.supplier_id"
                     :items="data.suppliers"
@@ -127,95 +108,80 @@
                     </template>
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
-                  <v-text-field
+              </v-row>
+              <v-row class="pl-5 pr-5 pb-n4">
+                <v-col cols="12" md="12" sm="12">
+                  <v-textarea
                     v-model="data.formData.description"
+                    :min-height="40"
+                    :auto-grow="true"
+                    outlined
                     label="Description"
-                  ></v-text-field>
+                  >
+                  </v-textarea>
                 </v-col>
               </v-row>
+              <v-row class="pl-5 pr-5 mt-n8">
+                <v-col md="4" sm="12" cols="12">
+                  <v-select
+                    :items="data.activities"
+                    item-text="name"
+                    label="Select Activity"
+                    @change="searchFundingSource($event)"
+                    required
+                  >
+                    <template v-slot:selection="{ item }">
+                      {{ item.description }} ({{ item.sub_budget_class.description }})
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.description }} ({{ item.sub_budget_class.description }})
+                    </template>
+                    <template v-slot:prepend-item>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-text-field
+                            v-model="data.searchTerm"
+                            placeholder="Search"
+                            @input="searchActivities"
+                          ></v-text-field>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-divider></v-divider>
+                    </template>
+                  </v-select>
+                </v-col>
+                <v-col md="4" sm="12" cols="12">
+                  <v-select
+                    :items="data.fundingSources"
+                    item-text="code"
+                    label="Select Funding Sources"
+                    @change="searchGfsCodes($event)"
+                    return-object
+                  >
+                    <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }} </template>
+                    <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }} </template>
+                  </v-select>
+                </v-col>
+                <v-col md="4" sm="12" cols="12">
+                  <v-select
+                    :items="data.gfsCodes"
+                    item-value="code"
+                    item-text="name"
+                    label="Select GFS Code"
+                    @change="filterGfsCodes($event)"
+                  >
+                    <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.name }} </template>
+                    <template v-slot:item="{ item }"> {{ item.code }} - {{ item.name }} </template>
+                  </v-select>
+                </v-col>
+              </v-row>
+
               <template>
                 <v-simple-table>
                   <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <td>
-                          <v-row>
-                            <v-col md="6" sm="12" cols="12">
-                              <v-select
-                                :items="data.fundingSources"
-                                item-text="code"
-                                label="Select Funding Sources"
-                                @change="searchGfsCodes($event)"
-                                return-object
-                              >
-                                <template v-slot:selection="{ item }">
-                                  {{ item.code }} - {{ item.description }}
-                                </template>
-                                <template v-slot:item="{ item }">
-                                  {{ item.code }} - {{ item.description }}
-                                </template>
-                              </v-select>
-                            </v-col>
-                            <v-col md="6" sm="12" cols="12">
-                              <v-select
-                                :items="data.gfsCodes"
-                                item-value="code"
-                                item-text="name"
-                                label="Select GFS Code"
-                                @change="filterGfsCodes($event)"
-                              >
-                                <template v-slot:selection="{ item }">
-                                  {{ item.code }} - {{ item.name }}
-                                </template>
-                                <template v-slot:item="{ item }">
-                                  {{ item.code }} - {{ item.name }}
-                                </template>
-                              </v-select>
-                            </v-col>
-                            <v-col md="12" sm="12" cols="12">
-                              <v-select
-                                :items="data.activities"
-                                item-text="name"
-                                label="Select Activity"
-                                @change="searchFundingSource($event)"
-                                required
-                              >
-                                <template v-slot:selection="{ item }">
-                                  {{ item.description }} ({{
-                                    item.sub_budget_class.description
-                                  }})
-                                </template>
-                                <template v-slot:item="{ item }">
-                                  {{ item.description }} ({{
-                                    item.sub_budget_class.description
-                                  }})
-                                </template>
-                                <template v-slot:prepend-item>
-                                  <v-list-item>
-                                    <v-list-item-content>
-                                      <v-text-field
-                                        v-model="data.searchTerm"
-                                        placeholder="Search"
-                                        @input="searchActivities"
-                                      ></v-text-field>
-                                    </v-list-item-content>
-                                  </v-list-item>
-                                  <v-divider></v-divider>
-                                </template>
-                              </v-select>
-                            </v-col>
-                          </v-row>
-                        </td>
-                      </tr>
-                    </thead>
                     <tbody>
                       <tr v-for="(account, i) in data.accounts" :key="i">
-                        <td
-                          class="py-2"
-                          @click="addPayable(account)"
-                          colspan="2"
-                        >
+                        <td class="py-2" @click="addPayable(account)" colspan="2">
                           <span>{{ account.code }}</span>
                           <br />
                           <span style="color: teal">
@@ -223,10 +189,7 @@
                           </span>
                           <br />
                           <span>
-                            {{
-                              (account.allocation - account.totalExpenditure)
-                                | toCurrency()
-                            }}
+                            {{ (account.allocation - account.totalExpenditure) | toCurrency() }}
                           </span>
                         </td>
                       </tr>
@@ -234,30 +197,17 @@
                   </template>
                 </v-simple-table>
 
-                <v-col
-                  cols="12"
-                  md="12"
-                  class="pb-3 pt-7 data-table"
-                  v-if="data.payables.length"
-                >
-                  <v-data-table
-                    :headers="payableHeader"
-                    disable-pagination
-                    hide-default-footer
-                  >
+                <v-col cols="12" md="12" class="pb-3 pt-7 data-table" v-if="data.payables.length">
+                  <v-data-table :headers="payableHeader" disable-pagination hide-default-footer>
                     <template v-slot:body>
                       <tbody>
                         <tr v-for="(item, i) in data.payables" :key="i">
                           <td class="pt-5 pb-2">
                             <span class="text-lg-body-1">{{ item.code }}</span>
                             <br />
-                            <span style="color: teal">{{
-                              item.description
-                            }}</span>
+                            <span style="color: teal">{{ item.description }}</span>
                             <br />
-                            <span class="text--primary">{{
-                              item.balance | toCurrency()
-                            }}</span>
+                            <span class="text--primary">{{ item.balance | toCurrency() }}</span>
                           </td>
                           <td class="pt-5 pb-2">
                             <v-text-field
@@ -272,9 +222,7 @@
                           </td>
                           <td>
                             <v-btn text @click="removePayable(i)">
-                              <v-icon color="red darken-1"
-                                >mdi-minus-circle</v-icon
-                              >
+                              <v-icon color="red darken-1">mdi-minus-circle</v-icon>
                             </v-btn>
                           </td>
                         </tr>
@@ -289,15 +237,8 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelDialog">
-            Cancel
-          </v-btn>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="save"
-            :disabled="!data.valid"
-          >
+          <v-btn color="red darken-1" text @click="cancelDialog"> Cancel </v-btn>
+          <v-btn color="green darken-1" text @click="save" :disabled="!data.valid">
             {{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -313,9 +254,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
-            Cancel
-          </v-btn>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog"> Cancel </v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -336,14 +275,8 @@
                 <br />
                 {{ data.pvDetails.council ? data.pvDetails.council.name : "" }}
                 <br />
-                {{
-                  data.pvDetails.facility ? data.pvDetails.facility.name : ""
-                }}
-                {{
-                  data.pvDetails.facility
-                    ? data.pvDetails.facility.facility_type.name
-                    : ""
-                }}
+                {{ data.pvDetails.facility ? data.pvDetails.facility.name : "" }}
+                {{ data.pvDetails.facility ? data.pvDetails.facility.facility_type.name : "" }}
                 <br />
               </div>
             </v-col>
@@ -368,26 +301,10 @@
                             <br />
                           </td>
                           <td>
-                            {{
-                              data.pvDetails.supplier
-                                ? data.pvDetails.supplier.name
-                                : ""
-                            }}<br />
-                            {{
-                              data.pvDetails.supplier
-                                ? data.pvDetails.supplier.phone
-                                : ""
-                            }}<br />
-                            {{
-                              data.pvDetails.supplier
-                                ? data.pvDetails.supplier.address
-                                : ""
-                            }}<br />
-                            {{
-                              data.pvDetails.supplier
-                                ? data.pvDetails.supplier.tin
-                                : ""
-                            }}<br />
+                            {{ data.pvDetails.supplier ? data.pvDetails.supplier.name : "" }}<br />
+                            {{ data.pvDetails.supplier ? data.pvDetails.supplier.phone : "" }}<br />
+                            {{ data.pvDetails.supplier ? data.pvDetails.supplier.address : "" }}<br />
+                            {{ data.pvDetails.supplier ? data.pvDetails.supplier.tin : "" }}<br />
                           </td>
                         </tr>
                       </table>
@@ -400,14 +317,8 @@
                             <span>Date: </span><br /><br /><br />
                           </td>
                           <td>
-                            <span class="font-weight-bold">
-                              {{ data.pvDetails.reference_no }} </span
-                            ><br />
-                            <span class="font-weight-bold">
-                              {{
-                                data.pvDetails.date | format("DD/MM/YYYY")
-                              }}</span
-                            >
+                            <span class="font-weight-bold"> {{ data.pvDetails.reference_no }} </span><br />
+                            <span class="font-weight-bold"> {{ data.pvDetails.date | format("DD/MM/YYYY") }}</span>
                             <br /><br /><br />
                           </td>
                         </tr>
@@ -424,17 +335,10 @@
               </table>
             </v-col>
             <v-col class="">
-              <v-data-table
-                :headers="payablePrintHeader"
-                disable-pagination
-                hide-default-footer
-              >
+              <v-data-table :headers="payablePrintHeader" disable-pagination hide-default-footer>
                 <template v-slot:body>
                   <tbody>
-                    <tr
-                      v-for="(payable, i) in data.pvDetails.payables"
-                      :key="i"
-                    >
+                    <tr v-for="(payable, i) in data.pvDetails.payables" :key="i">
                       <td>{{ payable.gl_account }}</td>
                       <td>{{ payable.funding_source.description }}</td>
                       <td>{{ payable.description }}</td>
@@ -456,12 +360,8 @@
               <table width="100%">
                 <tbody>
                   <tr>
-                    <th class="text-left">
-                      Facility Financial Accounting and Reporting System
-                    </th>
-                    <th class="text-right">
-                      Printed on: {{ data.pvDetails.printDate }}
-                    </th>
+                    <th class="text-left">Facility Financial Accounting and Reporting System</th>
+                    <th class="text-right">Printed on: {{ data.pvDetails.printDate }}</th>
                   </tr>
                 </tbody>
               </table>
@@ -471,20 +371,8 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn
-            class="pb-5"
-            color="red darken-1"
-            text
-            @click="cancelPreviewDialog"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            class="pb-5"
-            color="green darken-1"
-            text
-            @click="printPaymentVoucher(data.pvDetails.id)"
-          >
+          <v-btn class="pb-5" color="red darken-1" text @click="cancelPreviewDialog"> Cancel </v-btn>
+          <v-btn class="pb-5" color="green darken-1" text @click="printPaymentVoucher(data.pvDetails.id)">
             Print
           </v-btn>
         </ModalFooter>

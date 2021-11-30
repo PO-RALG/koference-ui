@@ -108,8 +108,7 @@
                         @change="setCustomer($event)"
                         return-object
                         outlined
-                        small
-                      >
+                        small>
                       </v-autocomplete>
                     </div>
                   </fetcher>
