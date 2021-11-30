@@ -211,7 +211,7 @@
                 @click="deleteInvoiceItemdefinition(data.invoiceData.id)"
                 color="warning darken-1"
                 text
-                ><v-icon>mdi-arrow-u-left-top-bold</v-icon> Cancel</v-btn
+                ><v-icon>mdi-arrow-u-left-top-bold</v-icon>Reverse</v-btn
               >
               <v-btn color="red darken-1" text @click="cancelInvoiceDialog">Close</v-btn>
             </td>
