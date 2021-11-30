@@ -113,7 +113,7 @@
                 <v-col cols="12" md="12" sm="12">
                   <v-textarea
                     v-model="data.formData.description"
-                    :min-height="80"
+                    :min-height="40"
                     :auto-grow="true"
                     outlined
                     label="Description"
