@@ -91,10 +91,11 @@
                 <v-col cols="12" md="12" class="mb-n8 mt-n4">
                   <v-textarea
                     v-model="data.formData.description"
-                    :height="80"
-                    auto-grow
+                    :min-height="80"
+                    :auto-grow="true"
                     outlined
-                    label="Description">
+                    label="Description"
+                  >
                   </v-textarea>
                 </v-col>
                 <v-col class="pt-2" cols="12" md="12">
