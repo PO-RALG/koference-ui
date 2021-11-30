@@ -46,6 +46,10 @@
           {{ item.date | format() }}
         </template>
 
+        <template v-slot:[`item.totalAmt`]="{ item }">
+          {{ item.totalAmt | toCurrency() }}
+        </template>
+
         <template v-slot:[`item.received_amount`]="{ item }">
           <span>
             {{ item.newData.items }}
@@ -108,7 +112,8 @@
                         @change="setCustomer($event)"
                         return-object
                         outlined
-                        small>
+                        small
+                      >
                       </v-autocomplete>
                     </div>
                   </fetcher>

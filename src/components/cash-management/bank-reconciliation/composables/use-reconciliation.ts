@@ -69,7 +69,7 @@ export const useBankReconciliation = ({ root }): any => {
   const loadComponent = async () => {
     const date = root.$route.query.date ? root.$route.query.date : null;
     const bankAccountId = root.$route.query.bank_account_id ? root.$route.query.bank_account_id : null;
-    const params = { date: date, bank_account_id: bankAccountId };
+    const params = { date: date, bank_account_id: bankAccountId, per_page: 30 };
     const query = {
       ...params,
     };

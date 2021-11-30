@@ -92,7 +92,7 @@
           <v-form v-model="data.valid">
             <v-container>
               <v-row class="pa-2">
-                <v-col cols="12" :md="data.showDate ? '6': '12'" sm="12">
+                <v-col cols="12" :md="data.showDate ? '6' : '12'" sm="12">
                   <v-select
                     :outlined="!data.showDate"
                     v-model="data.formData.voucher_id"
@@ -109,7 +109,9 @@
                     :label="'Date'"
                     v-model="data.formData.payment_date"
                     :max="data.maxDate"
-                    required />
+                    :min="data.minDate"
+                    required
+                  />
                 </v-col>
                 <v-col cols="12" md="6" sm="12">
                   <v-select
@@ -227,9 +229,7 @@
                           <span>Payment #: </span>
                         </td>
                         <td>
-                          <span class="font-weight-bold">
-                            {{ data.pvDetails.voucher_number }} </span
-                          ><br />
+                          <span class="font-weight-bold"> {{ data.pvDetails.voucher_number }} </span><br />
                           <span class="font-weight-bold">
                             {{ data.pvDetails.reference_no }}
                           </span>

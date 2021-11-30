@@ -93,7 +93,7 @@ export const useReceipt = (): any => {
     selectedInvoice: null,
     modalTitle: "",
     maxDate: moment(new Date()).format("YYYY-MM-DD"),
-    minDate: moment(new Date()).format("YYYY-MM-DD"),
+    minDate: null,
     headers: [
       {
         text: "Receipt Number",
@@ -107,7 +107,7 @@ export const useReceipt = (): any => {
         text: "Amount",
         align: "start",
         sortable: false,
-        value: "amount",
+        value: "totalAmt",
       },
       {
         text: "From",
@@ -327,6 +327,7 @@ export const useReceipt = (): any => {
           ...data,
           index: ++index,
           newData: data,
+          totalAmt: data.cash_book.dr_amount,
           bankAccount: data.bank_account.bank + data.bank_account.name + " (" + data.bank_account.number + ")",
         }))
       : [];
