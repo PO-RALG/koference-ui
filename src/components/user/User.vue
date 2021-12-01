@@ -10,7 +10,7 @@
     </v-card-actions>
 
     <v-card>
-      <v-data-table :headers="data.headers" :items="users" hide-default-footer class="elevation-1">
+      <v-data-table :headers="data.headers" :items="users" hide-default-footer disable-pagination class="elevation-1">
         <template v-slot:[`item.displayRoles`]="{ item }">
           <span>{{ item.displayRoles }}</span>
         </template>
