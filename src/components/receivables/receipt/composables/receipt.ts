@@ -185,6 +185,22 @@ export const useReceipt = (): any => {
   });
 
   const init = () => {
+    data.receipt = {
+      id: null,
+      customer_id: null,
+      invoice_id: null,
+      date: null,
+      bank_reference_number: null,
+      description: null,
+      bank_account_id: null,
+      items: [
+        {
+          funding_source_code: null,
+          gl_account_id: null,
+          amount: null,
+        },
+      ],
+    };
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } = response.data.data;
@@ -324,12 +340,12 @@ export const useReceipt = (): any => {
   const newreceiptItem: any = computed(() => {
     return data.items
       ? data.items.map((data, index) => ({
-          ...data,
-          index: ++index,
-          newData: data,
-          totalAmt: data.cash_book.dr_amount,
-          bankAccount: data.bank_account.bank + data.bank_account.name + " (" + data.bank_account.number + ")",
-        }))
+        ...data,
+        index: ++index,
+        newData: data,
+        totalAmt: data.invoice_id? data.cash_book.dr_amount : data.amount,
+        bankAccount: data.bank_account.bank + data.bank_account.name + " (" + data.bank_account.number + ")",
+      }))
       : [];
   });
 
