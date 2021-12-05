@@ -43,7 +43,7 @@
         </template>
 
         <template v-slot:[`item.date`]="{ item }">
-          {{ item.date | format() }}
+          {{ item.date | format("DD/MM/YYYY") }}
         </template>
 
         <template v-slot:[`item.totalAmt`]="{ item }">
