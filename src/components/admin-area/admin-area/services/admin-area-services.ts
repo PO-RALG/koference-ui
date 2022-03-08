@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from 'axios';
 const API = "/api/v1/admin-areas";
 
 const get = async (payload: any) => {
