@@ -215,7 +215,7 @@ export const useReceipt = (): any => {
     });
   };
 
-  const searchCategory = (categoryName: Object) => {
+  const searchCategory = (categoryName: any) => {
     if (categoryName != null) {
       search({ receipt_number: categoryName.receipt_number }).then((response: AxiosResponse) => {
         data.items = response.data.data.data;
@@ -245,7 +245,7 @@ export const useReceipt = (): any => {
   };
 
   const accounts = computed(() => {
-    return data.bankaccounts.map((account: Object<any>) => {
+    return data.bankaccounts.map((account: any) => {
       account.fullName = `Account Number -${account.number}  ${account.bank} - ${account.branch}`;
       return account;
     });
@@ -264,12 +264,12 @@ export const useReceipt = (): any => {
   };
 
   const geGlAccountId = (account: any): string => {
-    const ac = data.glAccounts.find((glAccount: Object<any>) => glAccount.code === account);
+    const ac = data.glAccounts.find((glAccount: any) => glAccount.code === account);
     return ac.id;
   };
 
   const getFundingSource = (id: number): number => {
-    const fs = data.fundingSources.find((fs: Object<any>) => fs.id === id);
+    const fs = data.fundingSources.find((fs: any) => fs.id === id);
     return fs.code;
   };
 
@@ -306,7 +306,7 @@ export const useReceipt = (): any => {
     });
   };
 
-  const openDialog = (formData?: Object<any>) => {
+  const openDialog = (formData?: any) => {
     data.modalTitle = "Create";
     data.modal = !data.modal;
 
