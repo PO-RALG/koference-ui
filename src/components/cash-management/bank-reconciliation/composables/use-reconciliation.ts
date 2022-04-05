@@ -68,7 +68,9 @@ export const useBankReconciliation = ({ root }): any => {
 
   const loadComponent = async () => {
     const date = root.$route.query.date ? root.$route.query.date : null;
-    const bankAccountId = root.$route.query.bank_account_id ? root.$route.query.bank_account_id : null;
+    const bankAccountId = root.$route.query.bank_account_id
+      ? root.$route.query.bank_account_id
+      : null;
     const params = { date: date, bank_account_id: bankAccountId };
     const query = {
       ...params,
@@ -100,22 +102,32 @@ export const useBankReconciliation = ({ root }): any => {
       };
       getEntries(query)
         .then((response: AxiosResponse) => {
-          console.log("response: ", response);
-          const { from, to, total, current_page, per_page, last_page } = response.data.data;
-          data.response = { from, to, total, current_page, per_page, last_page };
+          ////: ", response);
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
           data.entries = response.data.data.data;
         })
         .then(() => {
-          getReport(params.bank_account_id, { date: params.date }).then((response: AxiosResponse) => {
-            if (response.data.data.balance_required) {
-              openDialog("BALANCE");
-            } else {
-              if (response.data.data.diff === 0) {
-                showConfirmDialog();
+          getReport(params.bank_account_id, { date: params.date }).then(
+            (response: AxiosResponse) => {
+              if (response.data.data.balance_required) {
+                openDialog("BALANCE");
+              } else {
+                if (response.data.data.diff === 0) {
+                  showConfirmDialog();
+                }
+                data.report = response.data.data;
               }
-              data.report = response.data.data;
             }
-          });
+          );
         });
     } else {
       data.entries = [];
@@ -154,7 +166,9 @@ export const useBankReconciliation = ({ root }): any => {
 
   const openDialog = async (type: string) => {
     const date = root.$route.query.date ? root.$route.query.date : null;
-    const bankAccountId = root.$route.query.bank_account_id ? root.$route.query.bank_account_id : null;
+    const bankAccountId = root.$route.query.bank_account_id
+      ? root.$route.query.bank_account_id
+      : null;
     data.formData.bank_account_id = parseInt(bankAccountId);
     data.formData.date = date;
     data.formData.balance = null;
@@ -205,7 +219,9 @@ export const useBankReconciliation = ({ root }): any => {
       delete data.formData.balance;
 
       const date = root.$route.query.date ? root.$route.query.date : null;
-      const bankAccountId = root.$route.query.bank_account_id ? root.$route.query.bank_account_id : null;
+      const bankAccountId = root.$route.query.bank_account_id
+        ? root.$route.query.bank_account_id
+        : null;
 
       const query = {
         ...data.formData,
@@ -214,7 +230,10 @@ export const useBankReconciliation = ({ root }): any => {
       getEntries(query)
         .then((response: AxiosResponse) => {
           if (response.status === 200) {
-            if (data.formData.bank_account_id !== bankAccountId || data.formData.date !== date) {
+            if (
+              data.formData.bank_account_id !== bankAccountId ||
+              data.formData.date !== date
+            ) {
               root.$router.replace({
                 query: {
                   date: data.formData.date,
@@ -224,13 +243,23 @@ export const useBankReconciliation = ({ root }): any => {
             } else {
               return null;
             }
-            const { from, to, total, current_page, per_page, last_page } = response.data.data;
-            data.response = { from, to, total, current_page, per_page, last_page };
+            const { from, to, total, current_page, per_page, last_page } =
+              response.data.data;
+            data.response = {
+              from,
+              to,
+              total,
+              current_page,
+              per_page,
+              last_page,
+            };
             data.entries = response.data.data.data;
           }
         })
         .then(() => {
-          getReport(data.formData.bank_account_id, { date: data.formData.date }).then((response: AxiosResponse) => {
+          getReport(data.formData.bank_account_id, {
+            date: data.formData.date,
+          }).then((response: AxiosResponse) => {
             if (response.data.data.balance_required) {
               console.log("report", response.data.data);
               data.dialog = !data.dialog;
@@ -352,7 +381,9 @@ export const useBankReconciliation = ({ root }): any => {
   const title = computed(() => {
     const reportUnlocked = data.report ? data.report.confirmed : false;
     const title = reportUnlocked
-      ? `Bank Reconciliation locked as of ${moment(data.report.month).format("YYYY-MM-DD")}`
+      ? `Bank Reconciliation locked as of ${moment(data.report.month).format(
+          "YYYY-MM-DD"
+        )}`
       : data.title;
     return title;
   });

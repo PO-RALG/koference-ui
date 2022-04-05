@@ -63,7 +63,7 @@ export const useCustomer = (): any => {
 
     if (categoryName != null) {
       search({ name: categoryName.name }).then((response: any) => {
-        console.log("response data", response.data.data);
+        //// data", response.data.data);
         data.items = response.data.data;
       });
     } else {

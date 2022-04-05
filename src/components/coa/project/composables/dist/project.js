@@ -1,23 +1,26 @@
 "use strict";
 exports.__esModule = true;
-exports.useBankAccountType = void 0;
+exports.useProject = void 0;
 var composition_api_1 = require("@vue/composition-api");
-var bank_account_types_service_1 = require("../services/bank-account-types.service");
-var gfs_code_1 = require("@/components/coa/gfs-code/composables/gfs-code");
-exports.useBankAccountType = function () {
+var project_service_1 = require("../services/project.service");
+exports.useProject = function () {
     var dataItems = [];
-    var customerData;
-    var getGfsCodes = gfs_code_1.useGfsCode().getGfsCodes;
+    var financialYearData;
     var data = composition_api_1.reactive({
-        title: "Manage Bank Account Types",
+        title: "Manage projects",
         modalTitle: "",
         headers: [
-            { text: "Name", align: "start", sortable: false, value: "name" },
             {
-                text: "Gfs code",
+                text: "Project Code",
                 align: "start",
                 sortable: false,
-                value: "gfs_code.name"
+                value: "code"
+            },
+            {
+                text: "Description",
+                align: "start",
+                sortable: false,
+                value: "description"
             },
             { text: "Actions", value: "actions", sortable: false },
         ],
@@ -25,28 +28,32 @@ exports.useBankAccountType = function () {
         deletemodal: false,
         items: dataItems,
         itemsToFilter: [],
-        formData: customerData,
+        formData: financialYearData,
         rows: ["10", "20", "50", "100"],
         itemtodelete: "",
-        response: {},
-        gfscodes: []
+        response: {}
     });
     composition_api_1.onMounted(function () {
-        initialize();
-    });
-    var initialize = function () {
-        bank_account_types_service_1.get({ per_page: 10 }).then(function (response) {
+        project_service_1.get({ per_page: 10 }).then(function (response) {
             var _a = response.data.data, from = _a.from, to = _a.to, total = _a.total, current_page = _a.current_page, per_page = _a.per_page, last_page = _a.last_page;
-            data.response = { from: from, to: to, total: total, current_page: current_page, per_page: per_page, last_page: last_page };
+            data.response = {
+                from: from,
+                to: to,
+                total: total,
+                current_page: current_page,
+                per_page: per_page,
+                last_page: last_page
+            };
             data.items = response.data.data.data;
             data.itemsToFilter = response.data.data.data;
         });
-    };
+    });
     var searchCategory = function (categoryName) {
+        console.log("argument", categoryName);
         if (categoryName != null) {
-            bank_account_types_service_1.search({ name: categoryName.name }).then(function (response) {
-                //// data", response.data.data);
-                data.items = response.data.data;
+            project_service_1.search({ code: categoryName.code }).then(function (response) {
+                //// data", response);
+                data.items = response.data.data.data;
             });
         }
         else {
@@ -54,15 +61,21 @@ exports.useBankAccountType = function () {
         }
     };
     var reloadData = function () {
-        bank_account_types_service_1.get({ per_page: 10 }).then(function (response) {
+        project_service_1.get({ per_page: 10 }).then(function (response) {
             var _a = response.data.data, from = _a.from, to = _a.to, total = _a.total, current_page = _a.current_page, per_page = _a.per_page, last_page = _a.last_page;
             data.response = { from: from, to: to, total: total, current_page: current_page, per_page: per_page, last_page: last_page };
             data.items = response.data.data.data;
         });
     };
-    var deleteBankAccountType = function (deleteId) {
+    var deleteProject = function (deleteId) {
         data.deletemodal = !data.modal;
         data.itemtodelete = deleteId;
+        // console.log("delete year", data);
+    };
+    var getProject = function () {
+        project_service_1.get(data).then(function (response) {
+            console.log("data", response.data);
+        });
     };
     var cancelDialog = function () {
         data.formData = {};
@@ -73,23 +86,20 @@ exports.useBankAccountType = function () {
         data.deletemodal = false;
     };
     var remove = function () {
-        console.log("delete data with id", data.itemtodelete);
-        bank_account_types_service_1.destroy(data.itemtodelete).then(function () {
+        project_service_1.destroy(data.itemtodelete).then(function () {
             reloadData();
             data.deletemodal = false;
         });
     };
     var save = function () {
-        console.log("Form Data", data.formData);
         if (data.formData.id) {
-            updateCustomer(data.formData);
+            updateProject(data.formData);
         }
         else {
-            createCustomer(data.formData);
+            createProject(data.formData);
         }
     };
     var openDialog = function (formData) {
-        loadGfsCodes();
         if (formData.id) {
             data.formData = formData;
             data.modalTitle = "Update";
@@ -100,34 +110,21 @@ exports.useBankAccountType = function () {
         }
         data.modal = !data.modal;
     };
-    var loadGfsCodes = function () {
-        getGfsCodes().then(function (response) {
-            data.gfscodes = response.data.data.data;
-        });
-    };
-    var gfsCodes = composition_api_1.computed(function () {
-        return data.gfscodes.map(function (gfs) {
-            gfs.fullName = "(" + gfs.code + ") - " + gfs.name;
-            return gfs;
-        });
-    });
-    var updateCustomer = function (data) {
-        bank_account_types_service_1.update(data).then(function (response) {
-            console.log("Updated data", response.data);
+    var updateProject = function (data) {
+        project_service_1.update(data).then(function (response) {
             reloadData();
             cancelDialog();
         });
     };
-    var createCustomer = function (data) {
-        bank_account_types_service_1.create(data).then(function (response) {
-            console.log("Created data", response.data);
+    var createProject = function (data) {
+        project_service_1.create(data).then(function (response) {
             reloadData();
             cancelDialog();
         });
     };
     var getData = function (params) {
         data.response = params;
-        bank_account_types_service_1.get(params).then(function (response) {
+        project_service_1.get(params).then(function (response) {
             data.response = response.data.data;
             data.items = response.data.data.data;
         });
@@ -137,12 +134,13 @@ exports.useBankAccountType = function () {
         getData: getData,
         openDialog: openDialog,
         cancelDialog: cancelDialog,
-        deleteBankAccountType: deleteBankAccountType,
+        deleteProject: deleteProject,
+        getProject: getProject,
+        updateProject: updateProject,
         save: save,
         reloadData: reloadData,
         remove: remove,
         cancelConfirmDialog: cancelConfirmDialog,
-        searchCategory: searchCategory,
-        gfsCodes: gfsCodes
+        searchCategory: searchCategory
     };
 };

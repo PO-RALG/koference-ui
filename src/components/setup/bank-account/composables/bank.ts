@@ -1,6 +1,12 @@
 import { reactive, onMounted, computed } from "@vue/composition-api";
 
-import { get, create, update, destroy, search } from "../services/bank-account.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../services/bank-account.service";
 import { bankaccounttypes } from "@/components/setup/bank-account-type/services/bank-account-types.service";
 import { BackAccount } from "../types/BackAccount";
 
@@ -103,7 +109,7 @@ export const useBank = (): any => {
 
     if (categoryName != null) {
       search({ name: categoryName.name }).then((response: any) => {
-        // console.log("response data", response);
+        // //// data", response);
         data.items = response.data.data.data;
       });
     } else {
@@ -205,7 +211,9 @@ export const useBank = (): any => {
   };
 
   const filterSbc = (term: string) => {
-    const result = data.subbudgetclasses.filter((item) => item.code.toLowerCase().includes(term.toLowerCase()));
+    const result = data.subbudgetclasses.filter((item) =>
+      item.code.toLowerCase().includes(term.toLowerCase())
+    );
     data.subbudgetclasses = result;
     return data.subbudgetclasses;
   };

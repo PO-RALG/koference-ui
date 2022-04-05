@@ -2,7 +2,13 @@ import { AxiosResponse } from "axios";
 import { FacilityType } from "../types/FacilityType";
 import { reactive, watch, onMounted, computed } from "@vue/composition-api";
 
-import { get, create, update, destroy, search } from "../services/facility-types.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../services/facility-types.service";
 
 export const useFacilityType = (): any => {
   const dataItems: Array<FacilityType> = [];
@@ -43,7 +49,8 @@ export const useFacilityType = (): any => {
 
   const fetchData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = {
         from,
         to,
@@ -64,7 +71,7 @@ export const useFacilityType = (): any => {
   const searchCategory = (categoryName) => {
     if (categoryName != null) {
       search({ name: categoryName.name }).then((response: any) => {
-        console.log("response data", response.data.data);
+        //// data", response.data.data);
         data.items = response.data.data.data;
       });
     }
@@ -72,7 +79,8 @@ export const useFacilityType = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });

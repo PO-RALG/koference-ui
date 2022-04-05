@@ -2,8 +2,8 @@
 exports.__esModule = true;
 exports.useBank = void 0;
 var composition_api_1 = require("@vue/composition-api");
-var back_accounts_service_1 = require("../services/back-accounts.service");
-var banck_account_types_service_1 = require("@/components/setup/bank-account-type/services/banck-account-types.service");
+var bank_account_service_1 = require("../services/bank-account.service");
+var bank_account_types_service_1 = require("@/components/setup/bank-account-type/services/bank-account-types.service");
 exports.useBank = function () {
     var dataItems = [];
     var documentCategoryData;
@@ -74,12 +74,12 @@ exports.useBank = function () {
             total: 10,
             size: 10
         };
-        back_accounts_service_1.get(params).then(function (response) {
+        bank_account_service_1.get(params).then(function (response) {
             console.log("data to filter", response.data.data.data);
             data.items = response.data.data.data;
             data.itemsToFilter = response.data.data.data;
         });
-        banck_account_types_service_1.bankaccounttypes().then(function (response) {
+        bank_account_types_service_1.bankaccounttypes().then(function (response) {
             // console.log("bank account", response.data.data.data);
             data.accounttypes = response.data.data.data;
         });
@@ -93,8 +93,8 @@ exports.useBank = function () {
     var searchCategory = function (categoryName) {
         // console.log("argument", categoryName);
         if (categoryName != null) {
-            back_accounts_service_1.search({ name: categoryName.name }).then(function (response) {
-                // console.log("response data", response);
+            bank_account_service_1.search({ name: categoryName.name }).then(function (response) {
+                // //// data", response);
                 data.items = response.data.data.data;
             });
         }
@@ -107,7 +107,7 @@ exports.useBank = function () {
             total: 10,
             size: 10
         };
-        back_accounts_service_1.get(params).then(function (response) {
+        bank_account_service_1.get(params).then(function (response) {
             // console.log("data", response.data.data);
             data.items = response.data.data.data;
             data.itemsToFilter = response.data.data.data;
@@ -119,7 +119,7 @@ exports.useBank = function () {
         // console.log("delete year", data);
     };
     var getSubBudgetClass = function () {
-        back_accounts_service_1.get(data).then(function (response) {
+        bank_account_service_1.get(data).then(function (response) {
             // console.log("data", response.data);
         });
     };
@@ -138,7 +138,7 @@ exports.useBank = function () {
     };
     var remove = function () {
         // console.log("delete data with id", data.itemtodelete);
-        back_accounts_service_1.destroy(data.itemtodelete).then(function () {
+        bank_account_service_1.destroy(data.itemtodelete).then(function () {
             reloadData();
             data.deletemodal = false;
         });
@@ -164,14 +164,14 @@ exports.useBank = function () {
         data.modal = !data.modal;
     };
     var updateFinancialYear = function (data) {
-        back_accounts_service_1.update(data).then(function (response) {
+        bank_account_service_1.update(data).then(function (response) {
             // console.log("Updated data", response.data);
             reloadData();
             cancelDialog();
         });
     };
     var createUser = function (data) {
-        back_accounts_service_1.create(data).then(function (response) {
+        bank_account_service_1.create(data).then(function (response) {
             // console.log("Created data", response.data);
             reloadData();
             cancelDialog();

@@ -85,7 +85,7 @@ exports.useInvoiceDefinition = function () {
         console.log("argument", categoryName);
         if (categoryName != null) {
             invoice_item_definition_1.search({ name: categoryName.name }).then(function (response) {
-                console.log("response data", response.data.data.data);
+                //// data", response.data.data.data);
                 data.items = response.data.data.data;
             });
         }

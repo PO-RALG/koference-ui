@@ -1,7 +1,14 @@
 import { AxiosResponse } from "axios";
 import { Receipt } from "../types";
 import { reactive, onMounted, computed } from "@vue/composition-api";
-import { get, create, update, destroy, search, printReceipt } from "../services/receipt-service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+  printReceipt,
+} from "../services/receipt-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import {
@@ -187,23 +194,28 @@ export const useReceipt = (): any => {
   const init = () => {
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.loading = false;
     });
 
-    getCustomers({ per_page: 2000, active: true }).then((response: AxiosResponse) => {
-      data.customers = response.data.data.data;
-    });
+    getCustomers({ per_page: 2000, active: true }).then(
+      (response: AxiosResponse) => {
+        data.customers = response.data.data.data;
+      }
+    );
   };
 
   const searchCategory = (categoryName) => {
     if (categoryName != null) {
-      search({ receipt_number: categoryName.receipt_number }).then((response: AxiosResponse) => {
-        data.items = response.data.data.data;
-      });
+      search({ receipt_number: categoryName.receipt_number }).then(
+        (response: AxiosResponse) => {
+          data.items = response.data.data.data;
+        }
+      );
     } else {
       reloadData();
     }
@@ -211,7 +223,8 @@ export const useReceipt = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -272,7 +285,9 @@ export const useReceipt = (): any => {
             invoice_item_id: item.id,
             amount: item.pay_amount,
             gl_account_id: geGlAccountId(item.gl_account),
-            funding_source_code: getFundingSource(item.definition.funding_source_id),
+            funding_source_code: getFundingSource(
+              item.definition.funding_source_id
+            ),
           };
         }),
       };
@@ -302,9 +317,11 @@ export const useReceipt = (): any => {
       data.fundingSources = response.data.data.data;
     });
 
-    glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then((response: AxiosResponse) => {
-      data.glAccounts = response.data.data.data;
-    });
+    glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then(
+      (response: AxiosResponse) => {
+        data.glAccounts = response.data.data.data;
+      }
+    );
   };
 
   const loadGLAccounts = async (fundSourceCode, index) => {
@@ -327,7 +344,12 @@ export const useReceipt = (): any => {
           ...data,
           index: ++index,
           newData: data,
-          bankAccount: data.bank_account.bank + data.bank_account.name + " (" + data.bank_account.number + ")",
+          bankAccount:
+            data.bank_account.bank +
+            data.bank_account.name +
+            " (" +
+            data.bank_account.number +
+            ")",
         }))
       : [];
   });
