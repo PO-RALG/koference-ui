@@ -373,6 +373,7 @@
             <v-sheet class="text-capitalize pt-8">
               <strong> Created By:</strong>
               <em>
+                {{ " User Who Creadted" }}
                 {{
                   data.invoiceData.user ? data.invoiceData.user.first_name : ""
                 }}
@@ -385,6 +386,13 @@
                   data.invoiceData.user ? data.invoiceData.user.last_name : ""
                 }}
               </em>
+              {{ " ," }}
+              <strong> Signature:</strong>
+              <em> .............................. </em>
+
+              {{ " ," }}
+              <strong> Stamp:</strong>
+              <em> ........................................</em>
             </v-sheet>
           </div>
         </ModalBody>

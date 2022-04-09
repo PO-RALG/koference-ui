@@ -15,9 +15,10 @@ exports.useInvoice = void 0;
 var composition_api_1 = require("@vue/composition-api");
 var invoice_1 = require("../services/invoice");
 var gfs_service_1 = require("@/components/coa/gfs-code/service/gfs.service");
-var customer_service_1 = require("@/components/setup/customer/services/customer.service");
-var back_accounts_service_1 = require("@/components/setup/bank-account/services/back-accounts.service");
-var invoice_item_definition_1 = require("@/components/setup/invoice-item-definition/services/invoice-item-definition");
+var customer_service_1 = require("@/components/receivables/customer/services/customer.service");
+var bank_account_service_1 = require("@/components/setup/bank-account/services/bank-account.service");
+var invoice_item_definition_1 = require("@/components/receivables/invoice-item-definition/services/invoice-item-definition");
+var moment_1 = require("moment");
 exports.useInvoice = function () {
     var dataItems = [];
     var invoiceData;
@@ -122,6 +123,7 @@ exports.useInvoice = function () {
             invoice_number: "",
             items: []
         },
+        maxDate: moment_1["default"](new Date()).format("YYYY-MM-DD"),
         title: "Manage Invoice",
         modalTitle: "",
         headers: [
@@ -176,7 +178,7 @@ exports.useInvoice = function () {
         bankName: [],
         customers: [],
         itemdefinitions: [],
-        invoicedata: invoiceData,
+        invoiceData: invoiceData,
         bankaccounts: [],
         customer: [],
         invoice_items: [
@@ -198,13 +200,13 @@ exports.useInvoice = function () {
             data.itemsToFilter = response.data.data.data;
             data.loading = false;
         });
-        gfs_service_1.allgfscodes({ per_page: 2000 }).then(function (response) {
+        gfs_service_1.allgfscodes({ per_page: 20000 }).then(function (response) {
             data.bankName = response.data.data.data;
         });
-        customer_service_1.customers({ per_page: 2000, active: true }).then(function (response) {
+        customer_service_1.customers({ per_page: 20000, active: true }).then(function (response) {
             data.customers = response.data.data.data;
         });
-        invoice_item_definition_1.itemdefinitions({ per_page: 2000 }).then(function (response) {
+        invoice_item_definition_1.itemdefinitions({ per_page: 20000 }).then(function (response) {
             data.itemdefinitions = response.data.data.data;
         });
     });
@@ -258,8 +260,8 @@ exports.useInvoice = function () {
         data.invoicereceip.customer_id = invoiceData; //mapping customer in autocomplete for two way binding
         data.invoicereceip.invoice_id = invoiceData.id;
         data.invoicereceip.invoice_number = invoiceData.invoice_number;
-        if (data.invoicedata.invoice_items) {
-            data.invoicedata.invoice_items.forEach(function (value) {
+        if (data.invoiceData.invoice_items) {
+            data.invoiceData.invoice_items.forEach(function (value) {
                 var one_item = {
                     invoicedAmount: value.amount,
                     received: value.received_amount,
@@ -269,7 +271,7 @@ exports.useInvoice = function () {
                 };
                 data.invoicereceip.items.push(one_item);
             });
-            back_accounts_service_1.bankaccounts({ per_page: 2000 }).then(function (response) {
+            bank_account_service_1.get({ per_page: 2000 }).then(function (response) {
                 data.bankaccounts = response.data.data.data;
             });
         }
@@ -281,7 +283,7 @@ exports.useInvoice = function () {
         });
     });
     var newInvoiceItem = composition_api_1.computed(function () {
-        return data.invoicedata.invoice_items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); });
+        return data.invoiceData.invoice_items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); });
     });
     var invoicedAmount = composition_api_1.ref(newInvoiceItem);
     var sumDebts = composition_api_1.computed(function () {
@@ -382,11 +384,9 @@ exports.useInvoice = function () {
     var removeRow = function (index) {
         data.invoice_items.splice(index, 1);
     };
-    var previewInvoice = function (item) {
-        invoice_1.viewinvoice(item).then(function (response) {
-            data.invoicedata = response.data.data;
-            data.invoicedetails = true;
-        });
+    var previewInvoice = function (invoice) {
+        data.invoiceData = invoice;
+        data.invoicedetails = true;
     };
     var newInvoiceItems = composition_api_1.computed(function () {
         if (data.invoicereceip) {
