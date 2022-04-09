@@ -3,14 +3,24 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'User')">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('create', 'User')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
     </v-card-actions>
 
     <v-card>
-      <v-data-table :headers="data.headers" :items="users" hide-default-footer class="elevation-1">
+      <v-data-table
+        :headers="data.headers"
+        :items="users"
+        hide-default-footer
+        disable-pagination
+        class="elevation-1"
+      >
         <template v-slot:[`item.displayRoles`]="{ item }">
           <span>{{ item.displayRoles }}</span>
         </template>
@@ -20,7 +30,10 @@
             @click.native.stop
             v-model="item.active"
             @change="openActivationDialog(item)"
-            :disabled="cant('activateDeactivate', 'User') || item.id === data.currentUser.id"
+            :disabled="
+              cant('activateDeactivate', 'User') ||
+              item.id === data.currentUser.id
+            "
             value
           >
           </v-switch>
@@ -28,25 +41,41 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="resetPasswd(item)" :disabled="cant('edit', 'User')">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="resetPasswd(item)"
+                :disabled="cant('edit', 'User')"
+              >
                 mdi-lock-reset
               </v-icon>
             </template>
             <span>Reset Password</span>
           </v-tooltip>
 
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'User')">
+          <v-icon
+            class="mr-2"
+            @click="openDialog(item)"
+            :disabled="cant('edit', 'User')"
+          >
             mdi-pencil-box-outline
           </v-icon>
           <v-icon
             @click="openConfirmDialog(item)"
-            :disabled="cant('delete', 'User') || item.id === data.currentUser.id"
+            :disabled="
+              cant('delete', 'User') || item.id === data.currentUser.id
+            "
           >
             mdi-trash-can-outline
           </v-icon>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -98,7 +127,12 @@
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field label="Phone Number" v-model="data.formData.phone_number" required> </v-text-field>
+                  <v-text-field
+                    label="Phone Number"
+                    v-model="data.formData.phone_number"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
                   <v-text-field
@@ -113,7 +147,9 @@
               <v-row>
                 <v-col cols="12" sm="12" md="6" class="pb-6 pt-5">
                   <v-label v-if="data.formData.location">
-                    <h5 class="tree-title">SELECTED USER LOCATION ({{ data.formData.location.name }})</h5>
+                    <h5 class="tree-title">
+                      SELECTED USER LOCATION ({{ data.formData.location.name }})
+                    </h5>
                   </v-label>
                   <v-label v-else>
                     <h5 class="tree-title">SELECT USER LOCATION</h5>
@@ -127,7 +163,10 @@
                   />
                 </v-col>
                 <v-col cols="12" sm="12" md="6">
-                  <v-row v-if="data.showFacility || data.isFacilityUser" class="mt-n8">
+                  <v-row
+                    v-if="data.showFacility || data.isFacilityUser"
+                    class="mt-n8"
+                  >
                     <v-col cols="12" sm="12" md="12">
                       <v-checkbox
                         v-model="data.isFacilityUser"
@@ -135,7 +174,13 @@
                         @change="loadFacilities"
                       ></v-checkbox>
                     </v-col>
-                    <v-col cols="12" sm="12" md="12" class="mt-n8" v-if="data.facilities && data.isFacilityUser">
+                    <v-col
+                      cols="12"
+                      sm="12"
+                      md="12"
+                      class="mt-n8"
+                      v-if="data.facilities && data.isFacilityUser"
+                    >
                       <v-select
                         v-model="data.formData.facility_id"
                         :items="facilities"
@@ -168,7 +213,12 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save" :disabled="!data.valid">
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="save"
+            :disabled="!data.valid"
+          >
             {{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -194,8 +244,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
-import { useUser } from "./composables/user";
+import { defineComponent } from '@vue/composition-api'
+import { useUser } from './composables/user'
 
 export default defineComponent({
   setup() {
@@ -227,11 +277,11 @@ export default defineComponent({
       confirmTitle,
       message,
       resetPasswd,
-    } = useUser();
+    } = useUser()
 
     const showRoles = (roles) => {
-      return roles.map((r) => r.name);
-    };
+      return roles.map((r) => r.name)
+    }
 
     return {
       data,
@@ -262,9 +312,9 @@ export default defineComponent({
       toggleStatus,
       status,
       resetPasswd,
-    };
+    }
   },
-});
+})
 </script>
 
 <style scoped>

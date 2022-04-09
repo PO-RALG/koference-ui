@@ -1,6 +1,7 @@
 import { AxiosResponse } from "axios";
 import { FundSources } from "../types";
-import { reactive, onMounted } from "@vue/composition-api";
+import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
+import { reactive, onMounted, computed } from "@vue/composition-api";
 import {
   get,
   create,
@@ -39,6 +40,8 @@ export const useFundSource = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},
+    selectedGfs: [],
+    gfscodes: [],
   });
 
   onMounted(() => {
@@ -111,11 +114,19 @@ export const useFundSource = (): any => {
 
   const save = () => {
     console.log("Form Data", data.formData);
+
     if (data.formData.id) {
       updateFunfingSources(data.formData);
     } else {
       createFundingSource(data.formData);
     }
+  };
+
+  const loadGfsCodes = () => {
+    allgfscodes({ code: "REVENUE" }).then((response: any) => {
+      console.log("all gfs data", response.data.data.data);
+      data.gfscodes = response.data.data.data[0].gfs_codes;
+    });
   };
 
   const openDialog = (formData?: any) => {
@@ -127,6 +138,7 @@ export const useFundSource = (): any => {
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
+    loadGfsCodes();
   };
 
   const updateFunfingSources = (data: any) => {
@@ -153,6 +165,27 @@ export const useFundSource = (): any => {
     });
   };
 
+  const selectedGFS = computed(() => {
+    return data.selectedGfs;
+  });
+
+  const upsert = (array, item) => {
+    const idx = array.findIndex((_item: any) => _item.id === item.id);
+    if (idx > -1) {
+      array.splice(idx, 1);
+    } else {
+      array.push(item);
+    }
+    return array;
+  };
+
+  const onChangeList = ({ source, destination }): void => {
+    destination.forEach((item) => {
+      data.gfscodes = upsert(source, item);
+    });
+    data.formData.gfscodes = destination;
+  };
+
   return {
     data,
     openDialog,
@@ -166,5 +199,7 @@ export const useFundSource = (): any => {
     remove,
     cancelConfirmDialog,
     searchCategory,
+    selectedGFS,
+    onChangeList,
   };
 };

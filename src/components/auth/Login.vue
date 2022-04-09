@@ -40,23 +40,33 @@
                         outlined
                         class="mr-3 ml-3"
                       ></v-text-field>
-                    <v-card-actions class="mr-1 ml-3 mt-n4">
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="primary"
-                        class="white--text"
-                        type="submit"
-                        :disabled="!data.valid || data.loading"
-                        :loading="data.loading">
-                        <v-icon left>mdi-login</v-icon>LOGIN
-                      </v-btn>
-                    </v-card-actions>
+                      <v-card-actions class="mr-1 ml-3 mt-n4">
+                        <v-btn x-small class="mx-2 d-none d-sm-flex ml-0" fab outlined dark color="primary">
+                          <a href="http://196.192.73.13/docs" target="_blank">
+                            <v-icon small color="primary">mdi-help</v-icon>
+                          </a>
+                        </v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="primary"
+                          class="white--text"
+                          type="submit"
+                          :disabled="!data.valid || data.loading"
+                          :loading="data.loading"
+                        >
+                          <v-icon left>mdi-login</v-icon>LOGIN
+                        </v-btn>
+                      </v-card-actions>
                     </v-form>
                   </v-card-text>
                 </v-col>
                 <!-- login form end -->
               </v-row>
             </v-card>
+          </v-col>
+          <v-col cols="8" sm="8" md="7">
+            <div class="text-center">
+            </div>
           </v-col>
         </v-row>
       </v-main>
@@ -180,5 +190,8 @@ h4.siteName {
   text-transform: uppercase;
   color: red;
   font-weight: bold;
+}
+a {
+  text-decoration: none;
 }
 </style>

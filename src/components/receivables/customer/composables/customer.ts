@@ -35,6 +35,23 @@ export const useCustomer = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},
+    addcustomer: false,
+    genericCustomer: [
+      {
+        id: "1",
+        name: "NHIF",
+        email: "nhif@gmail.com",
+        phone: "0766158716",
+        address: "PO.BOX 3478 DSM",
+      },
+      {
+        id: "2",
+        name: "WHO",
+        email: "who@gmail.com",
+        phone: "323299923",
+        address: "PO.BOX 443 DDM",
+      },
+    ],
   });
 
   onMounted(() => {
@@ -56,6 +73,9 @@ export const useCustomer = (): any => {
 
   computed(() => {
     return "test";
+  });
+  const isUpdate = computed(() => {
+    return data.modalTitle == "Update" ? true : false;
   });
 
   const searchCategory = (categoryName) => {
@@ -94,6 +114,7 @@ export const useCustomer = (): any => {
   const cancelDialog = () => {
     data.formData = {} as Customer;
     data.modal = !data.modal;
+    data.addcustomer = false;
   };
 
   const cancelConfirmDialog = () => {
@@ -111,9 +132,10 @@ export const useCustomer = (): any => {
 
   const save = () => {
     console.log("Form Data", data.formData);
-    if (data.formData.id) {
+    if (data.formData.id && isUpdate.value) {
       updatecustomer(data.formData);
     } else {
+      delete data.formData.id;
       createCustomer(data.formData);
     }
   };
@@ -152,6 +174,17 @@ export const useCustomer = (): any => {
       data.items = response.data.data.data;
     });
   };
+  const setAddCostomerValue = () => {
+    data.addcustomer = true;
+    data.formData = {} as Customer;
+  };
+  const setGenericValue = () => {
+    data.addcustomer = false;
+    data.formData = {} as Customer;
+  };
+  const populateFormData = (event: any) => {
+    data.formData = event;
+  };
 
   return {
     data,
@@ -167,5 +200,9 @@ export const useCustomer = (): any => {
     cancelConfirmDialog,
     searchCategory,
     setActivation,
+    setAddCostomerValue,
+    setGenericValue,
+    populateFormData,
+    isUpdate,
   };
 };

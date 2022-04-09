@@ -109,7 +109,7 @@ exports.useBankReconciliation = function (_a) {
             bankAccountId = root.$route.query.bank_account_id
                 ? root.$route.query.bank_account_id
                 : null;
-            params = { date: date, bank_account_id: bankAccountId };
+            params = { date: date, bank_account_id: bankAccountId, per_page: 30 };
             query = __assign({}, params);
             data.selectedEntries = [];
             if (date && bankAccountId) {
@@ -151,7 +151,7 @@ exports.useBankReconciliation = function (_a) {
                     data.entries = response.data.data.data;
                 })
                     .then(function () {
-                    bank_reconciliation_service_1.getReport(params.bank_account_id, { date: params.date }).then(function (response) {
+                    bank_reconciliation_service_1.getReport(params).then(function (response) {
                         if (response.data.data.balance_required) {
                             openDialog("BALANCE");
                         }
@@ -159,7 +159,6 @@ exports.useBankReconciliation = function (_a) {
                             if (response.data.data.diff === 0) {
                                 showConfirmDialog();
                             }
-                            data.report = response.data.data;
                         }
                     });
                 });
@@ -230,7 +229,7 @@ exports.useBankReconciliation = function (_a) {
         });
     }); };
     var save = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var dateInst, date, date_1, bankAccountId_1, query;
+        var dateInst, date, date_1, bankAccountId_1;
         return __generator(this, function (_a) {
             dateInst = moment_1["default"](data.formData.date);
             /**
@@ -258,8 +257,7 @@ exports.useBankReconciliation = function (_a) {
                 bankAccountId_1 = root.$route.query.bank_account_id
                     ? root.$route.query.bank_account_id
                     : null;
-                query = __assign({}, data.formData);
-                bank_reconciliation_service_1.getEntries(query)
+                bank_reconciliation_service_1.getEntries(data.formData)
                     .then(function (response) {
                     if (response.status === 200) {
                         if (data.formData.bank_account_id !== bankAccountId_1 ||
@@ -287,9 +285,7 @@ exports.useBankReconciliation = function (_a) {
                     }
                 })
                     .then(function () {
-                    bank_reconciliation_service_1.getReport(data.formData.bank_account_id, {
-                        date: data.formData.date
-                    }).then(function (response) {
+                    bank_reconciliation_service_1.getReport(data.formData).then(function (response) {
                         if (response.data.data.balance_required) {
                             console.log("report", response.data.data);
                             data.dialog = !data.dialog;

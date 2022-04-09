@@ -1,6 +1,7 @@
 "use strict";
 exports.__esModule = true;
 exports.useFundSource = void 0;
+var gfs_service_1 = require("@/components/coa/gfs-code/service/gfs.service");
 var composition_api_1 = require("@vue/composition-api");
 var funding_sources_1 = require("../services/funding-sources");
 exports.useFundSource = function () {
@@ -31,7 +32,9 @@ exports.useFundSource = function () {
         formData: financialYearData,
         rows: ["10", "20", "50", "100"],
         itemtodelete: "",
-        response: {}
+        response: {},
+        selectedGfs: [],
+        gfscodes: []
     });
     composition_api_1.onMounted(function () {
         funding_sources_1.get({ per_page: 10 }).then(function (response) {
@@ -100,6 +103,12 @@ exports.useFundSource = function () {
             createFundingSource(data.formData);
         }
     };
+    var loadGfsCodes = function () {
+        gfs_service_1.allgfscodes({ code: "REVENUE" }).then(function (response) {
+            console.log("all gfs data", response.data.data.data);
+            data.gfscodes = response.data.data.data[0].gfs_codes;
+        });
+    };
     var openDialog = function (formData) {
         if (formData.id) {
             data.formData = formData;
@@ -110,6 +119,7 @@ exports.useFundSource = function () {
             data.modalTitle = "Create";
         }
         data.modal = !data.modal;
+        loadGfsCodes();
     };
     var updateFunfingSources = function (data) {
         funding_sources_1.update(data).then(function (response) {
@@ -132,6 +142,26 @@ exports.useFundSource = function () {
             data.items = response.data.data.data;
         });
     };
+    var selectedGFS = composition_api_1.computed(function () {
+        return data.selectedGfs;
+    });
+    var upsert = function (array, item) {
+        var idx = array.findIndex(function (_item) { return _item.id === item.id; });
+        if (idx > -1) {
+            array.splice(idx, 1);
+        }
+        else {
+            array.push(item);
+        }
+        return array;
+    };
+    var onChangeList = function (_a) {
+        var source = _a.source, destination = _a.destination;
+        destination.forEach(function (item) {
+            data.gfscodes = upsert(source, item);
+        });
+        data.formData.gfscodes = destination;
+    };
     return {
         data: data,
         openDialog: openDialog,
@@ -144,6 +174,8 @@ exports.useFundSource = function () {
         reloadData: reloadData,
         remove: remove,
         cancelConfirmDialog: cancelConfirmDialog,
-        searchCategory: searchCategory
+        searchCategory: searchCategory,
+        selectedGFS: selectedGFS,
+        onChangeList: onChangeList
     };
 };

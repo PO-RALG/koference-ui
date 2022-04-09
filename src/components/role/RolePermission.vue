@@ -16,7 +16,11 @@
     </v-card-actions>
     <v-layout row wrap v-if="permissions">
       <v-flex xs2 v-for="permission in permissions" :key="permission.id" class="mb-5">
-        <PermissionList :item="permission" :selected="data.selected" @itemSelected="addToSelection" />
+        <PermissionList
+          :item="permission"
+          :selected="data.selected"
+          @itemSelected="addToSelection"
+         />
       </v-flex>
     </v-layout>
   </div>
@@ -37,7 +41,7 @@ export default defineComponent({
       required: false,
     },
   },
-  setup(props, context) {
+  setup(_props, context) {
     const { data, addToSelection, addPermissions, permissions, filterPermissions, goBack } = useRolePermission(context);
 
     return {

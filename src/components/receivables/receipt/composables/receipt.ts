@@ -100,7 +100,7 @@ export const useReceipt = (): any => {
     selectedInvoice: null,
     modalTitle: "",
     maxDate: moment(new Date()).format("YYYY-MM-DD"),
-    minDate: moment(new Date()).format("YYYY-MM-DD"),
+    minDate: null,
     headers: [
       {
         text: "Receipt Number",
@@ -114,7 +114,7 @@ export const useReceipt = (): any => {
         text: "Amount",
         align: "start",
         sortable: false,
-        value: "amount",
+        value: "totalAmt",
       },
       {
         text: "From",
@@ -192,6 +192,22 @@ export const useReceipt = (): any => {
   });
 
   const init = () => {
+    data.receipt = {
+      id: null,
+      customer_id: null,
+      invoice_id: null,
+      date: null,
+      bank_reference_number: null,
+      description: null,
+      bank_account_id: null,
+      items: [
+        {
+          funding_source_code: null,
+          gl_account_id: null,
+          amount: null,
+        },
+      ],
+    };
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
@@ -209,7 +225,7 @@ export const useReceipt = (): any => {
     );
   };
 
-  const searchCategory = (categoryName) => {
+  const searchCategory = (categoryName: any) => {
     if (categoryName != null) {
       search({ receipt_number: categoryName.receipt_number }).then(
         (response: AxiosResponse) => {
@@ -242,7 +258,7 @@ export const useReceipt = (): any => {
   };
 
   const accounts = computed(() => {
-    return data.bankaccounts.map((account) => {
+    return data.bankaccounts.map((account: any) => {
       account.fullName = `Account Number -${account.number}  ${account.bank} - ${account.branch}`;
       return account;
     });
@@ -261,12 +277,14 @@ export const useReceipt = (): any => {
   };
 
   const geGlAccountId = (account: any): string => {
-    const ac = data.glAccounts.find((glAccount) => glAccount.code === account);
+    const ac = data.glAccounts.find(
+      (glAccount: any) => glAccount.code === account
+    );
     return ac.id;
   };
 
   const getFundingSource = (id: number): number => {
-    const fs = data.fundingSources.find((fs) => fs.id === id);
+    const fs = data.fundingSources.find((fs: any) => fs.id === id);
     return fs.code;
   };
 

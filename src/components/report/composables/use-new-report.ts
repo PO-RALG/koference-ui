@@ -1,4 +1,4 @@
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import {
   createReport,
@@ -7,11 +7,15 @@ import {
   updateReport,
   fetchReportTree,
   findReport,
+  updateQuery,
 } from "../services/report.services";
 
 export const useNewReport = () => {
   const data = reactive({
     formData: {},
+    code: "",
+    query: null,
+    editQuery: false,
     modal: false,
     deleteModal: false,
     report: null,
@@ -45,20 +49,21 @@ export const useNewReport = () => {
       per_page: null,
       last_page: null,
     },
+    rows: ["5", "10", "20", "50", "100"],
   });
 
   const deleteItem = (item: number | string) => {
     const payload = item;
     deleteReport(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
-        fetchReports();
+        init();
         data.item = {};
         data.isOpen = false;
       }
     });
   };
 
-  const fetchReports = () => {
+  const init = () => {
     getReports(data.params).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.params = { from, to, total, current_page, per_page, last_page, asc: "order" };
@@ -124,13 +129,13 @@ export const useNewReport = () => {
       updateReport(data.formData).then((response: AxiosResponse) => {
         if (response.status === 200) {
           data.modal = false;
-          fetchReports();
+          init();
         }
       });
     } else {
       createReport(data.formData).then((response: AxiosResponse) => {
         if (response.status === 200) {
-          fetchReports();
+          init();
           data.modal = false;
         }
       });
@@ -145,7 +150,7 @@ export const useNewReport = () => {
 
   const remove = () => {
     deleteReport(data.item).then(() => {
-      fetchReports();
+      init();
       data.deleteModal = false;
     });
     data.item = {};
@@ -158,11 +163,47 @@ export const useNewReport = () => {
   };
 
   onMounted(() => {
-    fetchReports();
+    init();
   });
 
   const cancelConfirmDialog = () => {
     data.deleteModal = false;
+  };
+
+  const openCodeEditor = (entry: any) => {
+    data.selectedReport = entry;
+    data.formData = entry;
+    data.editQuery = true;
+  };
+
+  const saveReportQuery = () => {
+    const payload = {
+      id: data.selectedReport.id,
+      query: data.query,
+    }
+    console.log(payload);
+    updateQuery(payload).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        init();
+        closeCodeEditor();
+      }
+    });
+  };
+
+  const closeCodeEditor = () => {
+    data.editQuery = false;
+  };
+
+  const reportTitle = computed(() => {
+    if (data.selectedReport) {
+      return `Edit ${data.selectedReport.name} ${data.selectedReport.level.name} Report Query`;
+    } else {
+      return "Edit Report Query";
+    }
+  });
+
+  const onChange = (newQuery: string) => {
+    data.query = newQuery;
   };
 
   return {
@@ -180,5 +221,10 @@ export const useNewReport = () => {
     remove,
     getReport,
     cancelConfirmDialog,
+    openCodeEditor,
+    closeCodeEditor,
+    saveReportQuery,
+    reportTitle,
+    onChange,
   };
 };

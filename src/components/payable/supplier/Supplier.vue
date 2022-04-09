@@ -91,21 +91,83 @@
                     v-model="data.formData.supplier_type"
                     :items="data.supplierTypes"
                     label="Select Type"
-                    required
-                  >
+                    required>
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="4" sm="12" v-if="data.formData.supplier_type === 'Contractor'">
-                  <v-text-field v-model="data.formData.tin" :rules="data.tinRules" label="TIN"></v-text-field>
+                  <v-text-field-simplemask
+                    v-model="data.formData.tin"
+                    :rules="data.tinRules"
+                    :properties="{
+                    prefix: '',
+                    suffix: '',
+                    readonly: false,
+                    disabled: false,
+                    outlined: false,
+                    placeholder: '',
+                    }"
+                    :options="{
+                    inputMask: '###-###-###',
+                    outputMask: '#########',
+                    empty: null,
+                    applyAfter: false,
+                    alphanumeric: true,
+                    lowerCase: false,
+                    }"
+                    v-bind:focus="data.focus"
+                    v-on:focus="data.focus = false"
+                    label="TIN" />
                 </v-col>
                 <v-col cols="12" md="4" sm="12" v-if="data.formData.supplier_type === 'Employee'">
-                  <v-text-field v-model="data.formData.check_number" :rules="data.checkRules" label="Check Number"></v-text-field>
+                  <v-text-field-simplemask
+                    v-model="data.formData.check_number"
+                    :rules="data.checkRules"
+                    :properties="{
+                    prefix: '',
+                    suffix: '',
+                    readonly: false,
+                    disabled: false,
+                    outlined: false,
+                    placeholder: '',
+                    }"
+                    :options="{
+                    inputMask: '#########',
+                    outputMask: '#########',
+                    empty: null,
+                    applyAfter: false,
+                    alphanumeric: false,
+                    lowerCase: false,
+                    }"
+                    v-bind:focus="data.focus"
+                    v-on:focus="data.focus = false"
+                    label="Check Number" />
                 </v-col>
                 <v-col cols="12" md="4" sm="12" v-if="data.formData.supplier_type === 'Others'">
                   <v-text-field v-model="data.formData.id_number" label="ID number"></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-text-field v-model="data.formData.phone" :rules="data.phoneRules" label="Phone"></v-text-field>
+                  <v-text-field-simplemask
+                    v-model="data.formData.phone"
+                    :rules="data.phoneRules"
+                    :properties="{
+                    prefix: '',
+                    suffix: '',
+                    readonly: false,
+                    disabled: false,
+                    outlined: false,
+                    placeholder: '',
+                    }"
+                    :options="{
+                    inputMask: '#### ### ###',
+                    outputMask: '##########',
+                    empty: null,
+                    applyAfter: false,
+                    alphanumeric: false,
+                    lowerCase: false,
+                    }"
+                    v-bind:focus="data.focus"
+                    v-on:focus="data.focus = false"
+                    label="Phone" />
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field v-model="data.formData.address" label="Address"></v-text-field>
@@ -121,6 +183,7 @@
                 </v-col>
               </v-row>
             </v-container>
+            <!--<pre>{{ data.formData }}</pre>-->
           </v-form>
         </ModalBody>
       </template>
@@ -154,9 +217,13 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import { useSupplier } from "./composables/supplier";
+import SimpleMask from "@/components/shared/masks/SimpleMask.vue";
 
 export default defineComponent({
   name: "Supplier",
+  components: {
+    SimpleMask,
+  },
   setup() {
     const {
       data,

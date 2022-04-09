@@ -1,6 +1,13 @@
-import { reactive, onMounted, set, computed } from "@vue/composition-api";
+import { computed, onMounted, reactive, set } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import { get, create, update, deleteUser, toggleActive, resetPassword } from "../services/user.service";
+import {
+  create,
+  deleteUser,
+  get,
+  resetPassword,
+  toggleActive,
+  update,
+} from "../services/user.service";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getRoles } from "@/components/role/services/role-services";
 import { get as getLevels } from "@/components/admin-area/level/services/level-services";
@@ -58,11 +65,10 @@ export const useUser = (): any => {
     },
     nameRules: [
       (v: string) => !!v || "Name is required",
-      (v: string) => (v && v.length <= 10) || "Name must be less than 10 characters",
+      (v: string) =>
+        (v && v.length <= 10) || "Name must be less than 10 characters",
     ],
-    requiredRules: [
-      (v: string) => !!v || "Field is required",
-    ],
+    requiredRules: [(v: string) => !!v || "Field is required"],
     email: "",
     emailRules: [
       (v: string) => !!v || "E-mail is required",
@@ -76,7 +82,8 @@ export const useUser = (): any => {
 
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -134,7 +141,7 @@ export const useUser = (): any => {
   });
 
   const facilities = computed(() => {
-    return data.facilities.map((facility) => ({
+    return data.facilities.map((facility: any) => ({
       ...facility,
       label: `${facility.name} - (${facility.facility_type.name})`,
     }));
@@ -251,7 +258,9 @@ export const useUser = (): any => {
   };
 
   const toggleFacilitylOption = (location: any) => {
-    const level = data.levels.find((level) => level.id === location.level_id);
+    const level = data.levels.find(
+      (level: any) => level.id === location.level_id
+    );
     if (level.code === "WARD" || level.code === "VILLAGE_MTAA") {
       data.showFacility = true;
       checkForMoreClicks(level);
@@ -261,7 +270,10 @@ export const useUser = (): any => {
   };
 
   const checkForMoreClicks = (level: any) => {
-    if ((data.showFacility = true) && (level.code === "WARD" || level.code === "VILLAGE_MTAA")) {
+    if (
+      (data.showFacility = true) &&
+      (level.code === "WARD" || level.code === "VILLAGE_MTAA")
+    ) {
       loadFacilities();
     }
   };
@@ -269,13 +281,17 @@ export const useUser = (): any => {
   const loadFacilities = () => {
     const isFacilityUser = !!data.isFacilityUser;
     data.isFacilityUser = isFacilityUser;
-    getFacilities({ search: { location_id: data.location["id"] } }).then((response: AxiosResponse) => {
-      data.facilities = response.data.data.data;
-    });
+    getFacilities({ search: { location_id: data.location["id"] } }).then(
+      (response: AxiosResponse) => {
+        data.facilities = response.data.data.data;
+      }
+    );
   };
 
   const filterRoles = (term: string) => {
-    const result = data.roles.filter((item) => item.name.toLowerCase().includes(term.toLowerCase()));
+    const result = data.roles.filter((item) =>
+      item.name.toLowerCase().includes(term.toLowerCase())
+    );
     data.roles = result;
     return data.roles;
   };

@@ -123,22 +123,23 @@
                 <pre></pre>
                 <v-col cols="12" md="6">
                   <v-autocomplete
-                    v-model="data.formData.gfs_code_id"
-                    label="Gfs Codes"
-                    :items="gfsName"
-                    :item-text="'fullName'"
-                    item-value="id"
-                    :item-divider="true"
-                    required
-                    clearable
-                  ></v-autocomplete>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-autocomplete
                     v-model="data.formData.funding_source_id"
                     label="Funding Sources"
                     :items="fundingsourceName"
                     :item-text="'sourceName'"
+                    item-value="id"
+                    :item-divider="true"
+                    required
+                    clearable
+                    @change="loadGfsCodes($event)"
+                  ></v-autocomplete>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-autocomplete
+                    v-model="data.formData.gfs_code_id"
+                    label="Gfs Codes"
+                    :items="gfsName"
+                    :item-text="'fullName'"
                     item-value="id"
                     :item-divider="true"
                     required
@@ -202,6 +203,7 @@ export default defineComponent({
       setActivation,
       gfsName,
       fundingsourceName,
+      loadGfsCodes,
     } = useInvoiceDefinition();
 
     return {
@@ -220,6 +222,7 @@ export default defineComponent({
       setActivation,
       gfsName,
       fundingsourceName,
+      loadGfsCodes,
     };
   },
 });

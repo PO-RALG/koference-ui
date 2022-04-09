@@ -79,7 +79,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="600">
+    <Modal :modal="data.modal" :width="700">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Customers`" />
       </template>
@@ -88,13 +88,49 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col cols="12" :md="data.modalTitle == 'Update' ? 12 : 9">
+                  <v-autocomplete
+                    v-if="!data.addcustomer && data.modalTitle != 'Update'"
+                    :items="data.genericCustomer"
+                    item-text="name"
+                    item-value="name"
+                    outlined
+                    dense
+                    chips
+                    small-chips
+                    label="Select Generic Costomer"
+                    hide-details
+                    return-object
+                    @change="populateFormData($event)"
+                  ></v-autocomplete>
                   <v-text-field
+                    v-if="data.addcustomer || data.modalTitle == 'Update'"
                     v-model="data.formData.name"
                     label="Name"
                     required
+                    outlined
+                    hide-details
+                    dense
+                    :disabled="isUpdate"
                   ></v-text-field>
                 </v-col>
+                <v-col v-if="data.modalTitle != 'Update'" cols="1" md="1">
+                  <v-btn
+                    v-if="!data.addcustomer"
+                    @click="setAddCostomerValue()"
+                    color="primary"
+                    ><v-icon> mdi-plus </v-icon>
+                    Custom
+                  </v-btn>
+                  <v-btn
+                    v-if="data.addcustomer"
+                    @click="setGenericValue()"
+                    color="warning"
+                    ><v-icon> mdi-plus </v-icon>
+                    Generic
+                  </v-btn>
+                </v-col>
+
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.email"
@@ -109,7 +145,7 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="12">
                   <v-text-field
                     v-model="data.formData.address"
                     label="Address"
@@ -172,6 +208,10 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       setActivation,
+      setAddCostomerValue,
+      setGenericValue,
+      populateFormData,
+      isUpdate,
     } = useCustomer();
 
     return {
@@ -188,6 +228,10 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       setActivation,
+      setAddCostomerValue,
+      setGenericValue,
+      populateFormData,
+      isUpdate,
     };
   },
 });

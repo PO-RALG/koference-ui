@@ -59,7 +59,7 @@ const routes: Array<RouteConfig> = [
       title: "Login",
       middleware: [setTitle],
     },
-    props: (route) => ({ query: route.query }),
+    props: (route: any) => ({ query: route.query }),
   },
   {
     path: "/",

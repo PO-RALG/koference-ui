@@ -68,18 +68,13 @@ export const useInvoiceDefinition = (): any => {
       data.itemsToFilter = response.data.data.data;
     });
 
-    allgfscodes({ code: "REVENUE" }).then((response: any) => {
-      console.log("all gfs data", response.data.data.data);
-      data.gfscodes = response.data.data.data[0];
-    });
-
     fundingsources({ per_page: 2000 }).then((response: any) => {
       data.fundingsources = response.data.data.data;
     });
   };
 
   const gfsName = computed(() => {
-    return data.gfscodes
+    return data.gfscodes && data.gfscodes.gfs_codes
       ? data.gfscodes.gfs_codes.map((gfsCodeItem) => {
           gfsCodeItem.fullName = `${gfsCodeItem.code} - ${gfsCodeItem.name} `;
           return gfsCodeItem;
@@ -138,6 +133,7 @@ export const useInvoiceDefinition = (): any => {
   const cancelDialog = () => {
     data.formData = {} as ManageInvoiceItemDefinition;
     data.modal = !data.modal;
+    data.gfscodes = {} as GfsCategories;
   };
 
   const cancelConfirmDialog = () => {
@@ -196,6 +192,14 @@ export const useInvoiceDefinition = (): any => {
       data.items = response.data.data.data;
     });
   };
+  const loadGfsCodes = (params: any) => {
+    allgfscodes({ code: "REVENUE", fundsource: params }).then(
+      (response: any) => {
+        console.log("all gfs data", response.data.data.data);
+        data.gfscodes = response.data.data.data[0];
+      }
+    );
+  };
 
   return {
     data,
@@ -213,5 +217,6 @@ export const useInvoiceDefinition = (): any => {
     setActivation,
     gfsName,
     fundingsourceName,
+    loadGfsCodes,
   };
 };

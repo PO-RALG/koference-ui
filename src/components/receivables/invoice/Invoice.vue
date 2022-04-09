@@ -100,11 +100,15 @@
                     v-model="data.formData.date"
                   />
                 </v-col>
-                <v-col cols="12" md="12" class="mt-n8">
-                  <v-text-field
-                    label="Description"
+                <v-col cols="12" md="12" class="mb-n8 mt-n4">
+                  <v-textarea
                     v-model="data.formData.description"
-                  ></v-text-field>
+                    :min-height="80"
+                    :auto-grow="true"
+                    outlined
+                    label="Description"
+                  >
+                  </v-textarea>
                 </v-col>
                 <v-col class="pt-2" cols="12" md="12">
                   <tr class="heading blue-grey lighten-5">
@@ -133,7 +137,7 @@
                         class="invoice-tr"
                       >
                         <td>
-                          <v-select
+                          <v-autocomplete
                             :items="data.itemdefinitions"
                             :item-text="'name'"
                             v-model="invoice.invoice_item_definition_id"
@@ -143,8 +147,9 @@
                             dense
                             outlined
                             hide-details
+                            clearable
                             @change="checkDublicate($event, index)"
-                          ></v-select>
+                          ></v-autocomplete>
                         </td>
 
                         <td class="invoice-td">
@@ -238,7 +243,7 @@
                 @click="deleteInvoiceItemdefinition(data.invoiceData.id)"
                 color="warning darken-1"
                 text
-                ><v-icon>mdi-arrow-u-left-top-bold</v-icon> Cancel</v-btn
+                ><v-icon>mdi-arrow-u-left-top-bold</v-icon>Reverse</v-btn
               >
               <v-btn color="red darken-1" text @click="cancelInvoiceDialog"
                 >Close</v-btn

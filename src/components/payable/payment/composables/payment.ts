@@ -21,6 +21,7 @@ export const usePayment = (): any => {
     showDate: false,
     node: null,
     maxDate: moment(new Date()).format("YYYY-MM-DD"),
+    minDate: null,
     response: {},
     modalTitle: "",
     headers: [
@@ -197,7 +198,7 @@ export const usePayment = (): any => {
   const setPayableItems = (id: number) => {
     data.showDate = true;
     const payable = data.paymentVouchers.find((item) => item.id === id);
-    data.maxDate = moment(payable.date).format("YYYY-MM-DD");
+    data.minDate = moment(payable.date).format("YYYY-MM-DD");
     data.payableItems = [];
     findPaymentVoucher(id).then((response: AxiosResponse) => {
       const pvData = response.data.data;

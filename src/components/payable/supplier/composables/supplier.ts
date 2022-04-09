@@ -88,6 +88,7 @@ export const useSupplier = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     searchTerm: "",
+    focus: false,
     supplierTypes: ["Contractor", "Employee", "Others"],
     phoneRules: [
       (v: string) => !!v || "Phone number is required",
@@ -95,7 +96,7 @@ export const useSupplier = (): any => {
     ],
     tinRules: [
       (v: string) => !!v || "TIN is required",
-      (v: string) => (/^[\d]{3}-[\d]{3}-[\d]{3}$/.test(v)) || "TIN must be valid. e.g 000-111-222",
+      (v: string) => /^[\d]{3}-[\d]{3}-[\d]{3}$/.test(v) || "TIN must be valid. e.g 000-111-222",
     ],
     checkRules: [
       (v: string) => !!v || "Number is required",

@@ -71,7 +71,7 @@ export const useBankReconciliation = ({ root }): any => {
     const bankAccountId = root.$route.query.bank_account_id
       ? root.$route.query.bank_account_id
       : null;
-    const params = { date: date, bank_account_id: bankAccountId };
+    const params = { date: date, bank_account_id: bankAccountId, per_page: 30 };
     const query = {
       ...params,
     };
@@ -116,18 +116,15 @@ export const useBankReconciliation = ({ root }): any => {
           data.entries = response.data.data.data;
         })
         .then(() => {
-          getReport(params.bank_account_id, { date: params.date }).then(
-            (response: AxiosResponse) => {
-              if (response.data.data.balance_required) {
-                openDialog("BALANCE");
-              } else {
-                if (response.data.data.diff === 0) {
-                  showConfirmDialog();
-                }
-                data.report = response.data.data;
+          getReport(params).then((response: AxiosResponse) => {
+            if (response.data.data.balance_required) {
+              openDialog("BALANCE");
+            } else {
+              if (response.data.data.diff === 0) {
+                showConfirmDialog();
               }
             }
-          );
+          });
         });
     } else {
       data.entries = [];
@@ -223,11 +220,7 @@ export const useBankReconciliation = ({ root }): any => {
         ? root.$route.query.bank_account_id
         : null;
 
-      const query = {
-        ...data.formData,
-      };
-
-      getEntries(query)
+      getEntries(data.formData)
         .then((response: AxiosResponse) => {
           if (response.status === 200) {
             if (
@@ -257,9 +250,7 @@ export const useBankReconciliation = ({ root }): any => {
           }
         })
         .then(() => {
-          getReport(data.formData.bank_account_id, {
-            date: data.formData.date,
-          }).then((response: AxiosResponse) => {
+          getReport(data.formData).then((response: AxiosResponse) => {
             if (response.data.data.balance_required) {
               console.log("report", response.data.data);
               data.dialog = !data.dialog;

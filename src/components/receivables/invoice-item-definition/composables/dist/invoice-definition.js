@@ -53,16 +53,12 @@ exports.useInvoiceDefinition = function () {
             data.items = response.data.data.data;
             data.itemsToFilter = response.data.data.data;
         });
-        gfs_service_1.allgfscodes({ code: "REVENUE" }).then(function (response) {
-            console.log("all gfs data", response.data.data.data);
-            data.gfscodes = response.data.data.data[0];
-        });
         funding_sources_1.fundingsources({ per_page: 2000 }).then(function (response) {
             data.fundingsources = response.data.data.data;
         });
     };
     var gfsName = composition_api_1.computed(function () {
-        return data.gfscodes
+        return data.gfscodes && data.gfscodes.gfs_codes
             ? data.gfscodes.gfs_codes.map(function (gfsCodeItem) {
                 gfsCodeItem.fullName = gfsCodeItem.code + " - " + gfsCodeItem.name + " ";
                 return gfsCodeItem;
@@ -113,6 +109,7 @@ exports.useInvoiceDefinition = function () {
     var cancelDialog = function () {
         data.formData = {};
         data.modal = !data.modal;
+        data.gfscodes = {};
     };
     var cancelConfirmDialog = function () {
         data.formData = {};
@@ -166,6 +163,12 @@ exports.useInvoiceDefinition = function () {
             data.items = response.data.data.data;
         });
     };
+    var loadGfsCodes = function (params) {
+        gfs_service_1.allgfscodes({ code: "REVENUE", fundsource: params }).then(function (response) {
+            console.log("all gfs data", response.data.data.data);
+            data.gfscodes = response.data.data.data[0];
+        });
+    };
     return {
         data: data,
         getData: getData,
@@ -181,6 +184,7 @@ exports.useInvoiceDefinition = function () {
         searchCategory: searchCategory,
         setActivation: setActivation,
         gfsName: gfsName,
-        fundingsourceName: fundingsourceName
+        fundingsourceName: fundingsourceName,
+        loadGfsCodes: loadGfsCodes
     };
 };

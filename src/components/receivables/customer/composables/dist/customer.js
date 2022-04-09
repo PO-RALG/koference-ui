@@ -24,7 +24,24 @@ exports.useCustomer = function () {
         formData: customerData,
         rows: ["10", "20", "50", "100"],
         itemtodelete: "",
-        response: {}
+        response: {},
+        addcustomer: false,
+        genericCustomer: [
+            {
+                id: "1",
+                name: "NHIF",
+                email: "nhif@gmail.com",
+                phone: "0766158716",
+                address: "PO.BOX 3478 DSM"
+            },
+            {
+                id: "2",
+                name: "WHO",
+                email: "who@gmail.com",
+                phone: "323299923",
+                address: "PO.BOX 443 DDM"
+            },
+        ]
     });
     composition_api_1.onMounted(function () {
         customer_service_1.get({ per_page: 10 }).then(function (response) {
@@ -42,6 +59,9 @@ exports.useCustomer = function () {
     };
     composition_api_1.computed(function () {
         return "test";
+    });
+    var isUpdate = composition_api_1.computed(function () {
+        return data.modalTitle == "Update" ? true : false;
     });
     var searchCategory = function (categoryName) {
         console.log("argument", categoryName);
@@ -75,6 +95,7 @@ exports.useCustomer = function () {
     var cancelDialog = function () {
         data.formData = {};
         data.modal = !data.modal;
+        data.addcustomer = false;
     };
     var cancelConfirmDialog = function () {
         data.formData = {};
@@ -89,10 +110,11 @@ exports.useCustomer = function () {
     };
     var save = function () {
         console.log("Form Data", data.formData);
-        if (data.formData.id) {
+        if (data.formData.id && isUpdate.value) {
             updatecustomer(data.formData);
         }
         else {
+            delete data.formData.id;
             createCustomer(data.formData);
         }
     };
@@ -128,6 +150,17 @@ exports.useCustomer = function () {
             data.items = response.data.data.data;
         });
     };
+    var setAddCostomerValue = function () {
+        data.addcustomer = true;
+        data.formData = {};
+    };
+    var setGenericValue = function () {
+        data.addcustomer = false;
+        data.formData = {};
+    };
+    var populateFormData = function (event) {
+        data.formData = event;
+    };
     return {
         data: data,
         getData: getData,
@@ -141,6 +174,10 @@ exports.useCustomer = function () {
         remove: remove,
         cancelConfirmDialog: cancelConfirmDialog,
         searchCategory: searchCategory,
-        setActivation: setActivation
+        setActivation: setActivation,
+        setAddCostomerValue: setAddCostomerValue,
+        setGenericValue: setGenericValue,
+        populateFormData: populateFormData,
+        isUpdate: isUpdate
     };
 };

@@ -16,14 +16,14 @@ import {
   defineComponent,
   onMounted,
   computed,
-} from "@vue/composition-api";
-import store from "@/store";
-import axios from "axios";
+} from '@vue/composition-api'
+import store from '@/store'
+import axios from 'axios'
 
-import Landing from "@/layouts/Landing.vue";
-import LoginDialog from "@/components/auth/LoginDialog.vue";
-import ChangePasswordDialog from "@/components/auth/ChangePasswordDialog.vue";
-import SnackBar from "@/components/shared/SnackBar.vue";
+import Landing from '@/layouts/Landing.vue'
+import LoginDialog from '@/components/auth/LoginDialog.vue'
+import ChangePasswordDialog from '@/components/auth/ChangePasswordDialog.vue'
+import SnackBar from '@/components/shared/SnackBar.vue'
 
 export default defineComponent({
   components: {
@@ -37,55 +37,49 @@ export default defineComponent({
       drawer: null,
       axiosInterceptor: null,
       isLoading: false,
-    });
+    })
 
     const currentUser = computed(() => {
-      return store.getters["Auth/getCurrentUser"];
-    });
+      return store.getters['Auth/getCurrentUser']
+    })
 
     onMounted(() => {
-      enableInterceptor();
-    });
+      enableInterceptor()
+    })
 
     const enableInterceptor = () => {
       data.axiosInterceptor = axios.interceptors.request.use(
         (config) => {
-          data.isLoading = true;
-          return config;
+          data.isLoading = true
+          return config
         },
         (error) => {
-          data.isLoading = false;
-          return Promise.reject(error);
+          data.isLoading = false
+          return Promise.reject(error)
         }
-      );
+      )
 
       axios.interceptors.response.use(
         (response) => {
-          data.isLoading = false;
-          return response;
+          data.isLoading = false
+          return response
         },
         (error) => {
-          data.isLoading = false;
-          return Promise.reject(error);
+          data.isLoading = false
+          return Promise.reject(error)
         }
-      );
-    };
+      )
+    }
 
     const disableInterceptor = () => {
-      axios.interceptors.request.eject(data.axiosInterceptor);
-    };
+      axios.interceptors.request.eject(data.axiosInterceptor)
+    }
 
     return {
-      data,
       currentUser,
-
-      enableInterceptor,
-      disableInterceptor,
-
-      onMounted,
-    };
+    }
   },
-});
+})
 </script>
 
 <style lang="scss">

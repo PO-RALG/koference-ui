@@ -132,7 +132,7 @@ exports.useReceipt = function () {
         selectedInvoice: null,
         modalTitle: "",
         maxDate: moment_1["default"](new Date()).format("YYYY-MM-DD"),
-        minDate: moment_1["default"](new Date()).format("YYYY-MM-DD"),
+        minDate: null,
         headers: [
             {
                 text: "Receipt Number",
@@ -145,7 +145,7 @@ exports.useReceipt = function () {
                 text: "Amount",
                 align: "start",
                 sortable: false,
-                value: "amount"
+                value: "totalAmt"
             },
             {
                 text: "From",
@@ -218,6 +218,22 @@ exports.useReceipt = function () {
         init();
     });
     var init = function () {
+        data.receipt = {
+            id: null,
+            customer_id: null,
+            invoice_id: null,
+            date: null,
+            bank_reference_number: null,
+            description: null,
+            bank_account_id: null,
+            items: [
+                {
+                    funding_source_code: null,
+                    gl_account_id: null,
+                    amount: null
+                },
+            ]
+        };
         data.loading = true;
         receipt_service_1.get({ per_page: 10 }).then(function (response) {
             var _a = response.data.data, from = _a.from, to = _a.to, total = _a.total, current_page = _a.current_page, per_page = _a.per_page, last_page = _a.last_page;
