@@ -97,6 +97,7 @@ export const useFundSource = (): any => {
 
   const cancelDialog = () => {
     data.formData = {} as FundSources;
+    data.selectedGfs = [];
     data.modal = !data.modal;
   };
 

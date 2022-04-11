@@ -1,23 +1,22 @@
 import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { Customer } from "../types/Customer";
+import { GenericCustomer } from "../types/GenericCustomer";
 import {
   get,
   create,
   update,
   destroy,
-  regSearch,
+  search,
   activation,
-} from "../services/customer.service";
-import { search as listOfGenericCustomer } from "../../../setup/generic-customer/services/generic-customer.service";
+} from "../services/generic-customer.service";
 
-export const useCustomer = (): any => {
-  const dataItems: Array<Customer> = [];
-  let customerData: Customer;
+export const useGenericCustomer = (): any => {
+  const dataItems: Array<GenericCustomer> = [];
+  let customerData: GenericCustomer;
 
   const data = reactive({
-    title: "Manage Customers",
+    title: "Manage Generic Customers",
     modalTitle: "",
     headers: [
       { text: "Name", align: "start", sortable: false, value: "name" },
@@ -68,7 +67,7 @@ export const useCustomer = (): any => {
     console.log("argument", categoryName);
 
     if (categoryName != null) {
-      regSearch({ name: categoryName.name }).then((response: any) => {
+      search({ name: categoryName.name }).then((response: any) => {
         //// data", response.data.data);
         data.items = response.data.data;
       });
@@ -98,13 +97,13 @@ export const useCustomer = (): any => {
   };
 
   const cancelDialog = () => {
-    data.formData = {} as Customer;
+    data.formData = {} as GenericCustomer;
     data.modal = !data.modal;
     data.addcustomer = false;
   };
 
   const cancelConfirmDialog = () => {
-    data.formData = {} as Customer;
+    data.formData = {} as GenericCustomer;
     data.deletemodal = false;
   };
 
@@ -131,16 +130,10 @@ export const useCustomer = (): any => {
       data.formData = formData;
       data.modalTitle = "Update";
     } else {
-      data.formData = {} as Customer;
+      data.formData = {} as GenericCustomer;
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
-
-    listOfGenericCustomer({ per_page: 1000, active: true }).then(
-      (response: AxiosResponse) => {
-        data.genericCustomer = response.data.data.data;
-      }
-    );
   };
 
   const updatecustomer = (data: any) => {
@@ -168,11 +161,11 @@ export const useCustomer = (): any => {
   };
   const setAddCostomerValue = () => {
     data.addcustomer = true;
-    data.formData = {} as Customer;
+    data.formData = {} as GenericCustomer;
   };
   const setGenericValue = () => {
     data.addcustomer = false;
-    data.formData = {} as Customer;
+    data.formData = {} as GenericCustomer;
   };
   const populateFormData = (event: any) => {
     data.formData = event;

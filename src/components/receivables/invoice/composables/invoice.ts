@@ -6,12 +6,14 @@ import {
   create,
   update,
   destroy,
-  search,
-  viewinvoice,
+  regSearch as InvoiceSearch,
   receiptcreate,
 } from "../services/invoice";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
-import { customers } from "@/components/receivables/customer/services/customer.service";
+import {
+  customers,
+  regSearch,
+} from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import { itemdefinitions } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
 import moment from "moment";
@@ -192,6 +194,8 @@ export const useInvoice = (): any => {
     loading: false,
     coat: "/coat_of_arms.svg.png",
     toSave: {},
+    searchTerm: "",
+    search: "",
   });
 
   onMounted(() => {
@@ -209,26 +213,36 @@ export const useInvoice = (): any => {
       data.bankName = response.data.data.data;
     });
 
-    customers({ per_page: 20000, active: true }).then(
-      (response: AxiosResponse) => {
-        data.customers = response.data.data.data;
-      }
-    );
+    loadCustomer();
 
     itemdefinitions({ per_page: 20000 }).then((response: AxiosResponse) => {
       data.itemdefinitions = response.data.data.data;
     });
   });
 
-  const searchCategory = (categoryName) => {
+  const searchCategory = (categoryName: any) => {
+    // console.log("categoryname", categoryName.invoice_number);
+    if (categoryName != null && categoryName.length >= 2) {
+      InvoiceSearch({ regSearch: categoryName }).then(
+        (response: AxiosResponse) => {
+          data.itemsToFilter = response.data.data.data;
+        }
+      );
+    } else if (categoryName ? categoryName.length == 0 : "") {
+      reloadData();
+      data.search = "";
+    } else {
+      reloadData();
+    }
+  };
+  const reanderSearched = (categoryName: any) => {
+    console.log("categoryname", categoryName);
     if (categoryName != null) {
-      search({ invoice_number: categoryName.invoice_number }).then(
+      InvoiceSearch({ regSearch: categoryName.invoice_number }).then(
         (response: AxiosResponse) => {
           data.items = response.data.data.data;
         }
       );
-    } else {
-      reloadData();
     }
   };
 
@@ -239,6 +253,14 @@ export const useInvoice = (): any => {
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
+  };
+
+  const loadCustomer = () => {
+    customers({ per_page: 20000, active: true }).then(
+      (response: AxiosResponse) => {
+        data.customers = response.data.data.data;
+      }
+    );
   };
 
   const deleteInvoiceItemdefinition = (deleteId: any) => {
@@ -307,10 +329,12 @@ export const useInvoice = (): any => {
   });
 
   const newInvoiceItem: any = computed(() => {
-    return data.invoiceData.invoice_items.map((data, index) => ({
-      ...data,
-      index: ++index,
-    }));
+    return data && data.invoiceData && data.invoiceData
+      ? data.invoiceData.invoice_items.map((data, index) => ({
+          ...data,
+          index: ++index,
+        }))
+      : "";
   });
 
   const invoicedAmount = ref(newInvoiceItem);
@@ -448,6 +472,20 @@ export const useInvoice = (): any => {
     }
   });
 
+  const searchCustomer = (item: string) => {
+    if (item) {
+      const regSearchTerm = item ? item : data.searchTerm;
+      regSearch({
+        active: true,
+        regSearch: regSearchTerm,
+      }).then((response: AxiosResponse) => {
+        data.customers = response.data.data.data;
+      });
+    } else {
+      loadCustomer();
+    }
+  };
+
   return {
     data,
     getData,
@@ -476,5 +514,7 @@ export const useInvoice = (): any => {
     newInvoiceItem,
     sumDebts,
     checkDublicate,
+    searchCustomer,
+    reanderSearched,
   };
 };

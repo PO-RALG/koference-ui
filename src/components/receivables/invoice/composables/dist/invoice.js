@@ -189,7 +189,9 @@ exports.useInvoice = function () {
         ],
         loading: false,
         coat: "/coat_of_arms.svg.png",
-        toSave: {}
+        toSave: {},
+        searchTerm: "",
+        search: ""
     });
     composition_api_1.onMounted(function () {
         data.loading = true;
@@ -203,21 +205,32 @@ exports.useInvoice = function () {
         gfs_service_1.allgfscodes({ per_page: 20000 }).then(function (response) {
             data.bankName = response.data.data.data;
         });
-        customer_service_1.customers({ per_page: 20000, active: true }).then(function (response) {
-            data.customers = response.data.data.data;
-        });
+        loadCustomer();
         invoice_item_definition_1.itemdefinitions({ per_page: 20000 }).then(function (response) {
             data.itemdefinitions = response.data.data.data;
         });
     });
     var searchCategory = function (categoryName) {
-        if (categoryName != null) {
-            invoice_1.search({ invoice_number: categoryName.invoice_number }).then(function (response) {
-                data.items = response.data.data.data;
+        // console.log("categoryname", categoryName.invoice_number);
+        if (categoryName != null && categoryName.length >= 2) {
+            invoice_1.regSearch({ regSearch: categoryName }).then(function (response) {
+                data.itemsToFilter = response.data.data.data;
             });
+        }
+        else if (categoryName ? categoryName.length == 0 : "") {
+            reloadData();
+            data.search = "";
         }
         else {
             reloadData();
+        }
+    };
+    var reanderSearched = function (categoryName) {
+        console.log("categoryname", categoryName);
+        if (categoryName != null) {
+            invoice_1.regSearch({ regSearch: categoryName.invoice_number }).then(function (response) {
+                data.items = response.data.data.data;
+            });
         }
     };
     var reloadData = function () {
@@ -225,6 +238,11 @@ exports.useInvoice = function () {
             var _a = response.data.data, from = _a.from, to = _a.to, total = _a.total, current_page = _a.current_page, per_page = _a.per_page, last_page = _a.last_page;
             data.response = { from: from, to: to, total: total, current_page: current_page, per_page: per_page, last_page: last_page };
             data.items = response.data.data.data;
+        });
+    };
+    var loadCustomer = function () {
+        customer_service_1.customers({ per_page: 20000, active: true }).then(function (response) {
+            data.customers = response.data.data.data;
         });
     };
     var deleteInvoiceItemdefinition = function (deleteId) {
@@ -283,7 +301,9 @@ exports.useInvoice = function () {
         });
     });
     var newInvoiceItem = composition_api_1.computed(function () {
-        return data.invoiceData.invoice_items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); });
+        return data && data.invoiceData && data.invoiceData
+            ? data.invoiceData.invoice_items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); })
+            : "";
     });
     var invoicedAmount = composition_api_1.ref(newInvoiceItem);
     var sumDebts = composition_api_1.computed(function () {
@@ -396,6 +416,20 @@ exports.useInvoice = function () {
             });
         }
     });
+    var searchCustomer = function (item) {
+        if (item) {
+            var regSearchTerm = item ? item : data.searchTerm;
+            customer_service_1.regSearch({
+                active: true,
+                regSearch: regSearchTerm
+            }).then(function (response) {
+                data.customers = response.data.data.data;
+            });
+        }
+        else {
+            loadCustomer();
+        }
+    };
     return {
         data: data,
         getData: getData,
@@ -423,6 +457,8 @@ exports.useInvoice = function () {
         newInvoiceItems: newInvoiceItems,
         newInvoiceItem: newInvoiceItem,
         sumDebts: sumDebts,
-        checkDublicate: checkDublicate
+        checkDublicate: checkDublicate,
+        searchCustomer: searchCustomer,
+        reanderSearched: reanderSearched
     };
 };

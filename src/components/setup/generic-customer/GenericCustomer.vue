@@ -1,5 +1,5 @@
 <template>
-  <div class="Invoice Item Definition">
+  <div class="customers">
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
@@ -40,14 +40,14 @@
         <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-        <template v-slot:item.activations="{ item }">
+        <template v-slot:[`item.activations`]="{ item }">
           <v-switch
             :input-value="item.active"
             @change="setActivation(item)"
             value
           ></v-switch>
         </template>
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -63,10 +63,7 @@
           </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="deleteInvoiceItemdefinition(item.id)"
+              <v-icon v-bind="attrs" v-on="on" @click="deleteCustomer(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -82,72 +79,45 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="760">
+    <Modal :modal="data.modal" :width="700">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Invoice Item Definition`" />
+        <ModalHeader :title="`${data.modalTitle} Generic Customers`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="12">
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
                     required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.code"
-                    label="Code"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.description"
-                    label="Description"
-                    required
+                    hide-details
+                    dense
                   ></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="data.formData.unit_of_measure"
-                    label="Unit of measures"
+                    v-model="data.formData.email"
+                    label="Email"
                     required
                   ></v-text-field>
                 </v-col>
-                <pre></pre>
                 <v-col cols="12" md="6">
-                  <v-autocomplete
-                    v-model="data.formData.funding_source_id"
-                    label="Funding Sources"
-                    :items="fundingsourceName"
-                    :item-text="'sourceName'"
-                    item-value="id"
-                    :item-divider="true"
+                  <v-text-field
+                    v-model="data.formData.phone"
+                    label="Phone"
                     required
-                    @change="loadGfsCodes($event)"
-                  ></v-autocomplete>
+                  ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6">
-                  <v-autocomplete
-                    v-model="data.formData.gfs_code_id"
-                    label="Gfs Codes"
-                    :items="
-                      data.fundsourcesGfscodes[0]
-                        ? data.fundsourcesGfscodes[0].gfs_codes
-                        : []
-                    "
-                    :item-text="'name'"
-                    item-value="id"
-                    :item-divider="true"
+                <v-col cols="12" md="12">
+                  <v-text-field
+                    v-model="data.formData.address"
+                    label="Address"
                     required
-                    clearable
-                  ></v-autocomplete>
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -166,7 +136,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Invoice Item Definition `" />
+        <ModalHeader :title="`Delete Generic Customers `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -185,47 +155,50 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import { useInvoiceDefinition } from "./composables/invoice-definition";
+
+import { useGenericCustomer } from "./composables/generic-customer";
 
 export default defineComponent({
-  name: "ManageInvoiceItemDefinition",
+  name: "GenericCustomer",
   setup() {
     const {
       data,
       getData,
       openDialog,
       cancelDialog,
-      deleteInvoiceItemdefinition,
-      getInvoiceItemdefinition,
-      updateInvoiceItemDefinition,
+      deleteCustomer,
+      getCustomer,
+      updatecustomer,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
       searchCategory,
       setActivation,
-      gfsName,
-      fundingsourceName,
-      loadGfsCodes,
-    } = useInvoiceDefinition();
+      setAddCostomerValue,
+      setGenericValue,
+      populateFormData,
+      isUpdate,
+    } = useGenericCustomer();
 
     return {
       data,
       getData,
       openDialog,
       cancelDialog,
-      deleteInvoiceItemdefinition,
-      getInvoiceItemdefinition,
-      updateInvoiceItemDefinition,
+      deleteCustomer,
+      getCustomer,
+      updatecustomer,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
       searchCategory,
       setActivation,
-      gfsName,
-      fundingsourceName,
-      loadGfsCodes,
+      setAddCostomerValue,
+      setGenericValue,
+      populateFormData,
+      isUpdate,
     };
   },
 });

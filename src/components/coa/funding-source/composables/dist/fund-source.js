@@ -82,6 +82,7 @@ exports.useFundSource = function () {
     };
     var cancelDialog = function () {
         data.formData = {};
+        data.selectedGfs = [];
         data.modal = !data.modal;
     };
     var cancelConfirmDialog = function () {

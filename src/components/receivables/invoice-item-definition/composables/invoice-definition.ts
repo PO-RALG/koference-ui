@@ -52,6 +52,7 @@ export const useInvoiceDefinition = (): any => {
     itemtodelete: "",
     response: {},
     gfscodes: gfsCodeData,
+    fundsourcesGfscodes: [],
     fundingsources: [],
   });
 
@@ -193,11 +194,8 @@ export const useInvoiceDefinition = (): any => {
     });
   };
   const loadGfsCodes = (params: any) => {
-    allgfscodes({ code: "REVENUE", fundsource: params }).then(
-      (response: any) => {
-        console.log("all gfs data", response.data.data.data);
-        data.gfscodes = response.data.data.data[0];
-      }
+    data.fundsourcesGfscodes = fundingsourceName.value.filter(
+      (word) => word.id == params
     );
   };
 

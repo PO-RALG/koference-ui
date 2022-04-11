@@ -94,10 +94,9 @@
                     :items="data.genericCustomer"
                     item-text="name"
                     item-value="name"
+                    v-model="data.formData.name"
                     outlined
                     dense
-                    chips
-                    small-chips
                     label="Select Generic Costomer"
                     hide-details
                     return-object

@@ -3,6 +3,7 @@ exports.__esModule = true;
 exports.useCustomer = void 0;
 var composition_api_1 = require("@vue/composition-api");
 var customer_service_1 = require("../services/customer.service");
+var generic_customer_service_1 = require("../../../setup/generic-customer/services/generic-customer.service");
 exports.useCustomer = function () {
     var dataItems = [];
     var customerData;
@@ -26,22 +27,7 @@ exports.useCustomer = function () {
         itemtodelete: "",
         response: {},
         addcustomer: false,
-        genericCustomer: [
-            {
-                id: "1",
-                name: "NHIF",
-                email: "nhif@gmail.com",
-                phone: "0766158716",
-                address: "PO.BOX 3478 DSM"
-            },
-            {
-                id: "2",
-                name: "WHO",
-                email: "who@gmail.com",
-                phone: "323299923",
-                address: "PO.BOX 443 DDM"
-            },
-        ]
+        genericCustomer: []
     });
     composition_api_1.onMounted(function () {
         customer_service_1.get({ per_page: 10 }).then(function (response) {
@@ -66,7 +52,7 @@ exports.useCustomer = function () {
     var searchCategory = function (categoryName) {
         console.log("argument", categoryName);
         if (categoryName != null) {
-            customer_service_1.search({ name: categoryName.name }).then(function (response) {
+            customer_service_1.regSearch({ name: categoryName.name }).then(function (response) {
                 //// data", response.data.data);
                 data.items = response.data.data;
             });
@@ -128,6 +114,9 @@ exports.useCustomer = function () {
             data.modalTitle = "Create";
         }
         data.modal = !data.modal;
+        generic_customer_service_1.search({ per_page: 1000, active: true }).then(function (response) {
+            data.genericCustomer = response.data.data.data;
+        });
     };
     var updatecustomer = function (data) {
         customer_service_1.update(data).then(function (response) {
