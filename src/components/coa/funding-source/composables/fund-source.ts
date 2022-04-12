@@ -182,14 +182,14 @@ export const useFundSource = (): any => {
   };
 
   const onChangeList = ({ source, destination }): void => {
-    const xxx = destination.map((s) => s.id);
+    const gfsCodeIds = destination.map((s) => s.id);
 
     destination.forEach((item) => {
       data.gfscodes = upsert(source, item);
     });
-    console.log("item", xxx);
+    console.log("item", gfsCodeIds);
 
-    data.formData.gfs = xxx;
+    data.formData.gfs = gfsCodeIds;
   };
 
   return {

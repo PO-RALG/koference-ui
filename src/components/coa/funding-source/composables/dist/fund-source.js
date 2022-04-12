@@ -159,12 +159,12 @@ exports.useFundSource = function () {
     };
     var onChangeList = function (_a) {
         var source = _a.source, destination = _a.destination;
-        var xxx = destination.map(function (s) { return s.id; });
+        var gfsCodeIds = destination.map(function (s) { return s.id; });
         destination.forEach(function (item) {
             data.gfscodes = upsert(source, item);
         });
-        console.log("item", xxx);
-        data.formData.gfs = xxx;
+        console.log("item", gfsCodeIds);
+        data.formData.gfs = gfsCodeIds;
     };
     return {
         data: data,

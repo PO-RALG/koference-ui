@@ -195,7 +195,7 @@ export const useInvoiceDefinition = (): any => {
   };
   const loadGfsCodes = (params: any) => {
     data.fundsourcesGfscodes = fundingsourceName.value.filter(
-      (word) => word.id == params
+      (word) => word.id === params
     );
   };
 

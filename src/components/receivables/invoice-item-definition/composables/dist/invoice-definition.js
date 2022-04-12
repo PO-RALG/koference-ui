@@ -164,7 +164,7 @@ exports.useInvoiceDefinition = function () {
         });
     };
     var loadGfsCodes = function (params) {
-        data.fundsourcesGfscodes = fundingsourceName.value.filter(function (word) { return word.id == params; });
+        data.fundsourcesGfscodes = fundingsourceName.value.filter(function (word) { return word.id === params; });
     };
     return {
         data: data,

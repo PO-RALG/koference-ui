@@ -139,7 +139,7 @@
                     label="Gfs Codes"
                     :items="
                       data.fundsourcesGfscodes[0]
-                        ? data.fundsourcesGfscodes[0].gfs_codes
+                        ? data.fundsourcesGfscodes[0].gfs
                         : []
                     "
                     :item-text="'name'"
