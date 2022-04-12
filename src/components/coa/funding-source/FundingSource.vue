@@ -103,7 +103,7 @@
                   <DualMultiSelect
                     :source="data.gfscodes"
                     :destination="data.selectedGfs"
-                    v-model="data.formData.gfscodes"
+                    v-model="data.formData.gfs"
                     :label="'name'"
                     :modelName="'gfscodes'"
                     @onChangeList="onChangeList"

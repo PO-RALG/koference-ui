@@ -132,6 +132,7 @@ export const useFundSource = (): any => {
 
   const openDialog = (formData?: any) => {
     if (formData.id) {
+      data.selectedGfs = formData.gfs;
       data.formData = formData;
       data.modalTitle = "Update";
     } else {
@@ -181,10 +182,14 @@ export const useFundSource = (): any => {
   };
 
   const onChangeList = ({ source, destination }): void => {
+    const xxx = destination.map((s) => s.id);
+
     destination.forEach((item) => {
       data.gfscodes = upsert(source, item);
     });
-    data.formData.gfscodes = destination;
+    console.log("item", xxx);
+
+    data.formData.gfs = xxx;
   };
 
   return {

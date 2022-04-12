@@ -112,6 +112,7 @@ exports.useFundSource = function () {
     };
     var openDialog = function (formData) {
         if (formData.id) {
+            data.selectedGfs = formData.gfs;
             data.formData = formData;
             data.modalTitle = "Update";
         }
@@ -158,10 +159,12 @@ exports.useFundSource = function () {
     };
     var onChangeList = function (_a) {
         var source = _a.source, destination = _a.destination;
+        var xxx = destination.map(function (s) { return s.id; });
         destination.forEach(function (item) {
             data.gfscodes = upsert(source, item);
         });
-        data.formData.gfscodes = destination;
+        console.log("item", xxx);
+        data.formData.gfs = xxx;
     };
     return {
         data: data,

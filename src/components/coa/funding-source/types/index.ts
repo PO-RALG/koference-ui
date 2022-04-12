@@ -2,5 +2,5 @@ export interface FundSources {
   id: number;
   code: string;
   description: string;
-  gfscodes: [];
+  gfs: Array<string>;
 }
