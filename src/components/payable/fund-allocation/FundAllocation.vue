@@ -34,14 +34,14 @@
             </v-select>
           </v-col>
           <v-col cols="6" sm="12" md="1" v-if="data.items.length">
-            <v-text-field 
+            <v-text-field
               v-model="data.itemUnallocated.carryover"
               label="Carryover Fund"
               disabled
             ></v-text-field>
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
-            <v-text-field 
+            <v-text-field
               v-model="data.itemUnallocated.current"
               label="Current Fund"
               disabled
@@ -93,19 +93,26 @@
                     {{ item.code }} <br />
                     <span style="color: teal">{{
                       item.activity.description
-                      }}</span>
+                    }}</span>
                     <br />
                     {{ item.gfsCode.name }}
                   </td>
-                  <td class="">{{ item.budget | toCurrency()  }}</td>
-                  <td class="">{{ item.allocation | toCurrency()  }}</td>
-                  <td class="">{{ item.totalExpenditure | toCurrency()  }}</td>
-                  <td class="">{{ (item.allocation - item.totalExpenditure) | toCurrency()  }}</td>
+                  <td class="">{{ item.budget | toCurrency() }}</td>
+                  <td class="">{{ item.allocation | toCurrency() }}</td>
+                  <td class="">{{ item.totalExpenditure | toCurrency() }}</td>
+                  <td class="">
+                    {{
+                      (item.allocation - item.totalExpenditure) | toCurrency()
+                    }}
+                  </td>
                   <td class="pt-5">
                     <v-text-field
                       dense
                       outlined
-                      :rules="[maxAllocation(item.budget - item.allocation),maxAvailable(item.allocation - item.totalExpenditure)]"
+                      :rules="[
+                        maxAllocation(item.budget - item.allocation),
+                        maxAvailable(item.allocation - item.totalExpenditure),
+                      ]"
                       v-model="item.allocation_amount"
                       @input="newAllocation(item.allocation_amount)"
                       type="text"
@@ -118,11 +125,7 @@
         </v-card-text>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            @click="save"
-            v-if="data.items.length"
-          >
+          <v-btn color="primary" @click="save" v-if="data.items.length">
             save
           </v-btn>
         </v-card-actions>
@@ -173,12 +176,12 @@ export default defineComponent({
         }
       }
     }
-    
+
     tr {
       border-right: 1px solid #ccc;
       border-bottom: 1px solid #ccc;
     }
-    
+
     td {
       border-right: 1px solid #ccc;
       &:last-child {
@@ -188,4 +191,3 @@ export default defineComponent({
   }
 }
 </style>
-

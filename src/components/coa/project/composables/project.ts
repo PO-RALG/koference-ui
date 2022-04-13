@@ -1,6 +1,12 @@
 import { AxiosResponse } from "axios";
 import { reactive, onMounted } from "@vue/composition-api";
-import { get, create, update, destroy, search } from "../services/project.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../services/project.service";
 
 import { Project } from "../types/Project";
 
@@ -38,7 +44,8 @@ export const useProject = (): any => {
 
   onMounted(() => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      let { from, to, total, current_page, per_page, last_page } = response.data.data;
+      let { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = {
         from,
         to,
@@ -57,7 +64,7 @@ export const useProject = (): any => {
 
     if (categoryName != null) {
       search({ code: categoryName.code }).then((response: any) => {
-        console.log("response data", response);
+        //// data", response);
         data.items = response.data.data.data;
       });
     } else {
@@ -67,7 +74,8 @@ export const useProject = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      let { from, to, total, current_page, per_page, last_page } = response.data.data;
+      let { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
