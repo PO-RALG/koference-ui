@@ -10,7 +10,7 @@ import {
   regSearch,
   activation,
 } from "../services/customer.service";
-import { search as listOfGenericCustomer } from "../../../setup/generic-customer/services/generic-customer.service";
+import { search as listOfGenericCustomer } from "../../../receivables/generic-customer/services/generic.customer.service";
 
 export const useCustomer = (): any => {
   const dataItems: Array<Customer> = [];
