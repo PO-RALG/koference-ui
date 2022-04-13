@@ -14,6 +14,7 @@ import { fundTypesRoutes } from "@/components/coa/fund-type";
 import { gfsCategoriesRoutes } from "@/components/coa/gfs-category";
 import { projectRoutes } from "@/components/coa/project";
 import { customerRoutes } from "@/components/receivables/customer";
+import { genericCustomerRoutes } from "@/components/receivables/generic-customer";
 import { documentCategoryRoutes } from "@/components/setup/document-category";
 import { documentRoutes } from "@/components/setup/document";
 import { fundingSourceRoutes } from "@/components/coa/funding-source";
@@ -45,6 +46,7 @@ import { chequeListRoutes } from "@/components/payable/cheque-list";
 import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
 import { notFoundRoute } from "@/components/404";
 import { receiptRoutes } from "@/components/receivables/receipt";
+
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -81,6 +83,7 @@ const routes: Array<RouteConfig> = [
       ...gfsCategoriesRoutes,
       ...projectRoutes,
       ...customerRoutes,
+      ...genericCustomerRoutes,
       ...documentCategoryRoutes,
       ...documentRoutes,
       ...fundingSourceRoutes,
