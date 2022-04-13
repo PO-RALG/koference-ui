@@ -51,7 +51,7 @@
                         label="Search"
                         placeholder="Eg: INV-2022-000047"
                         @input="searchCategory"
-                        hint="Enter atleast five (8) characters"
+                        hint="Enter atleast five (2) characters"
                       ></v-text-field>
                     </v-list-item-content>
                   </v-list-item>
