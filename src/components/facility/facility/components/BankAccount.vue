@@ -1,6 +1,6 @@
 <template>
   <div class="bank-accounts">
-    <v-card-actions class="pa-0">
+    <v-card-actions class="pa-5">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
@@ -12,29 +12,15 @@
         Add New
       </v-btn>
     </v-card-actions>
-    <v-card>
+    <v-card class="pb-8">
       <v-data-table
         :headers="data.headers"
         :items="data.items"
         :single-expand="true"
-        class="elevation-1"
       >
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
-            <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Bank Name"
-                @change="searchCategory($event)"
-                :items="bankName"
-                :item-text="'fullName'"
-                :item-divider="true"
-                return-object
-                required
-                clearable
-                hide-details
-              ></v-autocomplete>
-            </v-col>
           </v-card-title>
         </template>
         <template v-slot:[`item.startDate`]="{ item }">
@@ -65,7 +51,7 @@
                 :disabled="cant('delete', 'BankAccount')"
                 v-bind="attrs"
                 v-on="on"
-                @click="deleteBankAccount(item.id)"
+                @click="openConfirmDialog(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -80,7 +66,6 @@
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
-          <!-- <img v-show="imageUrl" :src="imageUrl" alt="" /> -->
           <v-form>
             <v-container>
               <v-row>
@@ -106,8 +91,8 @@
                   <v-text-field
                     v-model="data.formData.bank"
                     label="Bank"
-                    outlined
                     required
+                    outlined
                     :hide-details="true"
                   ></v-text-field>
                 </v-col>
@@ -125,7 +110,7 @@
                   <v-autocomplete
                     v-model="data.formData.bank_account_type_id"
                     label="Bank Account Type"
-                    :items="data.accountTypes"
+                    :items="data.accounttypes"
                     :item-text="'name'"
                     item-value="id"
                     :item-divider="true"
@@ -141,7 +126,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
           <v-btn
             :disabled="cant('create', 'BankAccount', 'update', 'BankAccount')"
             color="green darken-1"
@@ -180,40 +165,50 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import { useBank } from "./composables/bank";
 
 export default defineComponent({
-  name: "BackAccount",
-  setup() {
-    const {
-      data,
-      openDialog,
-      cancelDialog,
-      deleteBankAccount,
-      updateFinancialYear,
-      save,
-      reloadData,
-      remove,
-      cancelConfirmDialog,
-      searchBankAccounts,
-      bankName,
-    } = useBank();
+  props: {
+    data: {
+      required: true,
+    },
+    bankName: {
+      required: true,
+    },
+  },
+
+  setup(_props, context) {
+    const openDialog = (item = null) => {
+      context.emit("onOpenDialog", item);
+    };
+
+    const closeDialog = () => {
+      context.emit("onCloseDialog");
+    };
+
+    const openConfirmDialog = (id) => {
+      context.emit("onOpenConfirmDialog", id);
+    };
+
+    const cancelConfirmDialog = () => {
+      context.emit("onCloseConfirmDialog");
+    };
+
+    const save = () => {
+      context.emit("onCreate");
+    };
+
+    const remove = () => {
+      context.emit("onRemove");
+    };
 
     return {
-      data,
       openDialog,
-      cancelDialog,
-      deleteBankAccount,
-      updateFinancialYear,
-      save,
-      reloadData,
-      remove,
+      closeDialog,
+      openConfirmDialog,
       cancelConfirmDialog,
-      searchBankAccounts,
-      bankName,
+      save,
+      remove,
     };
   },
 });
 </script>
-
-<style scoped></style>

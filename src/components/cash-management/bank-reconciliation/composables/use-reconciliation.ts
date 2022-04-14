@@ -369,7 +369,7 @@ export const useBankReconciliation = ({ root }): any => {
         return {
           ...entry,
           type: getType(entry.transaction_type),
-          account: getAccount(entry.transaction_type),
+          account: `${entry.owner.name} - (${getAccount(entry.transaction_type)})`,
           amount: getAmount(entry),
         };
       }),
