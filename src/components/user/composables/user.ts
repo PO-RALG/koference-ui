@@ -68,9 +68,7 @@ export const useUser = (): any => {
       (v: string) =>
         (v && v.length <= 10) || "Name must be less than 10 characters",
     ],
-    requiredRules: [
-      (v: string) => !!v || "Field is required",
-    ],
+    requiredRules: [(v: string) => !!v || "Field is required"],
     email: "",
     emailRules: [
       (v: string) => !!v || "E-mail is required",
@@ -260,8 +258,8 @@ export const useUser = (): any => {
   };
 
   const toggleFacilitylOption = (location: any) => {
-    const level = data.levels.find((level: any) =>
-      level.id === location.level_id
+    const level = data.levels.find(
+      (level: any) => level.id === location.level_id
     );
     if (level.code === "WARD" || level.code === "VILLAGE_MTAA") {
       data.showFacility = true;
@@ -286,7 +284,7 @@ export const useUser = (): any => {
     getFacilities({ search: { location_id: data.location["id"] } }).then(
       (response: AxiosResponse) => {
         data.facilities = response.data.data.data;
-      },
+      }
     );
   };
 

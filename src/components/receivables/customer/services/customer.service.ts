@@ -18,6 +18,10 @@ const search = async (payload: any) => {
   });
 };
 
+const regSearch = async (payload: any) => {
+  return await axios.get(`/api/v1/customers/`, { params: payload });
+};
+
 const activation = async (payload: any) => {
   return await axios.post(
     `/api/v1/customers/` + payload.id + "/change-status",
@@ -41,4 +45,14 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/customers/` + payload);
 };
 
-export { get, find, create, update, destroy, search, activation, customers };
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  search,
+  activation,
+  customers,
+  regSearch,
+};

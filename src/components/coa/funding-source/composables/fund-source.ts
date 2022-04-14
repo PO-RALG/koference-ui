@@ -1,7 +1,14 @@
 import { AxiosResponse } from "axios";
 import { FundSources } from "../types";
-import { reactive, onMounted } from "@vue/composition-api";
-import { get, create, update, destroy, search } from "../services/funding-sources";
+import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
+import { reactive, onMounted, computed } from "@vue/composition-api";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../services/funding-sources";
 
 export const useFundSource = (): any => {
   const dataItems: Array<FundSources> = [];
@@ -33,11 +40,14 @@ export const useFundSource = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},
+    selectedGfs: [],
+    gfscodes: [],
   });
 
   onMounted(() => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = {
         from,
         to,
@@ -56,7 +66,7 @@ export const useFundSource = (): any => {
 
     if (categoryName != null) {
       search({ code: categoryName.code }).then((response: any) => {
-        console.log("response data", response);
+        //// data", response);
         data.items = response.data.data.data;
       });
     } else {
@@ -66,7 +76,8 @@ export const useFundSource = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -86,6 +97,7 @@ export const useFundSource = (): any => {
 
   const cancelDialog = () => {
     data.formData = {} as FundSources;
+    data.selectedGfs = [];
     data.modal = !data.modal;
   };
 
@@ -103,6 +115,7 @@ export const useFundSource = (): any => {
 
   const save = () => {
     console.log("Form Data", data.formData);
+
     if (data.formData.id) {
       updateFunfingSources(data.formData);
     } else {
@@ -110,8 +123,16 @@ export const useFundSource = (): any => {
     }
   };
 
+  const loadGfsCodes = () => {
+    allgfscodes({ code: "REVENUE" }).then((response: any) => {
+      console.log("all gfs data", response.data.data.data);
+      data.gfscodes = response.data.data.data[0].gfs_codes;
+    });
+  };
+
   const openDialog = (formData?: any) => {
     if (formData.id) {
+      data.selectedGfs = formData.gfs;
       data.formData = formData;
       data.modalTitle = "Update";
     } else {
@@ -119,6 +140,7 @@ export const useFundSource = (): any => {
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
+    loadGfsCodes();
   };
 
   const updateFunfingSources = (data: any) => {
@@ -145,6 +167,31 @@ export const useFundSource = (): any => {
     });
   };
 
+  const selectedGFS = computed(() => {
+    return data.selectedGfs;
+  });
+
+  const upsert = (array, item) => {
+    const idx = array.findIndex((_item: any) => _item.id === item.id);
+    if (idx > -1) {
+      array.splice(idx, 1);
+    } else {
+      array.push(item);
+    }
+    return array;
+  };
+
+  const onChangeList = ({ source, destination }): void => {
+    const gfsCodeIds = destination.map((s) => s.id);
+
+    destination.forEach((item) => {
+      data.gfscodes = upsert(source, item);
+    });
+    console.log("item", gfsCodeIds);
+
+    data.formData.gfs = gfsCodeIds;
+  };
+
   return {
     data,
     openDialog,
@@ -158,5 +205,7 @@ export const useFundSource = (): any => {
     remove,
     cancelConfirmDialog,
     searchCategory,
+    selectedGFS,
+    onChangeList,
   };
 };

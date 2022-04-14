@@ -14,6 +14,10 @@ const search = async (payload: any) => {
   });
 };
 
+const regSearch = async (payload: any) => {
+  return await axios.get(`/api/v1/invoices/`, { params: payload });
+};
+
 const find = async (id: string | number) => {
   return await axios.get(`/api/v1/invoices/${id}`);
 };
@@ -51,4 +55,5 @@ export {
   search,
   viewinvoice,
   receiptcreate,
+  regSearch,
 };

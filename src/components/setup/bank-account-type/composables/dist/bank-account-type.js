@@ -2,7 +2,7 @@
 exports.__esModule = true;
 exports.useBankAccountType = void 0;
 var composition_api_1 = require("@vue/composition-api");
-var banck_account_types_service_1 = require("../services/banck-account-types.service");
+var bank_account_types_service_1 = require("../services/bank-account-types.service");
 var gfs_code_1 = require("@/components/coa/gfs-code/composables/gfs-code");
 exports.useBankAccountType = function () {
     var dataItems = [];
@@ -35,7 +35,7 @@ exports.useBankAccountType = function () {
         initialize();
     });
     var initialize = function () {
-        banck_account_types_service_1.get({ per_page: 10 }).then(function (response) {
+        bank_account_types_service_1.get({ per_page: 10 }).then(function (response) {
             var _a = response.data.data, from = _a.from, to = _a.to, total = _a.total, current_page = _a.current_page, per_page = _a.per_page, last_page = _a.last_page;
             data.response = { from: from, to: to, total: total, current_page: current_page, per_page: per_page, last_page: last_page };
             data.items = response.data.data.data;
@@ -44,8 +44,8 @@ exports.useBankAccountType = function () {
     };
     var searchCategory = function (categoryName) {
         if (categoryName != null) {
-            banck_account_types_service_1.search({ name: categoryName.name }).then(function (response) {
-                console.log("response data", response.data.data);
+            bank_account_types_service_1.search({ name: categoryName.name }).then(function (response) {
+                //// data", response.data.data);
                 data.items = response.data.data;
             });
         }
@@ -54,7 +54,7 @@ exports.useBankAccountType = function () {
         }
     };
     var reloadData = function () {
-        banck_account_types_service_1.get({ per_page: 10 }).then(function (response) {
+        bank_account_types_service_1.get({ per_page: 10 }).then(function (response) {
             var _a = response.data.data, from = _a.from, to = _a.to, total = _a.total, current_page = _a.current_page, per_page = _a.per_page, last_page = _a.last_page;
             data.response = { from: from, to: to, total: total, current_page: current_page, per_page: per_page, last_page: last_page };
             data.items = response.data.data.data;
@@ -74,7 +74,7 @@ exports.useBankAccountType = function () {
     };
     var remove = function () {
         console.log("delete data with id", data.itemtodelete);
-        banck_account_types_service_1.destroy(data.itemtodelete).then(function () {
+        bank_account_types_service_1.destroy(data.itemtodelete).then(function () {
             reloadData();
             data.deletemodal = false;
         });
@@ -112,14 +112,14 @@ exports.useBankAccountType = function () {
         });
     });
     var updateCustomer = function (data) {
-        banck_account_types_service_1.update(data).then(function (response) {
+        bank_account_types_service_1.update(data).then(function (response) {
             console.log("Updated data", response.data);
             reloadData();
             cancelDialog();
         });
     };
     var createCustomer = function (data) {
-        banck_account_types_service_1.create(data).then(function (response) {
+        bank_account_types_service_1.create(data).then(function (response) {
             console.log("Created data", response.data);
             reloadData();
             cancelDialog();
@@ -127,7 +127,7 @@ exports.useBankAccountType = function () {
     };
     var getData = function (params) {
         data.response = params;
-        banck_account_types_service_1.get(params).then(function (response) {
+        bank_account_types_service_1.get(params).then(function (response) {
             data.response = response.data.data;
             data.items = response.data.data.data;
         });

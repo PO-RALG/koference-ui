@@ -2,12 +2,20 @@
   <v-container>
     <v-row>
       <v-col cols="12" lg="5" md="4" sm="12" class="mt-2 mb-n4">
-        <v-text-field :label="`filter ${modelName} by ${label}...`" type="text" v-model="data.searchSource">
+        <v-text-field
+          :label="`filter ${modelName} by ${label}...`"
+          type="text"
+          v-model="data.searchSource"
+        >
         </v-text-field>
       </v-col>
       <v-col cols="12" lg="2" md="2" sm="12" class="pl-6"> </v-col>
       <v-col cols="12" lg="5" md="4" sm="12" class="mt-2 mb-n4">
-        <v-text-field :label="`filter ${modelName} by ${label}...`" type="text" v-model="data.searchDestination">
+        <v-text-field
+          :label="`filter ${modelName} by ${label}...`"
+          type="text"
+          v-model="data.searchDestination"
+        >
         </v-text-field>
       </v-col>
     </v-row>
@@ -18,7 +26,9 @@
             v-for="(item, key) in source
               .map((item, idx) => ({ idx, ...item }))
               .filter((item) =>
-                item[label in item ? label : 'label'].toLowerCase().includes(data.searchSource.toLowerCase())
+                item[label in item ? label : 'label']
+                  .toLowerCase()
+                  .includes(data.searchSource.toLowerCase())
               )"
             :key="key"
             @click="highlightSourceItem(item)"
@@ -34,7 +44,9 @@
           <!-- add items -->
           <v-btn
             color="primary"
-            :disabled="data.itemsToDestination && data.itemsToDestination.length < 1"
+            :disabled="
+              data.itemsToDestination && data.itemsToDestination.length < 1
+            "
             small
             @click="addItems"
           >
@@ -42,7 +54,13 @@
           </v-btn>
 
           <!-- add all items -->
-          <v-btn color="primary" :disabled="source.length < 1" small class="remove-button" @click="addAll">
+          <v-btn
+            color="primary"
+            :disabled="source.length < 1"
+            small
+            class="remove-button"
+            @click="addAll"
+          >
             <v-icon>mdi-chevron-double-right</v-icon>
           </v-btn>
 
@@ -69,7 +87,9 @@
             v-for="(item, key) in destination
               .map((item, idx) => ({ idx, ...item }))
               .filter((item) =>
-                item[label in item ? label : 'label'].toLowerCase().includes(data.searchDestination.toLowerCase())
+                item[label in item ? label : 'label']
+                  .toLowerCase()
+                  .includes(data.searchDestination.toLowerCase())
               )"
             :key="key"
             @click="highlightDestinationItem(item)"
@@ -85,7 +105,12 @@
 </template>
 
 <script lang="ts">
-import { reactive, PropType, onMounted, defineComponent } from "@vue/composition-api";
+import {
+  reactive,
+  PropType,
+  onMounted,
+  defineComponent,
+} from "@vue/composition-api";
 
 import _ from "lodash";
 
