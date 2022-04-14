@@ -38,6 +38,18 @@
           </v-card-title>
         </template>
 
+        <!-- <template v-slot:[`item.name`]="{ item }"> -->
+        <!--   <span v-html="item.name"></span> -->
+        <!-- </template> -->
+
+        <template v-slot:[`item.name`]="{ item }">
+          <span
+            ><a href="" @click="navigateToFacility($event, item)">{{
+              item.name
+            }}</a></span
+          >
+        </template>
+
         <template v-slot:[`item.active`]="{ item }">
           <v-icon v-if="item.active" medium color="success">mdi-check</v-icon>
           <v-icon v-else medium color="warning">mdi-close</v-icon>
@@ -229,6 +241,9 @@ export default defineComponent({
       loadLocationChildren,
       getNodes,
       searchFacilityTypes,
+      facilities,
+      navigateToFacility,
+      generateLink,
     } = useFacility();
 
     return {
@@ -246,6 +261,9 @@ export default defineComponent({
       loadLocationChildren,
       getNodes,
       searchFacilityTypes,
+      facilities,
+      navigateToFacility,
+      generateLink,
     };
   },
 });
