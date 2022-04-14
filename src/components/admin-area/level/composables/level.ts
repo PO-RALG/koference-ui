@@ -1,6 +1,11 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import { get, createLevel, updateLevel, deleteLevel } from "../services/level-services";
+import {
+  get,
+  createLevel,
+  updateLevel,
+  deleteLevel,
+} from "../services/level-services";
 import { Level } from "../types/Level";
 
 export const useLevels = (): any => {
@@ -40,7 +45,8 @@ export const useLevels = (): any => {
 
   const initialize = () => {
     get({}).then((response: any) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });

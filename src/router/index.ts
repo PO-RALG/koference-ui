@@ -43,6 +43,7 @@ import { creditorRoutes } from "@/components/payable/creditor";
 import { chequeListRoutes } from "@/components/payable/cheque-list";
 //import { testRoutes } from "@/components/test";
 import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
+import { genericCustomerYearRoutes } from "@/components/setup/generic-customer";
 import { notFoundRoute } from "@/components/404";
 import { receiptRoutes } from "@/components/receivables/receipt";
 
@@ -59,7 +60,7 @@ const routes: Array<RouteConfig> = [
       title: "Login",
       middleware: [setTitle],
     },
-    props: (route) => ({ query: route.query }),
+    props: (route: any) => ({ query: route.query }),
   },
   {
     path: "/",
@@ -111,6 +112,7 @@ const routes: Array<RouteConfig> = [
       ...chequeListRoutes,
       ...receiptRoutes,
       ...bankReconciliationRoutes,
+      ...genericCustomerYearRoutes,
       ...notFoundRoute,
     ],
   },
@@ -140,7 +142,11 @@ const isLoggedIn = (to, _, next) => {
   }
 };
 
-router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
-router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
+router.beforeEach(
+  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
+);
+router.beforeEach(
+  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
+);
 
 export default router;

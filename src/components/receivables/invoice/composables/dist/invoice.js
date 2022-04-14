@@ -15,9 +15,10 @@ exports.useInvoice = void 0;
 var composition_api_1 = require("@vue/composition-api");
 var invoice_1 = require("../services/invoice");
 var gfs_service_1 = require("@/components/coa/gfs-code/service/gfs.service");
-var customer_service_1 = require("@/components/setup/customer/services/customer.service");
-var back_accounts_service_1 = require("@/components/setup/bank-account/services/back-accounts.service");
-var invoice_item_definition_1 = require("@/components/setup/invoice-item-definition/services/invoice-item-definition");
+var customer_service_1 = require("@/components/receivables/customer/services/customer.service");
+var bank_account_service_1 = require("@/components/setup/bank-account/services/bank-account.service");
+var invoice_item_definition_1 = require("@/components/receivables/invoice-item-definition/services/invoice-item-definition");
+var moment_1 = require("moment");
 exports.useInvoice = function () {
     var dataItems = [];
     var invoiceData;
@@ -122,6 +123,7 @@ exports.useInvoice = function () {
             invoice_number: "",
             items: []
         },
+        maxDate: moment_1["default"](new Date()).format("YYYY-MM-DD"),
         title: "Manage Invoice",
         modalTitle: "",
         headers: [
@@ -176,7 +178,7 @@ exports.useInvoice = function () {
         bankName: [],
         customers: [],
         itemdefinitions: [],
-        invoicedata: invoiceData,
+        invoiceData: invoiceData,
         bankaccounts: [],
         customer: [],
         invoice_items: [
@@ -187,7 +189,9 @@ exports.useInvoice = function () {
         ],
         loading: false,
         coat: "/coat_of_arms.svg.png",
-        toSave: {}
+        toSave: {},
+        searchTerm: "",
+        search: ""
     });
     composition_api_1.onMounted(function () {
         data.loading = true;
@@ -198,24 +202,35 @@ exports.useInvoice = function () {
             data.itemsToFilter = response.data.data.data;
             data.loading = false;
         });
-        gfs_service_1.allgfscodes({ per_page: 2000 }).then(function (response) {
+        gfs_service_1.allgfscodes({ per_page: 20000 }).then(function (response) {
             data.bankName = response.data.data.data;
         });
-        customer_service_1.customers({ per_page: 2000, active: true }).then(function (response) {
-            data.customers = response.data.data.data;
-        });
-        invoice_item_definition_1.itemdefinitions({ per_page: 2000 }).then(function (response) {
+        loadCustomer();
+        invoice_item_definition_1.itemdefinitions({ per_page: 20000 }).then(function (response) {
             data.itemdefinitions = response.data.data.data;
         });
     });
     var searchCategory = function (categoryName) {
-        if (categoryName != null) {
-            invoice_1.search({ invoice_number: categoryName.invoice_number }).then(function (response) {
-                data.items = response.data.data.data;
+        // console.log("categoryname", categoryName.invoice_number);
+        if (categoryName != null && categoryName.length >= 2) {
+            invoice_1.regSearch({ regSearch: categoryName }).then(function (response) {
+                data.itemsToFilter = response.data.data.data;
             });
+        }
+        else if (categoryName ? categoryName.length == 0 : "") {
+            reloadData();
+            data.search = "";
         }
         else {
             reloadData();
+        }
+    };
+    var reanderSearched = function (categoryName) {
+        console.log("categoryname", categoryName);
+        if (categoryName != null) {
+            invoice_1.regSearch({ regSearch: categoryName.invoice_number }).then(function (response) {
+                data.items = response.data.data.data;
+            });
         }
     };
     var reloadData = function () {
@@ -223,6 +238,11 @@ exports.useInvoice = function () {
             var _a = response.data.data, from = _a.from, to = _a.to, total = _a.total, current_page = _a.current_page, per_page = _a.per_page, last_page = _a.last_page;
             data.response = { from: from, to: to, total: total, current_page: current_page, per_page: per_page, last_page: last_page };
             data.items = response.data.data.data;
+        });
+    };
+    var loadCustomer = function () {
+        customer_service_1.customers({ per_page: 20000, active: true }).then(function (response) {
+            data.customers = response.data.data.data;
         });
     };
     var deleteInvoiceItemdefinition = function (deleteId) {
@@ -258,8 +278,8 @@ exports.useInvoice = function () {
         data.invoicereceip.customer_id = invoiceData; //mapping customer in autocomplete for two way binding
         data.invoicereceip.invoice_id = invoiceData.id;
         data.invoicereceip.invoice_number = invoiceData.invoice_number;
-        if (data.invoicedata.invoice_items) {
-            data.invoicedata.invoice_items.forEach(function (value) {
+        if (data.invoiceData.invoice_items) {
+            data.invoiceData.invoice_items.forEach(function (value) {
                 var one_item = {
                     invoicedAmount: value.amount,
                     received: value.received_amount,
@@ -269,7 +289,7 @@ exports.useInvoice = function () {
                 };
                 data.invoicereceip.items.push(one_item);
             });
-            back_accounts_service_1.bankaccounts({ per_page: 2000 }).then(function (response) {
+            bank_account_service_1.get({ per_page: 2000 }).then(function (response) {
                 data.bankaccounts = response.data.data.data;
             });
         }
@@ -281,7 +301,9 @@ exports.useInvoice = function () {
         });
     });
     var newInvoiceItem = composition_api_1.computed(function () {
-        return data.invoicedata.invoice_items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); });
+        return data && data.invoiceData && data.invoiceData
+            ? data.invoiceData.invoice_items.map(function (data, index) { return (__assign(__assign({}, data), { index: ++index })); })
+            : "";
     });
     var invoicedAmount = composition_api_1.ref(newInvoiceItem);
     var sumDebts = composition_api_1.computed(function () {
@@ -382,11 +404,9 @@ exports.useInvoice = function () {
     var removeRow = function (index) {
         data.invoice_items.splice(index, 1);
     };
-    var previewInvoice = function (item) {
-        invoice_1.viewinvoice(item).then(function (response) {
-            data.invoicedata = response.data.data;
-            data.invoicedetails = true;
-        });
+    var previewInvoice = function (invoice) {
+        data.invoiceData = invoice;
+        data.invoicedetails = true;
     };
     var newInvoiceItems = composition_api_1.computed(function () {
         if (data.invoicereceip) {
@@ -396,6 +416,20 @@ exports.useInvoice = function () {
             });
         }
     });
+    var searchCustomer = function (item) {
+        if (item) {
+            var regSearchTerm = item ? item : data.searchTerm;
+            customer_service_1.regSearch({
+                active: true,
+                regSearch: regSearchTerm
+            }).then(function (response) {
+                data.customers = response.data.data.data;
+            });
+        }
+        else {
+            loadCustomer();
+        }
+    };
     return {
         data: data,
         getData: getData,
@@ -423,6 +457,8 @@ exports.useInvoice = function () {
         newInvoiceItems: newInvoiceItems,
         newInvoiceItem: newInvoiceItem,
         sumDebts: sumDebts,
-        checkDublicate: checkDublicate
+        checkDublicate: checkDublicate,
+        searchCustomer: searchCustomer,
+        reanderSearched: reanderSearched
     };
 };

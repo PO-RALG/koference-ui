@@ -3,7 +3,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn :disabled="cant('create', 'Invoice')" color="primary" @click="openDialog">
+      <v-btn
+        :disabled="cant('create', 'Invoice')"
+        color="primary"
+        @click="openDialog"
+      >
         <v-icon>mdi-plus</v-icon>
         Create Invoice
       </v-btn>
@@ -23,16 +27,37 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter By Invoice Number"
-                @change="searchCategory($event)"
+              <v-select
                 :items="data.itemsToFilter"
-                :item-text="'invoice_number'"
-                :item-divider="true"
-                return-object
-                required
-                clearable
-              ></v-autocomplete>
+                label="Filter Invoice"
+                :item-text="'name'"
+                item-value="name"
+                @change="reanderSearched($event)"
+                v-model="data.search"
+              >
+                <template v-slot:selection="{ item }">
+                  {{ item.invoice_number }}
+                </template>
+                <template v-slot:item="{ item }">
+                  {{ item.invoice_number }}
+                </template>
+                <template v-slot:prepend-item>
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-text-field
+                        clearable
+                        outlined
+                        dense
+                        label="Search"
+                        placeholder="Eg: INV-2022-000047"
+                        @input="searchCategory"
+                        hint="Enter atleast five (8) characters"
+                      ></v-text-field>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider></v-divider>
+                </template>
+              </v-select>
             </v-col>
           </v-card-title>
         </template>
@@ -62,11 +87,16 @@
         </template>
 
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="1000">
+    <Modal :modal="data.modal" :width="960">
+      {{ data.formData }}
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Invoice`" />
       </template>
@@ -76,17 +106,48 @@
             <v-container>
               <v-row class="mt-n8 pa-5">
                 <v-col cols="12" md="6">
-                  <v-autocomplete
-                    v-model="data.formData.customer_id"
-                    label="Select Customer"
+                  <v-select
                     :items="data.customers"
+                    prepend-inner-icon="mdi-account"
+                    label="Select Customer"
+                    v-model="data.formData.customer_id"
                     :item-text="'name'"
                     item-value="id"
-                    small
-                  ></v-autocomplete>
+                  >
+                    <template v-slot:selection="{ item }">
+                      {{ item.name }}
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.name }} -
+                      <strong class="grey--text"
+                        ><em
+                          ><v-icon>mdi-phone</v-icon> {{ " " }}
+                          {{ item.phone }}</em
+                        >
+                      </strong>
+                    </template>
+                    <template v-slot:prepend-item>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-text-field
+                            outlined
+                            dense
+                            placeholder="Search"
+                            @input="searchCustomer"
+                            hide-details=""
+                          ></v-text-field>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-divider></v-divider>
+                    </template>
+                  </v-select>
                 </v-col>
                 <v-col class="pt-6" cols="12" md="6">
-                  <DatePicker :label="'Invoice Date'" :max="data.maxDate" v-model="data.formData.date" />
+                  <DatePicker
+                    :label="'Invoice Date'"
+                    :max="data.maxDate"
+                    v-model="data.formData.date"
+                  />
                 </v-col>
                 <v-col cols="12" md="12" class="mb-n8 mt-n4">
                   <v-textarea
@@ -104,16 +165,26 @@
                       Add invoice item {{ " " }}{{ "by pressing" }}
                       <v-icon small color="success"> mdi-plus-circle </v-icon>
                       {{ " " }} {{ "or" }} {{ "remove by pressing " }}{{ " " }}
-                      <v-icon small color="red"> mdi-minus-circle </v-icon>{{ " " }}{{ "sign in the right" }}
+                      <v-icon small color="red"> mdi-minus-circle </v-icon
+                      >{{ " " }}{{ "sign in the right" }}
                       {{ " " }}
                       <v-icon color=""> mdi-arrow-right-bold </v-icon>
                     </td>
                   </tr>
                 </v-col>
                 <v-col class="pt-2 invoice-table" cols="12" md="12">
-                  <v-data-table :headers="HEADERS" :items="data.items" disable-pagination hide-default-footer>
+                  <v-data-table
+                    :headers="HEADERS"
+                    :items="data.items"
+                    disable-pagination
+                    hide-default-footer
+                  >
                     <template v-slot:body>
-                      <tr v-for="(invoice, index) in data.invoice_items" :key="index" class="invoice-tr">
+                      <tr
+                        v-for="(invoice, index) in data.invoice_items"
+                        :key="index"
+                        class="invoice-tr"
+                      >
                         <td>
                           <v-autocomplete
                             :items="data.itemdefinitions"
@@ -147,10 +218,14 @@
                             color="blue darken-1"
                             small
                             text
-                            v-if="index || (!index && data.invoice_items.length > 1)"
+                            v-if="
+                              index || (!index && data.invoice_items.length > 1)
+                            "
                             @click="removeRow(index)"
                           >
-                            <v-icon small color="red"> mdi-minus-circle </v-icon>
+                            <v-icon small color="red">
+                              mdi-minus-circle
+                            </v-icon>
                           </v-btn>
                           <v-btn
                             small
@@ -159,7 +234,9 @@
                             @click="addRow"
                             v-if="index == data.invoice_items.length - 1"
                           >
-                            <v-icon small color="success"> mdi-plus-circle </v-icon>
+                            <v-icon small color="success">
+                              mdi-plus-circle
+                            </v-icon>
                           </v-btn>
                         </td>
                       </tr>
@@ -177,7 +254,9 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
+          <v-btn color="green darken-1" text @click="save"
+            >{{ data.modalTitle }}
+          </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -192,7 +271,9 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog">No</v-btn>
+          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
+            >No</v-btn
+          >
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -206,6 +287,10 @@
         <ModalBody>
           <div class="invoice-box" v-if="data.invoiceData">
             <td class="title">
+              <v-btn color="red darken-1" text @click="cancelInvoiceDialog"
+                ><v-icon>mdi-close</v-icon> Close</v-btn
+              >
+
               <v-btn
                 v-show="can('delete', 'Receipt')"
                 @click="deleteInvoiceItemdefinition(data.invoiceData.id)"
@@ -213,7 +298,6 @@
                 text
                 ><v-icon>mdi-arrow-u-left-top-bold</v-icon>Reverse</v-btn
               >
-              <v-btn color="red darken-1" text @click="cancelInvoiceDialog">Close</v-btn>
             </td>
             <div class="invoice-box" v-if="data.invoiceData">
               <AppLocationHeader
@@ -234,11 +318,20 @@
                 <v-col cols="6" md="4">
                   <div class="text-xs-left">
                     <v-card flat align="right" class="pr-12" tile>
-                      <strong> Invoice #:{{ data.invoiceData ? data.invoiceData.invoice_number : "" }}</strong
+                      <strong>
+                        Invoice #:{{
+                          data.invoiceData
+                            ? data.invoiceData.invoice_number
+                            : ""
+                        }}</strong
                       ><br />
                       <strong>
                         Created:
-                        {{ data.invoiceData ? data.invoiceData.date : "" | format }}<br />
+                        {{
+                          data.invoiceData
+                            ? data.invoiceData.date
+                            : "" | format
+                        }}<br />
                       </strong>
                     </v-card>
                   </div>
@@ -298,7 +391,11 @@
 
               <template v-slot:[`body.append`]="{ headers }">
                 <tr>
-                  <th class="grey lighten-5" v-for="(header, i) in headers" :key="i">
+                  <th
+                    class="grey lighten-5"
+                    v-for="(header, i) in headers"
+                    :key="i"
+                  >
                     <div v-if="header.value == 'no'">
                       <h2>
                         {{ "TOTAL" }}
@@ -326,12 +423,25 @@
             <v-sheet class="text-capitalize pt-8">
               <strong> Created By:</strong>
               <em>
-                {{ data.invoiceData.user ? data.invoiceData.user.first_name : "" }}
+                {{
+                  data.invoiceData.user ? data.invoiceData.user.first_name : ""
+                }}
                 {{ " " }}
-                {{ data.invoiceData.user ? data.invoiceData.user.middle_name : "" }}
+                {{
+                  data.invoiceData.user ? data.invoiceData.user.middle_name : ""
+                }}
                 {{ " " }}
-                {{ data.invoiceData.user ? data.invoiceData.user.last_name : "" }}
+                {{
+                  data.invoiceData.user ? data.invoiceData.user.last_name : ""
+                }}
               </em>
+              {{ " ," }}
+              <strong> Signature:</strong>
+              <em> .............................. </em>
+
+              {{ " ," }}
+              <strong> Stamp:</strong>
+              <em> ........................................</em>
             </v-sheet>
           </div>
         </ModalBody>
@@ -368,7 +478,10 @@
                   ></v-autocomplete>
                 </v-col>
                 <v-col class="pt-6" cols="12" md="6">
-                  <DatePicker v-model="data.invoicereceip.date" :label="'Receipt Date'" />
+                  <DatePicker
+                    v-model="data.invoicereceip.date"
+                    :label="'Receipt Date'"
+                  />
                 </v-col>
                 <v-col cols="12" md="12">
                   <v-text-field
@@ -396,9 +509,18 @@
 
                 <v-col class="pt-2" cols="12" md="12"> </v-col>
                 <v-col class="pt-2 invoice-table" cols="12" md="12">
-                  <v-data-table :headers="RECEIPTHEADERS" :items="data.items" disable-pagination hide-default-footer>
+                  <v-data-table
+                    :headers="RECEIPTHEADERS"
+                    :items="data.items"
+                    disable-pagination
+                    hide-default-footer
+                  >
                     <template v-slot:body>
-                      <tr v-for="(invoice, index) in newInvoiceItems" :key="index" class="invoice-tr">
+                      <tr
+                        v-for="(invoice, index) in newInvoiceItems"
+                        :key="index"
+                        class="invoice-tr"
+                      >
                         <td>
                           <v-text-field
                             outlined
@@ -458,8 +580,15 @@
             </v-container>
             <v-card-actions class="pr-4">
               <v-spacer></v-spacer>
-              <v-btn color="red darken-1" text @click="cancelInvoiceReceipt">Close</v-btn>
-              <v-btn v-show="can('create', 'Receipt')" color="green darken-1" text @click="createReceipt">
+              <v-btn color="red darken-1" text @click="cancelInvoiceReceipt"
+                >Close</v-btn
+              >
+              <v-btn
+                v-show="can('create', 'Receipt')"
+                color="green darken-1"
+                text
+                @click="createReceipt"
+              >
                 Create</v-btn
               >
             </v-card-actions>
@@ -507,6 +636,8 @@ export default defineComponent({
       newInvoiceItem,
       sumDebts,
       checkDublicate,
+      searchCustomer,
+      reanderSearched,
     } = useInvoice();
     return {
       data,
@@ -536,6 +667,8 @@ export default defineComponent({
       newInvoiceItem,
       sumDebts,
       checkDublicate,
+      searchCustomer,
+      reanderSearched,
     };
   },
 });

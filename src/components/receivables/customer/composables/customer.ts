@@ -7,9 +7,10 @@ import {
   create,
   update,
   destroy,
-  search,
+  regSearch,
   activation,
 } from "../services/customer.service";
+import { search as listOfGenericCustomer } from "../../../setup/generic-customer/services/generic-customer.service";
 
 export const useCustomer = (): any => {
   const dataItems: Array<Customer> = [];
@@ -35,6 +36,8 @@ export const useCustomer = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},
+    addcustomer: false,
+    genericCustomer: [],
   });
 
   onMounted(() => {
@@ -57,13 +60,16 @@ export const useCustomer = (): any => {
   computed(() => {
     return "test";
   });
+  const isUpdate = computed(() => {
+    return data.modalTitle == "Update" ? true : false;
+  });
 
   const searchCategory = (categoryName) => {
     console.log("argument", categoryName);
 
     if (categoryName != null) {
-      search({ name: categoryName.name }).then((response: any) => {
-        console.log("response data", response.data.data);
+      regSearch({ name: categoryName.name }).then((response: any) => {
+        //// data", response.data.data);
         data.items = response.data.data;
       });
     } else {
@@ -94,6 +100,7 @@ export const useCustomer = (): any => {
   const cancelDialog = () => {
     data.formData = {} as Customer;
     data.modal = !data.modal;
+    data.addcustomer = false;
   };
 
   const cancelConfirmDialog = () => {
@@ -111,9 +118,10 @@ export const useCustomer = (): any => {
 
   const save = () => {
     console.log("Form Data", data.formData);
-    if (data.formData.id) {
+    if (data.formData.id && isUpdate.value) {
       updatecustomer(data.formData);
     } else {
+      delete data.formData.id;
       createCustomer(data.formData);
     }
   };
@@ -127,6 +135,12 @@ export const useCustomer = (): any => {
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
+
+    listOfGenericCustomer({ per_page: 1000, active: true }).then(
+      (response: AxiosResponse) => {
+        data.genericCustomer = response.data.data.data;
+      }
+    );
   };
 
   const updatecustomer = (data: any) => {
@@ -152,6 +166,17 @@ export const useCustomer = (): any => {
       data.items = response.data.data.data;
     });
   };
+  const setAddCostomerValue = () => {
+    data.addcustomer = true;
+    data.formData = {} as Customer;
+  };
+  const setGenericValue = () => {
+    data.addcustomer = false;
+    data.formData = {} as Customer;
+  };
+  const populateFormData = (event: any) => {
+    data.formData = event;
+  };
 
   return {
     data,
@@ -167,5 +192,9 @@ export const useCustomer = (): any => {
     cancelConfirmDialog,
     searchCategory,
     setActivation,
+    setAddCostomerValue,
+    setGenericValue,
+    populateFormData,
+    isUpdate,
   };
 };

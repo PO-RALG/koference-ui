@@ -3,6 +3,7 @@ exports.__esModule = true;
 exports.useCustomer = void 0;
 var composition_api_1 = require("@vue/composition-api");
 var customer_service_1 = require("../services/customer.service");
+var generic_customer_service_1 = require("../../../setup/generic-customer/services/generic-customer.service");
 exports.useCustomer = function () {
     var dataItems = [];
     var customerData;
@@ -24,7 +25,9 @@ exports.useCustomer = function () {
         formData: customerData,
         rows: ["10", "20", "50", "100"],
         itemtodelete: "",
-        response: {}
+        response: {},
+        addcustomer: false,
+        genericCustomer: []
     });
     composition_api_1.onMounted(function () {
         customer_service_1.get({ per_page: 10 }).then(function (response) {
@@ -43,11 +46,14 @@ exports.useCustomer = function () {
     composition_api_1.computed(function () {
         return "test";
     });
+    var isUpdate = composition_api_1.computed(function () {
+        return data.modalTitle == "Update" ? true : false;
+    });
     var searchCategory = function (categoryName) {
         console.log("argument", categoryName);
         if (categoryName != null) {
-            customer_service_1.search({ name: categoryName.name }).then(function (response) {
-                console.log("response data", response.data.data);
+            customer_service_1.regSearch({ name: categoryName.name }).then(function (response) {
+                //// data", response.data.data);
                 data.items = response.data.data;
             });
         }
@@ -75,6 +81,7 @@ exports.useCustomer = function () {
     var cancelDialog = function () {
         data.formData = {};
         data.modal = !data.modal;
+        data.addcustomer = false;
     };
     var cancelConfirmDialog = function () {
         data.formData = {};
@@ -89,10 +96,11 @@ exports.useCustomer = function () {
     };
     var save = function () {
         console.log("Form Data", data.formData);
-        if (data.formData.id) {
+        if (data.formData.id && isUpdate.value) {
             updatecustomer(data.formData);
         }
         else {
+            delete data.formData.id;
             createCustomer(data.formData);
         }
     };
@@ -106,6 +114,9 @@ exports.useCustomer = function () {
             data.modalTitle = "Create";
         }
         data.modal = !data.modal;
+        generic_customer_service_1.search({ per_page: 1000, active: true }).then(function (response) {
+            data.genericCustomer = response.data.data.data;
+        });
     };
     var updatecustomer = function (data) {
         customer_service_1.update(data).then(function (response) {
@@ -128,6 +139,17 @@ exports.useCustomer = function () {
             data.items = response.data.data.data;
         });
     };
+    var setAddCostomerValue = function () {
+        data.addcustomer = true;
+        data.formData = {};
+    };
+    var setGenericValue = function () {
+        data.addcustomer = false;
+        data.formData = {};
+    };
+    var populateFormData = function (event) {
+        data.formData = event;
+    };
     return {
         data: data,
         getData: getData,
@@ -141,6 +163,10 @@ exports.useCustomer = function () {
         remove: remove,
         cancelConfirmDialog: cancelConfirmDialog,
         searchCategory: searchCategory,
-        setActivation: setActivation
+        setActivation: setActivation,
+        setAddCostomerValue: setAddCostomerValue,
+        setGenericValue: setGenericValue,
+        populateFormData: populateFormData,
+        isUpdate: isUpdate
     };
 };
