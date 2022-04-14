@@ -1,13 +1,13 @@
 "use strict";
 exports.__esModule = true;
-exports.useGenericCustomer = void 0;
+exports.useCustomer = void 0;
 var composition_api_1 = require("@vue/composition-api");
-var generic_customer_service_1 = require("../services/generic-customer.service");
-exports.useGenericCustomer = function () {
+var customer_service_1 = require("../services/customer.service");
+exports.useCustomer = function () {
     var dataItems = [];
     var customerData;
     var data = composition_api_1.reactive({
-        title: "Manage Generic Customers",
+        title: "Manage Customers",
         modalTitle: "",
         headers: [
             { text: "Name", align: "start", sortable: false, value: "name" },
@@ -24,12 +24,10 @@ exports.useGenericCustomer = function () {
         formData: customerData,
         rows: ["10", "20", "50", "100"],
         itemtodelete: "",
-        response: {},
-        addcustomer: false,
-        genericCustomer: []
+        response: {}
     });
     composition_api_1.onMounted(function () {
-        generic_customer_service_1.get({ per_page: 10 }).then(function (response) {
+        customer_service_1.get({ per_page: 10 }).then(function (response) {
             var _a = response.data.data, from = _a.from, to = _a.to, total = _a.total, current_page = _a.current_page, per_page = _a.per_page, last_page = _a.last_page;
             data.response = { from: from, to: to, total: total, current_page: current_page, per_page: per_page, last_page: last_page };
             data.items = response.data.data.data;
@@ -37,7 +35,7 @@ exports.useGenericCustomer = function () {
         });
     });
     var setActivation = function (item) {
-        generic_customer_service_1.activation(item).then(function (response) {
+        customer_service_1.activation(item).then(function (response) {
             console.log("activated data", response.data);
             reloadData();
         });
@@ -45,14 +43,11 @@ exports.useGenericCustomer = function () {
     composition_api_1.computed(function () {
         return "test";
     });
-    var isUpdate = composition_api_1.computed(function () {
-        return data.modalTitle == "Update" ? true : false;
-    });
     var searchCategory = function (categoryName) {
         console.log("argument", categoryName);
         if (categoryName != null) {
-            generic_customer_service_1.search({ name: categoryName.name }).then(function (response) {
-                //// data", response.data.data);
+            customer_service_1.search({ name: categoryName.name }).then(function (response) {
+                console.log("response data", response.data.data);
                 data.items = response.data.data;
             });
         }
@@ -61,7 +56,7 @@ exports.useGenericCustomer = function () {
         }
     };
     var reloadData = function () {
-        generic_customer_service_1.get({ per_page: 10 }).then(function (response) {
+        customer_service_1.get({ per_page: 10 }).then(function (response) {
             var _a = response.data.data, from = _a.from, to = _a.to, total = _a.total, current_page = _a.current_page, per_page = _a.per_page, last_page = _a.last_page;
             data.response = { from: from, to: to, total: total, current_page: current_page, per_page: per_page, last_page: last_page };
             data.items = response.data.data.data;
@@ -73,14 +68,13 @@ exports.useGenericCustomer = function () {
         // console.log("delete year", data);
     };
     var getCustomer = function () {
-        generic_customer_service_1.get(data).then(function (response) {
+        customer_service_1.get(data).then(function (response) {
             console.log("data", response.data);
         });
     };
     var cancelDialog = function () {
         data.formData = {};
         data.modal = !data.modal;
-        data.addcustomer = false;
     };
     var cancelConfirmDialog = function () {
         data.formData = {};
@@ -88,18 +82,17 @@ exports.useGenericCustomer = function () {
     };
     var remove = function () {
         console.log("delete data with id", data.itemtodelete);
-        generic_customer_service_1.destroy(data.itemtodelete).then(function () {
+        customer_service_1.destroy(data.itemtodelete).then(function () {
             reloadData();
             data.deletemodal = false;
         });
     };
     var save = function () {
         console.log("Form Data", data.formData);
-        if (data.formData.id && isUpdate.value) {
+        if (data.formData.id) {
             updatecustomer(data.formData);
         }
         else {
-            delete data.formData.id;
             createCustomer(data.formData);
         }
     };
@@ -115,14 +108,14 @@ exports.useGenericCustomer = function () {
         data.modal = !data.modal;
     };
     var updatecustomer = function (data) {
-        generic_customer_service_1.update(data).then(function (response) {
+        customer_service_1.update(data).then(function (response) {
             console.log("Updated data", response.data);
             reloadData();
             cancelDialog();
         });
     };
     var createCustomer = function (data) {
-        generic_customer_service_1.create(data).then(function (response) {
+        customer_service_1.create(data).then(function (response) {
             console.log("Created data", response.data);
             reloadData();
             cancelDialog();
@@ -130,21 +123,10 @@ exports.useGenericCustomer = function () {
     };
     var getData = function (params) {
         data.response = params;
-        generic_customer_service_1.get(params).then(function (response) {
+        customer_service_1.get(params).then(function (response) {
             data.response = response.data.data;
             data.items = response.data.data.data;
         });
-    };
-    var setAddCostomerValue = function () {
-        data.addcustomer = true;
-        data.formData = {};
-    };
-    var setGenericValue = function () {
-        data.addcustomer = false;
-        data.formData = {};
-    };
-    var populateFormData = function (event) {
-        data.formData = event;
     };
     return {
         data: data,
@@ -159,10 +141,6 @@ exports.useGenericCustomer = function () {
         remove: remove,
         cancelConfirmDialog: cancelConfirmDialog,
         searchCategory: searchCategory,
-        setActivation: setActivation,
-        setAddCostomerValue: setAddCostomerValue,
-        setGenericValue: setGenericValue,
-        populateFormData: populateFormData,
-        isUpdate: isUpdate
+        setActivation: setActivation
     };
 };

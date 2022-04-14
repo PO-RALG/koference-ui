@@ -9,11 +9,11 @@ import {
   destroy,
   search,
   activation,
-} from "../services/generic-customer.service";
+} from "../services/generic.customer.service";
 
 export const useGenericCustomer = (): any => {
   const dataItems: Array<GenericCustomer> = [];
-  let customerData: GenericCustomer;
+  let genericCustomerData: GenericCustomer;
 
   const data = reactive({
     title: "Manage Generic Customers",
@@ -31,12 +31,10 @@ export const useGenericCustomer = (): any => {
     deletemodal: false,
     items: dataItems,
     itemsToFilter: [],
-    formData: customerData,
+    formData: genericCustomerData,
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},
-    addcustomer: false,
-    genericCustomer: [],
   });
 
   onMounted(() => {
@@ -59,16 +57,13 @@ export const useGenericCustomer = (): any => {
   computed(() => {
     return "test";
   });
-  const isUpdate = computed(() => {
-    return data.modalTitle == "Update" ? true : false;
-  });
 
   const searchCategory = (categoryName) => {
     console.log("argument", categoryName);
 
     if (categoryName != null) {
       search({ name: categoryName.name }).then((response: any) => {
-        //// data", response.data.data);
+        console.log("response data", response.data.data);
         data.items = response.data.data;
       });
     } else {
@@ -99,7 +94,6 @@ export const useGenericCustomer = (): any => {
   const cancelDialog = () => {
     data.formData = {} as GenericCustomer;
     data.modal = !data.modal;
-    data.addcustomer = false;
   };
 
   const cancelConfirmDialog = () => {
@@ -117,10 +111,9 @@ export const useGenericCustomer = (): any => {
 
   const save = () => {
     console.log("Form Data", data.formData);
-    if (data.formData.id && isUpdate.value) {
+    if (data.formData.id) {
       updatecustomer(data.formData);
     } else {
-      delete data.formData.id;
       createCustomer(data.formData);
     }
   };
@@ -159,17 +152,6 @@ export const useGenericCustomer = (): any => {
       data.items = response.data.data.data;
     });
   };
-  const setAddCostomerValue = () => {
-    data.addcustomer = true;
-    data.formData = {} as GenericCustomer;
-  };
-  const setGenericValue = () => {
-    data.addcustomer = false;
-    data.formData = {} as GenericCustomer;
-  };
-  const populateFormData = (event: any) => {
-    data.formData = event;
-  };
 
   return {
     data,
@@ -185,9 +167,5 @@ export const useGenericCustomer = (): any => {
     cancelConfirmDialog,
     searchCategory,
     setActivation,
-    setAddCostomerValue,
-    setGenericValue,
-    populateFormData,
-    isUpdate,
   };
 };

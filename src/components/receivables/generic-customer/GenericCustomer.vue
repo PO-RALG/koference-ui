@@ -79,25 +79,22 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="700">
+    <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Generic Customers`" />
+        <ModalHeader :title="`${data.modalTitle} Customers`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
                     required
-                    hide-details
-                    dense
                   ></v-text-field>
                 </v-col>
-
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.email"
@@ -112,7 +109,7 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.address"
                     label="Address"
@@ -136,7 +133,7 @@
 
     <Modal :modal="data.deletemodal" :width="300">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Generic Customers `" />
+        <ModalHeader :title="`Delete Customers `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -175,10 +172,6 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       setActivation,
-      setAddCostomerValue,
-      setGenericValue,
-      populateFormData,
-      isUpdate,
     } = useGenericCustomer();
 
     return {
@@ -195,10 +188,6 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       setActivation,
-      setAddCostomerValue,
-      setGenericValue,
-      populateFormData,
-      isUpdate,
     };
   },
 });

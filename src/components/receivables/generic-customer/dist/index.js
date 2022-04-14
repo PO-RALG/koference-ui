@@ -7,5 +7,5 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     o[k2] = m[k];
 }));
 exports.__esModule = true;
-var generic_customer_routes_1 = require("./routes/generic-customer-routes");
-__createBinding(exports, generic_customer_routes_1, "default", "genericCustomerYearRoutes");
+var customer_routes_1 = require("./routes/customer-routes");
+__createBinding(exports, customer_routes_1, "default", "customersRoutes");
