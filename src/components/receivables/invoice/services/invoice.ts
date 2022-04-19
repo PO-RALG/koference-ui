@@ -46,6 +46,13 @@ const receiptcreate = async (payload: any) => {
     payload
   );
 };
+
+const printInvoice = (id: string | number) => {
+  const user = JSON.parse(localStorage.getItem("FFARS_USER"));
+  const url = `${process.env.VUE_APP_SERVER_URL}/api/v1/invoices/${id}?token=${user.token}`;
+  return window.open(url);
+};
+
 export {
   get,
   find,
@@ -56,4 +63,5 @@ export {
   viewinvoice,
   receiptcreate,
   regSearch,
+  printInvoice,
 };

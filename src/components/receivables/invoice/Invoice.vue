@@ -298,6 +298,14 @@
                 text
                 ><v-icon>mdi-arrow-u-left-top-bold</v-icon>Reverse</v-btn
               >
+
+              <v-btn
+                color="green darken-1"
+                text
+                @click="print(data.invoiceData.id)"
+              >
+                Print
+              </v-btn>
             </td>
             <div class="invoice-box" v-if="data.invoiceData">
               <AppLocationHeader
@@ -638,6 +646,7 @@ export default defineComponent({
       checkDublicate,
       searchCustomer,
       reanderSearched,
+      print,
     } = useInvoice();
     return {
       data,
@@ -669,6 +678,7 @@ export default defineComponent({
       checkDublicate,
       searchCustomer,
       reanderSearched,
+      print,
     };
   },
 });

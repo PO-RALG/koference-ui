@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.regSearch = exports.receiptcreate = exports.viewinvoice = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
+exports.printInvoice = exports.regSearch = exports.receiptcreate = exports.viewinvoice = exports.search = exports.destroy = exports.update = exports.create = exports.find = exports.get = void 0;
 var axios_1 = require("axios");
 var get = function (payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -130,3 +130,9 @@ var receiptcreate = function (payload) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.receiptcreate = receiptcreate;
+var printInvoice = function (id) {
+    var user = JSON.parse(localStorage.getItem("FFARS_USER"));
+    var url = process.env.VUE_APP_SERVER_URL + "/api/v1/invoices/" + id + "?token=" + user.token;
+    return window.open(url);
+};
+exports.printInvoice = printInvoice;
