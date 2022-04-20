@@ -290,7 +290,14 @@
               <v-btn color="red darken-1" text @click="cancelInvoiceDialog"
                 ><v-icon>mdi-close</v-icon> Close</v-btn
               >
-
+              <v-btn
+                color="green darken-1"
+                text
+                @click="print(data.invoiceData.id)"
+              >
+                <v-icon>mdi-printer</v-icon>
+                Print
+              </v-btn>
               <v-btn
                 v-show="can('delete', 'Receipt')"
                 @click="deleteInvoiceItemdefinition(data.invoiceData.id)"
@@ -298,14 +305,6 @@
                 text
                 ><v-icon>mdi-arrow-u-left-top-bold</v-icon>Reverse</v-btn
               >
-
-              <v-btn
-                color="green darken-1"
-                text
-                @click="print(data.invoiceData.id)"
-              >
-                Print
-              </v-btn>
             </td>
             <div class="invoice-box" v-if="data.invoiceData">
               <AppLocationHeader
@@ -429,7 +428,7 @@
               </template>
             </v-data-table>
             <v-sheet class="text-capitalize pt-8">
-              <strong> Created By:</strong>
+              <strong> Prepared By:</strong>
               <em>
                 {{
                   data.invoiceData.user ? data.invoiceData.user.first_name : ""
@@ -446,10 +445,6 @@
               {{ " ," }}
               <strong> Signature:</strong>
               <em> .............................. </em>
-
-              {{ " ," }}
-              <strong> Stamp:</strong>
-              <em> ........................................</em>
             </v-sheet>
           </div>
         </ModalBody>
