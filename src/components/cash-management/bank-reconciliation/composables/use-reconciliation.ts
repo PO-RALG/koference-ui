@@ -45,6 +45,7 @@ export const useBankReconciliation = ({ root }): any => {
       { text: "Reconciled?", value: "status", sortable: false },
       { text: "Date", value: "date" },
       { text: "Acc", value: "account", sortable: false },
+      { text: "Name", value: "name", sortable: false },
       { text: "Type", value: "type", sortable: false },
       { text: "Amount", align: "start", sortable: true, value: "amount" },
     ],
@@ -395,7 +396,8 @@ export const useBankReconciliation = ({ root }): any => {
         return {
           ...entry,
           type: getType(entry.transaction_type),
-          account: getAccount(entry.transaction_type),
+          account: `${getAccount(entry.transaction_type)}`,
+          name: `${entry.owner.name}`,
           amount: getAmount(entry),
         };
       }),

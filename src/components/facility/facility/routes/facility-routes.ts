@@ -10,6 +10,15 @@ const facilityRoutes = [
       middleware: [setTitle, validateToken, setHeaders, auth],
     },
   },
+  {
+    path: "/manage-facilities/view",
+    component: () => import("../FacilityView.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "Manage Facility",
+      middleware: [setTitle, validateToken, setHeaders, auth],
+    },
+  },
 ];
 
 export default facilityRoutes;
