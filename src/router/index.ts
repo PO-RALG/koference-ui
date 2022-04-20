@@ -146,8 +146,5 @@ const isLoggedIn = (to, _, next) => {
 router.beforeEach(
   VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
 );
-router.beforeEach(
-  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
-);
 
 export default router;

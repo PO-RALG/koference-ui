@@ -8,6 +8,7 @@ import {
   destroy,
   regSearch as InvoiceSearch,
   receiptcreate,
+  printInvoice,
 } from "../services/invoice";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import {
@@ -486,6 +487,10 @@ export const useInvoice = (): any => {
     }
   };
 
+  const print = (id: number) => {
+    printInvoice(id);
+  };
+
   return {
     data,
     getData,
@@ -516,5 +521,6 @@ export const useInvoice = (): any => {
     checkDublicate,
     searchCustomer,
     reanderSearched,
+    print,
   };
 };

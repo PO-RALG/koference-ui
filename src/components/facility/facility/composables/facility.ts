@@ -1,4 +1,4 @@
-import { reactive, set, onMounted } from "@vue/composition-api";
+import { reactive, set, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import router from "@/router";
 import {
@@ -227,9 +227,17 @@ export const useFacility = (): any => {
     );
   };
 
-  const navigateToFacility = (facility: any) => {
-    router.push({ path: `/manage-facilities?facility_id=${facility.id}` });
+  const navigateToFacility = (event, facility: any) => {
+    event.preventDefault();
+    router.push({ path: `/manage-facilities/view?facility_id=${facility.id}` });
   };
+
+  const facilities = computed(() => {
+    return data.itemsToFilter.map(item => ({
+      ...item,
+      name: `<a href="/manage-facilities/view?facility_id=${item.id}">${item.name}</a>`
+    }))
+  })
 
   return {
     navigateToFacility,
@@ -247,5 +255,6 @@ export const useFacility = (): any => {
     loadLocationChildren,
     getNodes,
     searchFacilityTypes,
+    facilities,
   };
 };

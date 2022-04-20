@@ -3,6 +3,10 @@
     <v-card-actions class="pa-0">
       <h2>{{ title }}</h2>
       <v-spacer></v-spacer>
+      <v-btn @click="navigateToList()" class="ma-2" outlined color="black">
+        <v-icon>mdi-progress-download</v-icon>
+        View Reconciliations
+      </v-btn>
       <v-btn @click="openDialog('LOAD')" class="ma-2" outlined color="black">
         <v-icon>mdi-progress-download</v-icon>
         Load Cashbook Entries
@@ -11,7 +15,11 @@
         <v-icon small>mdi-lock</v-icon>
         Report Locked
       </v-btn>
-      <v-btn v-if="data.report && data.report.confirmed" color="red" @click="openUnlockDialog()">
+      <v-btn
+        v-if="data.report && data.report.confirmed"
+        color="red"
+        @click="openUnlockDialog()"
+      >
         <v-icon small>mdi-lock-open-outline</v-icon>
         Unlock Report
       </v-btn>
@@ -31,15 +39,28 @@
           </thead>
           <tbody>
             <tr class="border-bottom">
-              <td class="border-right adjustable" @click="rowClicked(data.report)">
-                <strong v-if="!data.showEdit">{{ data.report.bank_balance | toCurrency }}</strong>
+              <td
+                class="border-right adjustable"
+                @click="rowClicked(data.report)"
+              >
+                <strong v-if="!data.showEdit">{{
+                  data.report.bank_balance | toCurrency
+                }}</strong>
                 <v-form v-else ref="form" @submit.prevent="updateBalance">
                   <v-row>
                     <v-col cols="6" md="5" sm="3">
-                      <v-text-field v-model="data.report.bank_balance" dense> </v-text-field>
+                      <v-text-field v-model="data.report.bank_balance" dense>
+                      </v-text-field>
                     </v-col>
                     <v-col cols="6" md="1" sm="3" class="mt-1">
-                      <v-btn color="green" class="white--text" type="submit" dense> Save </v-btn>
+                      <v-btn
+                        color="green"
+                        class="white--text"
+                        type="submit"
+                        dense
+                      >
+                        Save
+                      </v-btn>
                     </v-col>
                   </v-row>
                 </v-form>
@@ -48,7 +69,9 @@
                 <strong>{{ data.report.cash_on_transit | toCurrency }}</strong>
               </td>
               <td class="border-right">
-                <strong>{{ data.report.un_presented_cheque | toCurrency }}</strong>
+                <strong>{{
+                  data.report.un_presented_cheque | toCurrency
+                }}</strong>
               </td>
               <td class="border-right">
                 <strong>{{ data.report.adjusted_balance | toCurrency }}</strong>
@@ -57,7 +80,9 @@
                 <strong>{{ data.report.cash_balance | toCurrency }}</strong>
               </td>
               <td>
-                <strong>{{ data.report.diff ? data.report.diff : diff | toCurrency }}</strong>
+                <strong>{{
+                  data.report.diff ? data.report.diff : diff | toCurrency
+                }}</strong>
               </td>
             </tr>
           </tbody>
@@ -93,7 +118,11 @@
           <v-icon v-else medium color="warning">mdi-close</v-icon>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="fetchData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="fetchData"
+          />
         </template>
       </v-data-table>
 
@@ -138,7 +167,13 @@
                     </fetcher>
                   </v-col>
                   <v-col cols="12" md="12" class="mt-n8">
-                    <v-dialog ref="dialog" v-model="data.modal" :return-value.sync="data.date" persistent width="290px">
+                    <v-dialog
+                      ref="dialog"
+                      v-model="data.modal"
+                      :return-value.sync="data.date"
+                      persistent
+                      width="290px"
+                    >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="data.formData.date"
@@ -150,10 +185,23 @@
                         >
                         </v-text-field>
                       </template>
-                      <v-date-picker v-model="data.formData.date" type="month" :max="currentDate" scrollable>
+                      <v-date-picker
+                        v-model="data.formData.date"
+                        type="month"
+                        :max="currentDate"
+                        scrollable
+                      >
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="data.modal = false"> Cancel </v-btn>
-                        <v-btn text color="primary" @click="$refs.dialog.save(data.date)"> OK</v-btn>
+                        <v-btn text color="primary" @click="data.modal = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.dialog.save(data.date)"
+                        >
+                          OK</v-btn
+                        >
                       </v-date-picker>
                     </v-dialog>
                   </v-col>
@@ -164,8 +212,16 @@
         </template>
         <template v-slot:footer>
           <ModalFooter>
-            <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-            <v-btn color="green darken-1" :disabled="!data.valid" text @click="save">{{ data.buttonTitle }}</v-btn>
+            <v-btn color="red darken-1" text @click="cancelDialog"
+              >Cancel</v-btn
+            >
+            <v-btn
+              color="green darken-1"
+              :disabled="!data.valid"
+              text
+              @click="save"
+              >{{ data.buttonTitle }}</v-btn
+            >
           </ModalFooter>
         </template>
       </Modal>
@@ -193,6 +249,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import { useBankReconciliation } from "./composables/use-reconciliation";
+import router from "@/router";
 export default defineComponent({
   setup(_, context) {
     const {
@@ -219,6 +276,10 @@ export default defineComponent({
       selected,
     } = useBankReconciliation(context);
 
+    const navigateToList = () => {
+      router.push({ path: `/bank-reconciliation/list` });
+    };
+
     return {
       data,
       fetchData,
@@ -241,6 +302,7 @@ export default defineComponent({
       title,
       reconcileEntry,
       selected,
+      navigateToList,
     };
   },
 });

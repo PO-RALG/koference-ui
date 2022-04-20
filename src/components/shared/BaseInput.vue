@@ -28,7 +28,6 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-
     const updateValue = (val: string | number) => {
       // let val = event.target.value;
 
@@ -42,7 +41,7 @@ export default defineComponent({
 
     return {
       updateValue,
-    }
-  }
+    };
+  },
 });
 </script>
