@@ -166,8 +166,8 @@ exports.useReceipt = function () {
                 value: "bank_account"
             },
             {
-                text: "Action",
-                align: "start",
+                text: "Print",
+                align: "center",
                 sortable: false,
                 value: "actions"
             },
@@ -212,7 +212,8 @@ exports.useReceipt = function () {
         ],
         loading: false,
         coat: "/coat_of_arms.svg.png",
-        toSave: {}
+        toSave: {},
+        search: ""
     });
     composition_api_1.onMounted(function () {
         init();
@@ -368,18 +369,6 @@ exports.useReceipt = function () {
                     ")" })); })
             : [];
     });
-    var updateReceipt = function (data) {
-        receipt_service_1.update(data).then(function () {
-            reloadData();
-            cancelDialog();
-        });
-    };
-    var createReceipt = function (data) {
-        receipt_service_1.create(data).then(function () {
-            reloadData();
-            cancelDialog();
-        });
-    };
     var getData = function (params) {
         data.response = params;
         receipt_service_1.get(params).then(function (response) {
@@ -422,6 +411,21 @@ exports.useReceipt = function () {
                 : moment_1["default"](new Date()).format("YYYY-MM-DD");
         }
     };
+    var reanderSearched = function (categoryName) {
+        // console.log("categoryname", categoryName.invoice_number);
+        if (categoryName != null && categoryName.length >= 2) {
+            receipt_service_1.regSearch({ regSearch: categoryName }).then(function (response) {
+                data.itemsToFilter = response.data.data.data;
+            });
+        }
+        else if (categoryName ? categoryName.length == 0 : "") {
+            reloadData();
+            data.search = "";
+        }
+        else {
+            reloadData();
+        }
+    };
     return {
         data: data,
         getData: getData,
@@ -442,6 +446,7 @@ exports.useReceipt = function () {
         loadGLAccounts: loadGLAccounts,
         isInvoice: isInvoice,
         setCustomer: setCustomer,
-        resetDate: resetDate
+        resetDate: resetDate,
+        reanderSearched: reanderSearched
     };
 };

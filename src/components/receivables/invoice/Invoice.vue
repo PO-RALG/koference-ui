@@ -29,7 +29,7 @@
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-select
                 :items="data.itemsToFilter"
-                label="Filter Invoice"
+                label="Search Invoice"
                 :item-text="'name'"
                 item-value="name"
                 @change="reanderSearched($event)"
@@ -51,7 +51,7 @@
                         label="Search"
                         placeholder="Eg: INV-2022-000047"
                         @input="searchCategory"
-                        hint="Enter atleast five (2) characters"
+                        hint="Enter atleast two (2) characters"
                       ></v-text-field>
                     </v-list-item-content>
                   </v-list-item>

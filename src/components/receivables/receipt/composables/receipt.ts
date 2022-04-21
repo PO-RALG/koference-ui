@@ -5,6 +5,7 @@ import {
   get,
   create,
   update,
+  regSearch as receiptSearch,
   destroy,
   search,
   printReceipt,
@@ -136,8 +137,8 @@ export const useReceipt = (): any => {
         value: "bank_account",
       },
       {
-        text: "Action",
-        align: "start",
+        text: "Print",
+        align: "center",
         sortable: false,
         value: "actions",
       },
@@ -185,6 +186,7 @@ export const useReceipt = (): any => {
     loading: false,
     coat: "/coat_of_arms.svg.png",
     toSave: {},
+    search: "",
   });
 
   onMounted(() => {
@@ -372,20 +374,6 @@ export const useReceipt = (): any => {
       : [];
   });
 
-  const updateReceipt = (data: any) => {
-    update(data).then(() => {
-      reloadData();
-      cancelDialog();
-    });
-  };
-
-  const createReceipt = (data: any) => {
-    create(data).then(() => {
-      reloadData();
-      cancelDialog();
-    });
-  };
-
   const getData = (params: any) => {
     data.response = params;
     get(params).then((response: AxiosResponse) => {
@@ -433,6 +421,21 @@ export const useReceipt = (): any => {
         : moment(new Date()).format("YYYY-MM-DD");
     }
   };
+  const reanderSearched = (categoryName: any) => {
+    // console.log("categoryname", categoryName.invoice_number);
+    if (categoryName != null && categoryName.length >= 2) {
+      receiptSearch({ regSearch: categoryName }).then(
+        (response: AxiosResponse) => {
+          data.itemsToFilter = response.data.data.data;
+        }
+      );
+    } else if (categoryName ? categoryName.length == 0 : "") {
+      reloadData();
+      data.search = "";
+    } else {
+      reloadData();
+    }
+  };
 
   return {
     data,
@@ -455,5 +458,6 @@ export const useReceipt = (): any => {
     isInvoice,
     setCustomer,
     resetDate,
+    reanderSearched,
   };
 };

@@ -26,7 +26,41 @@
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
-            <v-col cols="6" sm="12" md="4" class="pa-0">
+            <v-col cols="6" sm="12" md="3" class="pa-0">
+              <v-select
+                :items="data.itemsToFilter"
+                label="Search Receipt"
+                :item-text="'name'"
+                item-value="name"
+                @change="searchCategory($event)"
+                v-model="data.search"
+              >
+                <template v-slot:selection="{ item }">
+                  {{ item.receipt_number }}
+                </template>
+                <template v-slot:item="{ item }">
+                  {{ item.receipt_number }}
+                </template>
+                <template v-slot:prepend-item>
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-text-field
+                        clearable
+                        outlined
+                        dense
+                        label="Search"
+                        placeholder="Eg: RE-2022-000047"
+                        @input="reanderSearched"
+                        hint="Enter atleast two (2) characters"
+                      ></v-text-field>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider></v-divider>
+                </template>
+              </v-select>
+            </v-col>
+
+            <!-- <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
                 label="Filter By Invoice Number"
                 @change="searchCategory($event)"
@@ -37,7 +71,7 @@
                 required
                 clearable
               ></v-autocomplete>
-            </v-col>
+            </v-col> -->
           </v-card-title>
         </template>
         <template v-slot:[`item.description`]="{ item }">
@@ -51,7 +85,7 @@
         </template>
 
         <template v-slot:[`item.totalAmt`]="{ item }">
-          {{ item.totalAmt | toCurrency() }}
+          {{ item.amount | toCurrency() }}
         </template>
 
         <template v-slot:[`item.received_amount`]="{ item }">
@@ -434,6 +468,7 @@ export default defineComponent({
       setCustomer,
       resetDate,
       INVOICE_ITEM_HEADERS,
+      reanderSearched,
     } = useReceipt();
 
     return {
@@ -458,6 +493,7 @@ export default defineComponent({
       setCustomer,
       resetDate,
       INVOICE_ITEM_HEADERS,
+      reanderSearched,
     };
   },
 });
