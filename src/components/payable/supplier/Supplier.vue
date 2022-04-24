@@ -33,7 +33,6 @@
                 return-object
                 required
                 clearable
-                outlined
               ></v-autocomplete>
             </v-col>
           </v-card-title>
@@ -89,7 +88,7 @@
         <ModalHeader :title="`${data.modalTitle} Supplier`" />
       </template>
       <template v-slot:body>
-        <ModalBody v-if="data.formData" class="pa-5">
+        <ModalBody v-if="data.formData">
           <v-form v-model="data.valid">
             <v-container>
               <v-row>
@@ -98,14 +97,12 @@
                     v-model="data.formData.name"
                     label="Name"
                     required
-                    outlined
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field
                     v-model="data.formData.email"
                     label="Email"
-                    outlined
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
@@ -114,7 +111,6 @@
                     :items="data.supplierTypes"
                     label="Select Type"
                     required
-                    outlined
                   >
                   </v-select>
                 </v-col>
@@ -125,7 +121,6 @@
                   v-if="data.formData.supplier_type === 'Contractor'"
                 >
                   <v-text-field-simplemask
-                    outlined
                     v-model="data.formData.tin"
                     :rules="data.tinRules"
                     :properties="{
@@ -147,7 +142,6 @@
                     v-bind:focus="data.focus"
                     v-on:focus="data.focus = false"
                     label="TIN"
-                    outlined
                   />
                 </v-col>
                 <v-col
@@ -158,7 +152,6 @@
                 >
                   <v-text-field-simplemask
                     v-model="data.formData.check_number"
-                    outlined
                     :rules="data.checkRules"
                     :properties="{
                       prefix: '',
@@ -190,7 +183,6 @@
                   <v-text-field
                     v-model="data.formData.id_number"
                     label="ID number"
-                    outlined
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
@@ -216,33 +208,28 @@
                     v-bind:focus="data.focus"
                     v-on:focus="data.focus = false"
                     label="Phone"
-                    outlined
                   />
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field
                     v-model="data.formData.address"
                     label="Address"
-                    outlined
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field
                     v-model="data.formData.bank_name"
                     label="Bank Name"
-                    outlined
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field
                     v-model="data.formData.bank_account_name"
-                    outlined
                     label="Bank Account Name"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field
-                    outlined
                     v-model="data.formData.bank_account_number"
                     label="Bank Account Number"
                   ></v-text-field>
