@@ -430,6 +430,9 @@ exports.useInvoice = function () {
             loadCustomer();
         }
     };
+    var print = function (id) {
+        invoice_1.printInvoice(id);
+    };
     return {
         data: data,
         getData: getData,
@@ -459,6 +462,7 @@ exports.useInvoice = function () {
         sumDebts: sumDebts,
         checkDublicate: checkDublicate,
         searchCustomer: searchCustomer,
-        reanderSearched: reanderSearched
+        reanderSearched: reanderSearched,
+        print: print
     };
 };

@@ -1,7 +1,14 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, update, destroy, search, activation } from "../services/supplier.services";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+  activation,
+} from "../services/supplier.services";
 import { Supplier } from "../types/Supplier";
 
 export const useSupplier = (): any => {
@@ -92,15 +99,19 @@ export const useSupplier = (): any => {
     supplierTypes: ["Contractor", "Employee", "Others"],
     phoneRules: [
       (v: string) => !!v || "Phone number is required",
-      (v: string) => (v && v.length <= 10) || "Phone number must be less than 10 characters",
+      (v: string) =>
+        (v && v.length <= 10) || "Phone number must be less than 10 characters",
     ],
     tinRules: [
       (v: string) => !!v || "TIN is required",
-      (v: string) => /^[\d]{3}-[\d]{3}-[\d]{3}$/.test(v) || "TIN must be valid. e.g 000-111-222",
+      (v: string) =>
+        /^[\d]{3}-[\d]{3}-[\d]{3}$/.test(v) ||
+        "TIN must be valid. e.g 000-111-222",
     ],
     checkRules: [
       (v: string) => !!v || "Number is required",
-      (v: string) => (v && v.length <= 10) || "Number must be less than 10 characters",
+      (v: string) =>
+        (v && v.length <= 10) || "Number must be less than 10 characters",
     ],
   });
 
@@ -110,7 +121,8 @@ export const useSupplier = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };

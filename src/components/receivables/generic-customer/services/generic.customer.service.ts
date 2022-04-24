@@ -20,10 +20,7 @@ const search = async (payload: any) => {
 };
 
 const activation = async (payload: any) => {
-  return await axios.post(
-    `${API}/${payload.id}/change-status`,
-    payload
-  );
+  return await axios.post(`${API}/${payload.id}/change-status`, payload);
 };
 
 const find = async (id: string | number) => {
