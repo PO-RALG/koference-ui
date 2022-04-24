@@ -6,7 +6,7 @@
       <v-btn
         color="primary"
         @click="openDialog"
-        :disabled="cant('create', 'ApprovalRole')"
+        :disabled="cant('create', 'ApprovalStatus')"
       >
         <v-icon>mdi-plus</v-icon>
         Add New
@@ -25,13 +25,13 @@
           <v-icon
             class="mr-2"
             @click="openDialog(item)"
-            :disabled="cant('edit', 'AuthRole')"
+            :disabled="cant('update', 'ApprovalStatus')"
           >
             mdi-pencil-box-outline
           </v-icon>
           <v-icon
             @click="openConfirmDialog(item)"
-            :disabled="cant('delete', 'AuthRole')"
+            :disabled="cant('delete', 'ApprovalStatus')"
           >
             mdi-trash-can-outline
           </v-icon>
@@ -47,7 +47,7 @@
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Role`" />
+        <ModalHeader :title="`${data.modalTitle} Status`" />
       </template>
       <template v-slot:body>
         <ModalBody>
@@ -73,7 +73,7 @@
                   </v-text-field>
                 </v-col>
 
-                <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
+                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
                   <v-text-field
                     outlined
                     label="Description"
@@ -81,25 +81,6 @@
                     required
                   >
                   </v-text-field>
-                </v-col>
-
-                <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-                  <fetcher :api="'/api/v1/admin-area-levels'">
-                    <div slot-scope="{ json: levels, loading }">
-                      <div v-if="loading">Loading...</div>
-                      <v-autocomplete
-                        v-else
-                        v-model="data.formData.level_id"
-                        label="Select Approval Role Level"
-                        :items="levels"
-                        :item-text="'name'"
-                        item-value="id"
-                        outlined
-                        small
-                      >
-                      </v-autocomplete>
-                    </div>
-                  </fetcher>
                 </v-col>
               </v-row>
             </v-container>
@@ -118,42 +99,48 @@
     <ConfirmDialog
       @rejectFunction="closeConfirmDialog"
       @acceptFunction="deleteItem"
-      :message="'Are you sure you want to delete this role?'"
+      :message="'Are you sure you want to delete this status?'"
       :data="data.item"
       :isOpen="data.isOpen"
-      :title="'Delete Role'"
+      :title="'Delete Approval Status'"
     />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import { useApprovalRole } from "./composables/use-approval-role";
+import { useApprovalStatus } from "./composables/use-status";
 
 export default defineComponent({
   setup() {
     const {
       data,
       entries,
+
       openDialog,
       cancelDialog,
       closeConfirmDialog,
       openConfirmDialog,
+
       getData,
-      updateRole,
+
+      updateStatus,
       save,
       deleteItem,
-    } = useApprovalRole();
+    } = useApprovalStatus();
 
     return {
       data,
       entries,
+
       openDialog,
       cancelDialog,
       closeConfirmDialog,
       openConfirmDialog,
+
       getData,
-      updateRole,
+
+      updateStatus,
       save,
       deleteItem,
     };

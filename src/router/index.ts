@@ -45,6 +45,7 @@ import { chequeListRoutes } from "@/components/payable/cheque-list";
 import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
 import { receiptRoutes } from "@/components/receivables/receipt";
 import { approvalRoleRoutes } from "@/components/approval/role";
+import { approvalStatusRoutes } from "@/components/approval/status";
 import { approvalUserRoutes } from "@/components/approval/user";
 import { notFoundRoute } from "@/components/404";
 
@@ -116,6 +117,7 @@ const routes: Array<RouteConfig> = [
       ...receiptRoutes,
       ...bankReconciliationRoutes,
       ...approvalRoleRoutes,
+      ...approvalStatusRoutes,
       ...approvalUserRoutes,
       ...notFoundRoute,
     ],
