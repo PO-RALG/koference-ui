@@ -1,4 +1,4 @@
-import { computed, onMounted, reactive, set } from "@vue/composition-api";
+import { reactive, onMounted, set, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import {
   get,
@@ -19,7 +19,7 @@ import { User } from "../types/User";
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 const { useState } = createNamespacedHelpers("Auth");
 
-export const useUser = (type?: string): any => {
+export const useUser = (type?: string): Record<string, unknown> => {
   const { currentUser } = useState(["currentUser"]);
   const dataItems: Array<User> = [];
   const userData = {} as User;
@@ -65,6 +65,7 @@ export const useUser = (type?: string): any => {
       { text: "Approval Roles", value: "displayRoles" },
       { text: "Actions", value: "actions", sortable: false },
     ],
+    searchTerm: "",
     modal: false,
     items: dataItems,
     formData: userData,
@@ -112,8 +113,7 @@ export const useUser = (type?: string): any => {
 
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -137,6 +137,32 @@ export const useUser = (type?: string): any => {
       createUser(data.formData);
     }
   };
+
+  const filterUsers = () => {
+    if (data.searchTerm.length > 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+  }
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  }
 
   const users = computed(() => {
     return data.items.map((user: any) => ({
@@ -181,7 +207,7 @@ export const useUser = (type?: string): any => {
   });
 
   const facilities = computed(() => {
-    return data.facilities.map((facility: any) => ({
+    return data.facilities.map((facility) => ({
       ...facility,
       label: `${facility.name} - (${facility.facility_type.name})`,
     }));
@@ -298,9 +324,7 @@ export const useUser = (type?: string): any => {
   };
 
   const toggleFacilitylOption = (location: any) => {
-    const level = data.levels.find(
-      (level: any) => level.id === location.level_id
-    );
+    const level = data.levels.find((level) => level.id === location.level_id);
     if (level.code === "WARD" || level.code === "VILLAGE_MTAA") {
       data.showFacility = true;
       checkForMoreClicks(level);
@@ -310,10 +334,7 @@ export const useUser = (type?: string): any => {
   };
 
   const checkForMoreClicks = (level: any) => {
-    if (
-      (data.showFacility = true) &&
-      (level.code === "WARD" || level.code === "VILLAGE_MTAA")
-    ) {
+    if ((data.showFacility = true) && (level.code === "WARD" || level.code === "VILLAGE_MTAA")) {
       loadFacilities();
     }
   };
@@ -321,17 +342,13 @@ export const useUser = (type?: string): any => {
   const loadFacilities = () => {
     const isFacilityUser = !!data.isFacilityUser;
     data.isFacilityUser = isFacilityUser;
-    getFacilities({ search: { location_id: data.location["id"] } }).then(
-      (response: AxiosResponse) => {
-        data.facilities = response.data.data.data;
-      }
-    );
+    getFacilities({ search: { location_id: data.location["id"] } }).then((response: AxiosResponse) => {
+      data.facilities = response.data.data.data;
+    });
   };
 
   const filterRoles = (term: string) => {
-    const result = data.roles.filter((item) =>
-      item.name.toLowerCase().includes(term.toLowerCase())
-    );
+    const result = data.roles.filter((item) => item.name.toLowerCase().includes(term.toLowerCase()));
     data.roles = result;
     return data.roles;
   };
@@ -434,6 +451,7 @@ export const useUser = (type?: string): any => {
     getNodes,
     getData,
     users,
+    filterUsers,
     facilities,
     message,
     closeActivationDialog,
@@ -447,5 +465,6 @@ export const useUser = (type?: string): any => {
     usersToAssign,
     onUserSelection,
     addApprovalRole,
+    resetSearchText,
   };
 };

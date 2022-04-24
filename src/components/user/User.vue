@@ -18,9 +18,24 @@
         :headers="data.headers"
         :items="users"
         hide-default-footer
-        disable-pagination
         class="elevation-1"
       >
+        <template v-slot:top>
+          <v-card-title>
+            <v-spacer></v-spacer>
+            <v-col cols="6" sm="12" md="4" class="pa-0">
+              <v-text-field
+                outlined
+                label="Search Users"
+                @keyup="filterUsers()"
+                :items="data.itemsToFilter"
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
+                clearable
+              ></v-text-field>
+            </v-col>
+          </v-card-title>
+        </template>
         <template v-slot:[`item.displayRoles`]="{ item }">
           <span>{{ item.displayRoles }}</span>
         </template>
@@ -240,7 +255,11 @@
       :isOpen="data.show"
       :title="`${data.status} User`"
     />
-    <Modal v-if="data.showApprovalDialog" :modal="data.showApprovalDialog" :width="600">
+    <Modal
+      v-if="data.showApprovalDialog"
+      :modal="data.showApprovalDialog"
+      :width="600"
+    >
       <template v-slot:header>
         <ModalHeader :title="'Add Approval Role'" />
       </template>
@@ -250,7 +269,13 @@
             <v-container>
               <v-row>
                 <v-col cols="12" lg="12" md="12" sm="12">
-                  <v-text-field label="Name" v-model="data.user.fullName" required disabled> </v-text-field>
+                  <v-text-field
+                    label="Name"
+                    v-model="data.user.fullName"
+                    required
+                    disabled
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="12" md="12" sm="12">
                   <fetcher :api="'/api/v1/approval-roles'">
@@ -289,8 +314,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-import { useUser } from './composables/user'
+import { defineComponent } from "@vue/composition-api";
+import { useUser } from "./composables/user";
 
 export default defineComponent({
   setup() {
@@ -323,11 +348,13 @@ export default defineComponent({
       confirmTitle,
       message,
       resetPasswd,
-    } = useUser()
+      filterUsers,
+      resetSearchText,
+    } = useUser();
 
     const showRoles = (roles) => {
-      return roles.map((r) => r.name)
-    }
+      return roles.map((r) => r.name);
+    };
 
     return {
       data,
@@ -359,9 +386,11 @@ export default defineComponent({
       status,
       resetPasswd,
       openApprovalRoleDialog,
+      filterUsers,
+      resetSearchText,
     };
   },
-})
+});
 </script>
 
 <style scoped>
