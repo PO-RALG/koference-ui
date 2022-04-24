@@ -1,5 +1,10 @@
 <template>
-  <v-app justify-center class="grey lighten-3 pa-2 text-center main-body" fluid fill-height>
+  <v-app
+    justify-center
+    class="grey lighten-3 pa-2 text-center main-body"
+    fluid
+    fill-height
+  >
     <v-layout justify-center align-center class="body_bg">
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
@@ -8,8 +13,19 @@
               <v-row dense class="mr-0 ml-0" v-if="data.slides.length > 0">
                 <!-- class="d-none d-md-flex d-lg-none d-none d-lg-flex d-xl-none d-none " -->
                 <v-col md="6" cols="12" sm="12" class="pa-0">
-                  <v-carousel cycle hide-delimiters interval="10000" height="100%" light>
-                    <v-carousel-item v-for="(item, i) in data.slides" :key="i" :src="item.src"> </v-carousel-item>
+                  <v-carousel
+                    cycle
+                    hide-delimiters
+                    interval="10000"
+                    height="100%"
+                    light
+                  >
+                    <v-carousel-item
+                      v-for="(item, i) in data.slides"
+                      :key="i"
+                      :src="item.src"
+                    >
+                    </v-carousel-item>
                   </v-carousel>
                 </v-col>
                 <!-- login form start -->
@@ -17,9 +33,17 @@
                   <!-- <v-col cols="12" md="4" sm="12"> -->
                   <v-card-text class>
                     <img :src="data.coat" class="login-logo" />
-                    <h2 class="text-center pa-6 login-header" color="primary">LOGIN to your account</h2>
-                    <h4 class="siteName pa-0 pb-4" v-if="isDemo()">({{ data.siteName }})</h4>
-                    <v-form ref="form" v-model="data.valid" @submit.prevent="login">
+                    <h2 class="text-center pa-6 login-header" color="primary">
+                      LOGIN to your account
+                    </h2>
+                    <h4 class="siteName pa-0 pb-4" v-if="isDemo()">
+                      ({{ data.siteName }})
+                    </h4>
+                    <v-form
+                      ref="form"
+                      v-model="data.valid"
+                      @submit.prevent="login"
+                    >
                       <v-text-field
                         prepend-inner-icon="mdi-account-box"
                         label="Email"
@@ -41,7 +65,14 @@
                         class="mr-3 ml-3"
                       ></v-text-field>
                       <v-card-actions class="mr-1 ml-3 mt-n4">
-                        <v-btn x-small class="mx-2 d-none d-sm-flex ml-0" fab outlined dark color="primary">
+                        <v-btn
+                          x-small
+                          class="mx-2 d-none d-sm-flex ml-0"
+                          fab
+                          outlined
+                          dark
+                          color="primary"
+                        >
                           <a href="http://196.192.73.13/docs" target="_blank">
                             <v-icon small color="primary">mdi-help</v-icon>
                           </a>
@@ -65,8 +96,7 @@
             </v-card>
           </v-col>
           <v-col cols="8" sm="8" md="7">
-            <div class="text-center">
-            </div>
+            <div class="text-center"></div>
           </v-col>
         </v-row>
       </v-main>
@@ -98,7 +128,9 @@ export default Vue.extend({
       email: "",
       emailRules: [
         (v: any) => !!v || "Email is required",
-        (v: any) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "E-mail must be a valid email",
+        (v: any) =>
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+          "E-mail must be a valid email",
       ],
       password: "",
       passwordRules: [(v: any) => !!v || "Password is required"],
@@ -145,7 +177,7 @@ export default Vue.extend({
   background: #ccc !important;
 }
 .body_bg {
-  background-image: url(/sisbackground.jpg) !important;
+  background-image: url(/ffars_background.jpg) !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center center !important; /* optional, center the image */

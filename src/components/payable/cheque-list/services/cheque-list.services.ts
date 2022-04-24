@@ -29,7 +29,7 @@ const destroy = async (payload: any) => {
 
 const printPdf = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
-  let url = `${process.env.VUE_APP_SERVER_URL}/api/v1/cheque-lists/${id}?token=${user.token}`;
+  const url = `${process.env.VUE_APP_SERVER_URL}/api/v1/cheque-lists/${id}?token=${user.token}`;
   return window.open(url);
 }
 

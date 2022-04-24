@@ -78,10 +78,6 @@ export const useFundType = (): any => {
     // console.log("delete year", data);
   };
 
-  const getFundTypes = () => {
-    get(data).then((response) => {});
-  };
-
   const cancelDialog = () => {
     data.formData = {} as FundTypes;
     data.modal = !data.modal;
@@ -146,7 +142,6 @@ export const useFundType = (): any => {
     openDialog,
     cancelDialog,
     deleteFundType,
-    getFundTypes,
     updateFundType,
     save,
     reloadData,

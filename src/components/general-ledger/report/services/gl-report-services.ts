@@ -8,7 +8,7 @@ const get = async (payload?: any): Promise<AxiosResponse> => {
 
 const printPdf = (payload?: any) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
-  let url = `${process.env.VUE_APP_SERVER_URL}${API}?print_type=${payload.print_type}
+  const url = `${process.env.VUE_APP_SERVER_URL}${API}?print_type=${payload.print_type}
   &token=${user.token}`;
   return window.open(url);
 }

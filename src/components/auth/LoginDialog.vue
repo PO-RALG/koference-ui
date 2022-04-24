@@ -8,7 +8,14 @@
       <v-flex>
         <!-- <v-col cols="12" md="4" sm="12"> -->
         <v-card-text class="pa-6">
-          <v-alert width="100%" color="warning" border="left" elevation="2" colored-border icon="mdi-alert-outline">
+          <v-alert
+            width="100%"
+            color="warning"
+            border="left"
+            elevation="2"
+            colored-border
+            icon="mdi-alert-outline"
+          >
             Please type in your password & email to login again
           </v-alert>
           <v-form ref="form" v-model="data.valid">
@@ -36,8 +43,15 @@
     <!-- login form end -->
     <template v-slot:footer>
       <ModalFooter class="mt-n8">
-        <v-btn color="blue darken-1" :disabled="true" text @click="cancelDialog">Cancel</v-btn>
-        <v-btn color="primary" class="white--text mr-2 mb-4" @click="login" :loading="data.loading">
+        <v-btn color="blue darken-1" :disabled="true" text @click="cancelDialog"
+          >Cancel</v-btn
+        >
+        <v-btn
+          color="primary"
+          class="white--text mr-2 mb-4"
+          @click="login"
+          :loading="data.loading"
+        >
           <v-icon left>mdi-login</v-icon>LOGIN
         </v-btn>
       </ModalFooter>
@@ -66,7 +80,7 @@ export default defineComponent({
   background: #ccc !important;
 }
 .body_bg {
-  background-image: url(/sisbackground.jpg) !important;
+  background-image: url(/ffars_background.jpg) !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center center !important; /* optional, center the image */
