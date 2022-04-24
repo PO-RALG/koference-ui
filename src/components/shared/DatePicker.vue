@@ -12,7 +12,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
           :label="label"
-          prepend-icon="mdi-calendar-range"
+          prepend-inner-icon="mdi-calendar-range"
           readonly
           :value="value"
           :error-messages="errors"

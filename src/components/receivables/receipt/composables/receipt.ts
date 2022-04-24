@@ -1,7 +1,15 @@
 import { AxiosResponse } from "axios";
 import { Receipt } from "../types";
 import { reactive, onMounted, computed } from "@vue/composition-api";
-import { get, create, update, destroy, search, printReceipt } from "../services/receipt-service";
+import {
+  get,
+  create,
+  update,
+  regSearch as receiptSearch,
+  destroy,
+  search,
+  printReceipt,
+} from "../services/receipt-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import {
@@ -93,7 +101,7 @@ export const useReceipt = (): any => {
     selectedInvoice: null,
     modalTitle: "",
     maxDate: moment(new Date()).format("YYYY-MM-DD"),
-    minDate: moment(new Date()).format("YYYY-MM-DD"),
+    minDate: null,
     headers: [
       {
         text: "Receipt Number",
@@ -107,7 +115,7 @@ export const useReceipt = (): any => {
         text: "Amount",
         align: "start",
         sortable: false,
-        value: "amount",
+        value: "totalAmt",
       },
       {
         text: "From",
@@ -129,8 +137,8 @@ export const useReceipt = (): any => {
         value: "bank_account",
       },
       {
-        text: "Action",
-        align: "start",
+        text: "Print",
+        align: "center",
         sortable: false,
         value: "actions",
       },
@@ -178,6 +186,7 @@ export const useReceipt = (): any => {
     loading: false,
     coat: "/coat_of_arms.svg.png",
     toSave: {},
+    search: "",
   });
 
   onMounted(() => {
@@ -185,25 +194,46 @@ export const useReceipt = (): any => {
   });
 
   const init = () => {
+    data.receipt = {
+      id: null,
+      customer_id: null,
+      invoice_id: null,
+      date: null,
+      bank_reference_number: null,
+      description: null,
+      bank_account_id: null,
+      items: [
+        {
+          funding_source_code: null,
+          gl_account_id: null,
+          amount: null,
+        },
+      ],
+    };
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.loading = false;
     });
 
-    getCustomers({ per_page: 2000, active: true }).then((response: AxiosResponse) => {
-      data.customers = response.data.data.data;
-    });
+    getCustomers({ per_page: 2000, active: true }).then(
+      (response: AxiosResponse) => {
+        data.customers = response.data.data.data;
+      }
+    );
   };
 
-  const searchCategory = (categoryName) => {
+  const searchCategory = (categoryName: any) => {
     if (categoryName != null) {
-      search({ receipt_number: categoryName.receipt_number }).then((response: AxiosResponse) => {
-        data.items = response.data.data.data;
-      });
+      search({ receipt_number: categoryName.receipt_number }).then(
+        (response: AxiosResponse) => {
+          data.items = response.data.data.data;
+        }
+      );
     } else {
       reloadData();
     }
@@ -211,7 +241,8 @@ export const useReceipt = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -229,7 +260,7 @@ export const useReceipt = (): any => {
   };
 
   const accounts = computed(() => {
-    return data.bankaccounts.map((account) => {
+    return data.bankaccounts.map((account: any) => {
       account.fullName = `Account Number -${account.number}  ${account.bank} - ${account.branch}`;
       return account;
     });
@@ -248,12 +279,14 @@ export const useReceipt = (): any => {
   };
 
   const geGlAccountId = (account: any): string => {
-    const ac = data.glAccounts.find((glAccount) => glAccount.code === account);
+    const ac = data.glAccounts.find(
+      (glAccount: any) => glAccount.code === account
+    );
     return ac.id;
   };
 
   const getFundingSource = (id: number): number => {
-    const fs = data.fundingSources.find((fs) => fs.id === id);
+    const fs = data.fundingSources.find((fs: any) => fs.id === id);
     return fs.code;
   };
 
@@ -272,7 +305,9 @@ export const useReceipt = (): any => {
             invoice_item_id: item.id,
             amount: item.pay_amount,
             gl_account_id: geGlAccountId(item.gl_account),
-            funding_source_code: getFundingSource(item.definition.funding_source_id),
+            funding_source_code: getFundingSource(
+              item.definition.funding_source_id
+            ),
           };
         }),
       };
@@ -302,9 +337,11 @@ export const useReceipt = (): any => {
       data.fundingSources = response.data.data.data;
     });
 
-    glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then((response: AxiosResponse) => {
-      data.glAccounts = response.data.data.data;
-    });
+    glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then(
+      (response: AxiosResponse) => {
+        data.glAccounts = response.data.data.data;
+      }
+    );
   };
 
   const loadGLAccounts = async (fundSourceCode, index) => {
@@ -327,24 +364,15 @@ export const useReceipt = (): any => {
           ...data,
           index: ++index,
           newData: data,
-          bankAccount: data.bank_account.bank + data.bank_account.name + " (" + data.bank_account.number + ")",
+          bankAccount:
+            data.bank_account.bank +
+            data.bank_account.name +
+            " (" +
+            data.bank_account.number +
+            ")",
         }))
       : [];
   });
-
-  const updateReceipt = (data: any) => {
-    update(data).then(() => {
-      reloadData();
-      cancelDialog();
-    });
-  };
-
-  const createReceipt = (data: any) => {
-    create(data).then(() => {
-      reloadData();
-      cancelDialog();
-    });
-  };
 
   const getData = (params: any) => {
     data.response = params;
@@ -393,6 +421,21 @@ export const useReceipt = (): any => {
         : moment(new Date()).format("YYYY-MM-DD");
     }
   };
+  const reanderSearched = (categoryName: any) => {
+    // console.log("categoryname", categoryName.invoice_number);
+    if (categoryName != null && categoryName.length >= 2) {
+      receiptSearch({ regSearch: categoryName }).then(
+        (response: AxiosResponse) => {
+          data.itemsToFilter = response.data.data.data;
+        }
+      );
+    } else if (categoryName ? categoryName.length == 0 : "") {
+      reloadData();
+      data.search = "";
+    } else {
+      reloadData();
+    }
+  };
 
   return {
     data,
@@ -415,5 +458,6 @@ export const useReceipt = (): any => {
     isInvoice,
     setCustomer,
     resetDate,
+    reanderSearched,
   };
 };

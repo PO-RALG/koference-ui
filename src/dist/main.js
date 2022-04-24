@@ -54,6 +54,7 @@ var vue_axios_1 = require("vue-axios");
 var vue2_perfect_scrollbar_1 = require("vue2-perfect-scrollbar");
 var composition_api_1 = require("@vue/composition-api");
 var moment_1 = require("moment"); //require
+require("./plugins/vuetify-mask");
 var App_vue_1 = require("@/App.vue");
 var router_1 = require("@/router");
 var store_1 = require("@/store");
@@ -70,13 +71,17 @@ axios_1["default"].defaults.baseURL = process.env.VUE_APP_SERVER_URL;
 axios_1["default"].defaults["isLoading"] = true;
 var cancelSource = axios_1["default"].CancelToken.source();
 var requestHandler = function (request) { return __awaiter(void 0, void 0, void 0, function () {
-    var currentUser;
+    var currentUser, facilityID;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, CurrentUserHelper_1["default"]()];
             case 1:
                 currentUser = _a.sent();
                 request.cancelToken = cancelSource.token;
+                // set facility_id in the request params so
+                request.params = request.params || {};
+                facilityID = router_1["default"].currentRoute.query.facility_id;
+                request.params["facility_id"] = facilityID;
                 axios_1["default"].defaults.headers.common["Authorization"] = currentUser
                     ? "Bearer " + currentUser.token
                     : null;

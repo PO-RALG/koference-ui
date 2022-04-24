@@ -5,7 +5,8 @@ import VueAxios from "vue-axios";
 import PerfectScrollbar from "vue2-perfect-scrollbar";
 import VueCompositionAPI from "@vue/composition-api";
 import moment from "moment"; //require
-import VueCurrencyInput from "vue-currency-input";
+
+import "./plugins/vuetify-mask";
 
 import App from "@/App.vue";
 import router from "@/router";
@@ -44,7 +45,9 @@ const requestHandler = async (request: any) => {
   const facilityID = router.currentRoute.query.facility_id;
   request.params["facility_id"] = facilityID;
 
-  axios.defaults.headers.common["Authorization"] = currentUser ? `Bearer ${currentUser.token}` : null;
+  axios.defaults.headers.common["Authorization"] = currentUser
+    ? `Bearer ${currentUser.token}`
+    : null;
   axios.defaults.headers.common["Accept"] = `application/json`;
   axios.defaults.headers.common["Content-Type"] = `application/json`;
   return request;

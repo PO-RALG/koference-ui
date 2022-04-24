@@ -3,7 +3,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn :disabled="cant('create', 'Receipt')" color="primary" @click="openDialog">
+      <v-btn
+        :disabled="cant('create', 'Receipt')"
+        color="primary"
+        @click="openDialog"
+      >
         <v-icon>mdi-plus</v-icon>
         Create Receipt
       </v-btn>
@@ -22,7 +26,41 @@
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
-            <v-col cols="6" sm="12" md="4" class="pa-0">
+            <v-col cols="6" sm="12" md="3" class="pa-0">
+              <v-select
+                :items="data.itemsToFilter"
+                label="Search Receipt"
+                :item-text="'name'"
+                item-value="name"
+                @change="searchCategory($event)"
+                v-model="data.search"
+              >
+                <template v-slot:selection="{ item }">
+                  {{ item.receipt_number }}
+                </template>
+                <template v-slot:item="{ item }">
+                  {{ item.receipt_number }}
+                </template>
+                <template v-slot:prepend-item>
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-text-field
+                        clearable
+                        outlined
+                        dense
+                        label="Search"
+                        placeholder="Eg: RE-2022-000047"
+                        @input="reanderSearched"
+                        hint="Enter atleast two (2) characters"
+                      ></v-text-field>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider></v-divider>
+                </template>
+              </v-select>
+            </v-col>
+
+            <!-- <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
                 label="Filter By Invoice Number"
                 @change="searchCategory($event)"
@@ -33,7 +71,7 @@
                 required
                 clearable
               ></v-autocomplete>
-            </v-col>
+            </v-col> -->
           </v-card-title>
         </template>
         <template v-slot:[`item.description`]="{ item }">
@@ -43,7 +81,11 @@
         </template>
 
         <template v-slot:[`item.date`]="{ item }">
-          {{ item.date | format() }}
+          {{ item.date | format("DD/MM/YYYY") }}
+        </template>
+
+        <template v-slot:[`item.totalAmt`]="{ item }">
+          {{ item.amount | toCurrency() }}
         </template>
 
         <template v-slot:[`item.received_amount`]="{ item }">
@@ -67,7 +109,12 @@
           <v-tooltip :disabled="cant('edit', 'BankAccount')" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-btn @click="print(item.id)" text color="green">
-                <v-icon :disabled="cant('edit', 'BankAccount')" v-bind="attrs" v-on="on" class="mr-2">
+                <v-icon
+                  :disabled="cant('edit', 'BankAccount')"
+                  v-bind="attrs"
+                  v-on="on"
+                  class="mr-2"
+                >
                   mdi-printer
                 </v-icon>
               </v-btn>
@@ -76,7 +123,11 @@
           </v-tooltip>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -89,7 +140,12 @@
           <v-form>
             <v-container>
               <span class="pl-5">Select Receipt Type</span>
-              <v-radio-group class="pl-5" v-model="data.isInvoice" row @change="resetDate">
+              <v-radio-group
+                class="pl-5"
+                v-model="data.isInvoice"
+                row
+                @change="resetDate"
+              >
                 <v-radio label="CASH" value="NO"></v-radio>
                 <v-radio label="INVOICE" value="YES"></v-radio>
               </v-radio-group>
@@ -114,8 +170,18 @@
                     </div>
                   </fetcher>
                 </v-col>
-                <v-col cols="12" md="6" v-if="isInvoice && data.selectedInvoice">
-                  <v-text-field v-model="data.selectedUser.name" label="Invoice User" disabled small> </v-text-field>
+                <v-col
+                  cols="12"
+                  md="6"
+                  v-if="isInvoice && data.selectedInvoice"
+                >
+                  <v-text-field
+                    v-model="data.selectedUser.name"
+                    label="Invoice User"
+                    disabled
+                    small
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" md="6" v-else>
                   <v-autocomplete
@@ -154,7 +220,10 @@
                 </v-col>
 
                 <v-col cols="12" md="12" class="mt-n8">
-                  <v-text-field label="Description" v-model="data.receipt.description"></v-text-field>
+                  <v-text-field
+                    label="Description"
+                    v-model="data.receipt.description"
+                  ></v-text-field>
                 </v-col>
 
                 <v-col class="pt-0" cols="12" md="12">
@@ -163,13 +232,19 @@
                       Add GLAccount {{ " " }}{{ "by pressing" }}
                       <v-icon small color="success"> mdi-plus-circle </v-icon>
                       {{ " " }} {{ "or" }} {{ "remove by pressing " }}{{ " " }}
-                      <v-icon small color="red"> mdi-minus-circle </v-icon>{{ " " }}{{ "sign in the right" }}
+                      <v-icon small color="red"> mdi-minus-circle </v-icon
+                      >{{ " " }}{{ "sign in the right" }}
                       {{ " " }}
                       <v-icon color=""> mdi-arrow-right-bold </v-icon>
                     </td>
                   </tr>
                 </v-col>
-                <v-col class="pt-2 invoice-table" cols="12" md="12" v-if="isInvoice && data.selectedInvoice">
+                <v-col
+                  class="pt-2 invoice-table"
+                  cols="12"
+                  md="12"
+                  v-if="isInvoice && data.selectedInvoice"
+                >
                   <v-data-table
                     :headers="INVOICE_ITEM_HEADERS"
                     :items="data.selectedInvoice.invoice_items"
@@ -177,7 +252,12 @@
                     hide-default-footer
                   >
                     <template v-slot:body>
-                      <tr v-for="(line, index) in data.selectedInvoice.invoice_items" :key="index" class="invoice-tr">
+                      <tr
+                        v-for="(line, index) in data.selectedInvoice
+                          .invoice_items"
+                        :key="index"
+                        class="invoice-tr"
+                      >
                         <td class="invoice-td">
                           <v-select
                             :items="data.selectedInvoice.invoice_items"
@@ -194,7 +274,14 @@
                         </td>
 
                         <td class="invoice-td">
-                          <v-text-field dense hide-details outlined type="number" disabled v-model="line.amount">
+                          <v-text-field
+                            dense
+                            hide-details
+                            outlined
+                            type="number"
+                            disabled
+                            v-model="line.amount"
+                          >
                           </v-text-field>
                         </td>
                         <td class="invoice-td">
@@ -209,7 +296,13 @@
                           </v-text-field>
                         </td>
                         <td class="invoice-td">
-                          <v-text-field dense hide-details outlined type="number" v-model="line.pay_amount">
+                          <v-text-field
+                            dense
+                            hide-details
+                            outlined
+                            type="number"
+                            v-model="line.pay_amount"
+                          >
                           </v-text-field>
                         </td>
                       </tr>
@@ -220,9 +313,18 @@
                   </v-data-table>
                 </v-col>
                 <v-col class="pt-0 invoice-table" cols="12" md="12" v-else>
-                  <v-data-table :headers="HEADERS" :items="data.items" disable-pagination hide-default-footer>
+                  <v-data-table
+                    :headers="HEADERS"
+                    :items="data.items"
+                    disable-pagination
+                    hide-default-footer
+                  >
                     <template v-slot:body>
-                      <tr v-for="(line, index) in data.receipt.items" :key="index" class="invoice-tr">
+                      <tr
+                        v-for="(line, index) in data.receipt.items"
+                        :key="index"
+                        class="invoice-tr"
+                      >
                         <td>
                           <v-select
                             :items="data.fundingSources"
@@ -273,10 +375,14 @@
                             color="blue darken-1"
                             small
                             text
-                            v-if="index || (!index && data.receipt.items.length > 1)"
+                            v-if="
+                              index || (!index && data.receipt.items.length > 1)
+                            "
                             @click="removeRow(index)"
                           >
-                            <v-icon small color="red"> mdi-minus-circle </v-icon>
+                            <v-icon small color="red">
+                              mdi-minus-circle
+                            </v-icon>
                           </v-btn>
                           <v-btn
                             small
@@ -285,7 +391,9 @@
                             @click="addRow"
                             v-if="index == data.receipt.items.length - 1"
                           >
-                            <v-icon small color="success"> mdi-plus-circle </v-icon>
+                            <v-icon small color="success">
+                              mdi-plus-circle
+                            </v-icon>
                           </v-btn>
                         </td>
                       </tr>
@@ -305,7 +413,9 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
+          <v-btn color="green darken-1" text @click="save"
+            >{{ data.modalTitle }}
+          </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -320,7 +430,9 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog">No</v-btn>
+          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
+            >No</v-btn
+          >
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -356,6 +468,7 @@ export default defineComponent({
       setCustomer,
       resetDate,
       INVOICE_ITEM_HEADERS,
+      reanderSearched,
     } = useReceipt();
 
     return {
@@ -380,6 +493,7 @@ export default defineComponent({
       setCustomer,
       resetDate,
       INVOICE_ITEM_HEADERS,
+      reanderSearched,
     };
   },
 });

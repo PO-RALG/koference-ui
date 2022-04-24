@@ -14,6 +14,7 @@ import { fundTypesRoutes } from "@/components/coa/fund-type";
 import { gfsCategoriesRoutes } from "@/components/coa/gfs-category";
 import { projectRoutes } from "@/components/coa/project";
 import { customerRoutes } from "@/components/receivables/customer";
+import { genericCustomerRoutes } from "@/components/receivables/generic-customer";
 import { documentCategoryRoutes } from "@/components/setup/document-category";
 import { documentRoutes } from "@/components/setup/document";
 import { fundingSourceRoutes } from "@/components/coa/funding-source";
@@ -47,6 +48,7 @@ import { approvalRoleRoutes } from "@/components/approval/role";
 import { approvalUserRoutes } from "@/components/approval/user";
 import { notFoundRoute } from "@/components/404";
 
+
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
@@ -60,7 +62,7 @@ const routes: Array<RouteConfig> = [
       title: "Login",
       middleware: [setTitle],
     },
-    props: (route) => ({ query: route.query }),
+    props: (route: any) => ({ query: route.query }),
   },
   {
     path: "/",
@@ -82,6 +84,7 @@ const routes: Array<RouteConfig> = [
       ...gfsCategoriesRoutes,
       ...projectRoutes,
       ...customerRoutes,
+      ...genericCustomerRoutes,
       ...documentCategoryRoutes,
       ...documentRoutes,
       ...fundingSourceRoutes,
@@ -143,7 +146,8 @@ const isLoggedIn = (to, _, next) => {
   }
 };
 
-router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
-router.beforeEach(VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth }));
+router.beforeEach(
+  VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
+);
 
 export default router;

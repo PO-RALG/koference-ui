@@ -185,7 +185,6 @@ export const useJv = (): any => {
   const loadGLAccounts = async (fundSourceCode, index) => {
     const params = {
       per_page: 10,
-      gl_account_type: "REVENUE",
       fund_code: fundSourceCode,
     };
 

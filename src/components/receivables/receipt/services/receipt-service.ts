@@ -37,10 +37,24 @@ const destroy = async (payload: any) => {
   return await axios.delete(`${API}/${payload}`);
 };
 
+const regSearch = async (payload: any) => {
+  return await axios.get(`/api/v1/receipts/`, { params: payload });
+};
+
 const printReceipt = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
   const url = `${process.env.VUE_APP_SERVER_URL}/api/v1/receipts/${id}?token=${user.token}`;
   return window.open(url);
 };
 
-export { get, find, create, update, destroy, search, viewinvoice, printReceipt };
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  search,
+  viewinvoice,
+  printReceipt,
+  regSearch,
+};

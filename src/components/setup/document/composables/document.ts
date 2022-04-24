@@ -109,7 +109,7 @@ export const useDocument = (): any => {
       updateDocument(data.formData);
     } else {
       data.formData.created_by = 1;
-      createUser(data.formData);
+      createDocument(data.formData);
     }
   };
 
@@ -141,7 +141,7 @@ export const useDocument = (): any => {
     fileToupload.value = event.target.files[0];
   };
 
-  const createUser = (data: any) => {
+  const createDocument = (data: any) => {
     create(data).then((response) => {
       if (response.status === 200) {
         reloadData();

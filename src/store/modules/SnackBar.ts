@@ -5,11 +5,11 @@ const state = {
 };
 
 const getters = {
-  isVisible(state) {
+  isVisible(state): boolean {
     return state.show;
   },
 
-  getStatus(state) {
+  getStatus(state): any {
     return { ...state.show, ...state.message };
   },
 };

@@ -12,7 +12,7 @@ const search = async (payload: any) => {
   });
 };
 
-const find = async (id: string | number) => {
+const find = async (id) => {
   return await axios.get(`/api/v1/facilities/${id}`);
 };
 

@@ -14,6 +14,10 @@ const search = async (payload: any) => {
   });
 };
 
+const regSearch = async (payload: any) => {
+  return await axios.get(`/api/v1/invoices/`, { params: payload });
+};
+
 const find = async (id: string | number) => {
   return await axios.get(`/api/v1/invoices/${id}`);
 };
@@ -42,6 +46,13 @@ const receiptcreate = async (payload: any) => {
     payload
   );
 };
+
+const printInvoice = (id: string | number) => {
+  const user = JSON.parse(localStorage.getItem("FFARS_USER"));
+  const url = `${process.env.VUE_APP_SERVER_URL}/api/v1/invoices/${id}?token=${user.token}`;
+  return window.open(url);
+};
+
 export {
   get,
   find,
@@ -51,4 +62,6 @@ export {
   search,
   viewinvoice,
   receiptcreate,
+  regSearch,
+  printInvoice,
 };

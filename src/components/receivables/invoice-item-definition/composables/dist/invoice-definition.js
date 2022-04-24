@@ -3,7 +3,6 @@ exports.__esModule = true;
 exports.useInvoiceDefinition = void 0;
 var composition_api_1 = require("@vue/composition-api");
 var invoice_item_definition_1 = require("../services/invoice-item-definition");
-var gfs_service_1 = require("@/components/coa/gfs-code/service/gfs.service");
 var funding_sources_1 = require("@/components/coa/funding-source/services/funding-sources");
 exports.useInvoiceDefinition = function () {
     var dataItems = [];
@@ -41,6 +40,7 @@ exports.useInvoiceDefinition = function () {
         itemtodelete: "",
         response: {},
         gfscodes: gfsCodeData,
+        fundsourcesGfscodes: [],
         fundingsources: []
     });
     composition_api_1.onMounted(function () {
@@ -53,16 +53,12 @@ exports.useInvoiceDefinition = function () {
             data.items = response.data.data.data;
             data.itemsToFilter = response.data.data.data;
         });
-        gfs_service_1.allgfscodes({ code: "REVENUE" }).then(function (response) {
-            console.log("all gfs data", response.data.data.data);
-            data.gfscodes = response.data.data.data[0];
-        });
         funding_sources_1.fundingsources({ per_page: 2000 }).then(function (response) {
             data.fundingsources = response.data.data.data;
         });
     };
     var gfsName = composition_api_1.computed(function () {
-        return data.gfscodes
+        return data.gfscodes && data.gfscodes.gfs_codes
             ? data.gfscodes.gfs_codes.map(function (gfsCodeItem) {
                 gfsCodeItem.fullName = gfsCodeItem.code + " - " + gfsCodeItem.name + " ";
                 return gfsCodeItem;
@@ -85,7 +81,7 @@ exports.useInvoiceDefinition = function () {
         console.log("argument", categoryName);
         if (categoryName != null) {
             invoice_item_definition_1.search({ name: categoryName.name }).then(function (response) {
-                console.log("response data", response.data.data.data);
+                //// data", response.data.data.data);
                 data.items = response.data.data.data;
             });
         }
@@ -113,6 +109,7 @@ exports.useInvoiceDefinition = function () {
     var cancelDialog = function () {
         data.formData = {};
         data.modal = !data.modal;
+        data.gfscodes = {};
     };
     var cancelConfirmDialog = function () {
         data.formData = {};
@@ -166,6 +163,9 @@ exports.useInvoiceDefinition = function () {
             data.items = response.data.data.data;
         });
     };
+    var loadGfsCodes = function (params) {
+        data.fundsourcesGfscodes = fundingsourceName.value.filter(function (word) { return word.id === params; });
+    };
     return {
         data: data,
         getData: getData,
@@ -181,6 +181,7 @@ exports.useInvoiceDefinition = function () {
         searchCategory: searchCategory,
         setActivation: setActivation,
         gfsName: gfsName,
-        fundingsourceName: fundingsourceName
+        fundingsourceName: fundingsourceName,
+        loadGfsCodes: loadGfsCodes
     };
 };

@@ -18,11 +18,7 @@
           <v-switch :input-value="item.active" @change="openActivationDialog(item)" value></v-switch>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -63,7 +59,6 @@ export default defineComponent({
       { text: "Account Type", value: "gl_account_type" },
       { text: "Account", value: "code" },
       { text: "Nature", value: "nature" },
-      { text: "Type", value: "type" },
       { text: "Status", align: "start", sortable: false, value: "active" },
       { text: "Actions", value: "actions", sortable: false },
     ];
@@ -77,8 +72,7 @@ export default defineComponent({
       cancelDialog,
       save,
       getData,
-    } =
-      useGLAccount();
+    } = useGLAccount();
 
     return {
       HEADERS,

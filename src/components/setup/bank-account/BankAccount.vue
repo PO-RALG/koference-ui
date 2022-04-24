@@ -65,7 +65,7 @@
                 :disabled="cant('delete', 'BankAccount')"
                 v-bind="attrs"
                 v-on="on"
-                @click="deleteSubBudgetClass(item.id)"
+                @click="deleteBankAccount(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -89,6 +89,7 @@
                     v-model="data.formData.branch"
                     label="Branch"
                     required
+                    outlined
                     :hide-details="true"
                   ></v-text-field>
                 </v-col>
@@ -97,6 +98,7 @@
                     v-model="data.formData.name"
                     label="Name"
                     required
+                    outlined
                     :hide-details="true"
                   ></v-text-field>
                 </v-col>
@@ -104,6 +106,7 @@
                   <v-text-field
                     v-model="data.formData.bank"
                     label="Bank"
+                    outlined
                     required
                     :hide-details="true"
                   ></v-text-field>
@@ -113,6 +116,7 @@
                     v-model="data.formData.number"
                     label="Number"
                     required
+                    outlined
                     :hide-details="true"
                   ></v-text-field>
                 </v-col>
@@ -121,11 +125,12 @@
                   <v-autocomplete
                     v-model="data.formData.bank_account_type_id"
                     label="Bank Account Type"
-                    :items="data.accounttypes"
+                    :items="data.accountTypes"
                     :item-text="'name'"
                     item-value="id"
                     :item-divider="true"
                     required
+                    outlined
                     clearable
                   ></v-autocomplete>
                 </v-col>
@@ -148,7 +153,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.deletemodal" :width="300">
+    <Modal :modal="data.showDeleteDialog" :width="300">
       <template v-slot:header>
         <ModalHeader :title="`Delete Bank Accounts`" />
       </template>
@@ -181,40 +186,30 @@ export default defineComponent({
   name: "BackAccount",
   setup() {
     const {
-      filterSbc,
       data,
       openDialog,
       cancelDialog,
-      deleteSubBudgetClass,
-      getSubBudgetClass,
+      deleteBankAccount,
       updateFinancialYear,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
-      searchCategory,
-      openFilterDialog,
-      cancelFilterDialog,
-      resumeDialog,
+      searchBankAccounts,
       bankName,
     } = useBank();
 
     return {
-      filterSbc,
       data,
       openDialog,
       cancelDialog,
-      deleteSubBudgetClass,
-      getSubBudgetClass,
+      deleteBankAccount,
       updateFinancialYear,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
-      searchCategory,
-      openFilterDialog,
-      cancelFilterDialog,
-      resumeDialog,
+      searchBankAccounts,
       bankName,
     };
   },

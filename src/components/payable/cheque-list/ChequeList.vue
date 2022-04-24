@@ -3,11 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        color="primary"
-        @click="openDialog"
-        :disabled="cant('create', 'ChequeList')"
-      >
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'ChequeList')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -38,23 +34,13 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="printChequelist(item.id)"
-              >
-                mdi-printer-eye
-              </v-icon>
+              <v-icon v-bind="attrs" v-on="on" @click="printChequelist(item.id)"> mdi-printer-eye </v-icon>
             </template>
             <span>View / Print</span>
           </v-tooltip>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -67,15 +53,11 @@
         <ModalBody v-if="data.formData">
           <v-form v-model="data.valid">
             <v-container>
-              <v-row class="pa-2 pb-5">
+              <v-row class="pl-5 pr-5">
                 <v-col cols="12" md="4">
-                  <DatePicker
-                    :label="'Date'"
-                    v-model="data.formData.date"
-                    required
-                  />
+                  <DatePicker :label="'Date'" v-model="data.formData.date" required />
                 </v-col>
-                <v-col cols="12" md="4" sm="12">
+                <v-col cols="12" md="4" sm="12" class="mt-n3">
                   <v-select
                     v-model="data.formData.bank_account_id"
                     :items="data.bankAccounts"
@@ -87,11 +69,7 @@
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
-                  <v-btn
-                    color="primary"
-                    @click="searchPaymentByDate"
-                    :disabled="!data.valid"
-                  >
+                  <v-btn color="primary" @click="searchPaymentByDate" :disabled="!data.valid">
                     {{ `Search Payments` }}
                   </v-btn>
                 </v-col>
@@ -128,15 +106,8 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelDialog">
-            Cancel
-          </v-btn>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="save"
-            :disabled="!data.valid"
-          >
+          <v-btn color="red darken-1" text @click="cancelDialog"> Cancel </v-btn>
+          <v-btn color="green darken-1" text @click="save" :disabled="!data.valid">
             {{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -152,9 +123,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
-            Cancel
-          </v-btn>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog"> Cancel </v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
