@@ -1,6 +1,13 @@
-import { reactive, set, onMounted } from "@vue/composition-api";
+import { reactive, set, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import { get, create, update, destroy, search } from "../services/facility.service";
+import router from "@/router";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../services/facility.service";
 
 import { Facility } from "../types/Facility";
 import { FacilityType } from "@/components/facility/facility-type/types/FacilityType";
@@ -103,7 +110,8 @@ export const useFacility = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
@@ -212,12 +220,27 @@ export const useFacility = (): any => {
 
   const searchFacilityTypes = (item: string) => {
     const regSearchTerm = item ? item : data.searchTerm;
-    getFacilityType({ per_page: 10, regSearch: regSearchTerm }).then((response: AxiosResponse) => {
-      data.facilityTypes = response.data.data.data;
-    });
+    getFacilityType({ per_page: 10, regSearch: regSearchTerm }).then(
+      (response: AxiosResponse) => {
+        data.facilityTypes = response.data.data.data;
+      }
+    );
   };
 
+  const navigateToFacility = (event, facility: any) => {
+    event.preventDefault();
+    router.push({ path: `/manage-facilities/view?facility_id=${facility.id}` });
+  };
+
+  const facilities = computed(() => {
+    return data.itemsToFilter.map(item => ({
+      ...item,
+      name: `<a href="/manage-facilities/view?facility_id=${item.id}">${item.name}</a>`
+    }))
+  })
+
   return {
+    navigateToFacility,
     data,
     openDialog,
     cancelDialog,
@@ -232,5 +255,6 @@ export const useFacility = (): any => {
     loadLocationChildren,
     getNodes,
     searchFacilityTypes,
+    facilities,
   };
 };

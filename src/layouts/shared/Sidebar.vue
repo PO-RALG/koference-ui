@@ -1,9 +1,12 @@
 <template>
-  <v-navigation-drawer v-model="drawer" app v-if="user">
+  <v-navigation-drawer :mini-variant.sync="data.mini" permanent v-model="drawer" app v-if="user">
     <template v-slot:prepend>
-      <v-toolbar-title color="primary" class="sidebar-toolbar d-flex flex-row justify-space-between">
+      <v-toolbar-title
+        color="primary"
+        class="sidebar-toolbar d-flex flex-row justify-space-between"
+      >
         <h3 class="admin-title">FFARS</h3>
-        <v-icon large @click.stop="toggleSidebar" color="white" class="sidebar-close-icon"> mdi-close </v-icon>
+        <v-icon large @click.stop="toggleSidebar" color="white" class="sidebar-close-icon">mdi-close</v-icon>
       </v-toolbar-title>
     </template>
     <template>
@@ -33,9 +36,7 @@
         <template v-for="menu in user.menu_groups">
           <v-row v-if="menu.heading" :key="menu.heading" align="center">
             <v-col cols="6">
-              <v-subheader v-if="!menu.children">
-                {{ menu.name }}
-              </v-subheader>
+              <v-subheader v-if="!menu.children">{{ menu.name }}</v-subheader>
             </v-col>
           </v-row>
           <v-list-group
@@ -50,7 +51,12 @@
                 <v-list-item-title>{{ menu.name }}</v-list-item-title>
               </v-list-item-content>
             </template>
-            <v-list-item class="pl-8" v-for="(child, i) in menu.children" :key="i" link router-link :to="child.state">
+            <v-list-item
+              class="pl-8"
+              v-for="(child, i) in menu.children"
+              :key="i"
+              @click="navigateToState(child.state)"
+            >
               <v-list-item-action v-if="child.icon">
                 <v-icon small medium>{{ child.icon }}</v-icon>
               </v-list-item-action>
@@ -59,7 +65,7 @@
               </v-list-item-content>
             </v-list-item>
           </v-list-group>
-          <v-list-item v-else :key="menu.title" link router-link :to="menu.state">
+          <v-list-item v-else :key="menu.title" @click="navigateToState(child.state)">
             <v-list-item-action>
               <v-icon>{{ menu.icon }}</v-icon>
             </v-list-item-action>
@@ -77,6 +83,7 @@
 <script lang="ts">
 import { defineComponent, reactive, computed } from "@vue/composition-api";
 import { MENU_ITEMS } from "@/config/menu-items";
+import router from "@/router";
 
 export default defineComponent({
   props: {
@@ -97,6 +104,7 @@ export default defineComponent({
   setup(props, context) {
     let data = reactive({
       user_logo: "/coat_of_arms.svg.png",
+      mini: false,
     });
 
     const toggleSidebar = () => {
@@ -123,6 +131,15 @@ export default defineComponent({
       }
     });
 
+    // pragramtically navigate to state instead of using router link
+    const navigateToState = (state: string) => {
+      router.push({ path: `/${state}` }).catch((error) => {
+        if (error.name !== "NavigationDuplicated") {
+          throw error;
+        }
+      });
+    };
+
     return {
       data,
       fullName,
@@ -131,6 +148,7 @@ export default defineComponent({
       MENU_ITEMS,
 
       toggleSidebar,
+      navigateToState,
     };
   },
 });

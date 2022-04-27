@@ -93,10 +93,6 @@ export const useSubBudgetClass = (): any => {
     data.itemtodelete = deleteId;
   };
 
-  const getSubBudgetClass = () => {
-    get(data).then((response) => {});
-  };
-
   const cancelDialog = () => {
     data.formData = {} as SubBudgetClass;
     data.modal = !data.modal;
@@ -161,7 +157,6 @@ export const useSubBudgetClass = (): any => {
     openDialog,
     cancelDialog,
     deleteSubBudgetClass,
-    getSubBudgetClass,
     updateSubBudgetClass,
     save,
     reloadData,

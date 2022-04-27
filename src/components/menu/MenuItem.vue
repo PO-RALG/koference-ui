@@ -14,7 +14,7 @@
         <template v-slot:top>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <p>Search fields go here</p>
+            <p></p>
           </v-card-actions>
         </template>
 

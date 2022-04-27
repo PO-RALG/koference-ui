@@ -1,59 +1,86 @@
 <template>
-  <label v-if="label" :for="uuid">
-    {{ label }}
-  </label>
-  <select
-    class="field"
-    v-bind="{
-      ...$attrs,
-      onChange: updateValue,
-    }"
-    :value="modelValue"
-    :id="uuid"
-    :aria-describedby="error ? `${uuid}-error` : null"
-    :aria-invalid="error ? true : false"
-    :class="{ error }"
-  >
-    <option v-for="option in options" :value="option" :key="option" :selected="option === modelValue">
-      {{ option }}
-    </option>
-  </select>
-  <BaseErrorMessage v-if="error" :id="`${uuid}-error`">
-    {{ error }}
-  </BaseErrorMessage>
+  <div>
+    <v-select
+      v-if="required"
+      :items="entries"
+      :label="requiredLabel"
+      :value="value"
+      :item-value="itemValue"
+      :item-text="itemText"
+      :rules="data.rules.select"
+      v-bind="{
+        ...$attrs,
+      }"
+      @change="$emit('input', $event)"
+    >
+    </v-select>
+    <v-select
+      v-else
+      :items="entries"
+      :label="label"
+      :value="value"
+      :item-value="itemValue"
+      :item-text="itemText"
+      v-bind="{
+        ...$attrs,
+      }"
+      @change="$emit('input', $event)"
+    >
+    </v-select>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
-
-import SetupFormComponent from "./features/SetupFormComponent";
-import UniqueID from "./features/UniqueID";
-
+import { reactive, computed, defineComponent } from "@vue/composition-api";
 export default defineComponent({
   props: {
-    options: {
+    label: {
+      type: String,
+      default: "Select",
+    },
+    value: {
+      required: false,
+    },
+    required: {
+      type: Boolean,
+      default: false,
+    },
+    itemText: {
+      required: false,
+      default: "name",
+      type: String,
+    },
+    itemValue: {
+      required: false,
+      default: "id",
+    },
+    items: {
       type: Array,
       required: true,
     },
-    label: {
-      type: String,
-      default: "",
-    },
-    error: {
-      type: String,
-      default: "",
-    },
-    modelValue: {
-      type: [String, Number],
-    },
   },
-  setup(props, context) {
-    const { updateValue } = SetupFormComponent(props, context);
-    const uuid = UniqueID().getID();
+
+  setup(props) {
+    const data = reactive({
+      rules: {
+        select: [v => !!v || 'Item is required'],
+      },
+    });
+    const entries = computed(() => {
+      return props.items.map((item: any) => ({
+        ...item,
+        name: item.name ? item.name : item.description,
+      }));
+    });
+
+    const requiredLabel = computed(() => {
+      return `${props.label} *`;
+    });
 
     return {
-      updateValue,
-      uuid,
+      data,
+      entries,
+      requiredLabel,
     };
   },
 });

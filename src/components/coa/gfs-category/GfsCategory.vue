@@ -37,18 +37,17 @@
         </template>
         <template v-slot:item="{ item, isExpanded, expand }">
           <tr>
-            <td>{{ item.description }}</td>
-
             <td>
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="expand(!isExpanded)">
-                    mdi-format-list-bulleted
-                  </v-icon>
+                  <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="expand(!isExpanded)"> mdi-chevron-down </v-icon>
                 </template>
                 <span>List of Gfs codes</span>
               </v-tooltip>
             </td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.account_nature }}</td>
+            <td>{{ item.account_type }}</td>
             <td>
               <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
               <v-icon @click="deleteGfsCategory(item.id)"> mdi-trash-can-outline </v-icon>
@@ -58,21 +57,10 @@
 
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length" class="pb-5 pa-3">
-            <b>Category Name:</b>
-            {{ item.description }}
-            <br />
-            Category Code:
-            <em>
-              <b class="pa-3">{{ item.code }}</b>
-            </em>
-            <v-card outlined flat max-width="80%">
-              <v-data-table
-                :headers="data.gfsCodes"
-                :items="item.gfs_codes"
-                :items-per-page="item.metadataOptions ? item.metadataOptions.length : 20"
-                hide-default-footer
-                dense
-              ></v-data-table>
+            <b>CATEGORY:</b>
+            {{ item.description }} ({{ item.code }})
+            <v-card outlined flat max-width="100%">
+              <v-data-table :headers="data.gfsCodes" :items="item.gfs_codes" hide-default-footer dense></v-data-table>
             </v-card>
           </td>
         </template>
@@ -96,6 +84,28 @@
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row class="mt-n8">
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <v-select
+                    v-model="data.formData.account_type"
+                    item-text="name"
+                    :items="data.ACCOUNT_TYPES"
+                    item-value="name"
+                    label="Select Account Type"
+                    >
+                  </v-select>
+                </v-col>
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <v-select
+                    v-model="data.formData.account_nature"
+                    item-text="name"
+                    :items="data.ACCOUNT_NATURE"
+                    item-value="name"
+                    label="Select Account Nature"
+                  >
+                  </v-select>
                 </v-col>
               </v-row>
             </v-container>

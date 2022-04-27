@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from "vue-router";
 import VueRouteMiddleware from "vue-route-middleware";
 import store from "@/store";
 
+import { dashboardRoutes } from "@/components/dashboard";
 import { userRoutes } from "@/components/user";
 import { roleRoutes } from "@/components/role";
 import { gfsCodesRoutes } from "@/components/coa/gfs-code";
@@ -12,7 +13,8 @@ import { financialYearRoutes } from "@/components/setup/financial-year";
 import { fundTypesRoutes } from "@/components/coa/fund-type";
 import { gfsCategoriesRoutes } from "@/components/coa/gfs-category";
 import { projectRoutes } from "@/components/coa/project";
-import { customersRoutes } from "@/components/setup/customer";
+import { customerRoutes } from "@/components/receivables/customer";
+import { genericCustomerRoutes } from "@/components/receivables/generic-customer";
 import { documentCategoryRoutes } from "@/components/setup/document-category";
 import { documentRoutes } from "@/components/setup/document";
 import { fundingSourceRoutes } from "@/components/coa/funding-source";
@@ -22,12 +24,29 @@ import { facilityTypeRoutes } from "@/components/facility/facility-type";
 import { menuRoutes } from "@/components/menu";
 import { facilityRoutes } from "@/components/facility/facility";
 import { bankAccountTypesRoutes } from "@/components/setup/bank-account-type";
-import { invoiceItemDefinitionRoutes } from "@/components/setup/invoice-item-definition";
+import { invoiceItemDefinitionRoutes } from "@/components/receivables/invoice-item-definition";
 import { activityRoutes } from "@/components/planning/activity";
 import { activityCostingRoutes } from "@/components/planning/activity-costing";
-import { invoiceRoutes } from "@/components/invoice";
+import { invoiceRoutes } from "@/components/receivables/invoice";
 import { revenueProjectionRoutes } from "@/components/planning/revenue-projection";
 import { supplierRoutes } from "@/components/payable/supplier";
+import { glAccountRoutes } from "@/components/general-ledger/gl-account";
+import { glTransactionRoutes } from "@/components/general-ledger/transaction";
+import { glReportRoutes } from "@/components/general-ledger/report";
+import { debtorRoutes } from "@/components/receivables/debtors";
+import { jvRoutes } from "@/components/general-ledger/journal-voucher";
+import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
+import { voucherRoutes } from "@/components/payable/voucher";
+import { paymentRoutes } from "@/components/payable/payment";
+import { reportRoutes } from "@/components/report";
+//import { testRoutes } from "@/components/test";
+import { creditorRoutes } from "@/components/payable/creditor";
+import { chequeListRoutes } from "@/components/payable/cheque-list";
+//import { testRoutes } from "@/components/test";
+import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
+import { notFoundRoute } from "@/components/404";
+import { receiptRoutes } from "@/components/receivables/receipt";
+
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -42,7 +61,7 @@ const routes: Array<RouteConfig> = [
       title: "Login",
       middleware: [setTitle],
     },
-    props: (route) => ({ query: route.query }),
+    props: (route: any) => ({ query: route.query }),
   },
   {
     path: "/",
@@ -53,6 +72,7 @@ const routes: Array<RouteConfig> = [
       middleware: [setTitle, validateToken, setHeaders, auth],
     },
     children: [
+      ...dashboardRoutes,
       ...userRoutes,
       ...financialYearRoutes,
       ...gfsCodesRoutes,
@@ -62,7 +82,8 @@ const routes: Array<RouteConfig> = [
       ...fundTypesRoutes,
       ...gfsCategoriesRoutes,
       ...projectRoutes,
-      ...customersRoutes,
+      ...customerRoutes,
+      ...genericCustomerRoutes,
       ...documentCategoryRoutes,
       ...documentRoutes,
       ...fundingSourceRoutes,
@@ -79,6 +100,21 @@ const routes: Array<RouteConfig> = [
       ...invoiceRoutes,
       ...revenueProjectionRoutes,
       ...supplierRoutes,
+      ...glAccountRoutes,
+      ...glTransactionRoutes,
+      ...glReportRoutes,
+      ...debtorRoutes,
+      ...jvRoutes,
+      ...fundAllocationRoutes,
+      ...voucherRoutes,
+      ...paymentRoutes,
+      ...reportRoutes,
+      //...testRoutes,
+      ...creditorRoutes,
+      ...chequeListRoutes,
+      ...receiptRoutes,
+      ...bankReconciliationRoutes,
+      ...notFoundRoute,
     ],
   },
 ];

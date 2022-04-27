@@ -1,7 +1,6 @@
 import Vue from "vue";
 import axios from "axios";
 import VueJwtDecode from "vue-jwt-decode";
-
 import store from "@/store";
 
 const DEFAULT_TITLE = "FFARS - Facility Financial Accounting & Reporting System";
@@ -89,7 +88,7 @@ const auth = async (to, _, next) => {
 
   if (to.matched.some((record: any) => record.meta.requiresAuth) && currentUser) {
     if (loggedIn) {
-      next();
+      await forcePasswordChange(next, currentUser);
     } else {
       next(`/login?redirect=${TO_PATH}`);
     }
@@ -98,4 +97,31 @@ const auth = async (to, _, next) => {
   }
 };
 
-export { setTitle, validateToken, setHeaders, auth, getCurrentUser, getLoginStatus };
+const forcePasswordChange = async (next, user) => {
+  const token = user ? user.token : null;
+  const { exp } = VueJwtDecode.decode(token);
+
+  if (Date.now() >= exp * 1000) {
+    const message = "Token has expired";
+    // show login pop up
+    store.dispatch("LoginDialog/SHOW", message);
+    next();
+  } else {
+    const msg = { message: "Please Reset Your Password" };
+    if (user.password_changed) {
+      next();
+    } else {
+      store.dispatch("ChangePasswordDialog/SHOW", msg);
+    }
+  }
+};
+
+export {
+  setTitle,
+  validateToken,
+  setHeaders,
+  auth,
+  getCurrentUser,
+  getLoginStatus,
+  forcePasswordChange,
+};

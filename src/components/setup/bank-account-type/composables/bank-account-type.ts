@@ -2,7 +2,13 @@ import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
 import { BanckAccountType } from "../types";
-import { get, create, update, destroy, search } from "../services/banck-account-types.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../services/bank-account-types.service";
 import { useGfsCode } from "@/components/coa/gfs-code/composables/gfs-code";
 
 export const useBankAccountType = (): any => {
@@ -11,7 +17,7 @@ export const useBankAccountType = (): any => {
   const { getGfsCodes } = useGfsCode();
 
   const data = reactive({
-    title: "Manage Bank Account Type",
+    title: "Manage Bank Account Types",
     modalTitle: "",
     headers: [
       { text: "Name", align: "start", sortable: false, value: "name" },
@@ -41,21 +47,18 @@ export const useBankAccountType = (): any => {
 
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
     });
   };
 
-  computed(() => {
-    return "test";
-  });
-
   const searchCategory = (categoryName: any) => {
     if (categoryName != null) {
       search({ name: categoryName.name }).then((response: any) => {
-        console.log("response data", response.data.data);
+        //// data", response.data.data);
         data.items = response.data.data;
       });
     } else {
@@ -65,22 +68,16 @@ export const useBankAccountType = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
   };
 
-  const deleteCustomer = (deleteId: any) => {
+  const deleteBankAccountType = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
-    // console.log("delete year", data);
-  };
-
-  const getCustomer = () => {
-    get(data).then((response) => {
-      console.log("data", response.data);
-    });
   };
 
   const cancelDialog = () => {
@@ -165,7 +162,7 @@ export const useBankAccountType = (): any => {
     getData,
     openDialog,
     cancelDialog,
-    deleteCustomer,
+    deleteBankAccountType,
     save,
     reloadData,
     remove,

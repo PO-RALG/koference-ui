@@ -12,7 +12,7 @@ const search = async (payload: any) => {
   });
 };
 
-const find = async (id: string | number) => {
+const find = async (id) => {
   return await axios.get(`/api/v1/facilities/${id}`);
 };
 
@@ -25,7 +25,6 @@ const update = async (payload: any) => {
 };
 
 const destroy = async (payload: any) => {
-  console.log("payload", payload);
   return await axios.delete(`/api/v1/facilities/` + payload);
 };
 

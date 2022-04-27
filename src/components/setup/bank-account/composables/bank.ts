@@ -1,12 +1,18 @@
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "@vue/composition-api";
 
-import { get, create, update, destroy, search } from "../services/back-accounts.service";
-import { bankaccounttypes } from "@/components/setup/bank-account-type/services/banck-account-types.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../services/bank-account.service";
+import { bankaccounttypes as getBankAccountTypes } from "@/components/setup/bank-account-type/services/bank-account-types.service";
 import { BackAccount } from "../types/BackAccount";
 
 export const useBank = (): any => {
   const dataItems: Array<BackAccount> = [];
-  let documentCategoryData: BackAccount;
+  let BankAccounData: BackAccount;
 
   const data = reactive({
     title: "Manage Bank Accounts",
@@ -54,16 +60,16 @@ export const useBank = (): any => {
       { text: "Actions", value: "actions", sortable: false },
     ],
     modal: false,
-    deletemodal: false,
+    showDeleteDialog: false,
     items: dataItems,
     itemsToFilter: [],
-    formData: documentCategoryData,
+    formData: BankAccounData,
     params: {
       total: 10,
       size: 10,
     },
-    itemtodelete: "",
-    accounttypes: [],
+    itemTodelete: "",
+    accountTypes: [],
     filterdialog: false,
 
     selectedSbc: [],
@@ -80,23 +86,28 @@ export const useBank = (): any => {
       total: 10,
       size: 10,
     };
+
     get(params).then((response: any) => {
-      console.log("data to render", response.data.data);
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
     });
-    bankaccounttypes().then((response: any) => {
-      console.log("gfs codes", response.data.data.data);
-      data.accounttypes = response.data.data.data;
+
+    getBankAccountTypes().then((response: any) => {
+      data.accountTypes = response.data.data.data;
     });
   };
 
-  const searchCategory = (categoryName) => {
-    console.log("argument", categoryName);
+  const bankName = computed(() => {
+    return data.itemsToFilter.map((account) => {
+      account.fullName = `Account Number -${account.number}  ${account.bank} - ${account.branch}`;
+      return account;
+    });
+  });
+
+  const searchBankAccounts = (categoryName) => {
 
     if (categoryName != null) {
       search({ name: categoryName.name }).then((response: any) => {
-        console.log("response data", response);
         data.items = response.data.data.data;
       });
     } else {
@@ -110,21 +121,14 @@ export const useBank = (): any => {
       size: 10,
     };
     get(params).then((response: any) => {
-      console.log("data", response.data.data);
       data.items = response.data.data.data;
+      data.itemsToFilter = response.data.data.data;
     });
   };
 
-  const deleteSubBudgetClass = (deleteId: any) => {
-    data.deletemodal = !data.modal;
-    data.itemtodelete = deleteId;
-    // console.log("delete year", data);
-  };
-
-  const getSubBudgetClass = () => {
-    get(data).then((response) => {
-      console.log("data", response.data);
-    });
+  const deleteBankAccount = (deleteId: any) => {
+    data.showDeleteDialog = !data.modal;
+    data.itemTodelete = deleteId;
   };
 
   const cancelDialog = () => {
@@ -134,28 +138,22 @@ export const useBank = (): any => {
 
   const cancelConfirmDialog = () => {
     data.formData = {} as BackAccount;
-    data.deletemodal = false;
-    reloadData();
-  };
-  const cancelFilterDialog = () => {
-    data.filterdialog = false;
+    data.showDeleteDialog = false;
     reloadData();
   };
 
   const remove = () => {
-    console.log("delete data with id", data.itemtodelete);
-    destroy(data.itemtodelete).then(() => {
+    destroy(data.itemTodelete).then(() => {
       reloadData();
-      data.deletemodal = false;
+      data.showDeleteDialog = false;
     });
   };
 
   const save = () => {
-    console.log("Form Data", data.formData);
     if (data.formData.id) {
-      updateFinancialYear(data.formData);
+      updateBankAccount(data.formData);
     } else {
-      createUser(data.formData);
+      createBankAccount(data.formData);
     }
   };
 
@@ -170,53 +168,31 @@ export const useBank = (): any => {
     data.modal = !data.modal;
   };
 
-  const updateFinancialYear = (data: any) => {
+  const updateBankAccount = (data: any) => {
     update(data).then((response) => {
-      console.log("Updated data", response.data);
       reloadData();
       cancelDialog();
     });
   };
 
-  const createUser = (data: any) => {
+  const createBankAccount = (data: any) => {
     create(data).then((response) => {
-      console.log("Created data", response.data);
       reloadData();
       cancelDialog();
     });
-  };
-
-  const openFilterDialog = () => {
-    data.filterdialog = true;
-    data.modal = false;
-  };
-
-  const resumeDialog = () => {
-    data.modal = true;
-    data.filterdialog = false;
-  };
-
-  const filterSbc = (term: string) => {
-    const result = data.subbudgetclasses.filter((item) => item.code.toLowerCase().includes(term.toLowerCase()));
-    data.subbudgetclasses = result;
-    return data.subbudgetclasses;
   };
 
   return {
-    filterSbc,
     data,
     openDialog,
     cancelDialog,
-    deleteSubBudgetClass,
-    getSubBudgetClass,
-    updateFinancialYear,
+    deleteBankAccount,
+    updateBankAccount,
     save,
     reloadData,
     remove,
     cancelConfirmDialog,
-    searchCategory,
-    openFilterDialog,
-    cancelFilterDialog,
-    resumeDialog,
+    searchBankAccounts,
+    bankName,
   };
 };

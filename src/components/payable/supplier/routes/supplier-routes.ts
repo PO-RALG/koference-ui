@@ -2,11 +2,11 @@ import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
 const supplierRoutes = [
   {
-    path: "/suppliers",
+    path: "/manage-suppliers",
     component: () => import("../Supplier.vue"),
     meta: {
       requiresAuth: true,
-      title: "Suppliers",
+      title: "Manage Suppliers",
       middleware: [setTitle, validateToken, setHeaders, auth],
     },
   },

@@ -35,12 +35,33 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Activity')">
-            mdi-pencil-box-outline
-          </v-icon>
-          <v-icon @click="openConfirmDialog(item.id)" :disabled="cant('delete', 'Activity')">
-            mdi-trash-can-outline
-          </v-icon>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="openDialog(item)"
+                :disabled="cant('edit', 'Activity')"
+              >
+                mdi-pencil-box-outline
+              </v-icon>
+            </template>
+            <span>Edit</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                @click="openConfirmDialog(item.id)"
+                :disabled="cant('delete', 'Activity')"
+              >
+                mdi-trash-can-outline
+              </v-icon>
+            </template>
+            <span>Delete</span>
+          </v-tooltip>
         </template>
         <template v-slot:footer>
           <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />

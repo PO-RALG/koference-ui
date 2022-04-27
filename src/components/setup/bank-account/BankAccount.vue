@@ -3,7 +3,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn
+        :disabled="cant('create', 'BankAccount')"
+        color="primary"
+        @click="openDialog"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -20,14 +24,15 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-autocomplete
-                label="Filter by Code"
+                label="Filter by Bank Name"
                 @change="searchCategory($event)"
-                :items="data.itemsToFilter"
-                :item-text="'code'"
+                :items="bankName"
+                :item-text="'fullName'"
                 :item-divider="true"
                 return-object
                 required
                 clearable
+                hide-details
               ></v-autocomplete>
             </v-col>
           </v-card-title>
@@ -40,9 +45,10 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip bottom>
+          <v-tooltip :disabled="cant('edit', 'BankAccount')" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                :disabled="cant('edit', 'BankAccount')"
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
@@ -53,12 +59,13 @@
             </template>
             <span>Edit</span>
           </v-tooltip>
-          <v-tooltip bottom>
+          <v-tooltip :disabled="cant('delete', 'BankAccount')" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                :disabled="cant('delete', 'BankAccount')"
                 v-bind="attrs"
                 v-on="on"
-                @click="deleteSubBudgetClass(item.id)"
+                @click="deleteBankAccount(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -69,7 +76,7 @@
     </v-card>
     <Modal :modal="data.modal" :width="620">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Bank Accounts`" />
+        <ModalHeader :title="`${data.modalTitle} Bank Account`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
@@ -77,32 +84,40 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.branch"
                     label="Branch"
                     required
+                    outlined
+                    :hide-details="true"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
                     required
+                    outlined
+                    :hide-details="true"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.bank"
                     label="Bank"
+                    outlined
                     required
+                    :hide-details="true"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.number"
                     label="Number"
                     required
+                    outlined
+                    :hide-details="true"
                   ></v-text-field>
                 </v-col>
 
@@ -110,11 +125,12 @@
                   <v-autocomplete
                     v-model="data.formData.bank_account_type_id"
                     label="Bank Account Type"
-                    :items="data.accounttypes"
+                    :items="data.accountTypes"
                     :item-text="'name'"
                     item-value="id"
                     :item-divider="true"
                     required
+                    outlined
                     clearable
                   ></v-autocomplete>
                 </v-col>
@@ -126,14 +142,18 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
+          <v-btn
+            :disabled="cant('create', 'BankAccount', 'update', 'BankAccount')"
+            color="green darken-1"
+            text
+            @click="save"
             >{{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
       </template>
     </Modal>
 
-    <Modal :modal="data.deletemodal" :width="300">
+    <Modal :modal="data.showDeleteDialog" :width="300">
       <template v-slot:header>
         <ModalHeader :title="`Delete Bank Accounts`" />
       </template>
@@ -145,7 +165,13 @@
           <v-btn color="green darken-1" text @click="cancelConfirmDialog"
             >Cancel</v-btn
           >
-          <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
+          <v-btn
+            :disabled="cant('delete', 'BankAccount')"
+            color="red darken-1"
+            text
+            @click="remove"
+            >Yes</v-btn
+          >
         </ModalFooter>
       </template>
     </Modal>
@@ -160,39 +186,31 @@ export default defineComponent({
   name: "BackAccount",
   setup() {
     const {
-      filterSbc,
       data,
       openDialog,
       cancelDialog,
-      deleteSubBudgetClass,
-      getSubBudgetClass,
+      deleteBankAccount,
       updateFinancialYear,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
-      searchCategory,
-      openFilterDialog,
-      cancelFilterDialog,
-      resumeDialog,
+      searchBankAccounts,
+      bankName,
     } = useBank();
 
     return {
-      filterSbc,
       data,
       openDialog,
       cancelDialog,
-      deleteSubBudgetClass,
-      getSubBudgetClass,
+      deleteBankAccount,
       updateFinancialYear,
       save,
       reloadData,
       remove,
       cancelConfirmDialog,
-      searchCategory,
-      openFilterDialog,
-      cancelFilterDialog,
-      resumeDialog,
+      searchBankAccounts,
+      bankName,
     };
   },
 });

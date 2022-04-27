@@ -3,7 +3,7 @@ import { AxiosResponse } from "axios";
 import { find, getPermissions, addPermissions as assignPermissions } from "../services/role-services";
 import router from "@/router";
 
-export const useRolePermission = ({attrs}): any => {
+export const useRolePermission = ({ attrs }): any => {
   const data = reactive({
     valid: true,
     role: null,
@@ -28,9 +28,9 @@ export const useRolePermission = ({attrs}): any => {
   };
 
   const addToSelection = (item: any) => {
-    const idx = data.selected.indexOf(item);
-    if (idx > -1) {
-      data.selected.splice(idx, 1);
+    const res = data.selected.find((el) => el.id === item.id);
+    if (res) {
+      data.selected = data.selected.filter((el) => el.id !== res.id);
     } else {
       data.selected.push(item);
     }

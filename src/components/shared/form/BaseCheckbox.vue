@@ -1,17 +1,22 @@
 <template>
-  <input v-bind="{ ...$attrs, onChange: updateValue }" :checked="modelValue" :id="uuid" type="checkbox" class="field" />
-  <label :for="uuid" v-if="label">
-    {{ label }}
-  </label>
-  <BaseErrorMessage v-if="error" :id="`${uuid}-error`">
-    {{ error }}
-  </BaseErrorMessage>
+  <div>
+    <v-checkbox
+      :label="label"
+      v-bind="{
+        ...$attrs,
+      }"
+      :value="modelValue"
+      @change="() => $emit('input', $event)"
+    >
+    </v-checkbox>
+    <BaseErrorMessage v-if="error" :id="`${uuid}-error`">
+      {{ error }}
+    </BaseErrorMessage>
+  </div>
 </template>
 
 <script>
 import { defineComponent } from "@vue/composition-api";
-import UniqueID from "@/features/UniqueID";
-import SetupFormComponent from "@/features/SetupFormComponent";
 
 export default defineComponent({
   props: {
@@ -26,15 +31,6 @@ export default defineComponent({
       type: String,
       default: "",
     },
-  },
-  setup(props, context) {
-    const uuid = UniqueID().getID();
-    const { updateValue } = SetupFormComponent(props, context);
-
-    return {
-      updateValue,
-      uuid,
-    };
   },
 });
 </script>

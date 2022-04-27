@@ -1,48 +1,82 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" lg="12" md="12" sm="12">
-        <v-text-field :label="label" type="text" v-model="data.search" required @keydown="clearSearch"></v-text-field>
+      <v-col cols="12" lg="5" md="4" sm="12" class="mt-2 mb-n4">
+        <v-text-field
+          :label="`filter ${modelName} by ${label}...`"
+          type="text"
+          v-model="data.searchSource"
+        >
+        </v-text-field>
+      </v-col>
+      <v-col cols="12" lg="2" md="2" sm="12" class="pl-6"> </v-col>
+      <v-col cols="12" lg="5" md="4" sm="12" class="mt-2 mb-n4">
+        <v-text-field
+          :label="`filter ${modelName} by ${label}...`"
+          type="text"
+          v-model="data.searchDestination"
+        >
+        </v-text-field>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" lg="5" md="4" sm="12">
         <select class="dual-multselect" multiple>
           <option
-            v-for="item in entries"
-            @click="highlightItem(item)"
+            v-for="(item, key) in source
+              .map((item, idx) => ({ idx, ...item }))
+              .filter((item) =>
+                item[label in item ? label : 'label']
+                  .toLowerCase()
+                  .includes(data.searchSource.toLowerCase())
+              )"
+            :key="key"
+            @click="highlightSourceItem(item)"
             @dblclick="addItem(item)"
             :value="item"
-            :key="item.id"
           >
-            {{ item.name }}
+            {{ item[label in item ? label : "label"] }}
           </option>
         </select>
       </v-col>
-      <v-col cols="12" lg="2" md="2" sm="12">
+      <v-col cols="12" lg="2" md="2" sm="12" class="pl-6 mt-n2">
         <div class="button-container">
-          <v-btn color="primary" :disabled="items.length === 0" small @click="addItems">
+          <!-- add items -->
+          <v-btn
+            color="primary"
+            :disabled="
+              data.itemsToDestination && data.itemsToDestination.length < 1
+            "
+            small
+            @click="addItems"
+          >
             <v-icon>mdi-menu-right</v-icon>
           </v-btn>
-          <v-btn color="primary" small class="remove-button" :disabled="items.length === 0" @click="addAll">
+
+          <!-- add all items -->
+          <v-btn
+            color="primary"
+            :disabled="source.length < 1"
+            small
+            class="remove-button"
+            @click="addAll"
+          >
             <v-icon>mdi-chevron-double-right</v-icon>
           </v-btn>
+
+          <!-- remove items -->
           <v-btn
             color="primary"
             small
-            :disabled="data.selectedItems && data.selectedItems.length === 0"
+            :disabled="data.itemsToSource && data.itemsToSource.length < 1"
             class="remove-button"
             @click="removeItems"
           >
             <v-icon>mdi-menu-left</v-icon>
           </v-btn>
-          <v-btn
-            color="primary"
-            small
-            class="remove-button"
-            :disabled="data.selectedItems && data.selectedItems.length === 0"
-            @click="removeAll"
-          >
+
+          <!-- remove all items -->
+          <v-btn color="primary" small class="remove-button" @click="removeAll">
             <v-icon>mdi-chevron-double-left</v-icon>
           </v-btn>
         </div>
@@ -50,25 +84,35 @@
       <v-col cols="12" lg="5" md="4" sm="12">
         <select class="dual-multselect" multiple>
           <option
-            v-for="item in data.selectedItems"
-            @click="highlightItem(item)"
+            v-for="(item, key) in destination
+              .map((item, idx) => ({ idx, ...item }))
+              .filter((item) =>
+                item[label in item ? label : 'label']
+                  .toLowerCase()
+                  .includes(data.searchDestination.toLowerCase())
+              )"
+            :key="key"
+            @click="highlightDestinationItem(item)"
             @dblclick="removeItem(item)"
             :value="item"
-            :key="item.id"
           >
-            {{ item.name }}
+            {{ item[label in item ? label : "label"] }}
           </option>
         </select>
       </v-col>
-      <v-col></v-col>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
-import { reactive, onMounted, computed, watch, onUnmounted, PropType, defineComponent } from "@vue/composition-api";
+import {
+  reactive,
+  PropType,
+  onMounted,
+  defineComponent,
+} from "@vue/composition-api";
 
-import { Selectable } from "./types";
+import _ from "lodash";
 
 export default defineComponent({
   props: {
@@ -76,8 +120,14 @@ export default defineComponent({
       type: String,
       required: false,
     },
-    items: {
-      type: Array as PropType<Array<Selectable>>,
+
+    source: {
+      type: Array as PropType<Array<any>>,
+      required: true,
+    },
+
+    destination: {
+      type: Array as PropType<Array<any>>,
       required: true,
     },
 
@@ -85,188 +135,208 @@ export default defineComponent({
       type: String,
       required: false,
     },
-
-    filterFunction: {
-      type: Function,
-      required: false,
-    },
-    selectedItems: {
-      type: Array,
-    },
-    itemName: {
+    modelName: {
       type: String,
       required: false,
-      default: "name",
+      default: "roles",
     },
   },
 
   setup(props, context) {
-    let data = reactive({
-      search: "",
-      itemsToSelect: [] as any,
-      selectedItems: props.selectedItems,
+    const data = reactive({
+      searchSource: "",
+      searchDestination: "",
+      itemsToDestination: [],
+      itemsToSource: [],
     });
 
-    const refreshList = () => {
-      data.selectedItems.forEach((item: any) => {
-        const idx = props.items.map((i) => i.id).indexOf(item.id);
-        // let idx = props.items.indexOf(item);
-        if (idx > -1) {
-          props.items.splice(idx, 1);
-        }
-      });
+    const highlightSourceItem = (item) => {
+      data.itemsToDestination.push(item);
     };
 
-    const search = () => {
-      context.emit("filterFunction", data.search);
+    const highlightDestinationItem = (item) => {
+      data.itemsToSource.push(item);
     };
 
-    const highlightItem = (item: any) => {
-      data.itemsToSelect.push(item);
-    };
-
-    const selectAll = () => {
-      props.items.forEach((item) => {
-        data.selectedItems.push(item);
-      });
-
-      props.items = [];
-      data.itemsToSelect = [];
-      context.emit("input", data.selectedItems);
-      refreshList();
-    };
-
-    const addItem = (item: any) => {
-      const el: any = props.items.find((el: any) => el.id === item.id);
-      const idx = props.items.indexOf(el);
-
+    const addItem = (item) => {
+      const idx = props.source.map((i) => i.id).indexOf(item.id);
       if (idx !== -1) {
-        props.items.splice(idx, 1);
-        data.selectedItems.push(el);
-        data.itemsToSelect = [];
-      }
-      context.emit("input", data.selectedItems);
-      refreshList();
-    };
-
-    const removeItem = (item: any) => {
-      const el: any = data.selectedItems.find((el: any) => el.id === item.id);
-      const idx = data.selectedItems.indexOf(el);
-
-      if (idx !== -1) {
-        data.selectedItems.splice(idx, 1);
-        props.items.push(el);
-        data.itemsToSelect = [];
+        props.source.splice(idx, 1);
+        props.destination.push(item);
+        data.itemsToDestination = [];
       }
 
-      context.emit("input", data.selectedItems);
-      refreshList();
+      let source = [...props.source];
+      let destination = props.destination;
+      data.searchSource = "";
+      data.searchDestination = "";
+      context.emit("onChangeList", { source, destination });
     };
 
     const addItems = () => {
-      data.itemsToSelect.forEach((item: Selectable) => {
-        const idx = props.items.map((i) => i.id).indexOf(item.id);
+      data.itemsToDestination.forEach((item) => {
+        const idx = props.source.map((i) => i.id).indexOf(item.id);
         if (idx !== -1) {
-          props.items.splice(idx, 1);
-          data.selectedItems.push(item);
-          data.itemsToSelect = [];
+          props.source.splice(idx, 1);
+          props.destination.push(item);
+          data.itemsToDestination = [];
         }
       });
 
-      context.emit("input", data.selectedItems);
-      refreshList();
+      let source = [...props.source];
+      let destination = props.destination;
+      data.searchSource = "";
+      data.searchDestination = "";
+      context.emit("onChangeList", { source, destination });
     };
 
     const removeItems = () => {
-      data.itemsToSelect.forEach((item: any) => {
-        const idx = data.selectedItems.map((i: any) => i.id).indexOf(item.id);
+      data.itemsToSource.forEach((item) => {
+        const idx = props.destination.map((i) => i.id).indexOf(item.id);
         if (idx !== -1) {
-          data.selectedItems.splice(idx, 1);
-          props.items.push(item);
-          data.itemsToSelect = [];
+          props.destination.splice(idx, 1);
+          props.source.push(item);
+          data.itemsToSource = [];
         }
       });
 
-      context.emit("input", data.selectedItems);
-      refreshList();
+      let source = [...props.source];
+      let destination = props.destination;
+      data.searchSource = "";
+      data.searchDestination = "";
+      context.emit("onChangeList", { source, destination });
     };
 
-    const removeAll = () => {
-      data.selectedItems.forEach((item: any) => {
-        props.items.push(item);
-      });
-      data.selectedItems = [];
+    const removeItem = (item) => {
+      const idx = props.destination.map((i) => i.id).indexOf(item.id);
+      if (idx !== -1) {
+        props.destination.splice(idx, 1);
+        props.source.push(item);
+        data.itemsToSource = [];
+      }
 
-      context.emit("input", data.selectedItems);
-      refreshList();
+      let source = [...props.source];
+      let destination = props.destination;
+      data.searchSource = "";
+      data.searchDestination = "";
+      context.emit("onChangeList", { source, destination });
     };
 
     const addAll = () => {
-      props.items.forEach((item) => {
-        data.selectedItems.push(item);
+      props.source.forEach((item) => {
+        props.destination.push(item);
       });
 
-      context.emit("input", data.selectedItems);
-      refreshList();
+      props.source.splice(0, props.source.length);
+
+      let source = [...props.source];
+      let destination = [...props.destination];
+
+      data.searchSource = "";
+      data.searchDestination = "";
+      context.emit("onChangeList", { source, destination });
     };
 
-    // lifecycle hooks
-    onMounted(() => {
-      data.selectedItems = props.selectedItems;
-      refreshList();
-    });
+    const removeAll = () => {
+      props.destination.forEach((item) => {
+        props.source.push(item);
+      });
 
-    onUnmounted(() => {
-      refreshList();
-      data.selectedItems = props.selectedItems;
-    });
+      props.destination.splice(0, props.destination.length);
 
-    // computed
-    const entries = computed(() => {
-      return props.items.map((item) => {
-        if ("name" in item) {
-          return item;
-        } else {
-          item["name"] = item[props.itemName];
+      let source = [...props.source];
+      let destination = [...props.destination];
+
+      data.searchSource = "";
+      data.searchDestination = "";
+      context.emit("onChangeList", { source, destination });
+    };
+
+    const selectDestination = (index: number) => {
+      let source = props.source;
+      let destination = props.destination.map((idx, k) => {
+        if (k === index) {
+          idx.selected = !idx.selected;
         }
-        return item;
+        return idx;
       });
-    });
-
-    const clearSearch = (e) => {
-      if (e.key === "Backspace" || e.key === "Delete") {
-        data.search = e.target.value;
-        context.emit("filterFunction", data.search);
-      }
+      context.emit("onChangeList", {
+        source,
+        destination,
+      });
     };
 
-    // watchers
-    watch(data, (newValue: any) => {
-      context.emit("filterFunction", newValue.search);
+    const selectSource = (index: number) => {
+      let destination = props.destination;
+      let source = props.source.map((idx, k) => {
+        if (k === index) {
+          idx.selected = !idx.selected;
+        }
+        return idx;
+      });
+      context.emit("onChangeList", { source, destination });
+    };
+
+    const selectAllSource = () => {
+      let source = props.source.map((item) => ({ ...item, selected: true }));
+      let destination = props.destination;
+
+      context.emit("onChangeList", { source, destination });
+    };
+
+    const deselectAllSource = () => {
+      let source = props.source.map((item) => ({ ...item, selected: false }));
+      let destination = props.destination;
+      context.emit("onChangeList", { source, destination });
+    };
+
+    const selectAllDestination = () => {
+      let destination = props.destination.map((item) => ({
+        ...item,
+        selected: true,
+      }));
+      let source = props.source;
+
+      context.emit("onChangeList", { source, destination });
+    };
+
+    const deselectAllDestination = () => {
+      let destination = props.destination.map((item) => ({
+        ...item,
+        selected: false,
+      }));
+
+      let source = props.source;
+      context.emit("onChangeList", { source, destination });
+    };
+
+    onMounted(() => {
+      //refreshList();
     });
 
     return {
       data,
 
       // methods
-      highlightItem,
-      selectAll,
-      refreshList,
-      addItem,
       removeItem,
       addItems,
       removeItems,
+      addItem,
       removeAll,
       addAll,
-      search,
-      clearSearch,
+      selectSource,
+      selectDestination,
+      selectAllDestination,
+      selectAllSource,
+      deselectAllDestination,
+      deselectAllSource,
+
+      highlightSourceItem,
+      highlightDestinationItem,
 
       // computed
-      entries,
 
       //lifecycle hooks
-      onMounted,
-      onUnmounted,
     };
   },
 });
@@ -294,7 +364,7 @@ select {
 
 .button-container {
   position: relative;
-  top: 5px;
+  top: -5px;
 }
 
 .v-text-field {
