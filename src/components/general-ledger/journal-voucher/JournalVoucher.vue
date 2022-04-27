@@ -3,7 +3,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'JournalVoucher')">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('create', 'JournalVoucher')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -26,7 +30,12 @@
         <template v-slot:[`expanded-item`]="{ item }">
           <td :colspan="5" class="pa-2">
             <v-card outlined flat width="100%" max-width="100%">
-              <v-data-table :headers="ITEM_HEADERS" :items="item.lines" hide-default-footer dense>
+              <v-data-table
+                :headers="ITEM_HEADERS"
+                :items="item.lines"
+                hide-default-footer
+                dense
+              >
                 <template v-slot:[`item.dr_amount`]="{ item }">
                   <span>{{ item.dr_amount | toCurrency }}</span>
                 </template>
@@ -49,10 +58,17 @@
             <v-container>
               <v-row class="pa-3">
                 <v-col class="pt-6" cols="12" lg="6" md="6" sm="12">
-                  <DatePicker :max="data.maxDate" :label="'JV Date'" v-model="data.jv.date" />
+                  <DatePicker
+                    :max="data.maxDate"
+                    :label="'JV Date'"
+                    v-model="data.jv.date"
+                  />
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field label="Description" v-model="data.jv.descriptions"></v-text-field>
+                  <v-text-field
+                    label="Description"
+                    v-model="data.jv.descriptions"
+                  ></v-text-field>
                 </v-col>
               </v-row>
               <v-row class="pa-3 mt-n12">
@@ -62,16 +78,26 @@
                       Add Journal Voucher Item {{ " " }}{{ "by pressing" }}
                       <v-icon small color="success"> mdi-plus-circle </v-icon>
                       {{ " " }} {{ "or" }} {{ "remove by pressing " }}{{ " " }}
-                      <v-icon small color="red"> mdi-minus-circle </v-icon>{{ " " }}{{ "sign in the right" }}
+                      <v-icon small color="red"> mdi-minus-circle </v-icon
+                      >{{ " " }}{{ "sign in the right" }}
                       {{ " " }}
                       <v-icon color=""> mdi-arrow-right-bold </v-icon>
                     </td>
                   </tr>
                 </v-col>
                 <v-col class="pt-2 invoice-table" cols="12" md="12">
-                  <v-data-table :headers="HEADERS" :items="data.lines" disable-pagination hide-default-footer>
+                  <v-data-table
+                    :headers="HEADERS"
+                    :items="data.lines"
+                    disable-pagination
+                    hide-default-footer
+                  >
                     <template v-slot:body>
-                      <tr v-for="(item, index) in data.jv.lines" :key="index" class="invoice-tr">
+                      <tr
+                        v-for="(item, index) in data.jv.lines"
+                        :key="index"
+                        class="invoice-tr"
+                      >
                         <td>
                           <v-select
                             :items="data.fundingSources"
@@ -136,7 +162,9 @@
                             v-if="index || (!index && data.jv.lines.length > 1)"
                             @click="removeRow(index)"
                           >
-                            <v-icon small color="red"> mdi-minus-circle </v-icon>
+                            <v-icon small color="red">
+                              mdi-minus-circle
+                            </v-icon>
                           </v-btn>
                           <v-btn
                             small
@@ -145,7 +173,9 @@
                             @click="addRow"
                             v-if="index == data.jv.lines.length - 1"
                           >
-                            <v-icon small color="success"> mdi-plus-circle </v-icon>
+                            <v-icon small color="success">
+                              mdi-plus-circle
+                            </v-icon>
                           </v-btn>
                         </td>
                       </tr>
@@ -346,13 +376,15 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 .input-group--text-field.input-group--dirty:not(.input-group--textarea) label,
-.input-group--text-field:not(.input-group--single-line).input-group--focused:not(.input-group--textarea) label,
-.input-group--text-field:not(.input-group--single-line):focus:not(.input-group--textarea) label {
+.input-group--text-field:not(.input-group--single-line).input-group--focused:not(.input-group--textarea)
+  label,
+.input-group--text-field:not(.input-group--single-line):focus:not(.input-group--textarea)
+  label {
   min-width: 133%; /* This makes label same width as input when transformed above the input */
 }
 // remove elipsis from select menu
 // .v-select.v-text-field input {
-  // width: 64px !important;
+// width: 64px !important;
 //}
 
 .ledger-summary {

@@ -4,7 +4,6 @@ import { reactive, onMounted, computed } from "@vue/composition-api";
 import {
   get,
   create,
-  update,
   regSearch as receiptSearch,
   destroy,
   search,
@@ -300,16 +299,15 @@ export const useReceipt = (): any => {
         bank_account_id: data.receipt.bank_account_id,
         bank_reference_number: data.receipt.bank_reference_number,
         description: data.receipt.description,
-        items: data.selectedInvoice.invoice_items.map((item: any) => {
-          return {
+        items: data.selectedInvoice.invoice_items
+        .map((item: any) => ({
             invoice_item_id: item.id,
             amount: item.pay_amount,
             gl_account_id: geGlAccountId(item.gl_account),
             funding_source_code: getFundingSource(
               item.definition.funding_source_id
             ),
-          };
-        }),
+        })).filter((item: any) => item.amount > 0),
       };
     } else {
       if (data.receipt.invoice_id) {
