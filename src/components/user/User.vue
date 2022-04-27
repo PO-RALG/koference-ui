@@ -54,6 +54,20 @@
           </v-switch>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
+          <v-tooltip top v-if="canGetApprovalRole(item)">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="openApprovalRoleDialog(item)"
+                :disabled="cant('assignApprovalRoles', 'User')"
+              >
+                mdi-check
+              </v-icon>
+            </template>
+            <span>Assign Approval Role</span>
+          </v-tooltip>
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -261,7 +275,7 @@
       :width="600"
     >
       <template v-slot:header>
-        <ModalHeader :title="'Add Approval Role'" />
+        <ModalHeader :title="'Assign Approval Role'" />
       </template>
       <template v-slot:body>
         <ModalBody>
@@ -278,23 +292,16 @@
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="12" md="12" sm="12">
-                  <fetcher :api="'/api/v1/approval-roles'">
-                    <div slot-scope="{ json: roles, loading }">
-                      <div v-if="loading">Loading...</div>
-                      <v-autocomplete
-                        v-else
-                        v-model="data.user.approval_roles"
-                        label="Select Approval Role"
-                        :items="roles"
-                        :item-text="'name'"
-                        item-value="id"
-                        return-object
-                        outlined
-                        small
-                      >
-                      </v-autocomplete>
-                    </div>
-                  </fetcher>
+                  <v-autocomplete
+                    v-model="data.user.approval_role_id"
+                    label="Select Approval Role"
+                    :items="data.approvalRoles"
+                    :item-text="'name'"
+                    item-value="id"
+                    outlined
+                    small
+                  >
+                  </v-autocomplete>
                 </v-col>
               </v-row>
             </v-container>
@@ -304,7 +311,7 @@
       <template v-slot:footer>
         <ModalFooter class="mt-n8">
           <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save">
+          <v-btn color="blue darken-1" text @click="setApprovalRole">
             {{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
@@ -350,6 +357,8 @@ export default defineComponent({
       resetPasswd,
       filterUsers,
       resetSearchText,
+      canGetApprovalRole,
+      setApprovalRole,
     } = useUser();
 
     const showRoles = (roles) => {
@@ -388,6 +397,8 @@ export default defineComponent({
       openApprovalRoleDialog,
       filterUsers,
       resetSearchText,
+      canGetApprovalRole,
+      setApprovalRole,
     };
   },
 });

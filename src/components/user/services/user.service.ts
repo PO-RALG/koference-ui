@@ -37,7 +37,7 @@ const resetPassword = async (payload: any) => {
 };
 
 const addApprovalRoles = async (payload: any) => {
-  return await axios.post(`${API}/add-approval-roles`, payload);
+  return await axios.put(`${API}/add-approval-roles/${payload.id}`, payload);
 };
 
 export {

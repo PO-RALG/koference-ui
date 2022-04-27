@@ -49,6 +49,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
     location: {},
     response: {},
     roles: [],
+    approvalUsers: [],
     modalTitle: "",
     headers: [
       { text: "Check Number", value: "check_number" },
@@ -95,20 +96,16 @@ export const useUser = (type?: string): Record<string, unknown> => {
 
   onMounted(() => {
     if (type === "APPROVAL") {
-      initializeApproval();
+      loadApprovalUsers();
     } else {
       initialize();
     }
   });
 
-  const initializeApproval = () => {
-    get({ per_page: 10, search: { can_approve: true } }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
+  const loadApprovalUsers = () => {
+    get({ search: { can_approve: true } }).then((response: AxiosResponse) => {
       data.items = response.data.data.data;
     });
-    loadApprovalRoles();
   };
 
   const initialize = () => {
@@ -127,8 +124,17 @@ export const useUser = (type?: string): Record<string, unknown> => {
     data.formData = {} as User;
     data.formData.roles = [];
     data.isFacilityUser = false;
-    data.modal = !data.modal;
+    data.showApprovalDialog = false;
+    data.modal = false;
   };
+
+  const approvableRole = (name) => {
+    return name === 'DT' || name === 'FA' || name === 'FACILITY_ADMIN';
+  }
+
+  const canGetApprovalRole = (user) => {
+    return user.roles.map(r => r.display_name).some(approvableRole);
+  }
 
   const save = () => {
     if (data.formData.id) {
@@ -137,6 +143,15 @@ export const useUser = (type?: string): Record<string, unknown> => {
       createUser(data.formData);
     }
   };
+
+  const setApprovalRole = () => {
+    addApprovalRoles(data.user).then((response: AxiosResponse) => {
+      if (response.status === 200) {
+        loadApprovalUsers();
+        data.showApprovalDialog = false;
+      }
+    });
+  }
 
   const filterUsers = () => {
     if (data.searchTerm.length > 3) {
@@ -176,7 +191,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
     return data.items.map((user: any) => ({
       ...user,
       fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
-      displayRoles: user.approval_roles.map((r: any) => r.name),
+      displayRoles: user.approval_role.name,
     })).filter((user: any) => {
       return user.can_approve === true;
     });
@@ -396,11 +411,14 @@ export const useUser = (type?: string): Record<string, unknown> => {
 
   const openApprovalRoleDialog = (user) => {
     data.user = user;
+    loadApprovalRoles(user);
     data.showApprovalDialog = true;
+    data.modalTitle = "Assign"
   };
 
-  const loadApprovalRoles = () => {
-    getApprovalRoles({}).then((response: AxiosResponse) => {
+  const loadApprovalRoles = (user) => {
+    const name = user.roles.map(r => r.name)[0];
+    getApprovalRoles({ regSearch: name }).then((response: AxiosResponse) => {
       data.approvalRoles = response.data.data.data;
     });
   };
@@ -425,7 +443,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
 
     addApprovalRoles(data.payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
-        initializeApproval();
+        loadApprovalUsers();
         data.modal = false;
       }
     });
@@ -466,5 +484,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
     onUserSelection,
     addApprovalRole,
     resetSearchText,
+    canGetApprovalRole,
+    setApprovalRole,
   };
 };

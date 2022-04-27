@@ -1,8 +1,13 @@
 import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import { get, create, update, deleteRole } from "../services/approval-role-services";
+import {
+  get,
+  create,
+  update,
+  deleteRole,
+} from "../services/approval-role-services";
 
-export const useApprovalRole = (): any => {
+export const useApprovalRole = (): Record<string, unknown> => {
   const data = reactive({
     title: "Manage Approval Roles",
     valid: true,
@@ -33,7 +38,6 @@ export const useApprovalRole = (): any => {
   const initialize = () => {
     get({}).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } = response.data.data;
-      console.log("resposne", response.data.data);
       data.items = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
     });

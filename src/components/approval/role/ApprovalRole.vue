@@ -3,45 +3,24 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        color="primary"
-        @click="openDialog"
-        :disabled="cant('create', 'ApprovalRole')"
-      >
+      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'ApprovalRole')">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
     </v-card-actions>
 
     <v-card>
-      <v-data-table
-        :headers="data.headers"
-        :items="entries"
-        hide-default-footer
-        disable-pagination
-        class="elevation-1"
-      >
+      <v-data-table :headers="data.headers" :items="entries" hide-default-footer disable-pagination class="elevation-1">
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon
-            class="mr-2"
-            @click="openDialog(item)"
-            :disabled="cant('edit', 'AuthRole')"
-          >
+          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'AuthRole')">
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon
-            @click="openConfirmDialog(item)"
-            :disabled="cant('delete', 'AuthRole')"
-          >
+          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'AuthRole')">
             mdi-trash-can-outline
           </v-icon>
         </template>
         <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="getData"
-          />
+          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>
       </v-data-table>
     </v-card>
@@ -55,31 +34,16 @@
             <v-container>
               <v-row>
                 <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field
-                    outlined
-                    label="Name"
-                    v-model="data.formData.name"
-                    required
-                  >
+                  <v-text-field outlined label="Name" v-model="data.formData.name" required>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field
-                    outlined
-                    label="Code"
-                    v-model="data.formData.code"
-                    required
-                  >
+                  <v-text-field outlined label="Code" v-model="data.formData.code" required>
                   </v-text-field>
                 </v-col>
 
                 <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-                  <v-text-field
-                    outlined
-                    label="Description"
-                    v-model="data.formData.description"
-                    required
-                  >
+                  <v-text-field outlined label="Description" v-model="data.formData.description" required>
                   </v-text-field>
                 </v-col>
 
@@ -87,16 +51,8 @@
                   <fetcher :api="'/api/v1/admin-area-levels'">
                     <div slot-scope="{ json: levels, loading }">
                       <div v-if="loading">Loading...</div>
-                      <v-autocomplete
-                        v-else
-                        v-model="data.formData.level_id"
-                        label="Select Approval Role Level"
-                        :items="levels"
-                        :item-text="'name'"
-                        item-value="id"
-                        outlined
-                        small
-                      >
+                      <v-autocomplete v-else v-model="data.formData.level_id" label="Select Approval Role Level"
+                        :items="levels" :item-text="'name'" item-value="id" outlined small>
                       </v-autocomplete>
                     </div>
                   </fetcher>
@@ -115,14 +71,9 @@
         </ModalFooter>
       </template>
     </Modal>
-    <ConfirmDialog
-      @rejectFunction="closeConfirmDialog"
-      @acceptFunction="deleteItem"
-      :message="'Are you sure you want to delete this role?'"
-      :data="data.item"
-      :isOpen="data.isOpen"
-      :title="'Delete Role'"
-    />
+    <ConfirmDialog @rejectFunction="closeConfirmDialog" @acceptFunction="deleteItem"
+      :message="'Are you sure you want to delete this role?'" :data="data.item" :isOpen="data.isOpen"
+      :title="'Delete Role'" />
   </div>
 </template>
 

@@ -30,6 +30,7 @@
               <v-select
                 :items="data.itemsToFilter"
                 label="Search Invoice"
+                outlined
                 :item-text="'name'"
                 item-value="name"
                 @change="reanderSearched($event)"
@@ -110,6 +111,7 @@
                     :items="data.customers"
                     prepend-inner-icon="mdi-account"
                     label="Select Customer"
+                    outlined
                     v-model="data.formData.customer_id"
                     :item-text="'name'"
                     item-value="id"
@@ -146,6 +148,7 @@
                   <DatePicker
                     :label="'Invoice Date'"
                     :max="data.maxDate"
+                    outlined
                     v-model="data.formData.date"
                   />
                 </v-col>

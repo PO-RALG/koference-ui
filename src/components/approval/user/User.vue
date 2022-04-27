@@ -3,13 +3,22 @@
     <v-card-actions class="pa-0">
       <h2>Manage Approval Users</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'User')">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('assignApprovalRoles', 'User')"
+      >
         <v-icon>mdi-plus</v-icon>
         Assign Role
       </v-btn>
     </v-card-actions>
     <v-card>
-      <v-data-table :headers="data.approval_header" :items="approvalUsers" hide-default-footer class="elevation-1">
+      <v-data-table
+        :headers="data.approval_header"
+        :items="approvalUsers"
+        hide-default-footer
+        class="elevation-1"
+      >
         <template v-slot:[`item.displayRoles`]="{ item }">
           <span>{{ item.displayRoles }}</span>
         </template>
@@ -21,7 +30,8 @@
                 v-on="on"
                 class="mr-2"
                 @click="openConfirmDialog(item)"
-                :disabled="cant('edit', 'User')">
+                :disabled="cant('edit', 'User')"
+              >
                 mdi-arrow-top-left-thin-circle-outline
               </v-icon>
             </template>
@@ -29,7 +39,11 @@
           </v-tooltip>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -43,32 +57,32 @@
             <v-container>
               <v-row>
                 <v-col cols="12" lg="12" md="12" sm="12">
-                  <fetcher :api="`/api/v1/users?search=${data.search}`">
-                  <div slot-scope="{ json: users, loading }">
-                    <div v-if="loading">Loading...</div>
-                    <v-autocomplete
-                      v-else
-                      v-model="data.payload.user_id"
-                      label="Select User"
-                      :items="users"
-                      :item-text="(item) => `${item.first_name} ${item.middle_name} ${item.last_name}`"
-                      item-value="id"
-                      return-object
-                      @change="onUserSelection"
-                      small
-                      >
-                    </v-autocomplete>
-                  </div>
-                  </fetcher>
+                  <v-autocomplete
+                    v-model="data.payload.user_id"
+                    label="Select User"
+                    :items="users"
+                    outlined
+                    :item-text="
+                      (item) =>
+                        `${item.first_name} ${item.middle_name} ${item.last_name}`
+                    "
+                    item-value="id"
+                    return-object
+                    @change="onUserSelection"
+                    small
+                  >
+                  </v-autocomplete>
                 </v-col>
-                <v-col cols="12" lg="12" md="12" sm="12">
+                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
                   <v-select
                     v-model="data.payload.role_id"
                     label="Select Role"
                     :items="data.filteredRoles"
                     :item-text="'name'"
+                    outlined
                     item-value="id"
-                    small>
+                    small
+                  >
                   </v-select>
                 </v-col>
               </v-row>
@@ -78,7 +92,7 @@
         </ModalBody>
       </template>
       <template v-slot:footer>
-        <ModalFooter>
+        <ModalFooter class="mt-n8">
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
           <v-btn color="blue darken-1" text @click="addApprovalRole('CREATE')">
             Save
