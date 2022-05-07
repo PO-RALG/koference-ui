@@ -32,6 +32,12 @@ export const useApprovalStatus = (): Record<string, unknown> => {
     item: null,
   });
 
+  const STATUSES = [
+    { id: 1, name: "PENDING", code: "PENDING", status: "Pending Status" },
+    { id: 2, name: "REJECTED", code: "REJECTED", status: "Rejected Status" },
+    { id: 3, name: "APPROVED", code: "APPROVED", status: "Approved Status" },
+  ];
+
   onMounted(() => {
     initialize();
   });
@@ -137,5 +143,6 @@ export const useApprovalStatus = (): Record<string, unknown> => {
     updateStatus,
     save,
     deleteItem,
+    STATUSES,
   };
 };

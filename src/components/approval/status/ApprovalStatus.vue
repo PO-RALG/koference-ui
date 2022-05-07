@@ -127,6 +127,7 @@ export default defineComponent({
       updateStatus,
       save,
       deleteItem,
+      STATUSES,
     } = useApprovalStatus();
 
     return {
@@ -143,6 +144,7 @@ export default defineComponent({
       updateStatus,
       save,
       deleteItem,
+      STATUSES,
     };
   },
 });
