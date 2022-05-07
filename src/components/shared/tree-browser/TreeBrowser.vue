@@ -7,7 +7,13 @@
         </v-icon>
         {{ node.name }}
       </span>
-      <span v-else @click="nodeClicked()" :class="{ active: isActiveItem }" class="name" :value="node">
+      <span
+        v-else
+        @click="nodeClicked()"
+        :class="{ active: isActiveItem }"
+        class="name"
+        :value="node"
+      >
         <v-icon small v-if="hasExtraIcon">{{ icon }}</v-icon>
         {{ node.name }}
       </span>
@@ -75,7 +81,6 @@ export default defineComponent({
       level,
       hasAttachment,
       hasExtraIcon,
-
     } = useTree(props, context);
     return {
       data,
