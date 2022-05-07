@@ -1,5 +1,4 @@
-export default function auth({ to, next, store }) {
-  console.log("to", to);
+const auth = ({ to, next, store }) => {
   const loginStatus = store.getters["Auth/getLoginStatus"];
   const loggedIn = loginStatus ? loginStatus.isLoggedIn : false;
   const currentUser = store.getters["Auth/getCurrentUser"];
@@ -10,7 +9,6 @@ export default function auth({ to, next, store }) {
     if (loggedIn && currentUser) {
       next();
     } else {
-      console.log("auth middleware running", to);
       store.dispatch("Snackbar/setSnackbar", {
         color: "error",
         text: "You must be logged in to view that page.",
@@ -20,4 +18,6 @@ export default function auth({ to, next, store }) {
   } else {
     next();
   }
-}
+};
+
+export default auth;
