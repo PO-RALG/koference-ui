@@ -18,13 +18,16 @@ export const useFundType = (): any => {
         value: "name",
       },
       {
-        text: "Code",
+        text: "Current Code",
         align: "start",
         sortable: false,
-        value: "code",
-      },
-
-      { text: "Actions", value: "actions", sortable: false },
+        value: "current_code",
+      }, {
+        text: "Carryover Code",
+        align: "start",
+        sortable: false,
+        value: "carryover_code",
+      }
     ],
 
     modal: false,
