@@ -20,7 +20,7 @@ export const useRevenueProjection = (): any => {
     modalTitle: "",
     headers: [
       {
-        text: "GFS code",
+        text: "Account",
         align: "start",
         sortable: false,
         value: "account.code",
@@ -30,6 +30,11 @@ export const useRevenueProjection = (): any => {
         align: "start",
         sortable: false,
         value: "funding_source_code",
+      }, {
+        text: "GFS",
+        align: "start",
+        sortable: false,
+        value: "gfs_code",
       },
       {
         text: "Amount",
