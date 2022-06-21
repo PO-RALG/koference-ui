@@ -4,7 +4,6 @@ import { reactive, onMounted, computed } from "@vue/composition-api";
 import {
   get,
   create,
-  update,
   regSearch as receiptSearch,
   destroy,
   search,
@@ -17,6 +16,7 @@ import {
   glAccount,
 } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
 import moment from "moment";
+import {concat} from "lodash";
 
 export const useReceipt = (): any => {
   const INVOICE_ITEM_HEADERS = [
@@ -300,16 +300,15 @@ export const useReceipt = (): any => {
         bank_account_id: data.receipt.bank_account_id,
         bank_reference_number: data.receipt.bank_reference_number,
         description: data.receipt.description,
-        items: data.selectedInvoice.invoice_items.map((item: any) => {
-          return {
+        items: data.selectedInvoice.invoice_items
+        .map((item: any) => ({
             invoice_item_id: item.id,
             amount: item.pay_amount,
             gl_account_id: geGlAccountId(item.gl_account),
             funding_source_code: getFundingSource(
               item.definition.funding_source_id
             ),
-          };
-        }),
+        })).filter((item: any) => item.amount > 0),
       };
     } else {
       if (data.receipt.invoice_id) {
@@ -334,7 +333,11 @@ export const useReceipt = (): any => {
     });
 
     fundingSource({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.fundingSources = response.data.data.data;
+      const fundingSources = response.data.data.data;
+      data.fundingSources = fundingSources.map(function (element){
+       return {...element,description: element.description  + '( ' + element.code + ')' }
+      });
+
     });
 
     glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then(

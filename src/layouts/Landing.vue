@@ -1,6 +1,11 @@
 <template>
   <div id="inspire">
-    <Sidebar :drawer="data.drawer" @toggle="toggleSidebar" :user="user" class="d-print-none" />
+    <Sidebar
+      :drawer="data.drawer"
+      @toggle="toggleSidebar"
+      :user="user"
+      class="d-print-none"
+    />
     <Header
       @logoutFunction="logout"
       @sidebarToggle="toggleSidebar"
@@ -36,7 +41,6 @@ export default defineComponent({
 
   setup() {
     let { isOpen } = useState(["isOpen"]);
-    // state  => formally data
     let data = reactive({
       drawer: isOpen,
       currentUser: null,
@@ -44,7 +48,7 @@ export default defineComponent({
 
     // methods
     const toggleSidebar = (drawer: boolean) => {
-      data.drawer ? store.dispatch("Drawer/CLOSE") : store.dispatch("Drawer/OPEN");
+      drawer ? store.dispatch("Drawer/CLOSE") : store.dispatch("Drawer/OPEN");
     };
 
     const logout = () => {

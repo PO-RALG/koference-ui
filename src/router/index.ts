@@ -39,14 +39,16 @@ import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
 import { voucherRoutes } from "@/components/payable/voucher";
 import { paymentRoutes } from "@/components/payable/payment";
 import { reportRoutes } from "@/components/report";
-//import { testRoutes } from "@/components/test";
 import { creditorRoutes } from "@/components/payable/creditor";
 import { chequeListRoutes } from "@/components/payable/cheque-list";
 //import { testRoutes } from "@/components/test";
 import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
-import { notFoundRoute } from "@/components/404";
 import { receiptRoutes } from "@/components/receivables/receipt";
-
+import { staleChequeRoutes } from "@/components/stale-check";
+import { approvalRoleRoutes } from "@/components/approval/role";
+import { approvalStatusRoutes } from "@/components/approval/status";
+import { approvalUserRoutes } from "@/components/approval/user";
+import { notFoundRoute } from "@/components/404";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -114,6 +116,11 @@ const routes: Array<RouteConfig> = [
       ...chequeListRoutes,
       ...receiptRoutes,
       ...bankReconciliationRoutes,
+
+      ...staleChequeRoutes,
+      ...approvalRoleRoutes,
+      ...approvalStatusRoutes,
+      ...approvalUserRoutes,
       ...notFoundRoute,
     ],
   },

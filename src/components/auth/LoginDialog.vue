@@ -80,7 +80,7 @@ export default defineComponent({
   background: #ccc !important;
 }
 .body_bg {
-  background-image: url(/sisbackground.jpg) !important;
+  background-image: url("@/assets/ffars_background.jpg") !important;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center center !important; /* optional, center the image */

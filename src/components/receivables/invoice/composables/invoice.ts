@@ -19,7 +19,7 @@ import { get as getBankAccounts } from "@/components/setup/bank-account/services
 import { itemdefinitions } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
 import moment from "moment";
 
-export const useInvoice = (): any => {
+export const useInvoice = (): Record<string, unknown> => {
   const dataItems: Array<Invoice> = [];
   let invoiceData: Invoice;
 

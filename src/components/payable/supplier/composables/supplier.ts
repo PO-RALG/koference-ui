@@ -17,7 +17,7 @@ export const useSupplier = (): any => {
 
   const data = reactive({
     title: "Manage Suppliers",
-    valid: false,
+    valid: true,
     isOpen: false,
     node: null,
     response: {},

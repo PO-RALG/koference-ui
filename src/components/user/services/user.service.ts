@@ -36,4 +36,17 @@ const resetPassword = async (payload: any) => {
   return await axios.post(`${API}/reset-password`, payload);
 };
 
-export { get, find, create, update, deleteUser, toggleActive, resetPassword };
+const addApprovalRoles = async (payload: any) => {
+  return await axios.put(`${API}/add-approval-roles/${payload.id}`, payload);
+};
+
+export {
+  get,
+  find,
+  create,
+  update,
+  deleteUser,
+  toggleActive,
+  resetPassword,
+  addApprovalRoles,
+};

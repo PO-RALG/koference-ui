@@ -37,16 +37,9 @@
         <template v-slot:item="{ item }">
           <tr>
             <td>{{ item.description }}</td>
-            <td>{{ item.code }}</td>
+            <td>{{ item.current_code }}</td>
+            <td>{{ item.carryover_code }}</td>
 
-            <td>
-              <v-icon class="mr-2" @click="openDialog(item)">
-                mdi-pencil-box-outline
-              </v-icon>
-              <v-icon @click="deleteFundType(item.id)">
-                mdi-trash-can-outline
-              </v-icon>
-            </td>
           </tr>
         </template>
         <template v-slot:footer>
@@ -128,7 +121,6 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       deleteFundType,
-      getFundTypes,
       updateFundType,
       save,
       reloadData,
@@ -143,7 +135,6 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       deleteFundType,
-      getFundTypes,
       updateFundType,
       save,
       reloadData,

@@ -21,16 +21,15 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Name"
-                @change="searchCategory($event)"
+              <v-text-field
+                outlined
+                label="Search Customer"
+                @keyup="filterCustomers()"
                 :items="data.itemsToFilter"
-                :item-text="'name'"
-                :item-divider="true"
-                return-object
-                required
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
                 clearable
-              ></v-autocomplete>
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -211,6 +210,8 @@ export default defineComponent({
       setGenericValue,
       populateFormData,
       isUpdate,
+      filterCustomers,
+      resetSearchText,
     } = useCustomer();
 
     return {
@@ -231,6 +232,8 @@ export default defineComponent({
       setGenericValue,
       populateFormData,
       isUpdate,
+      filterCustomers,
+      resetSearchText,
     };
   },
 });
