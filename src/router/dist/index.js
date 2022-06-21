@@ -22,6 +22,7 @@ var fund_type_1 = require("@/components/coa/fund-type");
 var gfs_category_1 = require("@/components/coa/gfs-category");
 var project_1 = require("@/components/coa/project");
 var customer_1 = require("@/components/receivables/customer");
+var generic_customer_1 = require("@/components/receivables/generic-customer");
 var document_category_1 = require("@/components/setup/document-category");
 var document_1 = require("@/components/setup/document");
 var funding_source_1 = require("@/components/coa/funding-source");
@@ -51,9 +52,9 @@ var creditor_1 = require("@/components/payable/creditor");
 var cheque_list_1 = require("@/components/payable/cheque-list");
 //import { testRoutes } from "@/components/test";
 var bank_reconciliation_1 = require("@/components/cash-management/bank-reconciliation");
-var generic_customer_1 = require("@/components/setup/generic-customer");
 var _404_1 = require("@/components/404");
 var receipt_1 = require("@/components/receivables/receipt");
+var stale_check_1 = require("@/components/stale-check");
 // import route middlewares
 var middleware_1 = require("@/middleware");
 vue_1["default"].use(vue_router_1["default"]);
@@ -75,7 +76,7 @@ var routes = [
             title: "Dashboard",
             middleware: [middleware_1.setTitle, middleware_1.validateToken, middleware_1.setHeaders, middleware_1.auth]
         },
-        children: __spreadArrays(dashboard_1.dashboardRoutes, user_1.userRoutes, financial_year_1.financialYearRoutes, gfs_code_1.gfsCodesRoutes, user_1.userRoutes, level_1.levelRoutes, admin_area_1.adminAreaRoutes, fund_type_1.fundTypesRoutes, gfs_category_1.gfsCategoriesRoutes, project_1.projectRoutes, customer_1.customerRoutes, document_category_1.documentCategoryRoutes, document_1.documentRoutes, funding_source_1.fundingSourceRoutes, sub_budget_class_1.subBudgetClassRoutes, bank_account_1.bankAccountRoutes, role_1.roleRoutes, facility_type_1.facilityTypeRoutes, menu_1.menuRoutes, facility_1.facilityRoutes, bank_account_type_1.bankAccountTypesRoutes, invoice_item_definition_1.invoiceItemDefinitionRoutes, activity_1.activityRoutes, activity_costing_1.activityCostingRoutes, invoice_1.invoiceRoutes, revenue_projection_1.revenueProjectionRoutes, supplier_1.supplierRoutes, gl_account_1.glAccountRoutes, transaction_1.glTransactionRoutes, report_1.glReportRoutes, debtors_1.debtorRoutes, journal_voucher_1.jvRoutes, fund_allocation_1.fundAllocationRoutes, voucher_1.voucherRoutes, payment_1.paymentRoutes, report_2.reportRoutes, creditor_1.creditorRoutes, cheque_list_1.chequeListRoutes, receipt_1.receiptRoutes, bank_reconciliation_1.bankReconciliationRoutes, generic_customer_1.genericCustomerYearRoutes, _404_1.notFoundRoute)
+        children: __spreadArrays(dashboard_1.dashboardRoutes, user_1.userRoutes, financial_year_1.financialYearRoutes, gfs_code_1.gfsCodesRoutes, user_1.userRoutes, level_1.levelRoutes, admin_area_1.adminAreaRoutes, fund_type_1.fundTypesRoutes, gfs_category_1.gfsCategoriesRoutes, project_1.projectRoutes, customer_1.customerRoutes, generic_customer_1.genericCustomerRoutes, document_category_1.documentCategoryRoutes, document_1.documentRoutes, funding_source_1.fundingSourceRoutes, sub_budget_class_1.subBudgetClassRoutes, bank_account_1.bankAccountRoutes, role_1.roleRoutes, facility_type_1.facilityTypeRoutes, menu_1.menuRoutes, facility_1.facilityRoutes, bank_account_type_1.bankAccountTypesRoutes, invoice_item_definition_1.invoiceItemDefinitionRoutes, activity_1.activityRoutes, activity_costing_1.activityCostingRoutes, invoice_1.invoiceRoutes, revenue_projection_1.revenueProjectionRoutes, supplier_1.supplierRoutes, gl_account_1.glAccountRoutes, transaction_1.glTransactionRoutes, report_1.glReportRoutes, debtors_1.debtorRoutes, journal_voucher_1.jvRoutes, fund_allocation_1.fundAllocationRoutes, voucher_1.voucherRoutes, payment_1.paymentRoutes, report_2.reportRoutes, creditor_1.creditorRoutes, cheque_list_1.chequeListRoutes, receipt_1.receiptRoutes, bank_reconciliation_1.bankReconciliationRoutes, stale_check_1.staleChequeRoutes, _404_1.notFoundRoute)
     },
 ];
 var router = new vue_router_1["default"]({
@@ -101,6 +102,5 @@ var isLoggedIn = function (to, _, next) {
         next();
     }
 };
-router.beforeEach(vue_route_middleware_1["default"]({ setTitle: middleware_1.setTitle, validateToken: middleware_1.validateToken, setHeaders: middleware_1.setHeaders, auth: middleware_1.auth }));
 router.beforeEach(vue_route_middleware_1["default"]({ setTitle: middleware_1.setTitle, validateToken: middleware_1.validateToken, setHeaders: middleware_1.setHeaders, auth: middleware_1.auth }));
 exports["default"] = router;

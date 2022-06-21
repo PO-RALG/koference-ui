@@ -46,7 +46,7 @@ import { chequeListRoutes } from "@/components/payable/cheque-list";
 import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
 import { notFoundRoute } from "@/components/404";
 import { receiptRoutes } from "@/components/receivables/receipt";
-
+import { staleChequeRoutes } from "@/components/stale-check";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -114,6 +114,7 @@ const routes: Array<RouteConfig> = [
       ...chequeListRoutes,
       ...receiptRoutes,
       ...bankReconciliationRoutes,
+      ...staleChequeRoutes,
       ...notFoundRoute,
     ],
   },
