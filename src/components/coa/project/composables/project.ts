@@ -29,8 +29,7 @@ export const useProject = (): any => {
         align: "start",
         sortable: false,
         value: "description",
-      },
-      { text: "Actions", value: "actions", sortable: false },
+      }
     ],
     modal: false,
     deletemodal: false,

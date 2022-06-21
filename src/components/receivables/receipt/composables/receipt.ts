@@ -16,6 +16,7 @@ import {
   glAccount,
 } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
 import moment from "moment";
+import {concat} from "lodash";
 
 export const useReceipt = (): any => {
   const INVOICE_ITEM_HEADERS = [
@@ -332,7 +333,11 @@ export const useReceipt = (): any => {
     });
 
     fundingSource({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.fundingSources = response.data.data.data;
+      const fundingSources = response.data.data.data;
+      data.fundingSources = fundingSources.map(function (element){
+       return {...element,description: element.description  + '( ' + element.code + ')' }
+      });
+
     });
 
     glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then(

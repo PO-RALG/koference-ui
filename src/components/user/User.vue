@@ -18,9 +18,24 @@
         :headers="data.headers"
         :items="users"
         hide-default-footer
-        disable-pagination
         class="elevation-1"
       >
+        <template v-slot:top>
+          <v-card-title>
+            <v-spacer></v-spacer>
+            <v-col cols="6" sm="12" md="4" class="pa-0">
+              <v-text-field
+                outlined
+                label="Search Users"
+                @keyup="filterUsers()"
+                :items="data.itemsToFilter"
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
+                clearable
+              ></v-text-field>
+            </v-col>
+          </v-card-title>
+        </template>
         <template v-slot:[`item.displayRoles`]="{ item }">
           <span>{{ item.displayRoles }}</span>
         </template>
@@ -39,6 +54,20 @@
           </v-switch>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
+          <v-tooltip top v-if="canGetApprovalRole(item)">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="openApprovalRoleDialog(item)"
+                :disabled="cant('assignApprovalRoles', 'User')"
+              >
+                mdi-check
+              </v-icon>
+            </template>
+            <span>Assign Approval Role</span>
+          </v-tooltip>
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -240,17 +269,66 @@
       :isOpen="data.show"
       :title="`${data.status} User`"
     />
+    <Modal
+      v-if="data.showApprovalDialog"
+      :modal="data.showApprovalDialog"
+      :width="600"
+    >
+      <template v-slot:header>
+        <ModalHeader :title="'Assign Approval Role'" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-form ref="form">
+            <v-container>
+              <v-row>
+                <v-col cols="12" lg="12" md="12" sm="12">
+                  <v-text-field
+                    label="Name"
+                    v-model="data.user.fullName"
+                    required
+                    disabled
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="12" md="12" sm="12">
+                  <v-autocomplete
+                    v-model="data.user.approval_role_id"
+                    label="Select Approval Role"
+                    :items="data.approvalRoles"
+                    :item-text="'name'"
+                    item-value="id"
+                    outlined
+                    small
+                  >
+                  </v-autocomplete>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter class="mt-n8">
+          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="setApprovalRole">
+            {{ data.modalTitle }}
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-import { useUser } from './composables/user'
+import { defineComponent } from "@vue/composition-api";
+import { useUser } from "./composables/user";
 
 export default defineComponent({
   setup() {
     const {
       data,
+      openApprovalRoleDialog,
 
       openDialog,
       cancelDialog,
@@ -277,11 +355,15 @@ export default defineComponent({
       confirmTitle,
       message,
       resetPasswd,
-    } = useUser()
+      filterUsers,
+      resetSearchText,
+      canGetApprovalRole,
+      setApprovalRole,
+    } = useUser();
 
     const showRoles = (roles) => {
-      return roles.map((r) => r.name)
-    }
+      return roles.map((r) => r.name);
+    };
 
     return {
       data,
@@ -312,9 +394,14 @@ export default defineComponent({
       toggleStatus,
       status,
       resetPasswd,
-    }
+      openApprovalRoleDialog,
+      filterUsers,
+      resetSearchText,
+      canGetApprovalRole,
+      setApprovalRole,
+    };
   },
-})
+});
 </script>
 
 <style scoped>
