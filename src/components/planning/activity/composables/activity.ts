@@ -32,24 +32,7 @@ export const useActivity = (): any => {
         align: "start",
         sortable: false,
         value: "description",
-      },
-      {
-        text: "Project",
-        align: "start",
-        sortable: false,
-        value: "project.code",
-      },
-      {
-        text: "Sub budget class",
-        align: "start",
-        sortable: false,
-        value: "sub_budget_class.code",
-      },
-      {
-        text: "Actions",
-        value: "actions",
-        sortable: false,
-      },
+      }
     ],
     modal: false,
     deletemodal: false,
@@ -164,7 +147,7 @@ export const useActivity = (): any => {
 
   const createActivity = (data: Activity) => {
     create(data).then(() => {
-      cancelDialog();
+      //cancelDialog();
       getTableData();
     });
   };

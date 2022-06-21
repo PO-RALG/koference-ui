@@ -3,9 +3,9 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Activity')">
-        <v-icon>mdi-plus</v-icon>
-        Add New
+      <v-btn color="primary" @click="save" :disabled="cant('create', 'Activity')">
+        <v-icon>mdi-sync</v-icon>
+        Update From PlanRep
       </v-btn>
     </v-card-actions>
     <v-card>
@@ -34,35 +34,6 @@
           </v-card-title>
         </template>
 
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openDialog(item)"
-                :disabled="cant('edit', 'Activity')"
-              >
-                mdi-pencil-box-outline
-              </v-icon>
-            </template>
-            <span>Edit</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="openConfirmDialog(item.id)"
-                :disabled="cant('delete', 'Activity')"
-              >
-                mdi-trash-can-outline
-              </v-icon>
-            </template>
-            <span>Delete</span>
-          </v-tooltip>
-        </template>
         <template v-slot:footer>
           <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
         </template>

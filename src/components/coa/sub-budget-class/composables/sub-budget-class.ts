@@ -31,9 +31,7 @@ export const useSubBudgetClass = (): any => {
         align: "start",
         sortable: false,
         value: "carryover_fund_type.code",
-      },
-
-      { text: "Actions", value: "actions", sortable: false },
+      }
     ],
     modal: false,
     deletemodal: false,
