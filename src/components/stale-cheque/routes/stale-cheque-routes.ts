@@ -2,7 +2,7 @@ import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
 const staleChequeRoutes = [
   {
-    path: "/manage-stale-cheque",
+    path: "/stale-cheques",
     component: () =>
       import(/* webpackChunkName: "StaleCheck" */ "../StaleCheque.vue"),
     meta: {

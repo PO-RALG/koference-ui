@@ -24,16 +24,16 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Reference number"
-                @change="searchItem($event)"
+              <v-text-field
+                prepend-inner-icon="mdi-filter-outline"
+                outlined
+                label="Enter Last Three (3) Payment or PV Number"
+                @keyup="filterPayment()"
                 :items="data.itemsToFilter"
-                :item-text="'reference_no'"
-                :item-divider="true"
-                return-object
-                required
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
                 clearable
-              ></v-autocomplete>
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -533,6 +533,8 @@ export default defineComponent({
       cancelPreviewDialog,
       printPayment,
       payablePrintHeader,
+      filterPayment,
+      resetSearchText,
     } = usePayment();
 
     return {
@@ -553,6 +555,8 @@ export default defineComponent({
       cancelPreviewDialog,
       printPayment,
       payablePrintHeader,
+      filterPayment,
+      resetSearchText,
     };
   },
 });

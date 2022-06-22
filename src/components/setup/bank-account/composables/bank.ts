@@ -105,7 +105,6 @@ export const useBank = (): any => {
   });
 
   const searchBankAccounts = (categoryName) => {
-
     if (categoryName != null) {
       search({ name: categoryName.name }).then((response: any) => {
         data.items = response.data.data.data;

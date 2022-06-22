@@ -28,6 +28,7 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-select
+                prepend-inner-icon="mdi-filter-outline"
                 :items="data.itemsToFilter"
                 label="Search Invoice"
                 outlined
