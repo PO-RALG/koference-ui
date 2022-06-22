@@ -2,7 +2,13 @@ import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import moment from "moment";
 
-import { get, create, destroy, find, printPdf } from "../services/payment.services";
+import {
+  get,
+  create,
+  destroy,
+  find,
+  printPdf,
+} from "../services/payment.services";
 import { Payment } from "../types/Payment";
 import { find as findPaymentVoucher } from "@/components/payable/voucher/services/payment-voucher.services";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
@@ -100,9 +106,53 @@ export const usePayment = (): any => {
     getTableData();
   });
 
+  const filterPayment = () => {
+    if (data.searchTerm.length > 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0 || data.searchTerm === null) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
+
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
@@ -192,7 +242,9 @@ export const usePayment = (): any => {
   };
 
   const maxRules = (propertyType: number) => {
-    return (v: number) => (v && v <= propertyType) || `Amount must be less or equal to ${propertyType}`;
+    return (v: number) =>
+      (v && v <= propertyType) ||
+      `Amount must be less or equal to ${propertyType}`;
   };
 
   const setPayableItems = (id: number) => {
@@ -246,7 +298,9 @@ export const usePayment = (): any => {
   const previewPayment = (id: number) => {
     find(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
-      data.pvDetails.printDate = moment(new Date()).format("DD/MM/YYYY H:mm:ss");
+      data.pvDetails.printDate = moment(new Date()).format(
+        "DD/MM/YYYY H:mm:ss"
+      );
       data.supplier = response.data.data.voucher.supplier;
       data.paymentModal = !data.paymentModal;
     });
@@ -305,5 +359,7 @@ export const usePayment = (): any => {
     cancelPreviewDialog,
     printPayment,
     payablePrintHeader,
+    filterPayment,
+    resetSearchText,
   };
 };

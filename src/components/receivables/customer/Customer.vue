@@ -22,8 +22,9 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-text-field
+                prepend-inner-icon="mdi-filter-outline"
                 outlined
-                label="Search Customer"
+                label="Enter Filter Term"
                 @keyup="filterCustomers()"
                 :items="data.itemsToFilter"
                 v-model="data.searchTerm"
