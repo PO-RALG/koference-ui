@@ -22,7 +22,6 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-text-field
-                outlined
                 label="Search Customer"
                 @keyup="filterCustomers()"
                 :items="data.itemsToFilter"

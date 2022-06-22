@@ -4,7 +4,7 @@ const staleChequeRoutes = [
   {
     path: "/manage-stale-cheque",
     component: () =>
-      import(/* webpackChunkName: "StaleCheck" */ "../StaleCheck.vue"),
+      import(/* webpackChunkName: "StaleCheck" */ "../StaleCheque.vue"),
     meta: {
       requiresAuth: true,
       title: "Manage Stale Cheque",

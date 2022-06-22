@@ -9,7 +9,7 @@ import {
   regSearch as InvoiceSearch,
   receiptcreate,
   printInvoice,
-} from "../services/stale-check";
+} from "../services/stale-cheque";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import {
   customers,
