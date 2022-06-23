@@ -3,7 +3,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="save" :disabled="cant('create', 'Activity')">
+      <v-btn
+        color="primary"
+        @click="save"
+        :disabled="cant('create', 'Activity')"
+      >
         <v-icon>mdi-sync</v-icon>
         Update From PlanRep
       </v-btn>
@@ -35,7 +39,11 @@
         </template>
 
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -50,7 +58,11 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="12" sm="12">
-                  <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.code"
+                    label="Code"
+                    required
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12" sm="12">
                   <v-select
@@ -60,8 +72,12 @@
                     label="Project"
                     required
                   >
-                    <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }} </template>
-                    <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }} </template>
+                    <template v-slot:selection="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
                     <template v-slot:prepend-item>
                       <v-list-item>
                         <v-list-item-content>
@@ -84,8 +100,12 @@
                     label="Sub budget class"
                     required
                   >
-                    <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }} </template>
-                    <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }} </template>
+                    <template v-slot:selection="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
                     <template v-slot:prepend-item>
                       <v-list-item>
                         <v-list-item-content>
@@ -101,7 +121,11 @@
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="12" sm="12">
-                  <v-text-field v-model="data.formData.description" label="Description" required></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.description"
+                    label="Description"
+                    required
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -127,7 +151,9 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog"> Cancel </v-btn>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Cancel
+          </v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>

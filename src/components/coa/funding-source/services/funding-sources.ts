@@ -20,7 +20,7 @@ const find = async (id: string | number) => {
   return await axios.get(`/api/v1/funding-sources/${id}`);
 };
 
-const create = async (payload: any) => {
+const fetchSegments = async (payload: any) => {
   return await axios.post(`/api/v1/funding-sources`, payload);
 };
 
@@ -33,4 +33,17 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/funding-sources/` + payload);
 };
 
-export { get, find, create, update, destroy, fundingsources, search };
+const create = async () => {
+  return await axios.post(`/api/v1/funding-sources`);
+};
+
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  fundingsources,
+  search,
+  fetchSegments,
+};

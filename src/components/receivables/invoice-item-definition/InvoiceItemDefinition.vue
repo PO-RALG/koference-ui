@@ -21,16 +21,16 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Name"
-                @change="searchCategory($event)"
+              <v-text-field
+                outlined
+                prepend-inner-icon="mdi-filter-outline"
+                label="Enter Filter Term"
+                @keyup="filterItemDefinition()"
                 :items="data.itemsToFilter"
-                :item-text="'name'"
-                :item-divider="true"
-                return-object
-                required
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
                 clearable
-              ></v-autocomplete>
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -207,6 +207,8 @@ export default defineComponent({
       gfsName,
       fundingsourceName,
       loadGfsCodes,
+      filterItemDefinition,
+      resetSearchText,
     } = useInvoiceDefinition();
 
     return {
@@ -226,6 +228,8 @@ export default defineComponent({
       gfsName,
       fundingsourceName,
       loadGfsCodes,
+      filterItemDefinition,
+      resetSearchText,
     };
   },
 });

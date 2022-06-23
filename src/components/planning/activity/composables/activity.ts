@@ -1,7 +1,13 @@
 import { defineComponent, reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, update, destroy, search } from "../services/activity.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../services/activity.service";
 import { Activity } from "../types/Activity";
 import { Project } from "@/components/coa/project/types/Project";
 import { get as getProject } from "@/components/coa/project/services/project.service";
@@ -32,7 +38,7 @@ export const useActivity = (): any => {
         align: "start",
         sortable: false,
         value: "description",
-      }
+      },
     ],
     modal: false,
     deletemodal: false,
@@ -56,7 +62,8 @@ export const useActivity = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
@@ -154,16 +161,20 @@ export const useActivity = (): any => {
 
   const searchProjects = (item: string) => {
     const regSearchTerm = item ? item : data.searchTerm;
-    getProject({ per_page: 10, regSearch: regSearchTerm }).then((response: AxiosResponse) => {
-      data.projects = response.data.data.data;
-    });
+    getProject({ per_page: 10, regSearch: regSearchTerm }).then(
+      (response: AxiosResponse) => {
+        data.projects = response.data.data.data;
+      }
+    );
   };
 
   const searchSubBudgetClasses = (item: string) => {
     const regSearchTerm = item ? item : data.searchTerm;
-    getSubBudgetClass({ per_page: 10, regSearch: regSearchTerm }).then((response: AxiosResponse) => {
-      data.subBudgetClasses = response.data.data.data;
-    });
+    getSubBudgetClass({ per_page: 10, regSearch: regSearchTerm }).then(
+      (response: AxiosResponse) => {
+        data.subBudgetClasses = response.data.data.data;
+      }
+    );
   };
 
   return {
