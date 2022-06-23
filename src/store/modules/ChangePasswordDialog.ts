@@ -1,20 +1,24 @@
-const state = {
+import { ActionTree, GetterTree, MutationTree } from "vuex";
+import { RootState } from "../types";
+import { ChangePassword } from "./types";
+
+const state: ChangePassword = {
   show: false,
   message: null,
   requestsPending: 0,
 };
 
-const getters = {
-  isVisible(state) {
+const getters: GetterTree<ChangePassword, RootState> = {
+  isVisible(state): boolean {
     return state.show;
   },
 
-  getStatus(state) {
-    return { ...state.show, ...state.message };
+  getStatus(state: ChangePassword) {
+    return { show: state.show, message: state.message };
   },
 };
 
-const actions = {
+const actions: ActionTree<ChangePassword, RootState> = {
   SHOW({ commit }, payload) {
     commit("SHOW", payload);
   },
@@ -32,7 +36,7 @@ const actions = {
   },
 };
 
-const mutations = {
+const mutations: MutationTree<ChangePassword> = {
   SHOW(state, payload) {
     state.show = true;
     state.message = payload;

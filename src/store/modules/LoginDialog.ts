@@ -1,20 +1,24 @@
-const state = {
+import { ActionTree, GetterTree, MutationTree } from "vuex";
+import { RootState } from "../types";
+import { LoginDialog } from "./types";
+
+const state: LoginDialog = {
   show: false,
   message: null,
   requestsPending: 0,
 };
 
-const getters = {
+const getters: GetterTree<LoginDialog, RootState> = {
   isVisible(state) {
     return state.show;
   },
 
   getStatus(state) {
-    return {...state.show, ...state.message};
+    return { show: state.show, message: state.message };
   },
 };
 
-const actions = {
+const actions: ActionTree<LoginDialog, RootState> = {
   SHOW({ commit }, payload) {
     commit("SHOW", payload);
   },
@@ -32,7 +36,7 @@ const actions = {
   },
 };
 
-const mutations = {
+const mutations: MutationTree<LoginDialog> = {
   SHOW(state, payload) {
     state.show = true;
     state.message = payload;

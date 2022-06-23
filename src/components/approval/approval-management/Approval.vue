@@ -1,9 +1,9 @@
 <template>
-  <div>div</div>
+  <div><h2>div</h2></div>
 </template>
 
 <script>
-import { defineComponent, reactive } from "@vue/composition-api";
+import { defineComponent } from "@vue/composition-api";
 
 export default defineComponent({});
 </script>

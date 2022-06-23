@@ -1,20 +1,24 @@
-const state = {
+import { ActionTree, GetterTree, MutationTree } from "vuex";
+import { RootState } from "../types";
+import { SnackBar } from "./types";
+
+const state: SnackBar = {
   show: false,
   message: {},
   requestsPending: 0,
 };
 
-const getters = {
+const getters: GetterTree<SnackBar, RootState> = {
   isVisible(state): boolean {
     return state.show;
   },
 
-  getStatus(state): any {
-    return { ...state.show, ...state.message };
+  getStatus(state) {
+    return { show: state.show, message: state.message };
   },
 };
 
-const actions = {
+const actions: ActionTree<SnackBar, RootState> = {
   SHOW({ commit }, payload) {
     commit("SHOW", payload);
   },
@@ -32,7 +36,7 @@ const actions = {
   },
 };
 
-const mutations = {
+const mutations: MutationTree<SnackBar> = {
   SHOW(state, payload) {
     state.show = true;
     state.message = payload;

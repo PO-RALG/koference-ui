@@ -1,7 +1,6 @@
 import Vue from "vue";
-import VueRouter, { RouteConfig } from "vue-router";
+import VueRouter, { Route, RouteConfig } from "vue-router";
 import VueRouteMiddleware from "vue-route-middleware";
-import store from "@/store";
 
 import { dashboardRoutes } from "@/components/dashboard";
 import { userRoutes } from "@/components/user";
@@ -49,7 +48,6 @@ import { approvalStatusRoutes } from "@/components/approval/status";
 import { approvalUserRoutes } from "@/components/approval/user";
 import { notFoundRoute } from "@/components/404";
 
-
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
@@ -63,7 +61,7 @@ const routes: Array<RouteConfig> = [
       title: "Login",
       middleware: [setTitle],
     },
-    props: (route: any) => ({ query: route.query }),
+    props: (route: Route) => ({ query: route.query }),
   },
   {
     path: "/",
@@ -131,23 +129,6 @@ const router = new VueRouter({
 });
 
 // middlewares
-const isLoggedIn = (to, _, next) => {
-  const loginStatus = store.getters["Auth/getLoginStatus"];
-  const loggedIn = loginStatus ? loginStatus.isLoggedIn : false;
-  const currentUser = store.getters["Auth/getCurrentUser"];
-
-  if (to.matched.some((record: any) => record.meta.requiresAuth)) {
-    if (loggedIn && currentUser) {
-      console.log("user is logged in");
-      next();
-    } else {
-      console.log("redirect to login page");
-    }
-  } else {
-    next();
-  }
-};
-
 router.beforeEach(
   VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
 );
