@@ -29,7 +29,7 @@ export const useFundSource = (): any => {
         align: "start",
         sortable: false,
         value: "description",
-      }
+      },
     ],
     modal: false,
     deletemodal: false,
@@ -59,6 +59,10 @@ export const useFundSource = (): any => {
       data.itemsToFilter = response.data.data.data;
     });
   });
+
+  const pullSegmentsFromPlanRep = () => {
+    create();
+  };
 
   const searchCategory = (categoryName) => {
     console.log("argument", categoryName);
@@ -151,11 +155,11 @@ export const useFundSource = (): any => {
   };
 
   const createFundingSource = (data: any) => {
-    create(data).then((response) => {
-      console.log("Created data", response.data);
-      reloadData();
-      cancelDialog();
-    });
+    // create(data).then((response) => {
+    //   console.log("Created data", response.data);
+    //   reloadData();
+    //   cancelDialog();
+    // });
   };
 
   const getData = (params: any) => {
@@ -206,5 +210,6 @@ export const useFundSource = (): any => {
     searchCategory,
     selectedGFS,
     onChangeList,
+    pullSegmentsFromPlanRep,
   };
 };
