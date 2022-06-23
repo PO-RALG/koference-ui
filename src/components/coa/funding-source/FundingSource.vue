@@ -3,9 +3,18 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn
+        :disabled="cant('create', 'FundSource')"
+        color="primary"
+        @click="openDialog"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
+      </v-btn>
+
+      <v-btn color="primary" @click="pullSegmentsFromPlanRep">
+        <v-icon>mdi-sync</v-icon>
+        Segments From PlanRep
       </v-btn>
     </v-card-actions>
     <v-card>
@@ -164,6 +173,7 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       onChangeList,
+      pullSegmentsFromPlanRep,
     } = useFundSource();
 
     return {
@@ -180,6 +190,7 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       onChangeList,
+      pullSegmentsFromPlanRep,
     };
   },
 });
