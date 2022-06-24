@@ -1,5 +1,5 @@
 import Vue from "vue";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import VueJwtDecode from "vue-jwt-decode";
 import VueAxios from "vue-axios";
 import PerfectScrollbar from "vue2-perfect-scrollbar";
@@ -73,9 +73,18 @@ const errorHandler = (error: any) => {
   return Promise.reject({ ...error.data });
 };
 
-const successHandler = (response: any) => {
+const successHandler = (response: AxiosResponse) => {
+  let message = null;
+  if (typeof response.data === "object") {
+    message = response.data.message;
+  } else {
+    const messages = response.data.split("\n");
+    const msg = JSON.parse(messages[messages.length - 1]);
+    message = msg.message;
+  }
+
   const payload: SnackBarPayload = {
-    title: capitalize(response.data.message),
+    title: capitalize(message),
     color: "success",
     icon: "mdi-information",
     class: "message success--text",
