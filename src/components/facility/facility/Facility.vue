@@ -4,6 +4,14 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
+        v-if="can('create', 'Facility')"
+        color="primary"
+        @click="pullFacilitiesFromPlanRep"
+      >
+        <v-icon>mdi-sync</v-icon>
+        Facilities From PlanRep
+      </v-btn>
+      <v-btn
         color="primary"
         @click="openDialog"
         :disabled="cant('create', 'Facility')"
@@ -244,6 +252,7 @@ export default defineComponent({
       facilities,
       navigateToFacility,
       generateLink,
+      pullFacilitiesFromPlanRep,
     } = useFacility();
 
     return {
@@ -264,6 +273,7 @@ export default defineComponent({
       facilities,
       navigateToFacility,
       generateLink,
+      pullFacilitiesFromPlanRep,
     };
   },
 });
