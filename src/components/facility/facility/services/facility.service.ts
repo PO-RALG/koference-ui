@@ -20,6 +20,10 @@ const create = async (payload: any) => {
   return await axios.post(`/api/v1/facilities`, payload);
 };
 
+const createFacilityFromPlanrep = async () => {
+  return await axios.post(`/api/v1/facilities`);
+};
+
 const update = async (payload: any) => {
   return await axios.put(`/api/v1/facilities/` + payload.id, payload);
 };
@@ -28,4 +32,12 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/facilities/` + payload);
 };
 
-export { get, find, create, update, destroy, search };
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  search,
+  createFacilityFromPlanrep,
+};

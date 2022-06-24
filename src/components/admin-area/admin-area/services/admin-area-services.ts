@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from "axios";
 const API = "/api/v1/admin-areas";
 
 const get = async (payload: any) => {
@@ -11,6 +11,9 @@ const find = async (id: string | number) => {
 
 const createArea = async (payload: any) => {
   return await axios.post(`${API}`, payload);
+};
+const createAreaFromPlanrep = async () => {
+  return await axios.post(`${API}`);
 };
 
 const updateArea = async (payload: any) => {
@@ -29,4 +32,12 @@ const getChildren = async (id?: number | string): Promise<AxiosResponse> => {
   }
 };
 
-export { get, find, createArea, updateArea, deleteArea, getChildren };
+export {
+  get,
+  find,
+  createArea,
+  updateArea,
+  deleteArea,
+  getChildren,
+  createAreaFromPlanrep,
+};
