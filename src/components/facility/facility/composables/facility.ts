@@ -7,6 +7,7 @@ import {
   update,
   destroy,
   search,
+  createFacilityFromPlanrep,
 } from "../services/facility.service";
 
 import { Facility } from "../types/Facility";
@@ -102,6 +103,15 @@ export const useFacility = (): any => {
   onMounted(() => {
     initialize();
   });
+
+  const pullFacilitiesFromPlanRep = () => {
+    createFacilityFromPlanrep().then((response) => {
+      if (response.status === 200) {
+        cancelDialog();
+        initialize();
+      }
+    });
+  };
 
   const initialize = () => {
     getTableData();
@@ -233,11 +243,11 @@ export const useFacility = (): any => {
   };
 
   const facilities = computed(() => {
-    return data.itemsToFilter.map(item => ({
+    return data.itemsToFilter.map((item) => ({
       ...item,
-      name: `<a href="/manage-facilities/view?facility_id=${item.id}">${item.name}</a>`
-    }))
-  })
+      name: `<a href="/manage-facilities/view?facility_id=${item.id}">${item.name}</a>`,
+    }));
+  });
 
   return {
     navigateToFacility,
@@ -256,5 +266,6 @@ export const useFacility = (): any => {
     getNodes,
     searchFacilityTypes,
     facilities,
+    pullFacilitiesFromPlanRep,
   };
 };
