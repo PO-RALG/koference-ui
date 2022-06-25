@@ -249,10 +249,6 @@ import { useFacility } from "./composables/facility";
 export default defineComponent({
   name: "Facility",
   setup() {
-    const loadData = (e) => {
-      console.log(e.target.value);
-    };
-
     const {
       data,
       openDialog,
@@ -277,7 +273,6 @@ export default defineComponent({
     } = useFacility();
 
     return {
-      loadData,
       data,
       openDialog,
       cancelDialog,
