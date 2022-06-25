@@ -50,7 +50,7 @@
           <span>{{ item.endDate }}</span>
         </template>
 
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -67,6 +67,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                disabled
                 v-bind="attrs"
                 v-on="on"
                 @click="deleteFundingSource(item.id)"

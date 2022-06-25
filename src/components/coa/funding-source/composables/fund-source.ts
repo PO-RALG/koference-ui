@@ -30,6 +30,12 @@ export const useFundSource = (): any => {
         sortable: false,
         value: "description",
       },
+      {
+        text: "Actions",
+        align: "center",
+        sortable: false,
+        value: "actions",
+      },
     ],
     modal: false,
     deletemodal: false,
