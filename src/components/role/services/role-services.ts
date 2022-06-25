@@ -27,7 +27,7 @@ const update = async (payload: any) => {
 };
 
 const deleteRole = async (id: number | string) => {
-  return await axios.put(`${API}/${id}`);
+  return await axios.delete(`${API}/${id}`);
 };
 
 export { get, find, create, update, deleteRole, getPermissions, addPermissions };

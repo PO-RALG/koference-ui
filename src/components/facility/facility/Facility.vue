@@ -31,25 +31,40 @@
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
-            <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Name"
-                @change="searchItem($event)"
-                :items="data.itemsToFilter"
-                :item-text="'name'"
-                :item-divider="true"
-                return-object
-                required
-                clearable
-              ></v-autocomplete>
-            </v-col>
+            <v-row
+              cols-lg="4"
+              cols-md="12"
+              cols-sm="12"
+              align="center"
+              class="d-flex justify-end align-center"
+            >
+              <v-col cols="12" sm="12" md="6" class="pt-11">
+                <fetcher :api="`/api/v1/facility-types`">
+                  <div slot-scope="{ json: items, loading }">
+                    <div v-if="loading">Loading...</div>
+                    <v-select
+                      v-model="data.facilityType"
+                      :item-text="'name'"
+                      label="Filter By facility Type"
+                      :items="items"
+                      @change="loadByFacilityType"
+                      return-object
+                      outlined
+                    ></v-select>
+                  </div>
+                </fetcher>
+              </v-col>
+              <v-col cols="12" sm="12" md="6">
+                <SearchField
+                  label="Search Facilities"
+                  v-model="data.searchTerm"
+                  @filterFunction="searchItem"
+                  @clearFn="resetSearchText"
+                />
+              </v-col>
+            </v-row>
           </v-card-title>
         </template>
-
-        <!-- <template v-slot:[`item.name`]="{ item }"> -->
-        <!--   <span v-html="item.name"></span> -->
-        <!-- </template> -->
-
         <template v-slot:[`item.name`]="{ item }">
           <span
             ><a href="" @click="navigateToFacility($event, item)">{{
@@ -253,6 +268,8 @@ export default defineComponent({
       navigateToFacility,
       generateLink,
       pullFacilitiesFromPlanRep,
+      resetSearchText,
+      loadByFacilityType,
     } = useFacility();
 
     return {
@@ -273,7 +290,9 @@ export default defineComponent({
       facilities,
       navigateToFacility,
       generateLink,
+      resetSearchText,
       pullFacilitiesFromPlanRep,
+      loadByFacilityType,
     };
   },
 });

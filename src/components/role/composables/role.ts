@@ -107,10 +107,8 @@ export const useRole = (): any => {
     data.isOpen = false;
   };
 
-  const deleteItem = (item: number | string) => {
-    const payload = item;
-    deleteRole(payload).then((response: AxiosResponse) => {
-      console.log(response);
+  const deleteItem = (id: number | string) => {
+    deleteRole(id).then((response: AxiosResponse) => {
       initialize();
     });
     data.item = {} as Role;
