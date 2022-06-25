@@ -98,6 +98,7 @@ export const useFacility = (): any => {
     itemtodelete: "",
     adminAreas: adminAreas,
     searchTerm: "",
+    facilityType: null,
   });
 
   onMounted(() => {
@@ -128,13 +129,35 @@ export const useFacility = (): any => {
     });
   };
 
-  const searchItem = (itemName) => {
-    if (itemName != null) {
-      search({ name: itemName.name }).then((response: AxiosResponse) => {
+  const loadByFacilityType = (e) => {
+    search({ facility_type_id: e.id }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
+
+  const searchItem = (searchTerm: string) => {
+    if (searchTerm.length > 3) {
+      get({ regSearch: searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+    if (searchTerm.length === 0) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
     }
   };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    initialize();
+  }
 
   const getData = (params: Facility) => {
     data.response = params;
@@ -267,5 +290,7 @@ export const useFacility = (): any => {
     searchFacilityTypes,
     facilities,
     pullFacilitiesFromPlanRep,
+    resetSearchText,
+    loadByFacilityType,
   };
 };
