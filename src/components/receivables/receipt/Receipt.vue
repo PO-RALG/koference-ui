@@ -361,9 +361,9 @@
                             dense
                             hide-details
                             outlined
-                            type="number"
+                            onkeydown="javascript: return event.keyCode == 69 ? false : true"
                             v-model="line.amount"
-                            :name="`data.receipt.items[${index}][amount]`"
+                            :name="`data.invoice_items[${index}][name]`"
                           >
                           </v-text-field>
                         </td>
@@ -440,6 +440,8 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import { useReceipt } from "./composables/receipt";
+import { toMoney } from "@/filters/CurrencyFormatter";
+
 export default defineComponent({
   name: "ManageReceipt",
   setup() {
@@ -491,6 +493,7 @@ export default defineComponent({
       resetDate,
       INVOICE_ITEM_HEADERS,
       reanderSearched,
+      toMoney,
     };
   },
 });

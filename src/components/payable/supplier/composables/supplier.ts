@@ -113,6 +113,17 @@ export const useSupplier = (): any => {
       (v: string) =>
         (v && v.length <= 10) || "Number must be less than 10 characters",
     ],
+    nameRules: [(v: string) => !!v || "Name is required"],
+    typeRules: [(v: string) => !!v || "Type is required"],
+    idRules: [(v: string) => !!v || "ID is required"],
+    bankRules: [(v: string) => !!v || "Bank Name is required"],
+    bankAccountNameRules: [
+      (v: string) => !!v || "Bank Account Name is required",
+    ],
+    bankAccountNumberRules: [
+      (v: string) => !!v || "Bank Account Number is required",
+    ],
+    bankAddressNumberRules: [(v: string) => !!v || "Adress is required"],
   });
 
   onMounted(() => {
