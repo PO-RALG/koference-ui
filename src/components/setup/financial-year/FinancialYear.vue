@@ -20,7 +20,7 @@
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
-            <v-col cols="6" sm="12" md="4" class="pa-0">
+            <v-col cols="6" sm="12" md="4" class="pt-5">
               <v-autocomplete
                 label="Filter by Name"
                 @change="searchFinancialYear($event)"
@@ -29,6 +29,7 @@
                 :item-divider="true"
                 return-object
                 required
+                outlined
                 clearable
               ></v-autocomplete>
             </v-col>
