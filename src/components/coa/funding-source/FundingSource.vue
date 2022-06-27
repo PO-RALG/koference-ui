@@ -67,6 +67,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                disabled
                 v-bind="attrs"
                 v-on="on"
                 @click="deleteFundingSource(item.id)"
