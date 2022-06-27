@@ -4,7 +4,7 @@ import VueJwtDecode from "vue-jwt-decode";
 import VueAxios from "vue-axios";
 import PerfectScrollbar from "vue2-perfect-scrollbar";
 import VueCompositionAPI from "@vue/composition-api";
-import VueMask from 'v-mask'
+import VueMask from "v-mask";
 import moment from "moment"; //require
 
 import "./plugins/vuetify-mask";

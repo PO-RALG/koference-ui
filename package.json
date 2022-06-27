@@ -17,6 +17,7 @@
     "jspdf-autotable": "^3.5.20",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
+    "text-mask-addons": "^3.8.0",
     "v-mask": "^2.3.0",
     "vue": "^2.6.11",
     "vue-axios": "^3.2.5",

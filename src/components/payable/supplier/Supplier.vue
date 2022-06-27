@@ -123,6 +123,7 @@
                   cols="12"
                   md="4"
                   sm="12"
+                  class="mt-n8"
                   v-if="data.formData.supplier_type === 'Contractor'"
                 >
                   <v-text-field
@@ -140,6 +141,7 @@
                   cols="12"
                   md="4"
                   sm="12"
+                  class="mt-n8"
                   v-if="data.formData.supplier_type === 'Employee'"
                 >
                   <v-text-field
@@ -156,6 +158,7 @@
                   cols="12"
                   md="4"
                   sm="12"
+                  class="mt-n8"
                   v-if="data.formData.supplier_type === 'Others'"
                 >
                   <v-text-field
@@ -182,21 +185,21 @@
                     outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12" class="mt-n8">
+                <v-col cols="12" md="4" sm="12" class="mt-n8 mb-n8">
                   <v-text-field
                     v-model="data.formData.bank_name"
                     label="Bank Name"
                     outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12" class="mt-n8">
+                <v-col cols="12" md="4" sm="12" class="mt-n8 mb-n8">
                   <v-text-field
                     v-model="data.formData.bank_account_name"
                     label="Bank Account Name"
                     outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12" class="mt-n8">
+                <v-col cols="12" md="4" sm="12" class="mt-n8 mb-n8">
                   <v-text-field
                     v-model="data.formData.bank_account_number"
                     label="Bank Account Number"
