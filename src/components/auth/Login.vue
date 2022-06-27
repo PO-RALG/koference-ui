@@ -10,7 +10,11 @@
         <v-row align="center" justify="center">
           <v-col cols="8" sm="8" md="7">
             <v-card height="fit" class="elevation-8 pa-0">
-              <v-row dense class="mr-0 ml-0" v-if="data.slides.length > 0">
+              <v-row
+                dense
+                class="bdw mr-0 ml-0 mr-0 ml-0"
+                v-if="data.slides.length > 0"
+              >
                 <!-- class="d-none d-md-flex d-lg-none d-none d-lg-flex d-xl-none d-none " -->
                 <v-col md="6" cols="12" sm="12" class="pa-0">
                   <v-carousel
@@ -93,6 +97,9 @@
                 </v-col>
                 <!-- login form end -->
               </v-row>
+              <small>
+                {{ "Copyright ©2022 PORALG. All right reserved. FFARS v 1.0" }}
+              </small>
             </v-card>
           </v-col>
           <v-col cols="8" sm="8" md="7">
