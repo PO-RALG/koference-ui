@@ -249,7 +249,13 @@ export const useReceipt = (): any => {
   };
 
   const cancelDialog = () => {
+    data.receipt.customer_id = "";
+    data.receipt.date = "";
+    data.receipt.bank_account_id = "";
+    data.receipt.bank_reference_number = "";
+    data.receipt.description = "";
     data.receipt = receipt;
+    data.gl_accounts = [];
     (data.receipt_items = [
       {
         gl_account_id: "",
@@ -410,6 +416,13 @@ export const useReceipt = (): any => {
     data.receipt.bank_account_id = "";
     data.receipt.bank_reference_number = "";
     data.receipt.description = "";
+    data.receipt.items = [
+      {
+        funding_source_code: null,
+        gl_account_id: null,
+        amount: null,
+      },
+    ];
     return data.isInvoice === "YES" ? true : false;
   });
 
@@ -423,7 +436,19 @@ export const useReceipt = (): any => {
 
   const resetDate = () => {
     if (data.isInvoice === "NO") {
-      data.selectedInvoice = null;
+      data.receipt.customer_id = "";
+      data.receipt.date = "";
+      data.receipt.bank_account_id = "";
+      data.receipt.bank_reference_number = "";
+      data.receipt.description = "";
+      data.receipt.items = [
+        {
+          funding_source_code: null,
+          gl_account_id: null,
+          amount: null,
+        },
+      ];
+      (data.receipt.invoice_id = null), (data.selectedInvoice = null);
       data.minDate = null;
       data.maxDate = moment(new Date()).format("YYYY-MM-DD");
     } else {
