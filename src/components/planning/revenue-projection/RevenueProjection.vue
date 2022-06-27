@@ -14,8 +14,15 @@
       >
         <template v-slot:top>
           <v-card-title>
-            <v-row justify="space-between">
-              <v-col cols="4" sm="12" md="2" class="pl-4">
+            <v-spacer></v-spacer>
+            <v-row
+              cols-lg="4"
+              cols-md="12"
+              cols-sm="12"
+              align="center"
+              class="d-flex justify-end align-center"
+            >
+              <v-col cols="4" sm="12" md="5" class="pl-4 pt-6">
                 <v-autocomplete
                   label="Select Financial year"
                   @change="selectFinancialYear($event)"
@@ -24,10 +31,11 @@
                   :item-divider="true"
                   return-object
                   required
+                  outlined
                   clearable
                 ></v-autocomplete>
               </v-col>
-              <v-col cols="6" sm="12" md="4" class="pr-4">
+              <v-col cols="6" sm="12" md="4" class="pr-4 pt-6">
                 <v-autocomplete
                   label="Filter by Funding Source Code"
                   @change="searchItem($event)"
@@ -36,6 +44,7 @@
                   :item-divider="true"
                   return-object
                   required
+                  outlined
                   clearable
                 ></v-autocomplete>
               </v-col>
@@ -83,6 +92,9 @@
                     </template>
                     <template v-slot:item="{ item }">
                       {{ item.code }} - {{ item.description }}
+                    </template>
+                    <template v-slot:[`item.amount`]="{ item }">
+                      {{ item.amount | toCurrency() }}
                     </template>
                     <template v-slot:prepend-item>
                       <v-list-item>
