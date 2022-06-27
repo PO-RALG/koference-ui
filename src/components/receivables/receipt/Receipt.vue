@@ -32,6 +32,7 @@
                 label="Search Receipt"
                 :item-text="'name'"
                 item-value="name"
+                outlined
                 @change="searchCategory($event)"
                 v-model="data.search"
               >

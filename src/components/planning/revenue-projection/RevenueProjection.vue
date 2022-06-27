@@ -94,7 +94,7 @@
                       {{ item.code }} - {{ item.description }}
                     </template>
                     <template v-slot:[`item.amount`]="{ item }">
-                      {{ item.amount | toCurrency() }}
+                      {{ item.amount | toMoney() }}
                     </template>
                     <template v-slot:prepend-item>
                       <v-list-item>
