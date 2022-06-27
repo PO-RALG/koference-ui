@@ -214,8 +214,8 @@ export const useMenuItems = (): any => {
   };
 
   const addToSelection = (item: any) => {
-    const idx = data.selected.indexOf(item);
-    if (idx > -1) {
+    const idx = data.selected.map((i) => i.id).indexOf(item.id);
+    if (idx !== -1) {
       data.selected.splice(idx, 1);
     } else {
       data.selected.push(item);
