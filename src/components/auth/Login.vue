@@ -206,11 +206,11 @@ export default Vue.extend({
   width: inherit;
 }
 .bdt {
-  border-top: solid 5px #107b72;
+  border-top: solid 5px #1476d7;
 }
 
 .bdw {
-  border-bottom: solid 2px #136d38;
+  border-bottom: solid 2px #1476d7;
 }
 .login-logo {
   border-radius: 50%;

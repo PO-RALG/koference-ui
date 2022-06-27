@@ -339,7 +339,7 @@
                           ></v-select>
                         </td>
 
-                        <td class="invoice-td">
+                        <td>
                           <v-select
                             :items="data.gl_accounts[index]"
                             :item-text="'code'"
@@ -363,6 +363,7 @@
                             outlined
                             onkeydown="javascript: return event.keyCode == 69 ? false : true"
                             v-model="line.amount"
+                            v-mask="toMoney"
                             :name="`data.invoice_items[${index}][name]`"
                           >
                           </v-text-field>

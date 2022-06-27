@@ -1,6 +1,8 @@
 import { AxiosResponse } from "axios";
 import { Receipt } from "../types";
 import { reactive, onMounted, computed } from "@vue/composition-api";
+import stringToCurrency from "@/filters/money-to-number";
+
 import {
   get,
   create,
@@ -76,7 +78,7 @@ export const useReceipt = (): any => {
       align: "start",
       sortable: false,
       value: "invoice_number",
-      width: "80%",
+      width: "65%",
     },
     {
       text: "GL Account",
@@ -90,7 +92,7 @@ export const useReceipt = (): any => {
       align: "start",
       sortable: false,
       value: "amount",
-      width: "20%",
+      width: "35%",
     },
   ];
 
@@ -309,7 +311,7 @@ export const useReceipt = (): any => {
         items: data.selectedInvoice.invoice_items
           .map((item: any) => ({
             invoice_item_id: item.id,
-            amount: item.pay_amount,
+            amount: stringToCurrency(item.pay_amount),
             gl_account_id: geGlAccountId(item.gl_account),
             funding_source_code: getFundingSource(
               item.definition.funding_source_id
@@ -321,8 +323,23 @@ export const useReceipt = (): any => {
       if (data.receipt.invoice_id) {
         delete data.receipt.invoice_id;
       }
-      payload = data.receipt;
+
+      payload = {
+        customer_id: data.receipt.customer_id,
+        date: data.receipt.date,
+        bank_account_id: data.receipt.bank_account_id,
+        bank_reference_number: data.receipt.bank_reference_number,
+        description: data.receipt.description,
+        items: data.receipt.items
+          .map((entry) => ({
+            ...entry,
+            amount: stringToCurrency(entry.amount),
+          }))
+          .filter((item: any) => item.amount > 0),
+      };
+      // payload = data.receipt;
     }
+    console.log(payload);
     create(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
         init();
