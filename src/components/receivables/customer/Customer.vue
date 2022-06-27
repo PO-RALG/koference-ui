@@ -134,6 +134,7 @@
                   <v-text-field
                     v-model="data.formData.email"
                     label="Email"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
@@ -141,14 +142,16 @@
                   <v-text-field
                     v-model="data.formData.phone"
                     label="Phone"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="12" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.address"
                     label="Address"
                     required
+                    outlined
                   ></v-text-field>
                 </v-col>
               </v-row>

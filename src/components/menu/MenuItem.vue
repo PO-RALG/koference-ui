@@ -3,14 +3,24 @@
     <v-card-actions class="pa-0">
       <h2>{{ TITLE }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'AuthMenuItem')">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('create', 'AuthMenuItem')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
     </v-card-actions>
 
     <v-card>
-      <v-data-table :headers="HEADERS" :items="items" disable-pagination hide-default-footer class="elevation-1">
+      <v-data-table
+        :headers="HEADERS"
+        :items="items"
+        disable-pagination
+        hide-default-footer
+        class="elevation-1"
+      >
         <template v-slot:top>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -19,10 +29,17 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'AuthMenuItem')">
+          <v-icon
+            class="mr-2"
+            @click="openDialog(item)"
+            :disabled="cant('edit', 'AuthMenuItem')"
+          >
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'AuthMenuItem')">
+          <v-icon
+            @click="openConfirmDialog(item)"
+            :disabled="cant('delete', 'AuthMenuItem')"
+          >
             mdi-trash-can-outline
           </v-icon>
           <v-btn
@@ -35,7 +52,11 @@
           </v-btn>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="TABLE_ROWS" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="TABLE_ROWS"
+            @onPageChange="getData"
+          />
         </template>
 
         <template v-slot:[`item.icon`]="{ item }">
@@ -52,19 +73,43 @@
           <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row>
-                <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="Icon" v-model="data.formData.icon" required> </v-text-field>
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <v-text-field
+                    label="Icon"
+                    v-model="data.formData.icon"
+                    outlined
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
-                <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="Code" v-model="data.formData.code" required> </v-text-field>
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <v-text-field
+                    label="Code"
+                    outlined
+                    v-model="data.formData.code"
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
-                <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
+                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+                  <v-text-field
+                    label="Name"
+                    v-model="data.formData.name"
+                    outlined
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row class="mt-n8">
                 <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field label="State" v-model="data.formData.state" required> </v-text-field>
+                  <v-text-field
+                    label="State"
+                    v-model="data.formData.state"
+                    outlined
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
                   <v-select
@@ -72,6 +117,7 @@
                     item-text="name"
                     :items="data.menuGroups"
                     item-value="id"
+                    outlined
                     label="Select Menu Group"
                   >
                   </v-select>
@@ -106,7 +152,9 @@
       <template v-slot:body>
         <ModalBody>
           <v-card-actions class="pa-0">
-            <h2 class="mr-7 ml-3" v-if="data.menu">{{ data.menu.name }} Menu Item</h2>
+            <h2 class="mr-7 ml-3" v-if="data.menu">
+              {{ data.menu.name }} Menu Item
+            </h2>
           </v-card-actions>
           <v-row>
             <v-col cols="12" lg="12" md="12" sm="12">
@@ -142,8 +190,12 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelPermissionDialog">Cancel</v-btn>
-          <v-btn color="primary darken-1" text @click="addPermissions"> Save </v-btn>
+          <v-btn color="blue darken-1" text @click="cancelPermissionDialog"
+            >Cancel</v-btn
+          >
+          <v-btn color="primary darken-1" text @click="addPermissions">
+            Save
+          </v-btn>
         </ModalFooter>
       </template>
     </Modal>

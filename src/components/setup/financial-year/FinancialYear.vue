@@ -95,18 +95,31 @@
                   <v-text-field
                     v-model="data.formData.name"
                     label="Financial Year Name"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="12" lg="6" md="6" sm="12">
+                <v-col
+                  cols="12"
+                  lg="6"
+                  md="6"
+                  sm="12"
+                  class="pl-6 pr-5 mt-n4 mb-n8"
+                >
                   <DatePicker
                     :label="'Start Date'"
                     v-model="data.formData.start_date"
                   />
                 </v-col>
-                <v-col cols="12" lg="6" md="6" sm="12">
+                <v-col
+                  cols="12"
+                  lg="6"
+                  md="6"
+                  sm="12"
+                  class="pl-5 pr-7 mt-n4 mb-n8"
+                >
                   <DatePicker
                     :label="'End Date'"
                     v-model="data.formData.end_date"

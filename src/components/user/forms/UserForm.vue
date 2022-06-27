@@ -6,7 +6,7 @@
     <template v-slot:body>
       <ModalBody class="p-10">
         <v-form ref="form" v-model="data.valid">
-          <v-container class="pr-5 pl-5 pt-5">
+          <v-container>
             <v-row>
               <v-col cols="12" lg="4" md="4" sm="12">
                 <v-text-field
@@ -14,7 +14,6 @@
                   v-model="formData.first_name"
                   :rules="data.requiredRules"
                   outlined
-                  required
                 >
                 </v-text-field>
               </v-col>
@@ -24,7 +23,6 @@
                   v-model="formData.middle_name"
                   :rules="data.requiredRules"
                   outlined
-                  required
                 >
                 </v-text-field>
               </v-col>
@@ -34,7 +32,6 @@
                   v-model="formData.last_name"
                   :rules="data.requiredRules"
                   outlined
-                  required
                 >
                 </v-text-field>
               </v-col>
@@ -45,7 +42,6 @@
                   label="Email Address"
                   v-model="formData.email"
                   v-bind:rules="data.emailRules"
-                  required
                   outlined
                 >
                 </v-text-field>
@@ -54,7 +50,6 @@
                 <v-text-field
                   label="Phone Number"
                   v-model="formData.phone_number"
-                  required
                   outlined
                 >
                 </v-text-field>
@@ -64,7 +59,6 @@
                   label="Check Number"
                   v-model="formData.check_number"
                   :rules="data.requiredRules"
-                  required
                   outlined
                 >
                 </v-text-field>

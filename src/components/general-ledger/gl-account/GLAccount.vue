@@ -3,22 +3,39 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'GLAccount')">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('create', 'GLAccount')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
     </v-card-actions>
     <v-card>
-      <v-data-table :headers="HEADERS" :items="data.items" hide-default-footer class="elevation-1">
+      <v-data-table
+        :headers="HEADERS"
+        :items="data.items"
+        hide-default-footer
+        class="elevation-1"
+      >
         <template v-slot:[`item.active`]="{ item }">
           <v-icon v-if="item.active" medium color="success">mdi-check</v-icon>
           <v-icon v-else medium color="warning">mdi-close</v-icon>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-switch :input-value="item.active" @change="openActivationDialog(item)" value></v-switch>
+          <v-switch
+            :input-value="item.active"
+            @change="openActivationDialog(item)"
+            value
+          ></v-switch>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -32,7 +49,12 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="12" sm="12">
-                  <v-text-field v-model="data.formData.code" label="Account Code" required></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.code"
+                    label="Account Code"
+                    outlined
+                    required
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -42,7 +64,9 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
+          <v-btn color="green darken-1" text @click="save"
+            >{{ data.modalTitle }}
+          </v-btn>
         </ModalFooter>
       </template>
     </Modal>

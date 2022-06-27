@@ -43,7 +43,11 @@
           </v-card-title>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -58,7 +62,12 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="2">
-                  <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.code"
+                    label="Code"
+                    outlined
+                    required
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="5">
                   <v-select
@@ -66,15 +75,21 @@
                     :items="data.projects"
                     item-value="id"
                     label="Project"
+                    outlined
                     required
                   >
-                    <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }} </template>
-                    <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }} </template>
+                    <template v-slot:selection="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
                     <template v-slot:prepend-item>
                       <v-list-item>
                         <v-list-item-content>
                           <v-text-field
                             v-model="data.searchTerm"
+                            outlined
                             placeholder="Search"
                             @input="searchProjects"
                           ></v-text-field>
@@ -89,15 +104,21 @@
                     v-model="data.formData.sub_budget_class_id"
                     :items="data.subBudgetClasses"
                     item-value="id"
+                    outlined
                     label="Sub budget class"
                     required
                   >
-                    <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }} </template>
-                    <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }} </template>
+                    <template v-slot:selection="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
                     <template v-slot:prepend-item>
                       <v-list-item>
                         <v-list-item-content>
                           <v-text-field
+                            outlined
                             v-model="data.searchTerm"
                             placeholder="Search"
                             @input="searchSubBudgetClasses"
@@ -109,7 +130,12 @@
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="12" sm="12">
-                  <v-text-field v-model="data.formData.description" label="Description" required></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.description"
+                    label="Description"
+                    outlined
+                    required
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -135,7 +161,9 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog"> Cancel </v-btn>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Cancel
+          </v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>

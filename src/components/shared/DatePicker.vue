@@ -7,6 +7,7 @@
       transition="scale-transition"
       offset-y
       max-width="290px"
+      outlined
       min-width="290px"
     >
       <template v-slot:activator="{ on, attrs }">
@@ -17,6 +18,7 @@
           :value="value"
           :error-messages="errors"
           v-bind="attrs"
+          outlined
           v-on="on"
         >
         </v-text-field>

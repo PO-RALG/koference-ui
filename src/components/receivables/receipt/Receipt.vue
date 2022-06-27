@@ -139,18 +139,13 @@
         <ModalBody v-if="data.receipt">
           <v-form>
             <v-container>
-              <span class="pl-5">Select Receipt Type</span>
-              <v-radio-group
-                class="pl-5"
-                v-model="data.isInvoice"
-                row
-                @change="resetDate"
-              >
+              <span>Select Receipt Type</span>
+              <v-radio-group v-model="data.isInvoice" row @change="resetDate">
                 <v-radio label="CASH" value="NO"></v-radio>
                 <v-radio label="INVOICE" value="YES"></v-radio>
               </v-radio-group>
-              <v-row class="mt-n8 pa-5">
-                <v-col cols="12" md="12" class="mb-n12" v-if="isInvoice">
+              <v-row>
+                <v-col cols="12" md="12" v-if="isInvoice" class="mb-n6">
                   <fetcher :api="'/api/v1/invoices'">
                     <div slot-scope="{ json: invoices, loading }">
                       <div v-if="loading">Loading...</div>
@@ -170,30 +165,29 @@
                     </div>
                   </fetcher>
                 </v-col>
-                <v-col
-                  cols="12"
-                  md="6"
-                  v-if="isInvoice && data.selectedInvoice"
-                >
+                <v-col cols="12" md="6">
                   <v-text-field
+                    v-if="isInvoice && data.selectedInvoice"
                     v-model="data.selectedUser.name"
                     label="Invoice User"
                     disabled
                     small
                   >
                   </v-text-field>
-                </v-col>
-                <v-col cols="12" md="6" v-else>
+
                   <v-autocomplete
+                    v-else
                     v-model="data.receipt.customer_id"
                     label="Select Customer"
                     :items="data.customers"
                     :item-text="'name'"
                     item-value="id"
+                    outlined
                     small
                   ></v-autocomplete>
                 </v-col>
-                <v-col class="pt-6" cols="12" md="6">
+
+                <v-col cols="12" md="6" class="mt-3 pr-6 pl-6">
                   <DatePicker
                     :label="'Receipt Date'"
                     :max="data.maxDate"
@@ -201,7 +195,6 @@
                     v-model="data.receipt.date"
                   />
                 </v-col>
-
                 <v-col cols="12" md="6" class="mt-n8">
                   <v-autocomplete
                     v-model="data.receipt.bank_account_id"
@@ -209,21 +202,24 @@
                     :items="accounts"
                     :item-text="`fullName`"
                     item-value="id"
+                    outlined
                   ></v-autocomplete>
                 </v-col>
 
                 <v-col cols="12" md="6" class="mt-n8">
                   <v-text-field
                     label="Bank Reference Number"
+                    outlined
                     v-model="data.receipt.bank_reference_number"
                   ></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="12" class="mt-n8">
-                  <v-text-field
+                  <v-textarea
                     label="Description"
+                    outlined
                     v-model="data.receipt.description"
-                  ></v-text-field>
+                  ></v-textarea>
                 </v-col>
 
                 <v-col class="pt-0" cols="12" md="12">

@@ -126,26 +126,43 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
                     required
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.code"
                     label="Code"
                     required
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6" class="mt-n8">
+                  <v-text-field
+                    v-model="data.formData.phone_number"
+                    label="Phone number"
+                    outlined
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6" class="mt-n8">
+                  <v-text-field
+                    v-model="data.formData.email"
+                    label="Email"
+                    outlined
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6" class="mt-n8">
                   <v-select
                     v-model="data.formData.facility_type_id"
                     :items="data.facilityTypes"
                     item-value="id"
                     label="Facility type"
+                    outlined
                     required
                   >
                     <template v-slot:selection="{ item }">
@@ -161,6 +178,7 @@
                             v-model="data.searchTerm"
                             placeholder="Search"
                             @input="searchFacilityTypes"
+                            outlined
                           ></v-text-field>
                         </v-list-item-content>
                       </v-list-item>
@@ -168,29 +186,18 @@
                     </template>
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6" class="mt-n8">
                   <v-text-field
-                    v-model="data.formData.phone_number"
-                    label="Phone number"
+                    v-model="data.formData.postal_address"
+                    label="Postal address"
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.email"
-                    label="Email"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="12" class="mt-n10">
                   <v-checkbox
                     v-model="data.formData.active"
                     :label="`Active`"
                   ></v-checkbox>
-                </v-col>
-                <v-col cols="12" md="12">
-                  <v-text-field
-                    v-model="data.formData.postal_address"
-                    label="Postal address"
-                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="12" md="12" class="hierarchy-container">
                   <v-label v-if="data.formData.location">

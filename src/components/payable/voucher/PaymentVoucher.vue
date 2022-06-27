@@ -111,6 +111,7 @@
                     item-value="id"
                     item-text="name"
                     label="Select Payee"
+                    outlined
                     required
                   >
                     <template v-slot:prepend-item>
@@ -120,6 +121,7 @@
                             v-model="data.searchTerm"
                             placeholder="Search"
                             @input="searchSuppliers"
+                            outlined
                           ></v-text-field>
                         </v-list-item-content>
                       </v-list-item>
@@ -128,8 +130,8 @@
                   </v-select>
                 </v-col>
               </v-row>
-              <v-row class="pl-5 pr-5 pb-n4">
-                <v-col cols="12" md="12" sm="12">
+              <v-row class="pl-3 pr-5 pb-n4">
+                <v-col cols="12" md="12" sm="12" class="mt-n8">
                   <v-textarea
                     v-model="data.formData.description"
                     :min-height="40"
@@ -140,13 +142,14 @@
                   </v-textarea>
                 </v-col>
               </v-row>
-              <v-row class="pl-5 pr-5 mt-n8">
+              <v-row class="pl-3 pr-5 mt-n8">
                 <v-col md="4" sm="12" cols="12">
                   <v-select
                     :items="data.activities"
                     item-text="name"
                     label="Select Activity"
                     @change="searchFundingSource($event)"
+                    outlined
                     required
                   >
                     <template v-slot:selection="{ item }">
@@ -165,6 +168,7 @@
                           <v-text-field
                             v-model="data.searchTerm"
                             placeholder="Search"
+                            outlined
                             @input="searchActivities"
                           ></v-text-field>
                         </v-list-item-content>
@@ -179,6 +183,7 @@
                     item-text="code"
                     label="Select Funding Sources"
                     @change="searchGfsCodes($event)"
+                    outlined
                     return-object
                   >
                     <template v-slot:selection="{ item }">
@@ -195,6 +200,7 @@
                     item-value="code"
                     item-text="name"
                     label="Select GFS Code"
+                    outlined
                     @change="filterGfsCodes($event)"
                   >
                     <template v-slot:selection="{ item }">
