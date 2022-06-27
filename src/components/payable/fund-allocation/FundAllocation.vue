@@ -7,7 +7,7 @@
     <v-card>
       <v-form v-model="data.valid">
         <v-card-title>
-          <v-col cols="12" sm="12" md="3" class="pa-0">
+          <v-col cols="12" sm="12" md="4" class="pa-0">
             <v-select
               :items="data.fundingSources"
               label="Funding source"
