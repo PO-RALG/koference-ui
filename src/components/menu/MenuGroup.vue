@@ -3,14 +3,24 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'AuthMenuGroup')">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('create', 'AuthMenuGroup')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
     </v-card-actions>
 
     <v-card>
-      <v-data-table :headers="HEADERS" :items="data.items" disable-pagination hide-default-footer class="elevation-1">
+      <v-data-table
+        :headers="HEADERS"
+        :items="data.items"
+        disable-pagination
+        hide-default-footer
+        class="elevation-1"
+      >
         <template v-slot:body="props">
           <draggable :list="props.items" tag="tbody" @change="updatePosition">
             <tr v-for="(group, index) in props.items" :key="index">
@@ -24,10 +34,17 @@
               <td>{{ group.position }}</td>
               <td>{{ group.name }}</td>
               <td>
-                <v-icon class="mr-2" @click="openDialog(group)" :disabled="cant('edit', 'AuthMenuGroup')">
+                <v-icon
+                  class="mr-2"
+                  @click="openDialog(group)"
+                  :disabled="cant('edit', 'AuthMenuGroup')"
+                >
                   mdi-pencil-box-outline
                 </v-icon>
-                <v-icon @click="openConfirmDialog(group)" :disabled="cant('delete', 'AuthMenuGroup')">
+                <v-icon
+                  @click="openConfirmDialog(group)"
+                  :disabled="cant('delete', 'AuthMenuGroup')"
+                >
                   mdi-trash-can-outline
                 </v-icon>
               </td>
@@ -38,7 +55,11 @@
           <v-icon class="mr-2">{{ item.icon }}</v-icon>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="TABLE_ROWS" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="TABLE_ROWS"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -51,25 +72,50 @@
           <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row>
-                <v-col cols="12" lg="3" md="3" sm="12">
-                  <v-text-field label="Icon" v-model="data.formData.icon" required> </v-text-field>
-                </v-col>
-                <v-col cols="12" lg="3" md="3" sm="12">
-                  <v-text-field label="Menu Order" v-model="data.formData.position" required> </v-text-field>
+                <v-col cols="12" lg="6" md="6" sm="12">
+                  <v-text-field
+                    label="Icon"
+                    v-model="data.formData.icon"
+                    outlined
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
+                  <v-text-field
+                    label="Menu Order"
+                    v-model="data.formData.position"
+                    outlined
+                    required
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+                  <v-text-field
+                    label="Name"
+                    v-model="data.formData.name"
+                    outlined
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field label="URL" v-model="data.formData.link" required> </v-text-field>
+                <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
+                  <v-text-field
+                    label="URL"
+                    v-model="data.formData.link"
+                    outlined
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
-                <v-col cols="12" lg="6" md="6" sm="12">
+                <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
                   <v-select
                     v-model="data.formData.parent_id"
                     item-text="name"
                     :items="data.items"
+                    outlined
                     label="Select Group Parent"
                   >
                   </v-select>

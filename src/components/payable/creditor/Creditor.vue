@@ -19,7 +19,12 @@
         </template>
         <template v-slot:[`item.reference_no`]="{ item }">
           <span>
-            <v-list-item class="text-link" exact light @click="previewCreditor(item.id)">
+            <v-list-item
+              class="text-link"
+              exact
+              light
+              @click="previewCreditor(item.id)"
+            >
               {{ item.reference_no }}
             </v-list-item>
           </span>
@@ -59,7 +64,11 @@
           </span>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -75,10 +84,18 @@
               <div class="font-weight-bold text-center">
                 <img :src="data.coat" class="login-logo pt-5" /><br />
                 The United Republic of Tanzania <br />
-                President's Office Regional Administration and Local Government <br />
-                {{ data.pvDetails.council ? data.pvDetails.council.name : "" }} <br />
-                {{ data.pvDetails.facility ? data.pvDetails.facility.name : "" }}
-                {{ data.pvDetails.facility ? data.pvDetails.facility.facility_type.name : "" }}<br />
+                President's Office Regional Administration and Local Government
+                <br />
+                {{ data.pvDetails.council ? data.pvDetails.council.name : "" }}
+                <br />
+                {{
+                  data.pvDetails.facility ? data.pvDetails.facility.name : ""
+                }}
+                {{
+                  data.pvDetails.facility
+                    ? data.pvDetails.facility.facility_type.name
+                    : ""
+                }}<br />
               </div>
             </v-col>
             <v-col class="d-flex justify-center">
@@ -92,16 +109,35 @@
                       <table>
                         <tr>
                           <td>
-                            <span class="font-weight-bold">Payee's name: </span><br />
-                            <span class="font-weight-bold">Mobile #: </span><br />
-                            <span class="font-weight-bold">Address: </span><br />
+                            <span class="font-weight-bold">Payee's name: </span
+                            ><br />
+                            <span class="font-weight-bold">Mobile #: </span
+                            ><br />
+                            <span class="font-weight-bold">Address: </span
+                            ><br />
                             <span class="font-weight-bold">TIN: </span><br />
                           </td>
                           <td>
-                            {{ data.pvDetails.supplier ? data.pvDetails.supplier.name : "" }}<br />
-                            {{ data.pvDetails.supplier ? data.pvDetails.supplier.phone : "" }}<br />
-                            {{ data.pvDetails.supplier ? data.pvDetails.supplier.address : "" }}<br />
-                            {{ data.pvDetails.supplier ? data.pvDetails.supplier.tin : "" }}<br />
+                            {{
+                              data.pvDetails.supplier
+                                ? data.pvDetails.supplier.name
+                                : ""
+                            }}<br />
+                            {{
+                              data.pvDetails.supplier
+                                ? data.pvDetails.supplier.phone
+                                : ""
+                            }}<br />
+                            {{
+                              data.pvDetails.supplier
+                                ? data.pvDetails.supplier.address
+                                : ""
+                            }}<br />
+                            {{
+                              data.pvDetails.supplier
+                                ? data.pvDetails.supplier.tin
+                                : ""
+                            }}<br />
                           </td>
                         </tr>
                       </table>
@@ -118,7 +154,9 @@
                               {{ data.pvDetails.reference_no }} </span
                             ><br />
                             <span class="font-weight-bold">
-                              {{ data.pvDetails.date | format("DD/MM/YYYY") }} </span
+                              {{
+                                data.pvDetails.date | format("DD/MM/YYYY")
+                              }} </span
                             ><br /><br /><br />
                           </td>
                         </tr>
@@ -135,18 +173,29 @@
               </table>
             </v-col>
             <v-col class="">
-              <v-data-table :headers="payablePrintHeader" disable-pagination hide-default-footer>
+              <v-data-table
+                :headers="payablePrintHeader"
+                disable-pagination
+                hide-default-footer
+              >
                 <template v-slot:body>
                   <tbody>
-                    <tr v-for="(payable, i) in data.pvDetails.payables" :key="i">
+                    <tr
+                      v-for="(payable, i) in data.pvDetails.payables"
+                      :key="i"
+                    >
                       <td>{{ payable.gl_account }}</td>
                       <td>{{ payable.funding_source.description }}</td>
                       <td>{{ payable.description }}</td>
-                      <td class="text-right">{{ payable.amount | toCurrency() }}</td>
+                      <td class="text-right">
+                        {{ payable.amount | toCurrency() }}
+                      </td>
                     </tr>
                     <tr class="grey lighten-2">
                       <th colspan="3" class="text-right">NET AMOUNT</th>
-                      <th class="text-right">{{ data.pvDetails.amount | toCurrency() }}</th>
+                      <th class="text-right">
+                        {{ data.pvDetails.amount | toCurrency() }}
+                      </th>
                     </tr>
                   </tbody>
                 </template>
@@ -156,8 +205,12 @@
               <table width="100%">
                 <tbody>
                   <tr>
-                    <th class="text-left">Facility Financial Accounting and Reporting System</th>
-                    <th class="text-right">Printed on: {{ data.pvDetails.printDate }}</th>
+                    <th class="text-left">
+                      Facility Financial Accounting and Reporting System
+                    </th>
+                    <th class="text-right">
+                      Printed on: {{ data.pvDetails.printDate }}
+                    </th>
                   </tr>
                 </tbody>
               </table>
@@ -167,7 +220,14 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn class="pb-5" color="red darken-1" text @click="cancelPreviewDialog"> Cancel </v-btn>
+          <v-btn
+            class="pb-5"
+            color="red darken-1"
+            text
+            @click="cancelPreviewDialog"
+          >
+            Cancel
+          </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -181,7 +241,14 @@ import { useCreditor } from "./composables/creditor";
 export default defineComponent({
   name: "Creditor",
   setup() {
-    const { data, searchItem, getData, payablePrintHeader, previewCreditor, cancelPreviewDialog } = useCreditor();
+    const {
+      data,
+      searchItem,
+      getData,
+      payablePrintHeader,
+      previewCreditor,
+      cancelPreviewDialog,
+    } = useCreditor();
 
     return {
       data,

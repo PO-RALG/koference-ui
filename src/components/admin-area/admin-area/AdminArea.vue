@@ -62,12 +62,17 @@
                   <v-text-field
                     label="Name"
                     v-model="data.formData.name"
+                    outlined
                     required
                   >
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field label="Slug" v-model="data.formData.code">
+                  <v-text-field
+                    label="Slug"
+                    v-model="data.formData.code"
+                    outlined
+                  >
                   </v-text-field>
                 </v-col>
               </v-row>

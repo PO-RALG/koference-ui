@@ -39,7 +39,6 @@
             <td>{{ item.description }}</td>
             <td>{{ item.current_code }}</td>
             <td>{{ item.carryover_code }}</td>
-
           </tr>
         </template>
         <template v-slot:footer>
@@ -64,6 +63,7 @@
                   <v-text-field
                     v-model="data.formData.description"
                     label="Description"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
@@ -71,6 +71,7 @@
                   <v-text-field
                     v-model="data.formData.code"
                     label="Code"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>

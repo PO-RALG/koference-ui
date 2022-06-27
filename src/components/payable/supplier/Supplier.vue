@@ -96,6 +96,7 @@
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
@@ -103,6 +104,7 @@
                   <v-text-field
                     v-model="data.formData.email"
                     label="Email"
+                    outlined
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12">
@@ -110,6 +112,7 @@
                     v-model="data.formData.supplier_type"
                     :items="data.supplierTypes"
                     label="Select Type"
+                    outlined
                     required
                   >
                   </v-select>
@@ -121,6 +124,7 @@
                   v-if="data.formData.supplier_type === 'Contractor'"
                 >
                   <v-text-field-simplemask
+                    outlined
                     v-model="data.formData.tin"
                     :rules="data.tinRules"
                     :properties="{
@@ -172,6 +176,7 @@
                     v-bind:focus="data.focus"
                     v-on:focus="data.focus = false"
                     label="Check Number"
+                    outlined
                   />
                 </v-col>
                 <v-col
@@ -183,10 +188,12 @@
                   <v-text-field
                     v-model="data.formData.id_number"
                     label="ID number"
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12">
+                <v-col cols="12" md="4" sm="12" class="mt-n8">
                   <v-text-field-simplemask
+                    outlined
                     v-model="data.formData.phone"
                     :rules="data.phoneRules"
                     :properties="{
@@ -210,28 +217,32 @@
                     label="Phone"
                   />
                 </v-col>
-                <v-col cols="12" md="4" sm="12">
+                <v-col cols="12" md="4" sm="12" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.address"
                     label="Address"
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12">
+                <v-col cols="12" md="4" sm="12" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.bank_name"
                     label="Bank Name"
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12">
+                <v-col cols="12" md="4" sm="12" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.bank_account_name"
                     label="Bank Account Name"
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12">
+                <v-col cols="12" md="4" sm="12" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.bank_account_number"
                     label="Bank Account Number"
+                    outlined
                   ></v-text-field>
                 </v-col>
               </v-row>

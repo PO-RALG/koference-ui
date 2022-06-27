@@ -14,8 +14,15 @@
       >
         <template v-slot:top>
           <v-card-title>
-            <v-row justify="space-between">
-              <v-col cols="4" sm="12" md="2" class="pl-4">
+            <v-spacer></v-spacer>
+            <v-row
+              cols-lg="4"
+              cols-md="12"
+              cols-sm="12"
+              align="center"
+              class="d-flex justify-end align-center"
+            >
+              <v-col cols="4" sm="12" md="5" class="pl-4 pt-6">
                 <v-autocomplete
                   label="Select Financial year"
                   @change="selectFinancialYear($event)"
@@ -24,10 +31,11 @@
                   :item-divider="true"
                   return-object
                   required
+                  outlined
                   clearable
                 ></v-autocomplete>
               </v-col>
-              <v-col cols="6" sm="12" md="4" class="pr-4">
+              <v-col cols="6" sm="12" md="4" class="pr-4 pt-6">
                 <v-autocomplete
                   label="Filter by Funding Source Code"
                   @change="searchItem($event)"
@@ -36,6 +44,7 @@
                   :item-divider="true"
                   return-object
                   required
+                  outlined
                   clearable
                 ></v-autocomplete>
               </v-col>
@@ -43,7 +52,11 @@
           </v-card-title>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -58,7 +71,12 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="2">
-                  <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.code"
+                    label="Code"
+                    outlined
+                    required
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="5">
                   <v-select
@@ -66,15 +84,24 @@
                     :items="data.projects"
                     item-value="id"
                     label="Project"
+                    outlined
                     required
                   >
-                    <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }} </template>
-                    <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }} </template>
+                    <template v-slot:selection="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
+                    <template v-slot:[`item.amount`]="{ item }">
+                      {{ item.amount | toCurrency() }}
+                    </template>
                     <template v-slot:prepend-item>
                       <v-list-item>
                         <v-list-item-content>
                           <v-text-field
                             v-model="data.searchTerm"
+                            outlined
                             placeholder="Search"
                             @input="searchProjects"
                           ></v-text-field>
@@ -89,15 +116,21 @@
                     v-model="data.formData.sub_budget_class_id"
                     :items="data.subBudgetClasses"
                     item-value="id"
+                    outlined
                     label="Sub budget class"
                     required
                   >
-                    <template v-slot:selection="{ item }"> {{ item.code }} - {{ item.description }} </template>
-                    <template v-slot:item="{ item }"> {{ item.code }} - {{ item.description }} </template>
+                    <template v-slot:selection="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.code }} - {{ item.description }}
+                    </template>
                     <template v-slot:prepend-item>
                       <v-list-item>
                         <v-list-item-content>
                           <v-text-field
+                            outlined
                             v-model="data.searchTerm"
                             placeholder="Search"
                             @input="searchSubBudgetClasses"
@@ -109,7 +142,12 @@
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="12" sm="12">
-                  <v-text-field v-model="data.formData.description" label="Description" required></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.description"
+                    label="Description"
+                    outlined
+                    required
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -135,7 +173,9 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog"> Cancel </v-btn>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Cancel
+          </v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>

@@ -14,7 +14,12 @@
       >
         <template v-slot:[`item.invoice_number`]="{ item }">
           <span>
-            <v-list-item class="text-link" exact light @click="previewInvoice(item)">
+            <v-list-item
+              class="text-link"
+              exact
+              light
+              @click="previewInvoice(item)"
+            >
               {{ item.invoice_number }}
             </v-list-item>
           </span>
@@ -54,7 +59,11 @@
           </span>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -81,11 +90,20 @@
                 <v-col cols="6" md="4">
                   <div class="text-xs-left">
                     <v-card flat align="right" class="pr-12" tile>
-                      <strong> Invoice #:{{ data.selectedInvoice ? data.selectedInvoice.invoice_number : "" }}</strong
+                      <strong>
+                        Invoice #:{{
+                          data.selectedInvoice
+                            ? data.selectedInvoice.invoice_number
+                            : ""
+                        }}</strong
                       ><br />
                       <strong>
                         Created:
-                        {{ data.selectedInvoice ? data.selectedInvoice.date : "" | format }}<br />
+                        {{
+                          data.selectedInvoice
+                            ? data.selectedInvoice.date
+                            : "" | format
+                        }}<br />
                       </strong>
                     </v-card>
                   </div>
@@ -145,7 +163,11 @@
 
               <template v-slot:[`body.append`]="{ headers }">
                 <tr>
-                  <th class="grey lighten-5" v-for="(header, i) in headers" :key="i">
+                  <th
+                    class="grey lighten-5"
+                    v-for="(header, i) in headers"
+                    :key="i"
+                  >
                     <div v-if="header.value == 'no'">
                       <h2>
                         {{ "TOTAL" }}
@@ -174,11 +196,23 @@
               <v-sheet class="text-capitalize pt-10">
                 <strong> Created By:</strong>
                 <em>
-                  {{ data.selectedInvoice.user ? data.selectedInvoice.user.first_name : "" }}
+                  {{
+                    data.selectedInvoice.user
+                      ? data.selectedInvoice.user.first_name
+                      : ""
+                  }}
                   {{ " " }}
-                  {{ data.selectedInvoice.user ? data.selectedInvoice.user.middle_name : "" }}
+                  {{
+                    data.selectedInvoice.user
+                      ? data.selectedInvoice.user.middle_name
+                      : ""
+                  }}
                   {{ " " }}
-                  {{ data.selectedInvoice.user ? data.selectedInvoice.user.last_name : "" }}
+                  {{
+                    data.selectedInvoice.user
+                      ? data.selectedInvoice.user.last_name
+                      : ""
+                  }}
                 </em>
               </v-sheet>
               <v-spacer></v-spacer>
@@ -204,7 +238,14 @@ import { useDebtor } from "./composables/invoice-debtors";
 export default defineComponent({
   name: "Debtor",
   setup() {
-    const { data, getData, getInvoiceDebtor, previewInvoice, cancelInvoiceDialog, invoices } = useDebtor();
+    const {
+      data,
+      getData,
+      getInvoiceDebtor,
+      previewInvoice,
+      cancelInvoiceDialog,
+      invoices,
+    } = useDebtor();
 
     return {
       data,

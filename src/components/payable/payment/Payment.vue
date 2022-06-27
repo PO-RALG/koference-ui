@@ -128,36 +128,40 @@
                     required
                   />
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="6" sm="12" class="mt-n8">
                   <v-select
                     v-model="data.formData.bank_account_id"
                     :items="data.bankAccounts"
                     item-text="name"
                     item-value="id"
                     label="Select Bank Account"
+                    outlined
                     required
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="6" sm="12" class="mt-n8">
                   <v-select
                     v-model="data.formData.cheque_type"
                     :items="data.chequeTypes"
                     label="Select Cheque Type"
                     required
+                    outlined
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="6" sm="12" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.cheque"
                     label="Cheque"
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="6" sm="12" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.description"
                     label="Description"
+                    outlined
                   ></v-text-field>
                 </v-col>
               </v-row>

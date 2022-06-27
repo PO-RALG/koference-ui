@@ -24,7 +24,7 @@ const update = async (payload: any) => {
 };
 
 const deleteUser = async (id: number | string) => {
-  return await axios.put(`${API}/${id}`);
+  return await axios.delete(`${API}/${id}`);
 };
 
 const toggleActive = async (payload: any) => {

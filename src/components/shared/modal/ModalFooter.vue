@@ -1,5 +1,5 @@
 <template>
-  <v-card-actions>
+  <v-card-actions class="pt-n8 pb-5 pr-5">
     <v-spacer></v-spacer>
     <slot />
   </v-card-actions>

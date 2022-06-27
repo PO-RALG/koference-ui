@@ -14,6 +14,7 @@
               v-model="data.current_password"
               v-bind:rules="data.passwordRules"
               v-bind:type="'password'"
+              outlined
               required
               class="mr-0 ml-0"
             ></v-text-field>
@@ -22,6 +23,7 @@
               v-model="data.password"
               v-bind:rules="data.newPasswordRules"
               v-bind:type="'password'"
+              outlined
               required
               class="mr-0 ml-0"
             ></v-text-field>
@@ -30,6 +32,7 @@
               v-model="data.password_confirmation"
               :rules="data.passwordConfirmationRules"
               v-bind:type="'password'"
+              outlined
               required
               class="mr-0 ml-0"
             ></v-text-field>
@@ -40,13 +43,16 @@
     <!-- login form end -->
     <template v-slot:footer>
       <ModalFooter class="mt-n8">
-        <v-btn color="blue darken-1" :disabled="true" text @click="cancelDialog">Cancel</v-btn>
+        <v-btn color="blue darken-1" :disabled="true" text @click="cancelDialog"
+          >Cancel</v-btn
+        >
         <v-btn
           color="primary"
           :disabled="!data.valid"
           class="white--text mr-2 mb-4"
           @click="changePass"
-          :loading="data.loading">
+          :loading="data.loading"
+        >
           <v-icon left>mdi-login</v-icon>Change Password
         </v-btn>
       </ModalFooter>
@@ -60,8 +66,22 @@ import { useChangePasswordDialog } from "./composables/change-password";
 
 export default defineComponent({
   setup() {
-    const { changePass, data, message, cancelDialog, show, passwordConfirmationRule } = useChangePasswordDialog();
-    return { changePass, data, message, cancelDialog, show, passwordConfirmationRule };
+    const {
+      changePass,
+      data,
+      message,
+      cancelDialog,
+      show,
+      passwordConfirmationRule,
+    } = useChangePasswordDialog();
+    return {
+      changePass,
+      data,
+      message,
+      cancelDialog,
+      show,
+      passwordConfirmationRule,
+    };
   },
 });
 </script>
