@@ -33,6 +33,7 @@
                 :item-divider="true"
                 return-object
                 required
+                outlined
                 clearable
               ></v-autocomplete>
             </v-col>

@@ -100,6 +100,7 @@
                     required
                   ></v-text-field>
                 </v-col>
+
                 <v-col cols="12" md="4" sm="12">
                   <v-text-field
                     v-model="data.formData.email"
@@ -107,6 +108,7 @@
                     outlined
                   ></v-text-field>
                 </v-col>
+
                 <v-col cols="12" md="4" sm="12">
                   <v-select
                     v-model="data.formData.supplier_type"
@@ -121,68 +123,42 @@
                   cols="12"
                   md="4"
                   sm="12"
+                  class="mt-n8"
                   v-if="data.formData.supplier_type === 'Contractor'"
                 >
-                  <v-text-field-simplemask
+                  <v-text-field
                     outlined
                     v-model="data.formData.tin"
                     :rules="data.tinRules"
-                    :properties="{
-                      prefix: '',
-                      suffix: '',
-                      readonly: false,
-                      disabled: false,
-                      outlined: false,
-                      placeholder: '',
-                    }"
-                    :options="{
-                      inputMask: '###-###-###',
-                      outputMask: '#########',
-                      empty: null,
-                      applyAfter: false,
-                      alphanumeric: true,
-                      lowerCase: false,
-                    }"
                     v-bind:focus="data.focus"
                     v-on:focus="data.focus = false"
                     label="TIN"
+                    v-mask="'###-###-###'"
+                    v
                   />
                 </v-col>
                 <v-col
                   cols="12"
                   md="4"
                   sm="12"
+                  class="mt-n8"
                   v-if="data.formData.supplier_type === 'Employee'"
                 >
-                  <v-text-field-simplemask
+                  <v-text-field
                     v-model="data.formData.check_number"
                     :rules="data.checkRules"
-                    :properties="{
-                      prefix: '',
-                      suffix: '',
-                      readonly: false,
-                      disabled: false,
-                      outlined: false,
-                      placeholder: '',
-                    }"
-                    :options="{
-                      inputMask: '#########',
-                      outputMask: '#########',
-                      empty: null,
-                      applyAfter: false,
-                      alphanumeric: false,
-                      lowerCase: false,
-                    }"
                     v-bind:focus="data.focus"
                     v-on:focus="data.focus = false"
                     label="Check Number"
                     outlined
+                    v-mask="'##########'"
                   />
                 </v-col>
                 <v-col
                   cols="12"
                   md="4"
                   sm="12"
+                  class="mt-n8"
                   v-if="data.formData.supplier_type === 'Others'"
                 >
                   <v-text-field
@@ -192,29 +168,14 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12" class="mt-n8">
-                  <v-text-field-simplemask
+                  <v-text-field
                     outlined
                     v-model="data.formData.phone"
                     :rules="data.phoneRules"
-                    :properties="{
-                      prefix: '',
-                      suffix: '',
-                      readonly: false,
-                      disabled: false,
-                      outlined: false,
-                      placeholder: '',
-                    }"
-                    :options="{
-                      inputMask: '#### ### ###',
-                      outputMask: '##########',
-                      empty: null,
-                      applyAfter: false,
-                      alphanumeric: false,
-                      lowerCase: false,
-                    }"
                     v-bind:focus="data.focus"
                     v-on:focus="data.focus = false"
                     label="Phone"
+                    v-mask="'#### ### ###'"
                   />
                 </v-col>
                 <v-col cols="12" md="4" sm="12" class="mt-n8">
@@ -224,21 +185,21 @@
                     outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12" class="mt-n8">
+                <v-col cols="12" md="4" sm="12" class="mt-n8 mb-n8">
                   <v-text-field
                     v-model="data.formData.bank_name"
                     label="Bank Name"
                     outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12" class="mt-n8">
+                <v-col cols="12" md="4" sm="12" class="mt-n8 mb-n8">
                   <v-text-field
                     v-model="data.formData.bank_account_name"
                     label="Bank Account Name"
                     outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" sm="12" class="mt-n8">
+                <v-col cols="12" md="4" sm="12" class="mt-n8 mb-n8">
                   <v-text-field
                     v-model="data.formData.bank_account_number"
                     label="Bank Account Number"

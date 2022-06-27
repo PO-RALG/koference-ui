@@ -100,7 +100,7 @@ export const useSupplier = (): any => {
     phoneRules: [
       (v: string) => !!v || "Phone number is required",
       (v: string) =>
-        (v && v.length <= 10) || "Phone number must be less than 10 characters",
+        (v && v.length <= 12) || "Phone number must be less than 12 characters",
     ],
     tinRules: [
       (v: string) => !!v || "TIN is required",

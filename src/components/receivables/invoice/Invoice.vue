@@ -210,9 +210,9 @@
                             dense
                             hide-details
                             outlined
-                            type="number"
                             onkeydown="javascript: return event.keyCode == 69 ? false : true"
                             v-model="invoice.amount"
+                            v-mask="toMoney"
                             :name="`data.invoice_items[${index}][name]`"
                           >
                           </v-text-field>
@@ -612,6 +612,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import { useInvoice } from "./composables/invoice";
+import { toMoney } from "@/filters/CurrencyFormatter";
 export default defineComponent({
   name: "ManageInvoice",
   setup() {
@@ -678,6 +679,7 @@ export default defineComponent({
       searchCustomer,
       reanderSearched,
       print,
+      toMoney,
     };
   },
 });
