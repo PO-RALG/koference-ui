@@ -13,7 +13,7 @@ const itemdefinitions = async (payload: any) => {
 };
 
 const fundingSource = async (payload: any) => {
-  return await axios.get(`/api/v1/funding-sources`, payload);
+  return await axios.get("/api/v1/funding-sources", { params: payload });
 };
 
 const glAccount = async (payload: any) => {

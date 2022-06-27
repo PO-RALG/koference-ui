@@ -16,7 +16,7 @@ import {
   glAccount,
 } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
 import moment from "moment";
-import {concat} from "lodash";
+import { concat } from "lodash";
 
 export const useReceipt = (): any => {
   const INVOICE_ITEM_HEADERS = [
@@ -249,7 +249,13 @@ export const useReceipt = (): any => {
   };
 
   const cancelDialog = () => {
+    data.receipt.customer_id = "";
+    data.receipt.date = "";
+    data.receipt.bank_account_id = "";
+    data.receipt.bank_reference_number = "";
+    data.receipt.description = "";
     data.receipt = receipt;
+    data.gl_accounts = [];
     (data.receipt_items = [
       {
         gl_account_id: "",
@@ -301,14 +307,15 @@ export const useReceipt = (): any => {
         bank_reference_number: data.receipt.bank_reference_number,
         description: data.receipt.description,
         items: data.selectedInvoice.invoice_items
-        .map((item: any) => ({
+          .map((item: any) => ({
             invoice_item_id: item.id,
             amount: item.pay_amount,
             gl_account_id: geGlAccountId(item.gl_account),
             funding_source_code: getFundingSource(
               item.definition.funding_source_id
             ),
-        })).filter((item: any) => item.amount > 0),
+          }))
+          .filter((item: any) => item.amount > 0),
       };
     } else {
       if (data.receipt.invoice_id) {
@@ -334,10 +341,12 @@ export const useReceipt = (): any => {
 
     fundingSource({ per_page: 2000 }).then((response: AxiosResponse) => {
       const fundingSources = response.data.data.data;
-      data.fundingSources = fundingSources.map(function (element){
-       return {...element,description: element.description  + '( ' + element.code + ')' }
+      data.fundingSources = fundingSources.map(function (element) {
+        return {
+          ...element,
+          description: element.description + "( " + element.code + ")",
+        };
       });
-
     });
 
     glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then(
@@ -349,11 +358,11 @@ export const useReceipt = (): any => {
 
   const loadGLAccounts = async (fundSourceCode, index) => {
     const params = {
-      per_page: 10,
+      per_page: 500,
       gl_account_type: "REVENUE",
       fund_code: fundSourceCode,
     };
-
+    console.log(params);
     glAccount(params).then((response: AxiosResponse) => {
       if (response.data.data.data.length > 0) {
         data.gl_accounts.push(response.data.data.data);
@@ -402,6 +411,18 @@ export const useReceipt = (): any => {
   };
 
   const isInvoice = computed(() => {
+    data.receipt.customer_id = "";
+    data.receipt.date = "";
+    data.receipt.bank_account_id = "";
+    data.receipt.bank_reference_number = "";
+    data.receipt.description = "";
+    data.receipt.items = [
+      {
+        funding_source_code: null,
+        gl_account_id: null,
+        amount: null,
+      },
+    ];
     return data.isInvoice === "YES" ? true : false;
   });
 
@@ -415,7 +436,19 @@ export const useReceipt = (): any => {
 
   const resetDate = () => {
     if (data.isInvoice === "NO") {
-      data.selectedInvoice = null;
+      data.receipt.customer_id = "";
+      data.receipt.date = "";
+      data.receipt.bank_account_id = "";
+      data.receipt.bank_reference_number = "";
+      data.receipt.description = "";
+      data.receipt.items = [
+        {
+          funding_source_code: null,
+          gl_account_id: null,
+          amount: null,
+        },
+      ];
+      (data.receipt.invoice_id = null), (data.selectedInvoice = null);
       data.minDate = null;
       data.maxDate = moment(new Date()).format("YYYY-MM-DD");
     } else {
