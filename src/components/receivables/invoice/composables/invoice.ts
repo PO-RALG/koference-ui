@@ -18,6 +18,7 @@ import {
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import { itemdefinitions } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
 import moment from "moment";
+import stringToCurrency from "@/filters/money-to-number";
 
 export const useInvoice = (): Record<string, unknown> => {
   const dataItems: Array<Invoice> = [];
@@ -375,7 +376,12 @@ export const useInvoice = (): Record<string, unknown> => {
   };
 
   const save = () => {
-    data.formData.items = data.invoice_items;
+    const items = data.invoice_items.map((entry) => ({
+      ...entry,
+      amount: stringToCurrency(entry.amount),
+    }));
+
+    data.formData.items = items;
     if (data.formData.id) {
       updateInvoiceItemDefinition(data.formData);
     } else {

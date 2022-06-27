@@ -34,5 +34,8 @@ Vue.mixin({
       const site = store.getters["Auth/getSiteName"];
       return site.name === "demo" ? true : false;
     },
+    stringToCurrency(value: string): number {
+      return Number(value.replace(/[^0-9.-]+/g,""));
+    },
   },
 });

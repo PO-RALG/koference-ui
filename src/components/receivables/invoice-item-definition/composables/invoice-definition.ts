@@ -195,7 +195,6 @@ export const useInvoiceDefinition = (): any => {
   };
 
   const save = () => {
-    console.log("Form Data", data.formData);
     if (data.formData.id) {
       updateInvoiceItemDefinition(data.formData);
     } else {
@@ -237,7 +236,9 @@ export const useInvoiceDefinition = (): any => {
       data.items = response.data.data.data;
     });
   };
+
   const loadGfsCodes = (params: any) => {
+    console.log(params);
     data.fundsourcesGfscodes = fundingsourceName.value.filter(
       (word) => word.id === params
     );
