@@ -4,7 +4,13 @@ import { AxiosResponse } from "axios";
 import { get as getFinancialYear } from "@/components/setup/financial-year/services/financialyear.service";
 import { FinancialYear } from "@/components/setup/financial-year/types/FinancialYear";
 import { RevenueProjection } from "../types/RevenueProjection";
-import { get, create, update, destroy, search } from "../services/revenue-projection.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../services/revenue-projection.service";
 
 export const useRevenueProjection = (): any => {
   const dataItems: Array<RevenueProjection> = [];
@@ -30,7 +36,8 @@ export const useRevenueProjection = (): any => {
         align: "start",
         sortable: false,
         value: "funding_source_code",
-      }, {
+      },
+      {
         text: "GFS",
         align: "start",
         sortable: false,
@@ -63,29 +70,35 @@ export const useRevenueProjection = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
     });
 
-    getFinancialYear({ per_page: 10, asc: "id" }).then((response: AxiosResponse) => {
-      data.financialYearData = response.data.data.data;
-    });
+    getFinancialYear({ per_page: 10, asc: "id" }).then(
+      (response: AxiosResponse) => {
+        data.financialYearData = response.data.data.data;
+      }
+    );
   };
 
   const searchItem = (itemName: RevenueProjection) => {
     if (itemName != null) {
-      search({ funding_source_code: itemName.funding_source_code }).then((response: AxiosResponse) => {
-        data.items = response.data.data.data;
-      });
+      search({ funding_source_code: itemName.funding_source_code }).then(
+        (response: AxiosResponse) => {
+          data.items = response.data.data.data;
+        }
+      );
     }
   };
 
   const selectFinancialYear = (year: FinancialYear) => {
     if (year != null) {
       get({ financial_year_id: year.id }).then((response: AxiosResponse) => {
-        const { from, to, total, current_page, per_page, last_page } = response.data.data;
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
         data.items = response.data.data.data;
         data.response = {
           from,

@@ -10,6 +10,7 @@ import {
   destroy,
   search,
   printReceipt,
+  getFundingSourceList,
 } from "../services/receipt-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
@@ -179,6 +180,7 @@ export const useReceipt = (): any => {
     receiptdata: receiptData,
     bankaccounts: [],
     customer: [],
+    searchTerm: "",
     receipt_items: [
       {
         gl_account_id: "",
@@ -481,6 +483,41 @@ export const useReceipt = (): any => {
         : moment(new Date()).format("YYYY-MM-DD");
     }
   };
+
+  const filterFundSource = () => {
+    if (data.searchTerm != null) {
+      getFundingSourceList({ regSearch: data.searchTerm }).then(
+        (response: AxiosResponse) => {
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
+          data.fundingSources = response.data.data.data;
+        }
+      );
+    }
+    if (data.searchTerm == null) {
+      getFundingSourceList({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.fundingSources = response.data.data.data;
+      });
+    }
+  };
   const reanderSearched = (categoryName: any) => {
     // console.log("categoryname", categoryName.invoice_number);
     if (categoryName != null && categoryName.length >= 2) {
@@ -494,6 +531,27 @@ export const useReceipt = (): any => {
       data.search = "";
     } else {
       reloadData();
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    if (data.searchTerm.length === null) {
+      getFundingSourceList({ per_page: 1000 }).then(
+        (response: AxiosResponse) => {
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
+          data.items = response.data.data.data;
+        }
+      );
     }
   };
 
@@ -520,5 +578,7 @@ export const useReceipt = (): any => {
     resetDate,
     reanderSearched,
     mapInvoices,
+    filterFundSource,
+    resetSearchText,
   };
 };
