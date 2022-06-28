@@ -1,7 +1,9 @@
 <template>
   <div>
     <v-card-actions class="pa-0">
-      <h2 v-if="data.menu">Add Permissions to {{ data.menu.name }} Menu Item</h2>
+      <h2 v-if="data.menu">
+        Add Permissions to {{ data.menu.name }} Menu Item
+      </h2>
       <v-spacer></v-spacer>
       <v-btn color="primary" @click="goBack">
         <v-icon>mdi-arrow-u-left-top</v-icon>
@@ -48,10 +50,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted, watch, computed } from "@vue/composition-api";
+import {
+  defineComponent,
+  reactive,
+  onMounted,
+  watch,
+  computed,
+} from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import PermissionList from "@/components/role/PermissionList.vue";
 import router from "@/router";
+import { useMenuItems } from "./composables/menu-item";
 
 import {
   find,
@@ -71,7 +80,7 @@ export default defineComponent({
     },
   },
 
-  setup(props, { attrs, emit }) {
+  setup(_props, { attrs, emit }) {
     const TYPE = "MENU_ITEM";
     let data = reactive({
       valid: true,
@@ -83,6 +92,8 @@ export default defineComponent({
       selectedCategory: "",
       categoryOptions: [],
     });
+
+    const loadMenuItems = useMenuItems();
 
     // watchers
     watch(data, (newValue: any) => {
@@ -103,26 +114,30 @@ export default defineComponent({
           : (data.selectedCategory = "");
       });
 
-      getResourceCategories({ categories: true }).then((response: AxiosResponse) => {
-        data.categories = response.data.data;
-        data.categoryOptions = response.data.data.map((entry) => {
-          return entry.category;
-        });
-      });
+      getResourceCategories({ categories: true }).then(
+        (response: AxiosResponse) => {
+          data.categories = response.data.data;
+          data.categoryOptions = response.data.data.map((entry) => {
+            return entry.category;
+          });
+        }
+      );
     };
 
     let selectedCategory = computed(() => {
       return data.selectedCategory;
     });
 
-    let categories = computed(() => {
+    const categories = computed(() => {
       return data.categories;
     });
 
     watch([selectedCategory], (newValue) => {
       let [selected] = newValue;
       if (data.categories.length > 0 && !!selected) {
-        let { id, category } = data.categories.find((c) => c.category == selected);
+        let { id, category } = data.categories.find(
+          (c) => c.category == selected
+        );
         data.selectedCategory = category;
         getPermissionsByResource(id, category).then((response) => {
           data.category = response.data.data;
@@ -147,7 +162,7 @@ export default defineComponent({
 
       assignPermissions(payload).then((response: AxiosResponse) => {
         if (response.status == 200) {
-          router.push({ path: `/manage-menu-items` });
+          loadMenuItems();
         }
       });
     };
@@ -157,7 +172,9 @@ export default defineComponent({
     };
 
     const getPermissions = (val) => {
-      let { id, category } = data.categories.find((cat) => cat.category === val);
+      let { id, category } = data.categories.find(
+        (cat) => cat.category === val
+      );
       data.selectedCategory = category;
       getPermissionsByResource(id, category).then((response) => {
         data.category = response.data.data;
@@ -172,6 +189,7 @@ export default defineComponent({
       goBack,
       selectedCategory,
       categories,
+      loadMenuItems,
     };
   },
 });
