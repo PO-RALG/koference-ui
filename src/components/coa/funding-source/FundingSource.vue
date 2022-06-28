@@ -4,7 +4,7 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
-        :disabled="cant('create', 'FundSource')"
+        :disabled="cant('create', 'FundingSource')"
         color="primary"
         @click="openDialog"
       >
@@ -54,6 +54,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                :disabled="cant('addGFS', 'FundingSource')"
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"

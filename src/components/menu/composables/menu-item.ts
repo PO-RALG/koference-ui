@@ -14,6 +14,15 @@ import {
 
 import { MenuItem } from "../types/MenuItem";
 
+interface FILTERS {
+  name?: string;
+  state?: string;
+  url?: string;
+  icon?: string;
+  auth_menu_group_id?: number | string;
+  code?: string;
+}
+
 export const useMenuItems = (): any => {
   const TYPE = "MENU_ITEM";
   const TABLE_ROWS = ["10", "20", "30", "40", "50", "100"];
@@ -34,24 +43,18 @@ export const useMenuItems = (): any => {
     formData: menuItemData,
     rows: ["10", "20", "30", "40", "50", "100"],
     // properties for permission dialog
-    menu: null,
     loading: false,
     categories: [],
     category: null,
+    menu: null,
     selected: [],
     selectedCategory: "",
     categoryOptions: [],
+    searchTerm: "",
   });
 
   // search by these fields
-  const filters = {
-    name: "",
-    state: "",
-    url: "",
-    icon: "",
-    auth_menu_group_id: null,
-    code: "",
-  };
+  const filters: FILTERS = reactive({});
 
   const HEADERS = [
     { text: "Icon", value: "icon" },
@@ -65,7 +68,16 @@ export const useMenuItems = (): any => {
   const TITLE = "Manage Menu Items";
 
   const initialize = () => {
-    get(TYPE, { per_page: 100, search: { filters } }).then((response: AxiosResponse) => {
+    get(TYPE, { per_page: 100, search:  {...filters }}).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      data.items = response.data.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+    });
+  };
+
+  const loadMenuItems = () => {
+    console.log("loadMenuItems");
+    get(TYPE,{}).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } = response.data.data;
       data.items = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
@@ -124,7 +136,6 @@ export const useMenuItems = (): any => {
   const deleteItem = (item: number | string) => {
     const payload = item;
     deleteEntry(TYPE, payload).then((response: AxiosResponse) => {
-      console.log(response);
       initialize();
     });
     data.item = {} as MenuItem;
@@ -140,6 +151,11 @@ export const useMenuItems = (): any => {
     assignPermissions(payload).then((response: AxiosResponse) => {
       if (response.status == 200) {
         data.permissionDialog = false;
+        data.menu = null;
+        data.selected = [];
+        data.categories = [];
+        data.categoryOptions = [];
+        window.history.go();
       }
     });
   };
@@ -230,6 +246,38 @@ export const useMenuItems = (): any => {
     }
   };
 
+  const searchItem = (searchTerm: string) => {
+    if (searchTerm.length > 3) {
+      get(TYPE, { regSearch: searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.items = response.data.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+      });
+    }
+    if (searchTerm.length === 0) {
+      get(TYPE, { per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } = response.data.data;
+        data.items = response.data.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    initialize();
+  }
+
+  const loadByMenuGroups = (e) => {
+    filters.auth_menu_group_id = e.id;
+    get(TYPE, { search: { ...filters } }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.items = response.data.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+    });
+  };
+
   return {
     HEADERS,
     TITLE,
@@ -256,5 +304,10 @@ export const useMenuItems = (): any => {
     addToSelection,
     cancelPermissionDialog,
     createMenuItem,
+    loadMenuItems,
+    searchItem,
+    resetSearchText,
+    loadByMenuGroups,
+    filters,
   };
 };

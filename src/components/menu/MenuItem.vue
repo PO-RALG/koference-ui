@@ -22,10 +22,41 @@
         class="elevation-1"
       >
         <template v-slot:top>
-          <v-card-actions>
+          <v-card-title>
             <v-spacer></v-spacer>
-            <p></p>
-          </v-card-actions>
+            <v-row
+              cols-lg="4"
+              cols-md="12"
+              cols-sm="12"
+              align="center"
+              class="d-flex justify-end align-center"
+            >
+              <v-col cols="12" sm="12" md="6" class="pt-11">
+                <fetcher :api="`/api/v1/menu-groups`">
+                  <div slot-scope="{ json: items, loading }">
+                    <div v-if="loading">Loading...</div>
+                    <v-select
+                      v-model="data.facilityType"
+                      :item-text="'name'"
+                      label="Filter By Groups"
+                      :items="items"
+                      @change="loadByMenuGroups"
+                      return-object
+                      outlined
+                    ></v-select>
+                  </div>
+                </fetcher>
+              </v-col>
+              <v-col cols="12" sm="12" md="6">
+                <SearchField
+                  label="Search Menu Items"
+                  v-model="data.searchTerm"
+                  @filterFunction="searchItem"
+                  @clearFn="resetSearchText"
+                />
+              </v-col>
+            </v-row>
+          </v-card-title>
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
@@ -239,6 +270,9 @@ export default defineComponent({
       addToSelection,
       cancelPermissionDialog,
       save,
+      searchItem,
+      resetSearchText,
+      loadByMenuGroups,
     } = useMenuItems();
 
     return {
@@ -266,6 +300,9 @@ export default defineComponent({
       addToSelection,
 
       save,
+      searchItem,
+      resetSearchText,
+      loadByMenuGroups,
     };
   },
 });
