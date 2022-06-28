@@ -154,7 +154,7 @@
                         v-else
                         v-model="data.receipt.invoice_id"
                         label="Select Invoice"
-                        :items="invoices"
+                        :items="mapInvoices(invoices)"
                         :item-text="'invoice_number'"
                         item-value="id"
                         @change="setCustomer($event)"
@@ -468,6 +468,7 @@ export default defineComponent({
       resetDate,
       INVOICE_ITEM_HEADERS,
       reanderSearched,
+      mapInvoices,
     } = useReceipt();
 
     return {
@@ -494,6 +495,7 @@ export default defineComponent({
       INVOICE_ITEM_HEADERS,
       reanderSearched,
       toMoney,
+      mapInvoices,
     };
   },
 });

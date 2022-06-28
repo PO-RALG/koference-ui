@@ -9,6 +9,26 @@
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
           <v-col cols="8" sm="8" md="7">
+            <v-row class="mb-6 pa-0" justify="center" no-gutters>
+              <v-col md="auto">
+                <v-flex class="col-md12">
+                  <h4 class="white--text">
+                    <strong> {{ "THE UNITED REPUBLIC OF TANZANIA" }}</strong>
+                  </h4>
+                  <h4 class="white--text">
+                    {{
+                      "FACILITY FINANCIAL ACCOUNTING AND REPORTING SYSTEM (FFARS)"
+                    }}
+                  </h4>
+                  <v-layout
+                    justify-center
+                    class="white--text font-weight-light"
+                  >
+                    <br />
+                  </v-layout>
+                </v-flex>
+              </v-col>
+            </v-row>
             <v-card height="fit" class="elevation-8 pa-0">
               <v-row
                 dense
@@ -98,8 +118,24 @@
                 <!-- login form end -->
               </v-row>
               <small>
-                {{ "Copyright ©2022 PORALG. All right reserved. FFARS v 1.0" }}
+                {{ "Copyright" }}
               </small>
+              <small>
+                {{ " ©2022 PORALG" }}
+              </small>
+              <small>
+                {{ ". All right reserved." }}
+              </small>
+              <small>
+                <strong>{{ " FFARS v 2.0 ." }}</strong>
+              </small>
+              <v-row class="mb-6 pa-0" justify="center" no-gutters>
+                <small>
+                  {{
+                    "For any Technical inquiry, please contact your ICT Support Team ."
+                  }}
+                </small>
+              </v-row>
             </v-card>
           </v-col>
           <v-col cols="8" sm="8" md="7">

@@ -267,6 +267,13 @@ export const useReceipt = (): any => {
       (data.modal = !data.modal);
   };
 
+  const mapInvoices = (invoices) => {
+    return invoices.filter(
+      (invoice) =>
+        parseFloat(invoice.received_amount) < parseFloat(invoice.amount)
+    );
+  };
+
   const accounts = computed(() => {
     return data.bankaccounts.map((account: any) => {
       account.fullName = `Account Number -${account.number}  ${account.bank} - ${account.branch}`;
@@ -512,5 +519,6 @@ export const useReceipt = (): any => {
     setCustomer,
     resetDate,
     reanderSearched,
+    mapInvoices,
   };
 };
