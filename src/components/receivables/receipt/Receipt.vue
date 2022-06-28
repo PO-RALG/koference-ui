@@ -173,6 +173,7 @@
                     label="Invoice User"
                     disabled
                     small
+                    outlined
                   >
                   </v-text-field>
 
@@ -275,8 +276,7 @@
                             dense
                             hide-details
                             outlined
-                            type="number"
-                            disabled
+                            v-mask="toMoney"
                             v-model="line.amount"
                           >
                           </v-text-field>
@@ -286,8 +286,7 @@
                             dense
                             hide-details
                             outlined
-                            disabled
-                            type="number"
+                            v-mask="toMoney"
                             v-model="line.received_amount"
                           >
                           </v-text-field>
@@ -297,7 +296,7 @@
                             dense
                             hide-details
                             outlined
-                            type="number"
+                            v-mask="toMoney"
                             v-model="line.pay_amount"
                           >
                           </v-text-field>

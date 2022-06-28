@@ -184,8 +184,8 @@ export default Vue.extend({
   background: #ccc !important;
 }
 .body_bg {
-  background-image: url("@/assets/ffars_background.jpg") !important;
-  /* background-color: #0468d3; */
+  /* background-image: url("@/assets/ffars_background.jpg") !important; */
+  background-color: #0468d3;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center center !important; /* optional, center the image */
