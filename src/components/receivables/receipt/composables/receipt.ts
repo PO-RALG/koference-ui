@@ -1,6 +1,8 @@
 import { AxiosResponse } from "axios";
 import { Receipt } from "../types";
 import { reactive, onMounted, computed } from "@vue/composition-api";
+import stringToCurrency from "@/filters/money-to-number";
+
 import {
   get,
   create,
@@ -8,6 +10,7 @@ import {
   destroy,
   search,
   printReceipt,
+  getFundingSourceList,
 } from "../services/receipt-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
@@ -76,7 +79,7 @@ export const useReceipt = (): any => {
       align: "start",
       sortable: false,
       value: "invoice_number",
-      width: "80%",
+      width: "65%",
     },
     {
       text: "GL Account",
@@ -90,7 +93,7 @@ export const useReceipt = (): any => {
       align: "start",
       sortable: false,
       value: "amount",
-      width: "20%",
+      width: "35%",
     },
   ];
 
@@ -177,6 +180,7 @@ export const useReceipt = (): any => {
     receiptdata: receiptData,
     bankaccounts: [],
     customer: [],
+    searchTerm: "",
     receipt_items: [
       {
         gl_account_id: "",
@@ -265,6 +269,13 @@ export const useReceipt = (): any => {
       (data.modal = !data.modal);
   };
 
+  const mapInvoices = (invoices) => {
+    return invoices.filter(
+      (invoice) =>
+        parseFloat(invoice.received_amount) < parseFloat(invoice.amount)
+    );
+  };
+
   const accounts = computed(() => {
     return data.bankaccounts.map((account: any) => {
       account.fullName = `Account Number -${account.number}  ${account.bank} - ${account.branch}`;
@@ -309,7 +320,7 @@ export const useReceipt = (): any => {
         items: data.selectedInvoice.invoice_items
           .map((item: any) => ({
             invoice_item_id: item.id,
-            amount: item.pay_amount,
+            amount: stringToCurrency(item.pay_amount),
             gl_account_id: geGlAccountId(item.gl_account),
             funding_source_code: getFundingSource(
               item.definition.funding_source_id
@@ -321,8 +332,23 @@ export const useReceipt = (): any => {
       if (data.receipt.invoice_id) {
         delete data.receipt.invoice_id;
       }
-      payload = data.receipt;
+
+      payload = {
+        customer_id: data.receipt.customer_id,
+        date: data.receipt.date,
+        bank_account_id: data.receipt.bank_account_id,
+        bank_reference_number: data.receipt.bank_reference_number,
+        description: data.receipt.description,
+        items: data.receipt.items
+          .map((entry) => ({
+            ...entry,
+            amount: stringToCurrency(entry.amount),
+          }))
+          .filter((item: any) => item.amount > 0),
+      };
+      // payload = data.receipt;
     }
+    console.log(payload);
     create(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
         init();
@@ -456,6 +482,41 @@ export const useReceipt = (): any => {
         : moment(new Date()).format("YYYY-MM-DD");
     }
   };
+
+  const filterFundSource = () => {
+    if (data.searchTerm != null) {
+      getFundingSourceList({ regSearch: data.searchTerm }).then(
+        (response: AxiosResponse) => {
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
+          data.fundingSources = response.data.data.data;
+        }
+      );
+    }
+    if (data.searchTerm == null) {
+      getFundingSourceList({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.fundingSources = response.data.data.data;
+      });
+    }
+  };
   const reanderSearched = (categoryName: any) => {
     // console.log("categoryname", categoryName.invoice_number);
     if (categoryName != null && categoryName.length >= 2) {
@@ -469,6 +530,27 @@ export const useReceipt = (): any => {
       data.search = "";
     } else {
       reloadData();
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    if (data.searchTerm.length === null) {
+      getFundingSourceList({ per_page: 1000 }).then(
+        (response: AxiosResponse) => {
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
+          data.items = response.data.data.data;
+        }
+      );
     }
   };
 
@@ -494,5 +576,8 @@ export const useReceipt = (): any => {
     setCustomer,
     resetDate,
     reanderSearched,
+    mapInvoices,
+    filterFundSource,
+    resetSearchText,
   };
 };

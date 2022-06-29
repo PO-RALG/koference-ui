@@ -1,11 +1,16 @@
 import axios from "axios";
 
 const API = "/api/v1/receipts";
+const APIFUNDINGSOURCES = "/api/v1/funding-sources";
 
 const get = async (payload: any) => {
   return await axios.get(`${API}`, {
     params: payload,
   });
+};
+
+const getFundingSourceList = async (payload: any) => {
+  return await axios.get(`${APIFUNDINGSOURCES}`, { params: payload });
 };
 
 const search = async (payload: any) => {
@@ -62,4 +67,5 @@ export {
   printReceipt,
   regSearch,
   getGlAccounts,
+  getFundingSourceList,
 };

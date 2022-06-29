@@ -2,7 +2,14 @@ import { AxiosResponse } from "axios";
 import { GfsCodes } from "../types/";
 import { reactive, watch, onMounted, ref } from "@vue/composition-api";
 
-import { get, create, update, destroy, search } from "../service/gfs.service";
+import {
+  gfscodes,
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../service/gfs.service";
 import { gfscategories } from "../../gfs-category/service/gfs-categories.service";
 
 export const useGfsCode = (): any => {
@@ -174,7 +181,7 @@ export const useGfsCode = (): any => {
     searchCategory,
     imageUrl,
     getData,
-    getGfsCodes: get,
+    getGfsCodes: gfscodes,
     fetch,
   };
 };

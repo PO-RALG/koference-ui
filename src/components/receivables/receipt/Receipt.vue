@@ -46,13 +46,11 @@
                   <v-list-item>
                     <v-list-item-content>
                       <v-text-field
-                        clearable
                         outlined
-                        dense
-                        label="Search"
-                        placeholder="Eg: RE-2022-000047"
-                        @input="reanderSearched"
-                        hint="Enter atleast two (2) characters"
+                        label="Search Fund Source"
+                        @keyup="filterFundSource()"
+                        v-model="data.searchTerm"
+                        clearable
                       ></v-text-field>
                     </v-list-item-content>
                   </v-list-item>
@@ -154,7 +152,7 @@
                         v-else
                         v-model="data.receipt.invoice_id"
                         label="Select Invoice"
-                        :items="invoices"
+                        :items="mapInvoices(invoices)"
                         :item-text="'invoice_number'"
                         item-value="id"
                         @change="setCustomer($event)"
@@ -171,8 +169,9 @@
                     v-if="isInvoice && data.selectedInvoice"
                     v-model="data.selectedUser.name"
                     label="Invoice User"
-                    disabled
+                    readonly
                     small
+                    outlined
                   >
                   </v-text-field>
 
@@ -223,7 +222,12 @@
                   ></v-textarea>
                 </v-col>
 
-                <v-col class="pt-0" cols="12" md="12">
+                <v-col
+                  class="pt-0"
+                  cols="12"
+                  md="12"
+                  v-if="!isInvoice && !data.selectedInvoice"
+                >
                   <tr class="heading blue-grey lighten-5">
                     <td colspan="3">
                       Add GLAccount {{ " " }}{{ "by pressing" }}
@@ -275,9 +279,9 @@
                             dense
                             hide-details
                             outlined
-                            type="number"
-                            disabled
+                            v-mask="toMoney"
                             v-model="line.amount"
+                            disabled
                           >
                           </v-text-field>
                         </td>
@@ -286,8 +290,8 @@
                             dense
                             hide-details
                             outlined
+                            v-mask="toMoney"
                             disabled
-                            type="number"
                             v-model="line.received_amount"
                           >
                           </v-text-field>
@@ -297,7 +301,7 @@
                             dense
                             hide-details
                             outlined
-                            type="number"
+                            v-mask="toMoney"
                             v-model="line.pay_amount"
                           >
                           </v-text-field>
@@ -315,6 +319,7 @@
                     :items="data.items"
                     disable-pagination
                     hide-default-footer
+                    v-if="!isInvoice && !data.selectedInvoice"
                   >
                     <template v-slot:body>
                       <tr
@@ -327,7 +332,7 @@
                             :items="data.fundingSources"
                             :item-text="'description'"
                             v-model="line.funding_source_code"
-                            :name="`data.receipt.items[${index}][fund_source_code]`"
+                            :name="`data.receipt.items[${index}]`"
                             label="Select Fund Source"
                             item-value="code"
                             full-width
@@ -336,10 +341,32 @@
                             item-disabled="disabled"
                             @change="loadGLAccounts($event, index)"
                             hide-details
-                          ></v-select>
+                          >
+                            <template v-slot:selection="{ item }">
+                              {{ item.description }} {{ "-" }} {{ item.code }}
+                            </template>
+                            <template v-slot:item="{ item }">
+                              {{ item.description }} {{ "-" }} {{ item.code }}
+                            </template>
+                            <template v-slot:prepend-item>
+                              <v-list-item>
+                                <v-list-item-content>
+                                  <v-text-field
+                                    clearable
+                                    outlined
+                                    dense
+                                    label="Search Fund Source"
+                                    v-model="data.searchTerm"
+                                    @input="filterFundSource"
+                                  ></v-text-field>
+                                </v-list-item-content>
+                              </v-list-item>
+                              <v-divider></v-divider>
+                            </template>
+                          </v-select>
                         </td>
 
-                        <td class="invoice-td">
+                        <td>
                           <v-select
                             :items="data.gl_accounts[index]"
                             :item-text="'code'"
@@ -361,9 +388,10 @@
                             dense
                             hide-details
                             outlined
-                            type="number"
+                            onkeydown="javascript: return event.keyCode == 69 ? false : true"
                             v-model="line.amount"
-                            :name="`data.receipt.items[${index}][amount]`"
+                            v-mask="toMoney"
+                            :name="`data.invoice_items[${index}][name]`"
                           >
                           </v-text-field>
                         </td>
@@ -440,6 +468,8 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import { useReceipt } from "./composables/receipt";
+import { toMoney } from "@/filters/CurrencyFormatter";
+
 export default defineComponent({
   name: "ManageReceipt",
   setup() {
@@ -466,6 +496,9 @@ export default defineComponent({
       resetDate,
       INVOICE_ITEM_HEADERS,
       reanderSearched,
+      mapInvoices,
+      filterFundSource,
+      resetSearchText,
     } = useReceipt();
 
     return {
@@ -491,6 +524,10 @@ export default defineComponent({
       resetDate,
       INVOICE_ITEM_HEADERS,
       reanderSearched,
+      toMoney,
+      mapInvoices,
+      filterFundSource,
+      resetSearchText,
     };
   },
 });

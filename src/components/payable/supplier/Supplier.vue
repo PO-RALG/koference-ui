@@ -98,6 +98,7 @@
                     label="Name"
                     outlined
                     required
+                    :rules="data.nameRules"
                   ></v-text-field>
                 </v-col>
 
@@ -115,6 +116,7 @@
                     :items="data.supplierTypes"
                     label="Select Type"
                     outlined
+                    :rules="data.typeRules"
                     required
                   >
                   </v-select>
@@ -165,6 +167,7 @@
                     v-model="data.formData.id_number"
                     label="ID number"
                     outlined
+                    :rules="data.idRules"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12" class="mt-n8">
@@ -183,6 +186,7 @@
                     v-model="data.formData.address"
                     label="Address"
                     outlined
+                    :rules="data.bankAddressNumberRules"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12" class="mt-n8 mb-n8">
@@ -190,6 +194,7 @@
                     v-model="data.formData.bank_name"
                     label="Bank Name"
                     outlined
+                    :rules="data.bankRules"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12" class="mt-n8 mb-n8">
@@ -197,13 +202,17 @@
                     v-model="data.formData.bank_account_name"
                     label="Bank Account Name"
                     outlined
+                    :rules="data.bankAccountNameRules"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12" class="mt-n8 mb-n8">
                   <v-text-field
+                    type="number"
+                    onkeydown="javascript: return event.keyCode == 69 ? false : true"
                     v-model="data.formData.bank_account_number"
                     label="Bank Account Number"
                     outlined
+                    :rules="data.bankAccountNumberRules"
                   ></v-text-field>
                 </v-col>
               </v-row>
