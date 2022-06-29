@@ -66,6 +66,7 @@
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
                   <v-text-field
+                    outlined
                     label="Description"
                     v-model="data.jv.descriptions"
                   ></v-text-field>

@@ -24,6 +24,7 @@
               label="Email"
               v-model="data.email"
               v-bind:rules="data.emailRules"
+              outlined
               required
               class="mr-0 ml-0"
             ></v-text-field>
@@ -33,6 +34,7 @@
               v-model="data.password"
               v-bind:rules="data.passwordRules"
               v-bind:type="'password'"
+              outlined
               required
               class="mr-0 ml-0"
             ></v-text-field>

@@ -4,7 +4,7 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
-        :disabled="cant('create', 'BankAccount')"
+        :disabled="cant('update', 'Facility')"
         color="primary"
         @click="openDialog"
       >

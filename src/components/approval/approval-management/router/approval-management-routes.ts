@@ -1,4 +1,3 @@
-
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
 const approvalMgtRoutes = [

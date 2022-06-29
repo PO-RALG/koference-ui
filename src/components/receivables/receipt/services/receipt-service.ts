@@ -1,11 +1,16 @@
 import axios from "axios";
 
 const API = "/api/v1/receipts";
+const APIFUNDINGSOURCES = "/api/v1/funding-sources";
 
 const get = async (payload: any) => {
   return await axios.get(`${API}`, {
     params: payload,
   });
+};
+
+const getFundingSourceList = async (payload: any) => {
+  return await axios.get(`${APIFUNDINGSOURCES}`, { params: payload });
 };
 
 const search = async (payload: any) => {
@@ -47,6 +52,10 @@ const printReceipt = (id: string | number) => {
   return window.open(url);
 };
 
+const getGlAccounts = async (params: any): Promise<any> => {
+  return await axios.get(`/api/v1/gl-accounts`, { params });
+};
+
 export {
   get,
   find,
@@ -57,4 +66,6 @@ export {
   viewinvoice,
   printReceipt,
   regSearch,
+  getGlAccounts,
+  getFundingSourceList,
 };

@@ -61,6 +61,7 @@
                   <v-text-field
                     v-model="data.formData.code"
                     label="Code"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
@@ -70,6 +71,7 @@
                     :items="data.projects"
                     item-value="id"
                     label="Project"
+                    outlined
                     required
                   >
                     <template v-slot:selection="{ item }">
@@ -84,6 +86,7 @@
                           <v-text-field
                             v-model="data.searchTerm"
                             placeholder="Search"
+                            outlined
                             @input="searchProjects"
                           ></v-text-field>
                         </v-list-item-content>
@@ -94,6 +97,7 @@
                 </v-col>
                 <v-col cols="12" md="12" sm="12">
                   <v-select
+                    outlined
                     v-model="data.formData.sub_budget_class_id"
                     :items="data.subBudgetClasses"
                     item-value="id"
@@ -112,6 +116,7 @@
                           <v-text-field
                             v-model="data.searchTerm"
                             placeholder="Search"
+                            outlined
                             @input="searchSubBudgetClasses"
                           ></v-text-field>
                         </v-list-item-content>
@@ -123,6 +128,7 @@
                 <v-col cols="12" md="12" sm="12">
                   <v-text-field
                     v-model="data.formData.description"
+                    outlined
                     label="Description"
                     required
                   ></v-text-field>

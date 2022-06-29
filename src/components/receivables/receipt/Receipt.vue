@@ -32,6 +32,7 @@
                 label="Search Receipt"
                 :item-text="'name'"
                 item-value="name"
+                outlined
                 @change="searchCategory($event)"
                 v-model="data.search"
               >
@@ -45,13 +46,11 @@
                   <v-list-item>
                     <v-list-item-content>
                       <v-text-field
-                        clearable
                         outlined
-                        dense
-                        label="Search"
-                        placeholder="Eg: RE-2022-000047"
-                        @input="reanderSearched"
-                        hint="Enter atleast two (2) characters"
+                        label="Search Fund Source"
+                        @keyup="filterFundSource()"
+                        v-model="data.searchTerm"
+                        clearable
                       ></v-text-field>
                     </v-list-item-content>
                   </v-list-item>
@@ -139,18 +138,13 @@
         <ModalBody v-if="data.receipt">
           <v-form>
             <v-container>
-              <span class="pl-5">Select Receipt Type</span>
-              <v-radio-group
-                class="pl-5"
-                v-model="data.isInvoice"
-                row
-                @change="resetDate"
-              >
+              <span>Select Receipt Type</span>
+              <v-radio-group v-model="data.isInvoice" row @change="resetDate">
                 <v-radio label="CASH" value="NO"></v-radio>
                 <v-radio label="INVOICE" value="YES"></v-radio>
               </v-radio-group>
-              <v-row class="mt-n8 pa-5">
-                <v-col cols="12" md="12" class="mb-n12" v-if="isInvoice">
+              <v-row>
+                <v-col cols="12" md="12" v-if="isInvoice" class="mb-n6">
                   <fetcher :api="'/api/v1/invoices'">
                     <div slot-scope="{ json: invoices, loading }">
                       <div v-if="loading">Loading...</div>
@@ -158,7 +152,7 @@
                         v-else
                         v-model="data.receipt.invoice_id"
                         label="Select Invoice"
-                        :items="invoices"
+                        :items="mapInvoices(invoices)"
                         :item-text="'invoice_number'"
                         item-value="id"
                         @change="setCustomer($event)"
@@ -170,30 +164,30 @@
                     </div>
                   </fetcher>
                 </v-col>
-                <v-col
-                  cols="12"
-                  md="6"
-                  v-if="isInvoice && data.selectedInvoice"
-                >
+                <v-col cols="12" md="6">
                   <v-text-field
+                    v-if="isInvoice && data.selectedInvoice"
                     v-model="data.selectedUser.name"
                     label="Invoice User"
-                    disabled
+                    readonly
                     small
+                    outlined
                   >
                   </v-text-field>
-                </v-col>
-                <v-col cols="12" md="6" v-else>
+
                   <v-autocomplete
+                    v-else
                     v-model="data.receipt.customer_id"
                     label="Select Customer"
                     :items="data.customers"
                     :item-text="'name'"
                     item-value="id"
+                    outlined
                     small
                   ></v-autocomplete>
                 </v-col>
-                <v-col class="pt-6" cols="12" md="6">
+
+                <v-col cols="12" md="6" class="mt-3 pr-6 pl-6">
                   <DatePicker
                     :label="'Receipt Date'"
                     :max="data.maxDate"
@@ -201,7 +195,6 @@
                     v-model="data.receipt.date"
                   />
                 </v-col>
-
                 <v-col cols="12" md="6" class="mt-n8">
                   <v-autocomplete
                     v-model="data.receipt.bank_account_id"
@@ -209,24 +202,32 @@
                     :items="accounts"
                     :item-text="`fullName`"
                     item-value="id"
+                    outlined
                   ></v-autocomplete>
                 </v-col>
 
                 <v-col cols="12" md="6" class="mt-n8">
                   <v-text-field
                     label="Bank Reference Number"
+                    outlined
                     v-model="data.receipt.bank_reference_number"
                   ></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="12" class="mt-n8">
-                  <v-text-field
+                  <v-textarea
                     label="Description"
+                    outlined
                     v-model="data.receipt.description"
-                  ></v-text-field>
+                  ></v-textarea>
                 </v-col>
 
-                <v-col class="pt-0" cols="12" md="12">
+                <v-col
+                  class="pt-0"
+                  cols="12"
+                  md="12"
+                  v-if="!isInvoice && !data.selectedInvoice"
+                >
                   <tr class="heading blue-grey lighten-5">
                     <td colspan="3">
                       Add GLAccount {{ " " }}{{ "by pressing" }}
@@ -278,9 +279,9 @@
                             dense
                             hide-details
                             outlined
-                            type="number"
-                            disabled
+                            v-mask="toMoney"
                             v-model="line.amount"
+                            disabled
                           >
                           </v-text-field>
                         </td>
@@ -289,8 +290,8 @@
                             dense
                             hide-details
                             outlined
+                            v-mask="toMoney"
                             disabled
-                            type="number"
                             v-model="line.received_amount"
                           >
                           </v-text-field>
@@ -300,7 +301,7 @@
                             dense
                             hide-details
                             outlined
-                            type="number"
+                            v-mask="toMoney"
                             v-model="line.pay_amount"
                           >
                           </v-text-field>
@@ -318,6 +319,7 @@
                     :items="data.items"
                     disable-pagination
                     hide-default-footer
+                    v-if="!isInvoice && !data.selectedInvoice"
                   >
                     <template v-slot:body>
                       <tr
@@ -330,7 +332,7 @@
                             :items="data.fundingSources"
                             :item-text="'description'"
                             v-model="line.funding_source_code"
-                            :name="`data.receipt.items[${index}][fund_source_code]`"
+                            :name="`data.receipt.items[${index}]`"
                             label="Select Fund Source"
                             item-value="code"
                             full-width
@@ -339,10 +341,32 @@
                             item-disabled="disabled"
                             @change="loadGLAccounts($event, index)"
                             hide-details
-                          ></v-select>
+                          >
+                            <template v-slot:selection="{ item }">
+                              {{ item.description }} {{ "-" }} {{ item.code }}
+                            </template>
+                            <template v-slot:item="{ item }">
+                              {{ item.description }} {{ "-" }} {{ item.code }}
+                            </template>
+                            <template v-slot:prepend-item>
+                              <v-list-item>
+                                <v-list-item-content>
+                                  <v-text-field
+                                    clearable
+                                    outlined
+                                    dense
+                                    label="Search Fund Source"
+                                    v-model="data.searchTerm"
+                                    @input="filterFundSource"
+                                  ></v-text-field>
+                                </v-list-item-content>
+                              </v-list-item>
+                              <v-divider></v-divider>
+                            </template>
+                          </v-select>
                         </td>
 
-                        <td class="invoice-td">
+                        <td>
                           <v-select
                             :items="data.gl_accounts[index]"
                             :item-text="'code'"
@@ -364,9 +388,10 @@
                             dense
                             hide-details
                             outlined
-                            type="number"
+                            onkeydown="javascript: return event.keyCode == 69 ? false : true"
                             v-model="line.amount"
-                            :name="`data.receipt.items[${index}][amount]`"
+                            v-mask="toMoney"
+                            :name="`data.invoice_items[${index}][name]`"
                           >
                           </v-text-field>
                         </td>
@@ -443,6 +468,8 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import { useReceipt } from "./composables/receipt";
+import { toMoney } from "@/filters/CurrencyFormatter";
+
 export default defineComponent({
   name: "ManageReceipt",
   setup() {
@@ -469,6 +496,9 @@ export default defineComponent({
       resetDate,
       INVOICE_ITEM_HEADERS,
       reanderSearched,
+      mapInvoices,
+      filterFundSource,
+      resetSearchText,
     } = useReceipt();
 
     return {
@@ -494,6 +524,10 @@ export default defineComponent({
       resetDate,
       INVOICE_ITEM_HEADERS,
       reanderSearched,
+      toMoney,
+      mapInvoices,
+      filterFundSource,
+      resetSearchText,
     };
   },
 });

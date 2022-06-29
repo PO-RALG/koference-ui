@@ -92,6 +92,7 @@
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
@@ -99,6 +100,7 @@
                   <v-text-field
                     v-model="data.formData.email"
                     label="Email"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
@@ -106,6 +108,7 @@
                   <v-text-field
                     v-model="data.formData.phone"
                     label="Phone"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
@@ -113,6 +116,7 @@
                   <v-text-field
                     v-model="data.formData.address"
                     label="Address"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>

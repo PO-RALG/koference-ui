@@ -1,14 +1,18 @@
-const state = {
+import { ActionTree, GetterTree, MutationTree } from "vuex";
+import { RootState } from "../types";
+import { Drawer } from "./types";
+
+const state: Drawer = {
   isOpen: true,
 };
 
-const getters = {
-  IS_OPEN(state) {
+const getters: GetterTree<Drawer, RootState> = {
+  IS_OPEN(state): boolean {
     return state.isOpen;
   },
 };
 
-const actions = {
+const actions: ActionTree<Drawer, RootState> = {
   OPEN({ commit }) {
     commit("OPEN");
   },
@@ -18,7 +22,7 @@ const actions = {
   },
 };
 
-const mutations = {
+const mutations: MutationTree<Drawer> = {
   OPEN(state) {
     state.isOpen = true;
   },

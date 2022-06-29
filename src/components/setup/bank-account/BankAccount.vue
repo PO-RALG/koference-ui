@@ -31,6 +31,7 @@
                 :item-divider="true"
                 return-object
                 required
+                outlined
                 clearable
                 hide-details
               ></v-autocomplete>
@@ -123,7 +124,7 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="12" class="mb-n8">
                   <v-autocomplete
                     v-model="data.formData.bank_account_type_id"
                     label="Bank Account Type"

@@ -7,10 +7,11 @@
     <v-card>
       <v-form v-model="data.valid">
         <v-card-title>
-          <v-col cols="12" sm="12" md="3" class="pa-0">
+          <v-col cols="12" sm="12" md="4" class="pa-0">
             <v-select
               :items="data.fundingSources"
               label="Funding source"
+              outlined
               @change="searchBudgets($event)"
             >
               <template v-slot:selection="{ item }">
@@ -25,6 +26,7 @@
                     <v-text-field
                       v-model="data.searchTerm"
                       placeholder="Search"
+                      outlined
                       @input="searchFundingSources"
                     ></v-text-field>
                   </v-list-item-content>
@@ -37,6 +39,7 @@
             <v-text-field
               v-model="data.itemUnallocated.carryover"
               label="Carryover Fund"
+              outlined
               disabled
             ></v-text-field>
           </v-col>
@@ -45,6 +48,7 @@
               v-model="data.itemUnallocated.current"
               label="Current Fund"
               disabled
+              outlined
             ></v-text-field>
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
@@ -52,12 +56,14 @@
               v-model="data.itemUnallocated.totalFund"
               label="Total Fund"
               disabled
+              outlined
             ></v-text-field>
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field
               v-model="data.allocated"
               label="Total Allocated"
+              outlined
               disabled
             ></v-text-field>
           </v-col>
@@ -66,6 +72,7 @@
               v-model="data.running_balance"
               label="Unallocated Amount"
               disabled
+              outlined
             >
               <v-icon
                 v-if="data.running_balance > 0"

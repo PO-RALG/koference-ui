@@ -1,9 +1,12 @@
 <template>
   <v-text-field
+    v-bind="$attrs"
     append-icon="mdi-magnify"
     :label="label"
     :items="items"
     @keyup="search($event)"
+    @click:clear="clear"
+    autocomplete="off"
     outlined
     hide-details
   ></v-text-field>
@@ -22,6 +25,9 @@ export default defineComponent({
       required: false,
     },
     filterFunction: { type: Function },
+    clearFn: {
+      type: Function,
+    },
   },
 
   setup(_props, { emit }) {
@@ -29,8 +35,13 @@ export default defineComponent({
       emit("filterFunction", event.target.value);
     };
 
+    const clear = () => {
+      emit("searchFn");
+    };
+
     return {
       search,
+      clear,
     };
   },
 });

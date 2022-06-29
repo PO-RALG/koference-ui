@@ -167,7 +167,7 @@ export default defineComponent({
       }
 
       let source = [...props.source];
-      let destination = props.destination;
+      let destination = [...props.destination];
       data.searchSource = "";
       data.searchDestination = "";
       context.emit("onChangeList", { source, destination });
@@ -184,7 +184,7 @@ export default defineComponent({
       });
 
       let source = [...props.source];
-      let destination = props.destination;
+      let destination = [...props.destination];
       data.searchSource = "";
       data.searchDestination = "";
       context.emit("onChangeList", { source, destination });
@@ -201,7 +201,7 @@ export default defineComponent({
       });
 
       let source = [...props.source];
-      let destination = props.destination;
+      let destination = [...props.destination];
       data.searchSource = "";
       data.searchDestination = "";
       context.emit("onChangeList", { source, destination });
@@ -216,7 +216,7 @@ export default defineComponent({
       }
 
       let source = [...props.source];
-      let destination = props.destination;
+      let destination = [...props.destination];
       data.searchSource = "";
       data.searchDestination = "";
       context.emit("onChangeList", { source, destination });
@@ -310,8 +310,19 @@ export default defineComponent({
       context.emit("onChangeList", { source, destination });
     };
 
+    const sanitizeSource = () => {
+      if (props.destination.length > 0) {
+        props.destination.forEach((item) => {
+          const idx = props.source.map((i) => i.id).indexOf(item.id);
+          if (idx !== -1) {
+            props.source.splice(idx, 1);
+          }
+        });
+      }
+    };
+
     onMounted(() => {
-      //refreshList();
+      sanitizeSource();
     });
 
     return {

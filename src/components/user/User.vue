@@ -108,151 +108,13 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="900">
-      <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} User`" />
-      </template>
-      <template v-slot:body>
-        <ModalBody>
-          <v-form ref="form" v-model="data.valid">
-            <v-container>
-              <v-row>
-                <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field
-                    label="First Name"
-                    v-model="data.formData.first_name"
-                    :rules="data.requiredRules"
-                    required
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field
-                    label="Midde Name"
-                    v-model="data.formData.middle_name"
-                    :rules="data.requiredRules"
-                    required
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col cols="12" lg="4" md="4" sm="12">
-                  <v-text-field
-                    label="Last Name"
-                    v-model="data.formData.last_name"
-                    :rules="data.requiredRules"
-                    required
-                  >
-                  </v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field
-                    label="Email Address"
-                    v-model="data.formData.email"
-                    v-bind:rules="data.emailRules"
-                    required
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field
-                    label="Phone Number"
-                    v-model="data.formData.phone_number"
-                    required
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
-                  <v-text-field
-                    label="Check Number"
-                    v-model="data.formData.check_number"
-                    :rules="data.requiredRules"
-                    required
-                  >
-                  </v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12" sm="12" md="6" class="pb-6 pt-5">
-                  <v-label v-if="data.formData.location">
-                    <h5 class="tree-title">
-                      SELECTED USER LOCATION ({{ data.formData.location.name }})
-                    </h5>
-                  </v-label>
-                  <v-label v-else>
-                    <h5 class="tree-title">SELECT USER LOCATION</h5>
-                  </v-label>
-                  <TreeBrowser
-                    v-if="data.node"
-                    @onClick="loadLocationChildren"
-                    v-model="data.formData.location"
-                    :current-item="data.currentItem"
-                    :node="data.node"
-                  />
-                </v-col>
-                <v-col cols="12" sm="12" md="6">
-                  <v-row
-                    v-if="data.showFacility || data.isFacilityUser"
-                    class="mt-n8"
-                  >
-                    <v-col cols="12" sm="12" md="12">
-                      <v-checkbox
-                        v-model="data.isFacilityUser"
-                        label="Is Facility User"
-                        @change="loadFacilities"
-                      ></v-checkbox>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="12"
-                      md="12"
-                      class="mt-n8"
-                      v-if="data.facilities && data.isFacilityUser"
-                    >
-                      <v-select
-                        v-model="data.formData.facility_id"
-                        :items="facilities"
-                        item-value="id"
-                        item-text="label"
-                        outlined
-                        label="Select Facility"
-                      ></v-select>
-                    </v-col>
-                  </v-row>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
-                  <DualMultiSelect
-                    :source="data.roles"
-                    :destination="data.selectedRoles"
-                    v-model="data.formData.roles"
-                    :label="'name'"
-                    :modelName="'roles'"
-                    @onChangeList="onChangeList"
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
-            <!--<pre>{{ data.formData }}</pre>-->
-          </v-form>
-        </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="save"
-            :disabled="!data.valid"
-          >
-            {{ data.modalTitle }}
-          </v-btn>
-        </ModalFooter>
-      </template>
-    </Modal>
+    <UserForm
+      :isOpen="data.modal"
+      :title="data.modalTitle"
+      :formData="data.formData"
+      @onSubmit="save"
+      @onClose="cancelDialog"
+    />
     <ConfirmDialog
       @rejectFunction="closeConfirmDialog"
       @acceptFunction="deleteItem"
@@ -323,8 +185,12 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import { useUser } from "./composables/user";
+import UserForm from "./forms/UserForm.vue";
 
 export default defineComponent({
+  components: {
+    UserForm,
+  },
   setup() {
     const {
       data,

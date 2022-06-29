@@ -1,45 +1,48 @@
 import router from "@/router";
+import { ActionTree, GetterTree, MutationTree } from "vuex";
+import { RootState } from "../types";
+import { Auth } from "./types";
 
-const state = {
+const state: Auth = {
   currentUser: JSON.parse(localStorage.getItem("FFARS_USER")),
   loginError: {},
   app: JSON.parse(localStorage.getItem("FFARS_APP")),
   loginStatus: JSON.parse(localStorage.getItem("FFARS_LOGIN_STATUS")),
 };
 
-const getters = {
-  getCurrentUser: (state) => {
+const getters: GetterTree<Auth, RootState> = {
+  getCurrentUser: (state: Auth) => {
     return state.currentUser;
   },
 
-  getSiteName: (state) => {
+  getSiteName: (state: Auth) => {
     return state.app;
   },
 
-  getLoginStatus: (state) =>{
+  getLoginStatus: (state: Auth) => {
     return state.loginStatus;
   },
 
-  loginError: (state) => {
+  loginError: (state: Auth) => {
     return state.loginError;
   },
 };
 
-const actions = {
+const actions: ActionTree<Auth, RootState> = {
   async LOGOUT({ commit }) {
     commit("LOG_OUT");
   },
 
-  async APP_NAME({commit }, payload) {
+  async APP_NAME({ commit }, payload) {
     commit("SET_APP_NAME", payload);
   },
 
-  async LOGIN({ commit }, payload: any) {
+  async LOGIN({ commit }, payload: Auth) {
     commit("AUTHENTICATE", payload);
   },
 };
 
-const mutations = {
+const mutations: MutationTree<Auth> = {
   AUTHENTICATE(state, payload) {
     const loginStatus = { isLoggedIn: true };
     state.currentUser = JSON.parse(payload);

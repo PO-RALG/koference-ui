@@ -30,6 +30,7 @@
                 flat
                 hide-details
                 prepend-icon="mdi-magnify"
+                outlined
                 label="Filter by Category Name"
               ></v-text-field>
             </v-col>
@@ -40,7 +41,14 @@
             <td>
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-icon v-bind="attrs" v-on="on" class="mr-2" @click="expand(!isExpanded)"> mdi-chevron-down </v-icon>
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                    class="mr-2"
+                    @click="expand(!isExpanded)"
+                  >
+                    mdi-chevron-down
+                  </v-icon>
                 </template>
                 <span>List of Gfs codes</span>
               </v-tooltip>
@@ -49,8 +57,12 @@
             <td>{{ item.account_nature }}</td>
             <td>{{ item.account_type }}</td>
             <td>
-              <v-icon class="mr-2" @click="openDialog(item)"> mdi-pencil-box-outline </v-icon>
-              <v-icon @click="deleteGfsCategory(item.id)"> mdi-trash-can-outline </v-icon>
+              <v-icon class="mr-2" @click="openDialog(item)">
+                mdi-pencil-box-outline
+              </v-icon>
+              <v-icon @click="deleteGfsCategory(item.id)">
+                mdi-trash-can-outline
+              </v-icon>
             </td>
           </tr>
         </template>
@@ -60,12 +72,21 @@
             <b>CATEGORY:</b>
             {{ item.description }} ({{ item.code }})
             <v-card outlined flat max-width="100%">
-              <v-data-table :headers="data.gfsCodes" :items="item.gfs_codes" hide-default-footer dense></v-data-table>
+              <v-data-table
+                :headers="data.gfsCodes"
+                :items="item.gfs_codes"
+                hide-default-footer
+                dense
+              ></v-data-table>
             </v-card>
           </td>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.response" :rows="data.rows" @onPageChange="getData" />
+          <Paginate
+            :params="data.response"
+            :rows="data.rows"
+            @onPageChange="getData"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -80,10 +101,20 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="data.formData.description" label="Description" required></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.description"
+                    label="Description"
+                    outlined
+                    required
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="data.formData.code" label="Code" required></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.code"
+                    label="Code"
+                    outlined
+                    required
+                  ></v-text-field>
                 </v-col>
               </v-row>
               <v-row class="mt-n8">
@@ -93,8 +124,9 @@
                     item-text="name"
                     :items="data.ACCOUNT_TYPES"
                     item-value="name"
+                    outlined
                     label="Select Account Type"
-                    >
+                  >
                   </v-select>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
@@ -104,6 +136,7 @@
                     :items="data.ACCOUNT_NATURE"
                     item-value="name"
                     label="Select Account Nature"
+                    outlined
                   >
                   </v-select>
                 </v-col>
@@ -115,7 +148,9 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save">{{ data.modalTitle }} </v-btn>
+          <v-btn color="green darken-1" text @click="save"
+            >{{ data.modalTitle }}
+          </v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -129,7 +164,9 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="green darken-1" text @click="cancelConfirmDialog">Cancel</v-btn>
+          <v-btn color="green darken-1" text @click="cancelConfirmDialog"
+            >Cancel</v-btn
+          >
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>

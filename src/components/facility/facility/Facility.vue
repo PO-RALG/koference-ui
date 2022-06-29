@@ -4,6 +4,14 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
+        v-if="can('create', 'Facility')"
+        color="primary"
+        @click="pullFacilitiesFromPlanRep"
+      >
+        <v-icon>mdi-sync</v-icon>
+        Facilities From PlanRep
+      </v-btn>
+      <v-btn
         color="primary"
         @click="openDialog"
         :disabled="cant('create', 'Facility')"
@@ -23,25 +31,40 @@
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
-            <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Name"
-                @change="searchItem($event)"
-                :items="data.itemsToFilter"
-                :item-text="'name'"
-                :item-divider="true"
-                return-object
-                required
-                clearable
-              ></v-autocomplete>
-            </v-col>
+            <v-row
+              cols-lg="4"
+              cols-md="12"
+              cols-sm="12"
+              align="center"
+              class="d-flex justify-end align-center"
+            >
+              <v-col cols="12" sm="12" md="6" class="pt-11">
+                <fetcher :api="`/api/v1/facility-types`">
+                  <div slot-scope="{ json: items, loading }">
+                    <div v-if="loading">Loading...</div>
+                    <v-select
+                      v-model="data.facilityType"
+                      :item-text="'name'"
+                      label="Filter By facility Type"
+                      :items="items"
+                      @change="loadByFacilityType"
+                      return-object
+                      outlined
+                    ></v-select>
+                  </div>
+                </fetcher>
+              </v-col>
+              <v-col cols="12" sm="12" md="6">
+                <SearchField
+                  label="Search Facilities"
+                  v-model="data.searchTerm"
+                  @filterFunction="searchItem"
+                  @clearFn="resetSearchText"
+                />
+              </v-col>
+            </v-row>
           </v-card-title>
         </template>
-
-        <!-- <template v-slot:[`item.name`]="{ item }"> -->
-        <!--   <span v-html="item.name"></span> -->
-        <!-- </template> -->
-
         <template v-slot:[`item.name`]="{ item }">
           <span
             ><a href="" @click="navigateToFacility($event, item)">{{
@@ -103,26 +126,43 @@
           <v-form>
             <v-container>
               <v-row>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
                     required
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.code"
                     label="Code"
                     required
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6" class="mt-n8">
+                  <v-text-field
+                    v-model="data.formData.phone_number"
+                    label="Phone number"
+                    outlined
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6" class="mt-n8">
+                  <v-text-field
+                    v-model="data.formData.email"
+                    label="Email"
+                    outlined
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6" class="mt-n8">
                   <v-select
                     v-model="data.formData.facility_type_id"
                     :items="data.facilityTypes"
                     item-value="id"
                     label="Facility type"
+                    outlined
                     required
                   >
                     <template v-slot:selection="{ item }">
@@ -138,6 +178,7 @@
                             v-model="data.searchTerm"
                             placeholder="Search"
                             @input="searchFacilityTypes"
+                            outlined
                           ></v-text-field>
                         </v-list-item-content>
                       </v-list-item>
@@ -145,29 +186,18 @@
                     </template>
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="6" class="mt-n8">
                   <v-text-field
-                    v-model="data.formData.phone_number"
-                    label="Phone number"
+                    v-model="data.formData.postal_address"
+                    label="Postal address"
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="data.formData.email"
-                    label="Email"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="12" class="mt-n10">
                   <v-checkbox
                     v-model="data.formData.active"
                     :label="`Active`"
                   ></v-checkbox>
-                </v-col>
-                <v-col cols="12" md="12">
-                  <v-text-field
-                    v-model="data.formData.postal_address"
-                    label="Postal address"
-                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="12" md="12" class="hierarchy-container">
                   <v-label v-if="data.formData.location">
@@ -244,6 +274,9 @@ export default defineComponent({
       facilities,
       navigateToFacility,
       generateLink,
+      pullFacilitiesFromPlanRep,
+      resetSearchText,
+      loadByFacilityType,
     } = useFacility();
 
     return {
@@ -264,6 +297,9 @@ export default defineComponent({
       facilities,
       navigateToFacility,
       generateLink,
+      resetSearchText,
+      pullFacilitiesFromPlanRep,
+      loadByFacilityType,
     };
   },
 });

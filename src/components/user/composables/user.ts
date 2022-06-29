@@ -1,4 +1,4 @@
-import { reactive, onMounted, set, computed } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import {
   get,
@@ -9,9 +9,6 @@ import {
   resetPassword,
   addApprovalRoles,
 } from "../services/user.service";
-import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
-import { get as getRoles } from "@/components/role/services/role-services";
-import { get as getLevels } from "@/components/admin-area/level/services/level-services";
 import { get as getApprovalRoles } from "@/components/approval/role/services/approval-role-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
 import { User } from "../types/User";
@@ -26,7 +23,6 @@ export const useUser = (type?: string): Record<string, unknown> => {
   const data = reactive({
     title: "Manage Users",
     currentUser: null,
-    valid: true,
     status: "",
     isOpen: false,
     selectedRoles: [],
@@ -77,7 +73,8 @@ export const useUser = (type?: string): Record<string, unknown> => {
     },
     nameRules: [
       (v: string) => !!v || "Name is required",
-      (v: string) => (v && v.length <= 10) || "Name must be less than 10 characters",
+      (v: string) =>
+        (v && v.length <= 10) || "Name must be less than 10 characters",
     ],
     requiredRules: [(v: string) => !!v || "Field is required"],
     email: "",
@@ -110,13 +107,11 @@ export const useUser = (type?: string): Record<string, unknown> => {
 
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
-    loadLevels();
-    getNodes();
-    loadRoles({});
     data.currentUser = currentUser;
   };
 
@@ -129,18 +124,18 @@ export const useUser = (type?: string): Record<string, unknown> => {
   };
 
   const approvableRole = (name) => {
-    return name === 'DT' || name === 'FA' || name === 'FACILITY_ADMIN';
-  }
+    return name === "DT" || name === "FA" || name === "FACILITY_ADMIN";
+  };
 
   const canGetApprovalRole = (user) => {
-    return user.roles.map(r => r.display_name).some(approvableRole);
-  }
+    return user.roles.map((r) => r.display_name).some(approvableRole);
+  };
 
-  const save = () => {
-    if (data.formData.id) {
-      updateUser(data.formData);
+  const save = (formData: any) => {
+    if (formData.id) {
+      updateUser(formData);
     } else {
-      createUser(data.formData);
+      createUser(formData);
     }
   };
 
@@ -151,33 +146,36 @@ export const useUser = (type?: string): Record<string, unknown> => {
         data.showApprovalDialog = false;
       }
     });
-  }
+  };
 
   const filterUsers = () => {
     if (data.searchTerm.length > 3) {
       get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
-        const { from, to, total, current_page, per_page, last_page } = response.data.data;
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
     }
     if (data.searchTerm.length === 0) {
       get({ per_page: 10 }).then((response: AxiosResponse) => {
-        const { from, to, total, current_page, per_page, last_page } = response.data.data;
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
       });
     }
-  }
+  };
 
   const resetSearchText = () => {
     data.searchTerm = "";
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
-  }
+  };
 
   const users = computed(() => {
     return data.items.map((user: any) => ({
@@ -188,23 +186,27 @@ export const useUser = (type?: string): Record<string, unknown> => {
   });
 
   const approvalUsers = computed(() => {
-    return data.items.map((user: any) => ({
-      ...user,
-      fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
-      displayRoles: user.approval_role.name,
-    })).filter((user: any) => {
-      return user.can_approve === true;
-    });
+    return data.items
+      .map((user: any) => ({
+        ...user,
+        fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
+        displayRoles: user.approval_role.name,
+      }))
+      .filter((user: any) => {
+        return user.can_approve === true;
+      });
   });
 
   const usersToAssign = computed(() => {
-    return data.items.map((user: any) => ({
-      ...user,
-      fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
-      displayRoles: user.roles.map((r: any) => r.name),
-    })).filter((user) => {
-      return user.can_approve === false;
-    })
+    return data.items
+      .map((user: any) => ({
+        ...user,
+        fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
+        displayRoles: user.roles.map((r: any) => r.name),
+      }))
+      .filter((user) => {
+        return user.can_approve === false;
+      });
   });
 
   const selectedRoles = computed(() => {
@@ -221,13 +223,6 @@ export const useUser = (type?: string): Record<string, unknown> => {
     return data.action === "DELETE" ? `Delete User` : `${data.status} User`;
   });
 
-  const facilities = computed(() => {
-    return data.facilities.map((facility) => ({
-      ...facility,
-      label: `${facility.name} - (${facility.facility_type.name})`,
-    }));
-  });
-
   const getData = (params: any) => {
     data.response = params;
     get(params).then((response: AxiosResponse) => {
@@ -240,7 +235,6 @@ export const useUser = (type?: string): Record<string, unknown> => {
     if (formData && formData.id) {
       data.selectedRoles = formData.roles;
       const location = formData["location"];
-      loadRoles({ search: { level_id: location.level_id } });
       data.currentItem = location;
       data.formData = formData;
       if (formData.facility_id) {
@@ -302,87 +296,22 @@ export const useUser = (type?: string): Record<string, unknown> => {
     data.isOpen = false;
   };
 
-  const loadLocationChildren = (location: any) => {
-    data.currentItem = data.currentItem === location ? null : location;
-    data.location = location;
-    data.formData["location"] = location;
-    loadRoles({ search: { level_id: location.level_id } });
-    toggleFacilitylOption(location);
-    data.formData.location_id = location.id;
-    if (!location.children) {
-      if (location.id !== data.node.id) {
-        getChildren(location.id).then((response: AxiosResponse) => {
-          if (response.data.data.children.length) {
-            set(location, "children", response.data.data.children);
-          }
-        });
-      }
-    }
-  };
-
-  const getNodes = (id?: number | string) => {
-    getChildren(id).then((response: AxiosResponse) => {
-      data.node = response.data.data;
-    });
-  };
-
-  const loadRoles = (params?: any) => {
-    getRoles(params).then((response: AxiosResponse) => {
-      data.roles = response.data.data.data;
-    });
-  };
-
-  const loadLevels = () => {
-    getLevels({}).then((response: AxiosResponse) => {
-      data.levels = response.data.data.data;
-    });
-  };
-
-  const toggleFacilitylOption = (location: any) => {
-    const level = data.levels.find((level) => level.id === location.level_id);
-    if (level.code === "WARD" || level.code === "VILLAGE_MTAA") {
-      data.showFacility = true;
-      checkForMoreClicks(level);
-    } else {
-      data.showFacility = false;
-    }
-  };
-
-  const checkForMoreClicks = (level: any) => {
-    if ((data.showFacility = true) && (level.code === "WARD" || level.code === "VILLAGE_MTAA")) {
-      loadFacilities();
-    }
-  };
-
   const loadFacilities = () => {
     const isFacilityUser = !!data.isFacilityUser;
     data.isFacilityUser = isFacilityUser;
-    getFacilities({ search: { location_id: data.location["id"] } }).then((response: AxiosResponse) => {
-      data.facilities = response.data.data.data;
-    });
+    getFacilities({ search: { location_id: data.location["id"] } }).then(
+      (response: AxiosResponse) => {
+        data.facilities = response.data.data.data;
+      }
+    );
   };
 
   const filterRoles = (term: string) => {
-    const result = data.roles.filter((item) => item.name.toLowerCase().includes(term.toLowerCase()));
+    const result = data.roles.filter((item) =>
+      item.name.toLowerCase().includes(term.toLowerCase())
+    );
     data.roles = result;
     return data.roles;
-  };
-
-  const upsert = (array, item) => {
-    const idx = array.findIndex((_item: any) => _item.id === item.id);
-    if (idx > -1) {
-      array.splice(idx, 1);
-    } else {
-      array.push(item);
-    }
-    return array;
-  };
-
-  const onChangeList = ({ source, destination }): void => {
-    destination.forEach((item) => {
-      data.roles = upsert(source, item);
-    });
-    data.formData.roles = destination;
   };
 
   const status = computed(() => {
@@ -413,11 +342,11 @@ export const useUser = (type?: string): Record<string, unknown> => {
     data.user = user;
     loadApprovalRoles(user);
     data.showApprovalDialog = true;
-    data.modalTitle = "Assign"
+    data.modalTitle = "Assign";
   };
 
   const loadApprovalRoles = (user) => {
-    const name = user.roles.map(r => r.name)[0];
+    const name = user.roles.map((r) => r.name)[0];
     getApprovalRoles({ regSearch: name }).then((response: AxiosResponse) => {
       data.approvalRoles = response.data.data.data;
     });
@@ -436,7 +365,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
       data.payload.entries.push(data.payload.role_id);
       delete data.payload.role_id;
     } else {
-      data.payload = { user_id: data.item.id, entries: [], role_id: null};
+      data.payload = { user_id: data.item.id, entries: [], role_id: null };
       delete data.payload.role_id;
       closeConfirmDialog();
     }
@@ -461,16 +390,12 @@ export const useUser = (type?: string): Record<string, unknown> => {
     openConfirmDialog,
     filterRoles,
     selectedRoles,
-    onChangeList,
     confirmTitle,
 
-    loadLocationChildren,
     loadFacilities,
-    getNodes,
     getData,
     users,
     filterUsers,
-    facilities,
     message,
     closeActivationDialog,
 

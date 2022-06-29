@@ -3,7 +3,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Level')">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('create', 'Level')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -18,10 +22,19 @@
         class="elevation-1"
       >
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Level')">
+          <v-icon
+            class="mr-2"
+            @click="openDialog(item)"
+            :disabled="cant('edit', 'Level')"
+          >
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'Level')"> mdi-trash-can-outline </v-icon>
+          <v-icon
+            @click="openConfirmDialog(item)"
+            :disabled="cant('delete', 'Level')"
+          >
+            mdi-trash-can-outline
+          </v-icon>
         </template>
         <template v-slot:footer>
           <Paginate :params="data.response" @onPageChange="getData" />
@@ -38,10 +51,22 @@
             <v-container>
               <v-row>
                 <v-col cols="12" lg="6" md="12" sm="12">
-                  <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
+                  <v-text-field
+                    label="Name"
+                    v-model="data.formData.name"
+                    outlined
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field label="Position" v-model="data.formData.position" required> </v-text-field>
+                  <v-text-field
+                    label="Position"
+                    v-model="data.formData.position"
+                    outlined
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -51,7 +76,12 @@
       <template v-slot:footer>
         <ModalFooter class="mt-n8">
           <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="save">
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="save"
+            :disabled="!data.valid"
+          >
             {{ data.modalTitle }}
           </v-btn>
         </ModalFooter>

@@ -3,19 +3,44 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'AdminArea')">
+      <v-btn
+        :disabled="cant('update', 'AdminArea')"
+        color="primary"
+        @click="pullAdminAreasFromPlanRep"
+      >
+        <v-icon>mdi-sync</v-icon>
+        Admin Areas From PlanRep
+      </v-btn>
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="can('create', 'AdminArea')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
     </v-card-actions>
 
     <v-card>
-      <v-data-table :headers="HEADERS" :items="data.items" hide-default-footer disable-pagination class="elevation-1">
+      <v-data-table
+        :headers="HEADERS"
+        :items="data.items"
+        hide-default-footer
+        disable-pagination
+        class="elevation-1"
+      >
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'AdminArea')">
+          <v-icon
+            class="mr-2"
+            @click="openDialog(item)"
+            :disabled="cant('edit', 'AdminArea')"
+          >
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item)" :disabled="cant('delete', 'AdminArea')">
+          <v-icon
+            @click="openConfirmDialog(item)"
+            :disabled="cant('delete', 'AdminArea')"
+          >
             mdi-trash-can-outline
           </v-icon>
         </template>
@@ -34,16 +59,31 @@
             <v-container>
               <v-row>
                 <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field label="Name" v-model="data.formData.name" required> </v-text-field>
+                  <v-text-field
+                    label="Name"
+                    v-model="data.formData.name"
+                    outlined
+                    required
+                  >
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6" md="6" sm="12">
-                  <v-text-field label="Slug" v-model="data.formData.code"> </v-text-field>
+                  <v-text-field
+                    label="Slug"
+                    v-model="data.formData.code"
+                    outlined
+                  >
+                  </v-text-field>
                 </v-col>
               </v-row>
               <v-row class="mt-n8">
                 <v-col cols="12" lg="12" md="12" sm="12">
                   <v-label><h5>SELECT LOCATION LEVEL</h5></v-label>
-                  <v-radio-group row v-model="data.formData.level_id" :mandatory="true">
+                  <v-radio-group
+                    row
+                    v-model="data.formData.level_id"
+                    :mandatory="true"
+                  >
                     <v-radio
                       v-for="row in data.levels"
                       :key="row.id"
@@ -57,7 +97,9 @@
               </v-row>
               <v-col cols="12" sm="12" md="12" class="hierarchy-container">
                 <v-label v-if="data.formData.parent">
-                  <h5 class="tree-title">SELECTED ADMIN AREA PARENT ({{ data.formData.parent.name }})</h5>
+                  <h5 class="tree-title">
+                    SELECTED ADMIN AREA PARENT ({{ data.formData.parent.name }})
+                  </h5>
                 </v-label>
                 <v-label v-else>
                   <h5 class="tree-title">SELECT ADMIN AREA PARENT</h5>
@@ -117,6 +159,7 @@ export default defineComponent({
       searchLevels,
       getNodes,
       setLevel,
+      pullAdminAreasFromPlanRep,
 
       levels,
     } = userAdmiArea();
@@ -141,6 +184,7 @@ export default defineComponent({
       setLevel,
 
       levels,
+      pullAdminAreasFromPlanRep,
     };
   },
 });

@@ -1,21 +1,21 @@
 <template>
   <div id="inspire">
     <Sidebar
+      @sidebarToggle="toggleDrawer"
       :drawer="data.drawer"
-      @toggle="toggleSidebar"
       :user="user"
       class="d-print-none"
     />
     <Header
       @logoutFunction="logout"
-      @sidebarToggle="toggleSidebar"
+      @sidebarToggle="toggleDrawer"
       :user="user"
       :drawer="data.drawer"
       class="d-print-none"
     />
     <v-main>
       <v-container class="fill-height" fluid>
-        <v-layout> </v-layout>
+        <v-layout></v-layout>
       </v-container>
     </v-main>
   </div>
@@ -47,8 +47,11 @@ export default defineComponent({
     });
 
     // methods
-    const toggleSidebar = (drawer: boolean) => {
-      drawer ? store.dispatch("Drawer/CLOSE") : store.dispatch("Drawer/OPEN");
+    const toggleDrawer = () => {
+      console.log(data.drawer);
+      data.drawer
+        ? store.dispatch("Drawer/CLOSE")
+        : store.dispatch("Drawer/OPEN");
     };
 
     const logout = () => {
@@ -63,7 +66,7 @@ export default defineComponent({
     return {
       data,
 
-      toggleSidebar,
+      toggleDrawer,
       logout,
 
       onMounted,

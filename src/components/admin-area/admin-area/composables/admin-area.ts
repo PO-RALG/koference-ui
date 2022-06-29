@@ -1,6 +1,13 @@
 import { reactive, onMounted, computed, set } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
-import { get, createArea, updateArea, deleteArea, getChildren } from "../services/admin-area-services";
+import {
+  get,
+  createArea,
+  updateArea,
+  deleteArea,
+  getChildren,
+  createAreaFromPlanrep,
+} from "../services/admin-area-services";
 
 import { get as getLevels } from "../../level/services/level-services";
 import { Level } from "../../level/types/Level";
@@ -101,6 +108,15 @@ export const userAdmiArea = (): any => {
     });
   };
 
+  const pullAdminAreasFromPlanRep = () => {
+    createAreaFromPlanrep().then((response) => {
+      if (response.status === 200) {
+        cancelDialog();
+        initialize();
+      }
+    });
+  };
+
   const openConfirmDialog = (item: AdminArea) => {
     data.item = item;
     data.isOpen = true;
@@ -149,7 +165,8 @@ export const userAdmiArea = (): any => {
 
   const initialize = () => {
     get({}).then((response: any) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -174,7 +191,7 @@ export const userAdmiArea = (): any => {
     updateArea,
     save,
     deleteItem,
-
+    pullAdminAreasFromPlanRep,
     loadLocationChildren,
     searchLevels,
     getNodes,

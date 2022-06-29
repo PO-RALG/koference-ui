@@ -1,15 +1,19 @@
-const state = {
+import { ActionTree, GetterTree, MutationTree } from "vuex";
+import { RootState } from "../types";
+import { Loading } from "./types";
+
+const state: Loading = {
   loading: false,
   requestsPending: 0,
 };
 
-const getters = {
-  isLoading(state) {
+const getters: GetterTree<Loading, RootState> = {
+  isLoading(state: Loading): boolean {
     return state.loading;
   },
-}
+};
 
-const actions = {
+const actions: ActionTree<Loading, RootState> = {
   SHOW({ commit }) {
     commit("SHOW");
   },
@@ -27,7 +31,7 @@ const actions = {
   },
 };
 
-const mutations = {
+const mutations: MutationTree<Loading> = {
   SHOW(state) {
     state.loading = true;
   },

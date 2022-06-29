@@ -4,7 +4,7 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
-        :disabled="cant('create', 'FundSource')"
+        :disabled="cant('create', 'FundingSource')"
         color="primary"
         @click="openDialog"
       >
@@ -50,10 +50,11 @@
           <span>{{ item.endDate }}</span>
         </template>
 
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                :disabled="cant('addGFS', 'FundingSource')"
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
@@ -67,6 +68,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                disabled
                 v-bind="attrs"
                 v-on="on"
                 @click="deleteFundingSource(item.id)"
@@ -97,6 +99,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.code"
+                    outlined
                     label="Code"
                     required
                   ></v-text-field>
@@ -105,6 +108,7 @@
                   <v-text-field
                     v-model="data.formData.description"
                     label="Description"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
