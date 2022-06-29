@@ -1,4 +1,4 @@
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
 import {
@@ -9,7 +9,9 @@ import {
   printPdf,
   fundByActivity,
   fundByActivityFundSource,
+  activitiesByFundSource,
 } from "../services/payment-voucher.services";
+import { get as getFundSources } from "@/components/coa/funding-source/services/funding-sources";
 import { PaymentVoucher, Account } from "../types/PaymentVoucher";
 import { get as getSupplier } from "@/components/payable/supplier/services/supplier.services";
 import { get as getActivity } from "@/components/planning/activity/services/activity.service";
@@ -214,7 +216,7 @@ export const usePaymentVoucher = (): any => {
     data.modalTitle = "Create";
     data.searchTerm = "";
     getSupplierData();
-    getActivityData();
+    getFundingSources();
     data.payables = [];
     data.accounts = [];
     data.fundingSources = [];
@@ -262,6 +264,15 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  const getFundingSources = async () => {
+    const response = await getFundSources({per_page: 500});
+    data.fundingSources = response.data.data.data;
+  };
+
+  const filterActivities = (activity) => {
+    data.activities = data.activities.filter(entry => entry.code === activity);
+  };
+
   const searchActivities = (item: string) => {
     const regSearchTerm = item ? item : data.searchTerm;
     getActivity({ per_page: 10, regSearch: regSearchTerm }).then(
@@ -271,26 +282,39 @@ export const usePaymentVoucher = (): any => {
     );
   };
 
-  const searchFundingSource = (item: Activity) => {
-    data.activityItem = item;
-    fundByActivity(item.id).then((response: AxiosResponse) => {
-      data.fundingSources = response.data.data;
-    });
+  const searchFundSource = (item: string) => {
+    const regSearchTerm = item ? item : data.searchTerm;
+    getFundSources({ per_page: 10, regSearch: regSearchTerm }).then(
+      (response: AxiosResponse) => {
+        data.fundingSources = response.data.data.data;
+      }
+    );
+  };
 
+  const getActivities = async(fundingSource: any) => {
+    data.fundSourceItem = fundingSource;
+    const response = await activitiesByFundSource(fundingSource.id);
+    const res = response.data.data;
+    const key = "code";
+    const uniqueEntries = [...new Map(res.map(item => [item[key], item])).values()];
+    data.activities = uniqueEntries;
+  };
+
+  const loadBudget = (item: Activity) => {
+    data.activityItem = item;
     getBudget({ activity_code: item.code }).then((response: AxiosResponse) => {
       data.accounts = response.data.data;
     });
   };
 
-  const searchGfsCodes = (fund: FundSources) => {
-    data.fundSourceItem = fund;
-    fundByActivityFundSource(data.activityItem.id, data.fundSourceItem.id).then(
+  const searchGfsCodes = (activity: any) => {
+    fundByActivityFundSource(activity.id, data.fundSourceItem.id).then(
       (response: AxiosResponse) => {
         data.gfsCodes = response.data.data;
       }
     );
     getBudget({
-      activity_code: data.activityItem.code,
+      activity_code: activity.code,
       fund_code: data.fundSourceItem.code,
     }).then((response: AxiosResponse) => {
       data.accounts = response.data.data;
@@ -403,6 +427,10 @@ export const usePaymentVoucher = (): any => {
     }
   };
 
+  const activities = computed(() => {
+    return data.activities;
+  })
+
   return {
     data,
     openDialog,
@@ -417,7 +445,7 @@ export const usePaymentVoucher = (): any => {
     removePayable,
     searchActivities,
     searchGfsCodes,
-    searchFundingSource,
+    loadBudget,
     filterGfsCodes,
     maxRules,
     payableHeader,
@@ -428,5 +456,9 @@ export const usePaymentVoucher = (): any => {
     fullPaid,
     filterVoucher,
     resetSearchText,
+    getActivities,
+    filterActivities,
+    activities,
+    searchFundSource,
   };
 };

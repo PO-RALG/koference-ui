@@ -145,22 +145,18 @@
               <v-row class="pl-3 pr-5 mt-n8">
                 <v-col md="4" sm="12" cols="12">
                   <v-select
-                    :items="data.activities"
-                    item-text="name"
-                    label="Select Activity"
-                    @change="searchFundingSource($event)"
+                    :items="data.fundingSources"
+                    item-text="code"
+                    label="Select Funding Sources"
+                    @change="getActivities($event)"
                     outlined
-                    required
+                    return-object
                   >
                     <template v-slot:selection="{ item }">
-                      {{ item.description }} ({{
-                        item.sub_budget_class.description
-                      }})
+                      {{ item.code }} - {{ item.description }}
                     </template>
                     <template v-slot:item="{ item }">
-                      {{ item.description }} ({{
-                        item.sub_budget_class.description
-                      }})
+                      {{ item.code }} - {{ item.description }}
                     </template>
                     <template v-slot:prepend-item>
                       <v-list-item>
@@ -169,7 +165,7 @@
                             v-model="data.searchTerm"
                             placeholder="Search"
                             outlined
-                            @input="searchActivities"
+                            @input="searchFundSource"
                           ></v-text-field>
                         </v-list-item-content>
                       </v-list-item>
@@ -179,18 +175,22 @@
                 </v-col>
                 <v-col md="4" sm="12" cols="12">
                   <v-select
-                    :items="data.fundingSources"
-                    item-text="code"
-                    label="Select Funding Sources"
+                    :items="activities"
+                    item-text="name"
+                    label="Select Activity"
                     @change="searchGfsCodes($event)"
                     outlined
-                    return-object
+                    required
                   >
                     <template v-slot:selection="{ item }">
-                      {{ item.code }} - {{ item.description }}
+                      {{ item.code }} - {{ item.description }} ({{
+                        item.sub_budget_class.description
+                      }})
                     </template>
                     <template v-slot:item="{ item }">
-                      {{ item.code }} - {{ item.description }}
+                      {{ item.code }} - {{ item.description }} ({{
+                        item.sub_budget_class.description
+                      }})
                     </template>
                   </v-select>
                 </v-col>
@@ -520,7 +520,7 @@ export default defineComponent({
       searchSuppliers,
       addPayable,
       removePayable,
-      searchActivities,
+      filterActivities,
       searchGfsCodes,
       searchFundingSource,
       filterGfsCodes,
@@ -534,6 +534,10 @@ export default defineComponent({
       fullPaid,
       filterVoucher,
       resetSearchText,
+      getActivities,
+      activities,
+      searchFundSource,
+      loadBudget,
     } = usePaymentVoucher();
 
     return {
@@ -549,7 +553,7 @@ export default defineComponent({
       searchSuppliers,
       addPayable,
       removePayable,
-      searchActivities,
+      filterActivities,
       searchGfsCodes,
       searchFundingSource,
       filterGfsCodes,
@@ -563,6 +567,10 @@ export default defineComponent({
       fullPaid,
       filterVoucher,
       resetSearchText,
+      getActivities,
+      activities,
+      searchFundSource,
+      loadBudget,
     };
   },
 });
