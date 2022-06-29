@@ -85,10 +85,30 @@
           <v-form>
             <v-container>
               <v-row>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="data.formData.bank"
+                  label="Bank"
+                  outlined
+                  required
+                  :hide-details="true"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="data.formData.branch"
+                  label="Branch"
+                  required
+                  outlined
+                  :hide-details="true"
+                ></v-text-field>
+              </v-col>
+              </v-row>
+              <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field
-                    v-model="data.formData.branch"
-                    label="Branch"
+                    v-model="data.formData.number"
+                    label="Number"
                     required
                     outlined
                     :hide-details="true"
@@ -98,24 +118,6 @@
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
-                    required
-                    outlined
-                    :hide-details="true"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.bank"
-                    label="Bank"
-                    outlined
-                    required
-                    :hide-details="true"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.number"
-                    label="Number"
                     required
                     outlined
                     :hide-details="true"
