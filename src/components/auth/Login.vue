@@ -32,7 +32,7 @@
             <v-card height="fit" class="elevation-8 pa-0">
               <v-row
                 dense
-                class="bdw mr-0 ml-0 mr-0 ml-0"
+                class="mr-0 ml-0 mr-0 ml-0"
                 v-if="data.slides.length > 0"
               >
                 <!-- class="d-none d-md-flex d-lg-none d-none d-lg-flex d-xl-none d-none " -->
@@ -117,26 +117,28 @@
                 </v-col>
                 <!-- login form end -->
               </v-row>
-              <small>
+            </v-card>
+            <div class="pt-3">
+              <small class="white--text">
                 {{ "Copyright" }}
               </small>
-              <small>
+              <small class="white--text">
                 {{ " ©2022 PORALG" }}
               </small>
-              <small>
+              <small class="white--text">
                 {{ ". All right reserved." }}
               </small>
-              <small>
+              <small class="white--text">
                 <strong>{{ " FFARS v 2.0 ." }}</strong>
               </small>
               <v-row class="mb-6 pa-0" justify="center" no-gutters>
-                <small>
+                <small class="white--text">
                   {{
                     "For any Technical inquiry, please contact your ICT Support Team ."
                   }}
                 </small>
               </v-row>
-            </v-card>
+            </div>
           </v-col>
           <v-col cols="8" sm="8" md="7">
             <div class="text-center"></div>
@@ -221,7 +223,7 @@ export default Vue.extend({
 }
 .body_bg {
   /* background-image: url("@/assets/ffars_background.jpg") !important; */
-  background-color: #0468d3;
+  background-color: #054c97;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center center !important; /* optional, center the image */

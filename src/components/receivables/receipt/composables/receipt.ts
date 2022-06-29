@@ -38,6 +38,7 @@ export const useReceipt = (): any => {
       value: "amount",
       width: "20%",
     },
+
     {
       text: "Amount Received",
       align: "start",
@@ -113,13 +114,20 @@ export const useReceipt = (): any => {
         value: "receipt_number",
       },
       { text: "Date", value: "date", sortable: true },
-
+      {
+        text: "Fund Source",
+        align: "start",
+        sortable: false,
+        value: "fundingSources",
+        width: "",
+      },
       {
         text: "Amount",
         align: "start",
         sortable: false,
         value: "totalAmt",
       },
+
       {
         text: "From",
         align: "start",

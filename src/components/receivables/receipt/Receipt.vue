@@ -58,19 +58,6 @@
                 </template>
               </v-select>
             </v-col>
-
-            <!-- <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter By Invoice Number"
-                @change="searchCategory($event)"
-                :items="data.itemsToFilter"
-                :item-text="'receipt_number'"
-                :item-divider="true"
-                return-object
-                required
-                clearable
-              ></v-autocomplete>
-            </v-col> -->
           </v-card-title>
         </template>
         <template v-slot:[`item.description`]="{ item }">
@@ -85,6 +72,17 @@
 
         <template v-slot:[`item.totalAmt`]="{ item }">
           {{ item.amount | toCurrency() }}
+        </template>
+        <template v-slot:[`item.fundingSources`]="{ item }">
+          <ul id="example-2">
+            <li
+              style="list-style-type: none; padding-left: 0px"
+              v-for="(fundSource, index) in item.items"
+              :key="index"
+            >
+              {{ fundSource.funding_source_code }}
+            </li>
+          </ul>
         </template>
 
         <template v-slot:[`item.received_amount`]="{ item }">
