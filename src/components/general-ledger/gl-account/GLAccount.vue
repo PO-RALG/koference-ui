@@ -6,7 +6,7 @@
       <v-btn
         color="primary"
         @click="openDialog"
-        :disabled="cant('create', 'GLAccount')"
+        :disabled="cant('create', 'Facility')"
       >
         <v-icon>mdi-plus</v-icon>
         Add New

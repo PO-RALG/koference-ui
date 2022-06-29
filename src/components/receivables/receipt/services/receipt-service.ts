@@ -47,6 +47,10 @@ const printReceipt = (id: string | number) => {
   return window.open(url);
 };
 
+const getGlAccounts = async (params: any): Promise<any> => {
+  return await axios.get(`/api/v1/gl-accounts`, { params });
+};
+
 export {
   get,
   find,
@@ -57,4 +61,5 @@ export {
   viewinvoice,
   printReceipt,
   regSearch,
+  getGlAccounts,
 };

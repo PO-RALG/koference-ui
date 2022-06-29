@@ -17,7 +17,7 @@ const fundingSource = async (payload: any) => {
 };
 
 const glAccount = async (payload: any) => {
-  return await axios.get(`/api/v1/gl-accounts/`, {
+  return await axios.get(`/api/v1/gl-accounts`, {
     params: {
       search: JSON.stringify(payload),
     },
