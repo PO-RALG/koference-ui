@@ -18,8 +18,8 @@ import {
   fundingSource,
   glAccount,
 } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
+import { getGlAccounts } from "@/components/receivables/receipt/services/receipt-service";
 import moment from "moment";
-import { concat } from "lodash";
 
 export const useReceipt = (): any => {
   const INVOICE_ITEM_HEADERS = [
@@ -392,12 +392,11 @@ export const useReceipt = (): any => {
 
   const loadGLAccounts = async (fundSourceCode, index) => {
     const params = {
-      per_page: 500,
       gl_account_type: "REVENUE",
       fund_code: fundSourceCode,
     };
-    console.log(params);
-    glAccount(params).then((response: AxiosResponse) => {
+
+    getGlAccounts({ search: {...params } }).then((response: AxiosResponse) => {
       if (response.data.data.data.length > 0) {
         data.gl_accounts.push(response.data.data.data);
       }

@@ -34,7 +34,7 @@
               <v-col cols="12" sm="12" md="6" class="pt-11">
                 <fetcher :api="`/api/v1/menu-groups`">
                   <div slot-scope="{ json: items, loading }">
-                    <div v-if="loading">Loading...</div>
+                    <div v-if="loading">Loading Menus...</div>
                     <v-select
                       v-model="data.facilityType"
                       :item-text="'name'"

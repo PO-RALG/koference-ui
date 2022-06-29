@@ -57,11 +57,11 @@ export default defineComponent({
     });
 
     const loadUsers = () => {
-      console.log("laod users");
+      console.log("load users");
     };
 
     const loadBankAccounts = () => {
-      console.log("laod bank accounts");
+      console.log("load bank accounts");
     };
 
     const openConfirmDialog = (id: any) => {

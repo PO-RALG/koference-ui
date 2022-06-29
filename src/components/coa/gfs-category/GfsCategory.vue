@@ -30,6 +30,7 @@
                 flat
                 hide-details
                 prepend-icon="mdi-magnify"
+                outlined
                 label="Filter by Category Name"
               ></v-text-field>
             </v-col>
