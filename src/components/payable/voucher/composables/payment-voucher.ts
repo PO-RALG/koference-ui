@@ -11,6 +11,8 @@ import {
   fundByActivityFundSource,
   activitiesByFundSource,
 } from "../services/payment-voucher.services";
+import stringToCurrency from "@/filters/money-to-number";
+
 import { get as getFundSources } from "@/components/coa/funding-source/services/funding-sources";
 import { PaymentVoucher, Account } from "../types/PaymentVoucher";
 import { get as getSupplier } from "@/components/payable/supplier/services/supplier.services";
@@ -28,6 +30,7 @@ export const usePaymentVoucher = (): any => {
 
   const data = reactive({
     title: "Payment Vouchers",
+    selectedGfsCodes: null,
     valid: false,
     isOpen: false,
     node: null,
@@ -66,7 +69,7 @@ export const usePaymentVoucher = (): any => {
         value: "amount_paid",
       },
       {
-        text: "Full Paid",
+        text: "Status",
         align: "start",
         sortable: false,
         value: "full_paid",
@@ -181,6 +184,8 @@ export const usePaymentVoucher = (): any => {
 
   const cancelDialog = () => {
     data.formData = {} as PaymentVoucher;
+    data.fundingSources = [];
+    data.activities = [];
     data.modal = !data.modal;
   };
 
@@ -202,12 +207,11 @@ export const usePaymentVoucher = (): any => {
     for (let i = 0; i < payableItems.length; i++) {
       const element = {
         gl_account_id: payableItems[i].id,
-        amount: payableItems[i].amount,
+        amount: stringToCurrency(payableItems[i].amount),
       };
       payableData.push(element);
     }
     data.formData.payables = payableData;
-
     createVoucher(data.formData);
   };
 
@@ -265,12 +269,14 @@ export const usePaymentVoucher = (): any => {
   };
 
   const getFundingSources = async () => {
-    const response = await getFundSources({per_page: 500});
+    const response = await getFundSources({ per_page: 500 });
     data.fundingSources = response.data.data.data;
   };
 
   const filterActivities = (activity) => {
-    data.activities = data.activities.filter(entry => entry.code === activity);
+    data.activities = data.activities.filter(
+      (entry) => entry.code === activity
+    );
   };
 
   const searchActivities = (item: string) => {
@@ -291,12 +297,14 @@ export const usePaymentVoucher = (): any => {
     );
   };
 
-  const getActivities = async(fundingSource: any) => {
+  const getActivities = async (fundingSource: any) => {
     data.fundSourceItem = fundingSource;
     const response = await activitiesByFundSource(fundingSource.id);
     const res = response.data.data;
     const key = "code";
-    const uniqueEntries = [...new Map(res.map(item => [item[key], item])).values()];
+    const uniqueEntries = [
+      ...new Map(res.map((item) => [item[key], item])).values(),
+    ];
     data.activities = uniqueEntries;
   };
 
@@ -429,7 +437,7 @@ export const usePaymentVoucher = (): any => {
 
   const activities = computed(() => {
     return data.activities;
-  })
+  });
 
   return {
     data,
