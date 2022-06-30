@@ -110,8 +110,8 @@
                     outlined
                     hide-details
                     dense
-                    :disabled="isUpdate"
                   ></v-text-field>
+                  <!-- :disabled="isUpdate" -->
                 </v-col>
                 <v-col v-if="data.modalTitle != 'Update'" cols="1" md="1">
                   <v-btn
