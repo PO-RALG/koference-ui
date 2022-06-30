@@ -24,14 +24,13 @@
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
               <v-text-field
-                @input="searchCategory($event)"
-                class
-                clearable
-                flat
-                hide-details
-                prepend-icon="mdi-magnify"
                 outlined
-                label="Filter by Category Name"
+                label="Filter Gfs category"
+                @keyup="filterGfscategory()"
+                :items="data.itemsToFilter"
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
+                clearable
               ></v-text-field>
             </v-col>
           </v-card-title>
@@ -195,6 +194,8 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       imageUrl,
+      filterGfscategory,
+      resetSearchText,
     } = useGfsCategory();
 
     return {
@@ -211,6 +212,8 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       imageUrl,
+      filterGfscategory,
+      resetSearchText,
     };
   },
 });

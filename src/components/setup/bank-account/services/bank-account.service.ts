@@ -1,9 +1,9 @@
 import axios from "axios";
 const get = async (payload: any) => {
-  return await axios.get("/api/v1/bank-accounts", payload);
+  return await axios.get("/api/v1/bank-accounts", { params: payload });
 };
 const bankaccounts = async (payload: any) => {
-  return await axios.get("/api/v1/bank-accounts", payload);
+  return await axios.get("/api/v1/bank-accounts", { params: payload });
 };
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/bank-accounts/`, {
