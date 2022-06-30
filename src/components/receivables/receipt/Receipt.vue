@@ -363,11 +363,10 @@
                             </template>
                           </v-select>
                         </td>
-
                         <td>
                           <v-select
                             :items="data.gl_accounts[index]"
-                            :item-text="'code'"
+                            :item-text="'displayName'"
                             v-model="line.gl_account_id"
                             :name="`data.receipt.items[${index}][gl_account_id]`"
                             label="Select GL Account"
