@@ -212,7 +212,6 @@ export const usePayment = (): any => {
     data.modalTitle = "Create";
     data.searchTerm = "";
     getBankAccountData();
-    getPaymentVoucherData();
     data.modal = !data.modal;
   };
 
@@ -247,23 +246,22 @@ export const usePayment = (): any => {
       `Amount must be less or equal to ${propertyType}`;
   };
 
-  const setPayableItems = (id: number) => {
+  const setPayableItems = (voucher: Record<any, any>) => {
     data.showDate = true;
-    const payable = data.paymentVouchers.find((item) => item.id === id);
-    data.minDate = moment(payable.date).format("YYYY-MM-DD");
-    data.payableItems = [];
-    findPaymentVoucher(id).then((response: AxiosResponse) => {
-      const pvData = response.data.data;
-      for (let j = 0; j < pvData.payables.length; j++) {
-        const e = pvData.payables[j];
-        e.payment = Number(e.amount);
-        e.required_amount = Number(e.amount);
-        e.paid_amount = Number(e.paid_amount);
-        e.balance = Number(e.amount) - Number(e.paid_amount);
-
-        data.payableItems.push(e);
-      }
-      return data.payableItems;
+    data.minDate = moment(voucher.date).format("YYYY-MM-DD");
+    findPaymentVoucher(voucher.id).then((response: AxiosResponse) => {
+      console.log(response.data.data.payables);
+      const pvData = response.data.data.payables;
+      data.payableItems = [
+        ...pvData.map((pv: Record<any, any>) => ({
+          payment: Number(pv.amount),
+          required_amount: Number(pv.amount),
+          paid_amount: Number(pv.paid_amount),
+          balance: Number(pv.amount) - Number(pv.paid_amount),
+          description: pv.description,
+          funding_source: pv.funding_source,
+        })),
+      ];
     });
   };
 
@@ -342,6 +340,10 @@ export const usePayment = (): any => {
     },
   ];
 
+  const mappedVouchers = (vouchers: any) => {
+    return vouchers.filter((voucher) => (parseFloat(voucher.amount) > parseFloat(voucher.amount_paid)));
+  };
+
   return {
     data,
     openDialog,
@@ -361,5 +363,6 @@ export const usePayment = (): any => {
     payablePrintHeader,
     filterPayment,
     resetSearchText,
+    mappedVouchers,
   };
 };
