@@ -4,7 +4,7 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
-        :disabled="cant('create', 'Receipt')"
+        v-if="can('create', 'Receipt')"
         color="primary"
         @click="openDialog"
       >
@@ -27,36 +27,15 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="3" class="pa-0">
-              <v-select
-                :items="data.itemsToFilter"
-                label="Search Receipt"
-                :item-text="'name'"
-                item-value="name"
+              <v-text-field
                 outlined
-                @change="searchCategory($event)"
-                v-model="data.search"
-              >
-                <template v-slot:selection="{ item }">
-                  {{ item.receipt_number }}
-                </template>
-                <template v-slot:item="{ item }">
-                  {{ item.receipt_number }}
-                </template>
-                <template v-slot:prepend-item>
-                  <v-list-item>
-                    <v-list-item-content>
-                      <v-text-field
-                        outlined
-                        label="Search Fund Source"
-                        @keyup="filterFundSource()"
-                        v-model="data.searchTerm"
-                        clearable
-                      ></v-text-field>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider></v-divider>
-                </template>
-              </v-select>
+                label="Filter Receipt"
+                @keyup="filterReceipt()"
+                :items="data.itemsToFilter"
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
+                clearable
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -103,11 +82,26 @@
           {{ (item.amount - item.received_amount) | toCurrency() }}
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip :disabled="cant('edit', 'BankAccount')" bottom>
+          <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn @click="print(item.id)" text color="green">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                v-show="can('delete', 'Receipt')"
+                @click="reverseReceipt(item.id)"
+                text
+                color="grey"
+                ><v-icon>mdi-arrow-u-left-top-bold</v-icon></v-btn
+              >
+            </template>
+            <span>Reverse</span>
+          </v-tooltip>
+
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn @click="print(item.id)" text color="grey">
                 <v-icon
-                  :disabled="cant('edit', 'BankAccount')"
+                  v-if="can('delete', 'Receipt')"
                   v-bind="attrs"
                   v-on="on"
                   class="mr-2"
@@ -445,11 +439,11 @@
 
     <Modal :modal="data.deletemodal" :width="400">
       <template v-slot:header>
-        <ModalHeader :title="`Cancel Invoice `" />
+        <ModalHeader :title="`Cancel Receipt `" />
       </template>
 
       <template v-slot:body>
-        <ModalBody> Are you sure you want to cancel this invoice? </ModalBody>
+        <ModalBody> Are you sure you want to reverce this receipt ? </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
@@ -496,6 +490,8 @@ export default defineComponent({
       reanderSearched,
       mapInvoices,
       filterFundSource,
+      reverseReceipt,
+      filterReceipt,
       resetSearchText,
     } = useReceipt();
 
@@ -526,6 +522,8 @@ export default defineComponent({
       mapInvoices,
       filterFundSource,
       resetSearchText,
+      reverseReceipt,
+      filterReceipt,
     };
   },
 });

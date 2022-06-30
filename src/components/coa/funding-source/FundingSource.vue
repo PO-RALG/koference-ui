@@ -4,7 +4,7 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
-        :disabled="cant('create', 'FundingSource')"
+        v-if="cant('create', 'FundingSource')"
         color="primary"
         @click="openDialog"
       >
@@ -12,7 +12,11 @@
         Add New
       </v-btn>
 
-      <v-btn color="primary" @click="pullSegmentsFromPlanRep">
+      <v-btn
+        v-if="cant('create', 'FundingSource')"
+        color="primary"
+        @click="pullSegmentsFromPlanRep"
+      >
         <v-icon>mdi-sync</v-icon>
         Segments From PlanRep
       </v-btn>
