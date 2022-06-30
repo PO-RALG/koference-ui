@@ -202,6 +202,7 @@
                     label="Select GFS Code"
                     outlined
                     @change="filterGfsCodes($event)"
+                    v-model="data.selectedGfsCodes"
                   >
                     <template v-slot:selection="{ item }">
                       {{ item.code }} - {{ item.name }}
@@ -211,10 +212,17 @@
                     </template>
                   </v-select>
                 </v-col>
+                <span
+                  v-if="data.accounts.length && data.selectedGfsCodes"
+                  class="primary--text lighten-5 pl-3 pa-5"
+                >
+                  Click/Select GL to allocate Funds
+                  <v-icon small color="success"> mdi-arrow-down-bold </v-icon>
+                </span>
               </v-row>
 
               <template>
-                <v-simple-table>
+                <v-simple-table v-if="data.selectedGfsCodes">
                   <template v-slot:default>
                     <tbody>
                       <tr v-for="(account, i) in data.accounts" :key="i">
@@ -263,19 +271,20 @@
                             }}</span>
                             <br />
                             <span class="text--primary">{{
-                              item.balance | toCurrency()
+                              item.balance
                             }}</span>
                           </td>
                           <td class="pt-5 pb-2">
                             <v-text-field
                               dense
                               outlined
-                              :hint="'Available amount: ' + item.balance"
-                              persistent-hint
-                              type="text"
-                              :rules="[maxRules(item.balance)]"
+                              v-mask="toMoney"
                               v-model="item.amount"
-                            ></v-text-field>
+                              persistent-hint
+                              :hint="'Available balance: ' + item.balance"
+                            >
+                              <!-- :rules="[maxRules(item.balance)]" -->
+                            </v-text-field>
                           </td>
                           <td>
                             <v-btn text @click="removePayable(i)">
@@ -503,6 +512,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import { usePaymentVoucher } from "./composables/payment-voucher";
+import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({
   name: "PaymentVoucher",
@@ -541,6 +551,7 @@ export default defineComponent({
     } = usePaymentVoucher();
 
     return {
+      toMoney,
       data,
       openDialog,
       cancelDialog,

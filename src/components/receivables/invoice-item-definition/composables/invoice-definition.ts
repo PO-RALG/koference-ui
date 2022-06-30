@@ -240,7 +240,7 @@ export const useInvoiceDefinition = (): any => {
   const loadGfsCodes = (params: any) => {
     console.log(params);
     data.fundsourcesGfscodes = fundingsourceName.value.filter(
-      (word) => word.id === params
+      (gfs) => gfs.id === params
     );
   };
 
