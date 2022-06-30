@@ -108,18 +108,31 @@
             <v-container>
               <v-row class="pa-2">
                 <v-col cols="12" :md="data.showDate ? '6' : '12'" sm="12">
-                  <v-select
-                    :outlined="!data.showDate"
-                    v-model="data.formData.voucher_id"
-                    :items="data.paymentVouchers"
-                    item-text="reference_no"
-                    item-value="id"
-                    label="Select PV"
-                    @change="setPayableItems($event)"
-                  >
-                  </v-select>
+                  <fetcher :api="'/api/v1/vouchers'">
+                    <div slot-scope="{ json: vouchers, loading }">
+                      <div v-if="loading">Loading...</div>
+                      <v-autocomplete
+                        v-else
+                        v-model="data.formData.voucher_id"
+                        :items="mappedVouchers(vouchers)"
+                        item-text="reference_no"
+                        item-value="id"
+                        label="Select PV"
+                        @change="setPayableItems($event)"
+                        return-object
+                        outlined
+                        small
+                      >
+                      </v-autocomplete>
+                    </div>
+                  </fetcher>
                 </v-col>
-                <v-col class="pt-6" cols="12" md="6" v-if="data.showDate">
+                <v-col
+                  class="pt-6 pl-6 pr-6"
+                  cols="12"
+                  md="6"
+                  v-if="data.showDate"
+                >
                   <DatePicker
                     :label="'Date'"
                     v-model="data.formData.payment_date"
@@ -172,10 +185,12 @@
                   class="data-table"
                   v-if="data.formData.voucher_id"
                 >
+                  <!-- <pre>{{ data.payableItems }}</pre> -->
                   <v-data-table
                     :headers="payableHeader"
                     disable-pagination
                     hide-default-footer
+                    v-if="data.payableItems.length > 0"
                   >
                     <template v-slot:body>
                       <tbody>
@@ -539,6 +554,7 @@ export default defineComponent({
       payablePrintHeader,
       filterPayment,
       resetSearchText,
+      mappedVouchers,
     } = usePayment();
 
     return {
@@ -561,6 +577,7 @@ export default defineComponent({
       payablePrintHeader,
       filterPayment,
       resetSearchText,
+      mappedVouchers,
     };
   },
 });
