@@ -21,16 +21,15 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Name"
-                @change="searchCategory($event)"
+              <v-text-field
+                outlined
+                label="Filter Generic Customer"
+                @keyup="filterGenericCustomer()"
                 :items="data.itemsToFilter"
-                :item-text="'name'"
-                :item-divider="true"
-                return-object
-                required
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
                 clearable
-              ></v-autocomplete>
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -108,6 +107,7 @@
                   <v-text-field
                     v-model="data.formData.phone"
                     label="Phone"
+                    v-mask="'#### ### ###'"
                     outlined
                     required
                   ></v-text-field>
@@ -176,6 +176,8 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       setActivation,
+      filterGenericCustomer,
+      resetSearchText,
     } = useGenericCustomer();
 
     return {
@@ -192,6 +194,8 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       setActivation,
+      filterGenericCustomer,
+      resetSearchText,
     };
   },
 });

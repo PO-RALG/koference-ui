@@ -145,9 +145,10 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.phone"
-                    label="Phone"
                     outlined
                     required
+                    label="Phone"
+                    v-mask="'#### ### ###'"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12" class="mt-n8">
