@@ -69,7 +69,7 @@ export const usePaymentVoucher = (): any => {
         value: "amount_paid",
       },
       {
-        text: "Full Paid",
+        text: "Status",
         align: "start",
         sortable: false,
         value: "full_paid",
