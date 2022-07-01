@@ -4,7 +4,7 @@
       <h2>Manage GFS Categories</h2>
       <v-spacer></v-spacer>
       <v-btn
-        v-if="can('create', 'GfsCodeCategory')"
+        v-if="can('create', 'GfsCategory')"
         color="primary"
         @click="openDialog"
       >

@@ -3,6 +3,13 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
+      <!-- <v-btn
+        v-if="can('create', 'Customer')"
+        color="primary"
+        @click="openDialog"
+      >
+        <v-icon>mdi-delete-variant</v-icon>
+      </v-btn> -->
       <v-btn
         v-if="can('create', 'Customer')"
         color="primary"
