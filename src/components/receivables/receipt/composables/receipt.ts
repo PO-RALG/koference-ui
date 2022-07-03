@@ -291,6 +291,7 @@ export const useReceipt = (): any => {
     });
   });
 
+
   const cancelConfirmDialog = () => {
     data.receipt = receipt;
     data.deletemodal = false;

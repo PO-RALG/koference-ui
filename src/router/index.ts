@@ -51,6 +51,7 @@ import { notFoundRoute } from "@/components/404";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+import {openingBalanceRoutes} from "@/components/receivables/opening-balance";
 
 Vue.use(VueRouter);
 
@@ -114,8 +115,8 @@ const routes: Array<RouteConfig> = [
       ...creditorRoutes,
       ...chequeListRoutes,
       ...receiptRoutes,
+      ...openingBalanceRoutes,
       ...bankReconciliationRoutes,
-
       ...staleChequeRoutes,
       ...approvalRoleRoutes,
       ...approvalStatusRoutes,
