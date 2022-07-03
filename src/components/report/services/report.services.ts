@@ -11,7 +11,7 @@ const findReport = async (id) => {
   if (id) return axios.get(`${API}/${id}`);
 };
 
-const getParams = async (id) => {
+const getParams = async (id ) => {
   return axios.get(`${API}/${id}/parameters`);
 };
 

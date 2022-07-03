@@ -92,12 +92,18 @@ export default defineComponent({
 }
 .user-banner {
   background: rgb(21, 101, 192);
-  color: #fff;
+  color: #ddd;
   text-align: center;
-  padding: 10px 0;
-  height: 128px;
-  min-height: 128px;
-  max-height: 128px;
+  padding: 10px 0 0 0;
+  height: 100px;
+  min-height: 100px;
+  max-height: 100px;
+}
+.location-banner {
+  background: rgb(21, 101, 192);
+  color: #ddd;
+  text-align: center;
+  padding: 5px 0;
 }
 .user-info {
   text-transform: uppercase;
@@ -139,7 +145,7 @@ h3.admin-title {
   .location {
     @extend .description;
     text-transform: uppercase;
-    font-size: 15px;
+    font-size: 12px;
     line-height: 15px;
   }
   h3.name {

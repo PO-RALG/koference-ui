@@ -13,7 +13,7 @@
       <AppLocationHeader
         :facility="facility"
         :facility-type="facility.facility_type"
-        :location="facility.location"
+        :location="facility.council"
         v-if="facility"
       />
       <v-simple-table>
