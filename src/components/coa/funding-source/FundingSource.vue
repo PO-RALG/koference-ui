@@ -4,7 +4,7 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
-        v-if="cant('create', 'FundingSource')"
+        v-if="can('create', 'FundingSource')"
         color="primary"
         @click="openDialog"
       >
@@ -12,8 +12,8 @@
         Add New
       </v-btn>
 
+        <!-- v-if="can('create', 'FundingSource')" -->
       <v-btn
-        v-if="cant('create', 'FundingSource')"
         color="primary"
         @click="pullSegmentsFromPlanRep"
       >

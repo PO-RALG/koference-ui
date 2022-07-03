@@ -3,8 +3,9 @@
     <v-card-actions class="pa-0">
       <h2>Manage GFS Categories</h2>
       <v-spacer></v-spacer>
+              <!-- v-if="can('create', 'GfsCategory')" -->
+
       <v-btn
-        v-if="can('create', 'GfsCodeCategory')"
         color="primary"
         @click="openDialog"
       >
