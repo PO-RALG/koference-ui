@@ -73,18 +73,6 @@
         <template v-slot:[`item.totalAmt`]="{ item }">
           {{ item.amount | toCurrency() }}
         </template>
-        <template v-slot:[`item.fundingSources`]="{ item }">
-          <ul id="example-2">
-            <li
-              style="list-style-type: none; padding-left: 0px"
-              v-for="(fundSource, index) in item.items"
-              :key="index"
-            >
-              {{ fundSource.funding_source_code }}
-            </li>
-          </ul>
-        </template>
-
         <template v-slot:[`item.received_amount`]="{ item }">
           <span>
             {{ item.newData.items }}

@@ -115,13 +115,6 @@ export const useReceipt = (): any => {
       },
       { text: "Date", value: "date", sortable: true },
       {
-        text: "Fund Source",
-        align: "start",
-        sortable: false,
-        value: "fundingSources",
-        width: "",
-      },
-      {
         text: "Amount",
         align: "start",
         sortable: false,

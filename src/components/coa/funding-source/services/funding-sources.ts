@@ -37,6 +37,10 @@ const create = async () => {
   return await axios.post(`/api/v1/funding-sources`);
 };
 
+const createFundSource = async (payload) => {
+  return await axios.post(`/api/v1/funding-sources`, payload);
+};
+
 export {
   get,
   find,
@@ -46,4 +50,5 @@ export {
   fundingsources,
   search,
   fetchSegments,
+  createFundSource,
 };
