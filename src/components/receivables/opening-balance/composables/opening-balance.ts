@@ -9,24 +9,22 @@ import {
   create,
 } from "../services/opening.balance.service";
 import {get as getBankAccounts} from "@/components/setup/bank-account/services/bank-account.service";
-import BankAccount from "@/components/setup/bank-account/BankAccount.vue";
 import {getFundingSourceList} from "@/components/receivables/receipt/services/receipt-service";
-import {Budget} from "@/components/payable/fund-allocation/types/FundAllocation";
 
 export const useOpeningBalance = (): any => {
   const dataItems: Array<OpeningBalance> = [];
-  let openingBalanceData: { items: ({ funding_source_id: number; amount: number } | { funding_source_id: number; amount: number })[] };
+  let openingBalanceData: { items: ({ funding_source_id: number; amount: number } )[] };
 
   const data = reactive({
     title: "Manage Opening Balance ",
-    modalTitle: "",
+    modalTitle: "Add Opening Balance",
     headers: [
 
       { text: "Date", align: "start", sortable: false, value: "date" },
+      { text: "Bank Account Name", align: "start", sortable: false, value: "bank_account.name" },
+      { text: "Account Number", align: "start", sortable: false, value: "bank_account.number" },
       { text: "Description", align: "start", sortable: false, value: "description" },
-      { text: "Bank Account", align: "start", sortable: false, value: "bank_account.name" },
-      { text: "Bank Number", align: "start", sortable: false, value: "bank_account.number" },
-      { text: "Amount", align: "start", sortable: false, value: "amount" }
+      { text: "Amount", align: "end", sortable: false, value: "amount" }
     ],
     modal: false,
     deletemodal: false,

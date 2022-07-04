@@ -19,7 +19,7 @@
       >
 
         <template v-slot:[`item.date`]="{ item }">
-          <span>{{ item.date }}</span>
+          <span>{{ item.date | format("DD/MM/YYYY") }}</span>
         </template>
         <template v-slot:[`item.description`]="{ item }">
           <span>{{ item.description }}</span>
