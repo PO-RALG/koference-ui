@@ -116,7 +116,7 @@
                     </v-col>
 
                     <v-col cols="1" md="1">
-                      <span v-if="index != data.formData.items.length - 1">
+                      <span v-if="(index != data.formData.items.length - 1) && data.formData.items.length > 1 ">
                       <v-btn color="grey darken-2" text @click="removeItem(index)">
 
                         <v-icon
