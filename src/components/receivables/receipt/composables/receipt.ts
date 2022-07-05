@@ -115,13 +115,6 @@ export const useReceipt = (): any => {
       },
       { text: "Date", value: "date", sortable: true },
       {
-        text: "Fund Source",
-        align: "start",
-        sortable: false,
-        value: "fundingSources",
-        width: "",
-      },
-      {
         text: "Amount",
         align: "start",
         sortable: false,
@@ -391,6 +384,15 @@ export const useReceipt = (): any => {
     );
   };
 
+
+  const setDisplayName = (account: Record<any, any>) => {
+    const result = account.code.split("-");
+    const length = result.length;
+    const fund = result[length - 2];
+    const activity = result[length - 1];
+    return `${fund}-${activity}`;
+  };
+
   const loadGLAccounts = async (fundSourceCode, index) => {
     const params = {
       gl_account_type: "REVENUE",
@@ -398,8 +400,13 @@ export const useReceipt = (): any => {
     };
 
     getGlAccounts({ search: { ...params } }).then((response: AxiosResponse) => {
+      const accounts = response.data.data.data;
       if (response.data.data.data.length > 0) {
-        data.gl_accounts.push(response.data.data.data);
+        data.gl_accounts = [accounts.map((account) => ({
+            ...account,
+            displayName: setDisplayName(account),
+          })),
+        ];
       }
     });
   };
