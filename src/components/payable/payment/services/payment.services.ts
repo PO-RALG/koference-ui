@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const get = async (params: any) => {
-  return await axios.get("/api/v1/payments",  {params});
+  return await axios.get("/api/v1/payments", { params });
 };
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/payments/`, {
@@ -24,7 +24,9 @@ const update = async (payload: any) => {
 };
 
 const destroy = async (payload: any) => {
-  return await axios.delete(`/api/v1/payments/` + payload);
+  return await axios.delete(`/api/v1/payments/${payload.id}`, {
+    data: { date: payload.date },
+  });
 };
 
 const printPdf = (id: number) => {

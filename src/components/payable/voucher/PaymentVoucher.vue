@@ -352,7 +352,8 @@
               <div class="font-weight-bold text-center">
                 <img :src="data.coat" class="login-logo pt-5" /><br />
                 The United Republic of Tanzania <br />
-                President's Office Regional Administration and Local Government
+                President's Office <br />
+                Regional Administration and Local Government
                 <br />
                 {{ data.pvDetails.council ? data.pvDetails.council.name : "" }}
                 <br />

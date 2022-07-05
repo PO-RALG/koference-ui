@@ -69,12 +69,12 @@
                 @click="openRequestReversalDialog(item.id)"
                 :disabled="cant('delete', 'Payment')"
               >
-                mdi-undo
+                mdi-arrow-u-left-top-bold
               </v-icon>
             </template>
             <span>Reverse Payment</span>
           </v-tooltip>
-          <v-tooltip bottom>
+          <!-- <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 v-bind="attrs"
@@ -86,7 +86,7 @@
               </v-icon>
             </template>
             <span>View History for the approval requests and responses</span>
-          </v-tooltip>
+          </v-tooltip> -->
         </template>
         <template v-slot:footer>
           <Paginate
@@ -238,12 +238,27 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.deletemodal" :width="300">
+    <Modal :modal="data.deletemodal" :width="400">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Payment `" />
+        <ModalHeader :title="`Reverse Payment `" />
       </template>
       <template v-slot:body>
-        <ModalBody> Are you sure? </ModalBody>
+        <ModalBody>
+          <v-form v-model="data.valid">
+            <v-col class="pt-6 pl-6 pr-6" cols="12" md="12">
+              <DatePicker
+                :label="'Canselation Date'"
+                v-model="data.reverseForm.date"
+                :max="data.maxDate"
+                :min="data.minDate"
+                required
+              />
+            </v-col>
+            <v-col class="pt-6 pl-6 pr-6" cols="12" md="12">
+              Are you sure?
+            </v-col>
+          </v-form>
+        </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
@@ -266,7 +281,8 @@
               <div class="font-weight-bold text-center">
                 <img :src="data.coat" class="login-logo pt-5" /><br />
                 The United Republic of Tanzania <br />
-                President's Office Regional Administration and Local Government
+                President's Office<br />
+                Regional Administration and Local Government
                 <br />
                 {{ data.pvDetails.council ? data.pvDetails.council.name : "" }}
                 <br />

@@ -3,6 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
+
       <v-btn
         v-if="can('create', 'BankAccount')"
         color="primary"
@@ -108,6 +109,7 @@
                     label="Number"
                     required
                     outlined
+                    v-mask="'###############'"
                     :hide-details="true"
                   ></v-text-field>
                 </v-col>
@@ -199,6 +201,8 @@ export default defineComponent({
       bankName,
       filterBankAccounts,
       resetSearchText,
+      filterFacility,
+      resetSearchFacility,
     } = useBank();
 
     return {
@@ -215,6 +219,8 @@ export default defineComponent({
       bankName,
       filterBankAccounts,
       resetSearchText,
+      filterFacility,
+      resetSearchFacility,
     };
   },
 });

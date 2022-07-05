@@ -254,6 +254,7 @@ export const useReceipt = (): any => {
   };
 
   const cancelDialog = () => {
+    data.isInvoice = "NO";
     data.receipt.customer_id = "";
     data.receipt.date = "";
     data.receipt.bank_account_id = "";
@@ -283,7 +284,6 @@ export const useReceipt = (): any => {
       return account;
     });
   });
-
 
   const cancelConfirmDialog = () => {
     data.receipt = receipt;
@@ -362,6 +362,7 @@ export const useReceipt = (): any => {
   const openDialog = (formData?: any) => {
     data.modalTitle = "Create";
     data.modal = !data.modal;
+    data.isInvoice = "NO";
 
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
@@ -384,7 +385,6 @@ export const useReceipt = (): any => {
     );
   };
 
-
   const setDisplayName = (account: Record<any, any>) => {
     const result = account.code.split("-");
     const length = result.length;
@@ -402,11 +402,11 @@ export const useReceipt = (): any => {
     getGlAccounts({ search: { ...params } }).then((response: AxiosResponse) => {
       const accounts = response.data.data.data;
       if (response.data.data.data.length > 0) {
-        data.gl_accounts = [accounts.map((account) => ({
-            ...account,
-            displayName: setDisplayName(account),
-          })),
-        ];
+        const itemsToPush = accounts.map((account) => ({
+          ...account,
+          displayName: setDisplayName(account),
+        }));
+        data.gl_accounts.push(itemsToPush);
       }
     });
   };
@@ -517,6 +517,33 @@ export const useReceipt = (): any => {
       });
     }
   };
+  const filterFundSource = () => {
+    if (data.searchTerm.length >= 3) {
+      getFundingSourceList({ regSearch: data.searchTerm }).then(
+        (response: AxiosResponse) => {
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
+          data.fundingSources = response.data.data.data;
+        }
+      );
+    }
+    if (data.searchTerm.length === 0) {
+      getFundingSourceList({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.fundingSources = response.data.data.data;
+      });
+    }
+  };
 
   const resetSearchText = () => {
     data.searchTerm = "";
@@ -575,5 +602,6 @@ export const useReceipt = (): any => {
     mapInvoices,
     filterReceipt,
     resetSearchText,
+    filterFundSource,
   };
 };

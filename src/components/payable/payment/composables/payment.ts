@@ -84,6 +84,9 @@ export const usePayment = (): any => {
     items: dataItems,
     itemsToFilter: [],
     formData: paymentData,
+    reverseForm: {
+      id: "",
+    },
     params: {
       total: 100,
       size: 10,
@@ -100,6 +103,7 @@ export const usePayment = (): any => {
     paymentModal: false,
     pvDetails: { printDate: "" },
     supplier: [],
+    itemTodelete: "",
   });
 
   onMounted(() => {
@@ -167,8 +171,9 @@ export const usePayment = (): any => {
     });
   };
 
-  const openRequestReversalDialog = (deleteId: string) => {
-    console.log(deleteId);
+  const openRequestReversalDialog = (deleteId: any) => {
+    data.deletemodal = !data.modal;
+    data.reverseForm.id = deleteId;
   };
 
   const openHistoryDialog = (deleteId: string) => {
@@ -186,7 +191,7 @@ export const usePayment = (): any => {
   };
 
   const remove = () => {
-    destroy(data.itemtodelete).then(() => {
+    destroy(data.reverseForm).then(() => {
       data.deletemodal = false;
       getTableData();
     });
@@ -341,7 +346,9 @@ export const usePayment = (): any => {
   ];
 
   const mappedVouchers = (vouchers: any) => {
-    return vouchers.filter((voucher) => (parseFloat(voucher.amount) > parseFloat(voucher.amount_paid)));
+    return vouchers.filter(
+      (voucher) => parseFloat(voucher.amount) > parseFloat(voucher.amount_paid)
+    );
   };
 
   return {
