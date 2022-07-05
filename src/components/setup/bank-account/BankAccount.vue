@@ -3,6 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
+
       <v-btn
         v-if="can('create', 'BankAccount')"
         color="primary"
@@ -108,6 +109,7 @@
                     label="Number"
                     required
                     outlined
+                    v-mask="'###############'"
                     :hide-details="true"
                   ></v-text-field>
                 </v-col>
@@ -134,6 +136,38 @@
                     clearable
                   ></v-autocomplete>
                 </v-col>
+                <!-- <v-col cols="12" md="12" class="mb-n8">
+                  <v-select
+                    :items="data.filteredItems"
+                    label="Select Facility"
+                    outlined
+                    v-model="data.formData.facility_id"
+                    :item-text="'name'"
+                    item-value="id"
+                  >
+                    <template v-slot:selection="{ item }">
+                      {{ item.name }} - {{ item.facility_type.name }}
+                    </template>
+                    <template v-slot:item="{ item }">
+                      {{ item.name }} - {{ item.facility_type.name }}
+                    </template>
+                    <template v-slot:prepend-item>
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-text-field
+                            outlined
+                            dense
+                            placeholder="Search Facility"
+                            @keyup="filterFacility()"
+                            hide-details=""
+                            v-model="data.searchTermFacility"
+                          ></v-text-field>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-divider></v-divider>
+                    </template>
+                  </v-select>
+                </v-col> -->
               </v-row>
             </v-container>
           </v-form>
@@ -199,6 +233,8 @@ export default defineComponent({
       bankName,
       filterBankAccounts,
       resetSearchText,
+      filterFacility,
+      resetSearchFacility,
     } = useBank();
 
     return {
@@ -215,6 +251,8 @@ export default defineComponent({
       bankName,
       filterBankAccounts,
       resetSearchText,
+      filterFacility,
+      resetSearchFacility,
     };
   },
 });

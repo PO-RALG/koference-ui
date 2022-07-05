@@ -16,8 +16,4 @@ const create = async (payload: any) => {
   return await axios.post(`${API}`, payload);
 };
 
-export {
-  get,
-  find,
-  create,
-};
+export { get, find, create };

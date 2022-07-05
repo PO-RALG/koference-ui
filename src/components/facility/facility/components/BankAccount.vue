@@ -3,6 +3,7 @@
     <v-card-actions class="pa-5">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
+
       <v-btn
         :disabled="cant('update', 'Facility')"
         color="primary"
@@ -106,11 +107,11 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="12" class="mb-n8">
                   <v-autocomplete
                     v-model="data.formData.bank_account_type_id"
                     label="Bank Account Type"
-                    :items="data.accounttypes"
+                    :items="data.accountTypes"
                     :item-text="'name'"
                     item-value="id"
                     :item-divider="true"
