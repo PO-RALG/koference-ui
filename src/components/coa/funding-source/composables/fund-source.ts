@@ -20,17 +20,18 @@ export const useFundSource = (): any => {
     modalTitle: "",
     headers: [
       {
-        text: "Funding Sources Code",
-        align: "start",
-        sortable: false,
-        value: "code",
-      },
-      {
         text: "Description",
         align: "start",
         sortable: false,
         value: "description",
       },
+      {
+        text: "Funding Sources Code",
+        align: "start",
+        sortable: false,
+        value: "code",
+      },
+
       {
         text: "Actions",
         align: "center",
@@ -48,6 +49,7 @@ export const useFundSource = (): any => {
     response: {},
     selectedGfs: [],
     gfscodes: [],
+    searchTerm: "",
   });
 
   onMounted(() => {
@@ -200,6 +202,35 @@ export const useFundSource = (): any => {
     data.formData.gfs = gfsCodeIds;
   };
 
+  const filterFundSource = () => {
+    if (data.searchTerm.length >= 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
+
   return {
     data,
     openDialog,
@@ -216,5 +247,7 @@ export const useFundSource = (): any => {
     selectedGFS,
     onChangeList,
     pullSegmentsFromPlanRep,
+    resetSearchText,
+    filterFundSource,
   };
 };

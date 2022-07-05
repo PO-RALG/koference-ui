@@ -3,7 +3,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn
+        v-if="can('create', 'GfsCode')"
+        color="primary"
+        @click="openDialog"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -21,17 +25,15 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Name"
-                @change="searchCategory($event)"
-                :items="data.itemsToFilter"
-                :item-text="'name'"
-                :item-divider="true"
-                return-object
-                required
+              <v-text-field
                 outlined
+                label="Filter Gfs Codes"
+                @keyup="filterGfsCodes()"
+                :items="data.itemsToFilter"
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
                 clearable
-              ></v-autocomplete>
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -168,6 +170,8 @@ export default defineComponent({
       searchCategory,
       imageUrl,
       getData,
+      filterGfsCodes,
+      resetSearchText,
     } = useGfsCode();
 
     return {
@@ -184,6 +188,8 @@ export default defineComponent({
       searchCategory,
       imageUrl,
       getData,
+      filterGfsCodes,
+      resetSearchText,
     };
   },
 });

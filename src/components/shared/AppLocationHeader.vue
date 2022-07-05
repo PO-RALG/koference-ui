@@ -4,7 +4,7 @@
     <div><strong>THE UNITED REPUBLIC OF TANZANIA</strong></div>
     <div><strong>President's Office, Regional Administration and Local Government(PO-RALG)</strong></div>
     <div>
-      <strong>{{ facility.location.name }} {{ facility.postal_address }}</strong>
+      <strong>{{ location.name }} {{ facility.postal_address }}</strong>
     </div>
     <div class="facility-name">
       <strong>{{ facility.name }} {{ facilityType.name }}</strong>

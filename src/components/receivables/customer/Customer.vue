@@ -3,7 +3,18 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <!-- <v-btn
+        v-if="can('create', 'Customer')"
+        color="primary"
+        @click="openDialog"
+      >
+        <v-icon>mdi-delete-variant</v-icon>
+      </v-btn> -->
+      <v-btn
+        v-if="can('create', 'Customer')"
+        color="primary"
+        @click="openDialog"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -110,8 +121,8 @@
                     outlined
                     hide-details
                     dense
-                    :disabled="isUpdate"
                   ></v-text-field>
+                  <!-- :disabled="isUpdate" -->
                 </v-col>
                 <v-col v-if="data.modalTitle != 'Update'" cols="1" md="1">
                   <v-btn
@@ -141,9 +152,10 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.phone"
-                    label="Phone"
                     outlined
                     required
+                    label="Phone"
+                    v-mask="'#### ### ###'"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12" class="mt-n8">

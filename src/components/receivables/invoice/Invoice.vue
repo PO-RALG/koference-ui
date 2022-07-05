@@ -4,7 +4,7 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
-        :disabled="cant('create', 'Invoice')"
+        v-if="can('create', 'Invoice')"
         color="primary"
         @click="openDialog"
       >
@@ -27,39 +27,15 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-select
-                prepend-inner-icon="mdi-filter-outline"
-                :items="data.itemsToFilter"
-                label="Search Invoice"
+              <v-text-field
                 outlined
-                :item-text="'name'"
-                item-value="name"
-                @change="reanderSearched($event)"
-                v-model="data.search"
-              >
-                <template v-slot:selection="{ item }">
-                  {{ item.invoice_number }}
-                </template>
-                <template v-slot:item="{ item }">
-                  {{ item.invoice_number }}
-                </template>
-                <template v-slot:prepend-item>
-                  <v-list-item>
-                    <v-list-item-content>
-                      <v-text-field
-                        clearable
-                        outlined
-                        dense
-                        label="Search"
-                        placeholder="Eg: INV-2022-000047"
-                        @input="searchCategory"
-                        hint="Enter atleast two (2) characters"
-                      ></v-text-field>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider></v-divider>
-                </template>
-              </v-select>
+                label="Filter Invoice"
+                @keyup="filterInvoice()"
+                :items="data.itemsToFilter"
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
+                clearable
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -303,8 +279,8 @@
                 Print
               </v-btn>
               <v-btn
-                v-show="can('delete', 'Receipt')"
-                @click="deleteInvoiceItemdefinition(data.invoiceData.id)"
+                v-show="can('delete', 'Invoice')"
+                @click="reverseInvoice(data.invoiceData.id)"
                 color="warning darken-1"
                 text
                 ><v-icon>mdi-arrow-u-left-top-bold</v-icon>Reverse</v-btn
@@ -624,7 +600,7 @@ export default defineComponent({
       removeRow,
       openDialog,
       cancelDialog,
-      deleteInvoiceItemdefinition,
+      reverseInvoice,
       getInvoiceItemdefinition,
       updateInvoiceItemDefinition,
       save,
@@ -647,6 +623,8 @@ export default defineComponent({
       searchCustomer,
       reanderSearched,
       print,
+      filterInvoice,
+      resetSearchText,
     } = useInvoice();
     return {
       data,
@@ -656,7 +634,7 @@ export default defineComponent({
       removeRow,
       openDialog,
       cancelDialog,
-      deleteInvoiceItemdefinition,
+      reverseInvoice,
       getInvoiceItemdefinition,
       updateInvoiceItemDefinition,
       save,
@@ -680,6 +658,8 @@ export default defineComponent({
       reanderSearched,
       print,
       toMoney,
+      filterInvoice,
+      resetSearchText,
     };
   },
 });

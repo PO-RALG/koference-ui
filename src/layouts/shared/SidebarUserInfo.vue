@@ -1,4 +1,5 @@
 <template>
+  <div>
   <v-toolbar-title
     color="primary"
     class="user-banner d-flex flex-row justify-start"
@@ -14,18 +15,39 @@
             <div class="description-title" v-if="user.roles">
               <a href="#">[{{ roleName }}]</a>
             </div>
-            <div class="location">
+<!--            <div class="location">
               <a href="#">({{ location }})</a>
-            </div>
+            </div>-->
           </div>
         </v-col>
       </v-layout>
     </v-row>
+
   </v-toolbar-title>
+
+    <v-toolbar-title
+      color="primary"
+      class="location-banner d-flex flex-row justify-start"
+    >
+      <v-row>
+        <v-layout justify-center align-center>
+          <v-col cols="8" class="text-left pl-0 mt-n2">
+            <div class="description">
+              <div class="location">
+                <a href="#">{{ location }}</a>
+              </div>
+            </div>
+          </v-col>
+        </v-layout>
+      </v-row>
+
+    </v-toolbar-title>
+  </div>
 </template>
 
 <script>
 import { defineComponent, computed } from "@vue/composition-api";
+import {concat} from "lodash";
 
 export default defineComponent({
   props: {
@@ -51,7 +73,9 @@ export default defineComponent({
     });
 
     const location = computed(() => {
-      if (props.user.location) {
+      if(props.user.facility){
+        return   props.user.facility.name + " " + props.user.facility.facility_type.name;
+      }else if (props.user.location) {
         return props.user.location.name;
       } else {
         ("NO LOCATION");

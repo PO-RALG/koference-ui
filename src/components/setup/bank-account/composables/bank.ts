@@ -1,4 +1,5 @@
 import { reactive, onMounted, computed } from "@vue/composition-api";
+import { AxiosResponse } from "axios";
 
 import {
   get,
@@ -17,6 +18,7 @@ export const useBank = (): any => {
   const data = reactive({
     title: "Manage Bank Accounts",
     modalTitle: "",
+    searchTerm: "",
     headers: [
       {
         text: "GL Account",
@@ -74,6 +76,7 @@ export const useBank = (): any => {
 
     selectedSbc: [],
     subbudgetclasses: [],
+    response: {},
   });
 
   onMounted(() => {
@@ -181,6 +184,35 @@ export const useBank = (): any => {
     });
   };
 
+  const filterBankAccounts = () => {
+    if (data.searchTerm.length >= 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
+
   return {
     data,
     openDialog,
@@ -193,5 +225,7 @@ export const useBank = (): any => {
     cancelConfirmDialog,
     searchBankAccounts,
     bankName,
+    filterBankAccounts,
+    resetSearchText,
   };
 };
