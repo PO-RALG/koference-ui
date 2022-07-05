@@ -299,7 +299,7 @@
                     :items="data.items"
                     disable-pagination
                     hide-default-footer
-                    v-if="!isInvoice && !data.selectedInvoice"
+                    v-if="!isInvoice"
                   >
                     <template v-slot:body>
                       <tr

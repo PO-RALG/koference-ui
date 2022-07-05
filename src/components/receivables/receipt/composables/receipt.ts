@@ -254,6 +254,7 @@ export const useReceipt = (): any => {
   };
 
   const cancelDialog = () => {
+    data.isInvoice = "NO";
     data.receipt.customer_id = "";
     data.receipt.date = "";
     data.receipt.bank_account_id = "";
@@ -361,6 +362,7 @@ export const useReceipt = (): any => {
   const openDialog = (formData?: any) => {
     data.modalTitle = "Create";
     data.modal = !data.modal;
+    data.isInvoice = "NO";
 
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
