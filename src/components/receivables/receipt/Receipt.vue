@@ -119,9 +119,10 @@
           <v-form>
             <v-container>
               <span>Select Receipt Type</span>
-              <v-radio-group v-model="data.isInvoice" row @change="resetDate">
+              <v-radio-group v-model="data.receiptType" row @change="resetDate">
                 <v-radio label="CASH" value="NO"></v-radio>
                 <v-radio label="INVOICE" value="YES"></v-radio>
+                <v-radio label="INVOICE" value="DEPOSIT"></v-radio>
               </v-radio-group>
               <v-row>
                 <v-col cols="12" md="12" v-if="isInvoice" class="mb-n6">
@@ -308,20 +309,7 @@
                         class="invoice-tr"
                       >
                         <td>
-                          <!-- <v-select
-                            :items="data.fundingSources"
-                            :item-text="'description'"
-                            v-model="line.funding_source_code"
-                            :name="`data.receipt.items[${index}][fund_source_code]`"
-                            label="Select Fund Source"
-                            item-value="code"
-                            full-width
-                            dense
-                            outlined
-                            item-disabled="disabled"
-                            @change="loadGLAccounts($event, index)"
-                            hide-details
-                          ></v-select> -->
+
                           <v-select
                             :items="data.fundingSources"
                             :item-text="'description'"

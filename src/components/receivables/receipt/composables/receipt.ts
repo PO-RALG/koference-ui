@@ -1,24 +1,24 @@
-import { AxiosResponse } from "axios";
-import { Receipt } from "../types";
-import { reactive, onMounted, computed } from "@vue/composition-api";
+import {AxiosResponse} from "axios";
+import {Receipt, RECEIPT_TYPE} from "../types";
+import {computed, onMounted, reactive} from "@vue/composition-api";
 import stringToCurrency from "@/filters/money-to-number";
 
 import {
-  get,
   create,
-  regSearch as receiptSearch,
   destroy,
-  search,
-  printReceipt,
+  get,
   getFundingSourceList,
+  printReceipt,
+  regSearch as receiptSearch,
+  search,
 } from "../services/receipt-service";
-import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
-import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
+import {get as getCustomers} from "@/components/receivables/customer/services/customer.service";
+import {get as getBankAccounts} from "@/components/setup/bank-account/services/bank-account.service";
 import {
   fundingSource,
   glAccount,
 } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
-import { getGlAccounts } from "@/components/receivables/receipt/services/receipt-service";
+import {getGlAccounts} from "@/components/receivables/receipt/services/receipt-service";
 import moment from "moment";
 
 export const useReceipt = (): any => {
@@ -74,6 +74,7 @@ export const useReceipt = (): any => {
 
   const dataItems: Array<Receipt> = [];
   let receiptData: Receipt;
+  let receiptType: RECEIPT_TYPE;
   const HEADERS = [
     {
       text: "Fund Source",
@@ -179,6 +180,7 @@ export const useReceipt = (): any => {
     fundingSources: [],
     glAccounts: [],
     receiptdata: receiptData,
+    receiptType: receiptType,
     bankaccounts: [],
     customer: [],
     searchTerm: "",
@@ -452,7 +454,7 @@ export const useReceipt = (): any => {
   };
 
   const isInvoice = computed(() => {
-    data.receipt.customer_id = "";
+    /*data.receipt.customer_id = "";
     data.receipt.date = "";
     data.receipt.bank_account_id = "";
     data.receipt.bank_reference_number = "";
@@ -463,7 +465,7 @@ export const useReceipt = (): any => {
         gl_account_id: null,
         amount: null,
       },
-    ];
+    ];*/
     return data.isInvoice === "YES" ? true : false;
   });
 
@@ -476,7 +478,7 @@ export const useReceipt = (): any => {
   };
 
   const resetDate = () => {
-    if (data.isInvoice === "NO") {
+    if (data.receiptType === RECEIPT_TYPE.INVOICE) {
       data.receipt.customer_id = "";
       data.receipt.date = "";
       data.receipt.bank_account_id = "";

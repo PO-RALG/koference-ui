@@ -8,3 +8,9 @@ export interface Receipt {
   customer_id: number;
   date: Date;
 }
+
+export  enum RECEIPT_TYPE {
+  "CASH" = 1,
+  "INVOICE" = 2,
+  "DEPOSIT" = 1
+}
