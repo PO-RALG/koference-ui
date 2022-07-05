@@ -21,8 +21,8 @@
         <template v-slot:[`item.date`]="{ item }">
           <span>{{ item.date | format("DD/MM/YYYY") }}</span>
         </template>
-        <template v-slot:[`item.description`]="{ item }">
-          <span>{{ item.description }}</span>
+        <template v-slot:[`item.op_number`]="{ item }">
+          <span>{{ item.op_number }}</span>
         </template>
         <template v-slot:[`item.bank_account_name`]="{ item }">
           <span>{{ item.bank_account_number }}</span>

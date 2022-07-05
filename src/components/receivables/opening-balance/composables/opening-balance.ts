@@ -23,7 +23,7 @@ export const useOpeningBalance = (): any => {
       { text: "Date", align: "start", sortable: false, value: "date" },
       { text: "Bank Account Name", align: "start", sortable: false, value: "bank_account.name" },
       { text: "Account Number", align: "start", sortable: false, value: "bank_account.number" },
-      { text: "Description", align: "start", sortable: false, value: "description" },
+      { text: "Legal Number", align: "start", sortable: false, value: "op_number" },
       { text: "Amount", align: "end", sortable: false, value: "amount" }
     ],
     modal: false,
