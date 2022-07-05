@@ -81,6 +81,7 @@ export default defineComponent({
     };
 
     const save = () => {
+      accountData.formData.facility_id = data.facility.id;
       console.log("Form Data", accountData.formData);
       if (accountData.formData.id) {
         updateBankAccount(accountData.formData);

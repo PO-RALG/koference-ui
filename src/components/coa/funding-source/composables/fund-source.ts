@@ -8,6 +8,7 @@ import {
   update,
   destroy,
   search,
+  createFundSource,
 } from "../services/funding-sources";
 
 export const useFundSource = (): any => {
@@ -125,8 +126,6 @@ export const useFundSource = (): any => {
   };
 
   const save = () => {
-    console.log("Form Data", data.formData);
-
     if (data.formData.id) {
       updateFunfingSources(data.formData);
     } else {
@@ -163,11 +162,11 @@ export const useFundSource = (): any => {
   };
 
   const createFundingSource = (data: any) => {
-    // create(data).then((response) => {
-    //   console.log("Created data", response.data);
-    //   reloadData();
-    //   cancelDialog();
-    // });
+    createFundSource(data).then((response) => {
+      console.log("Created data", response.data);
+      reloadData();
+      cancelDialog();
+    });
   };
 
   const getData = (params: any) => {

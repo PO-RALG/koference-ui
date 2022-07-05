@@ -6,7 +6,7 @@ export interface Payment {
   bank_account_id: number;
   cheque_type: string;
   cheque: string;
-  voucher_id: number;
+  voucher_id: any;
   description: string;
   items: any[];
 }
@@ -19,7 +19,7 @@ export interface ItemPlayLoad {
   balance: number;
 }
 
-interface Council{
+interface Council {
   id: number;
   name: string;
 }
@@ -27,9 +27,8 @@ export interface PaymentPreview {
   id: number;
   amount: number;
   cheque: string;
-  bank_account:BackAccount;
-  concil:Council;
-  facility:Facility;
-  printDate:Date;
+  bank_account: BackAccount;
+  concil: Council;
+  facility: Facility;
+  printDate: Date;
 }
-

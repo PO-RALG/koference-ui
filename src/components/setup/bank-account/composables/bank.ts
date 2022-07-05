@@ -7,6 +7,7 @@ import {
   update,
   destroy,
   search,
+  getfacility,
 } from "../services/bank-account.service";
 import { bankaccounttypes as getBankAccountTypes } from "@/components/setup/bank-account-type/services/bank-account-types.service";
 import { BackAccount } from "../types/BackAccount";
@@ -19,6 +20,7 @@ export const useBank = (): any => {
     title: "Manage Bank Accounts",
     modalTitle: "",
     searchTerm: "",
+    searchTermFacility: "",
     headers: [
       {
         text: "GL Account",
@@ -64,6 +66,7 @@ export const useBank = (): any => {
     modal: false,
     showDeleteDialog: false,
     items: dataItems,
+    filteredItems: dataItems,
     itemsToFilter: [],
     formData: BankAccounData,
     params: {
@@ -136,6 +139,8 @@ export const useBank = (): any => {
   const cancelDialog = () => {
     data.formData = {} as BackAccount;
     data.modal = !data.modal;
+    data.filteredItems = [];
+    data.searchTermFacility = "";
   };
 
   const cancelConfirmDialog = () => {
@@ -212,6 +217,40 @@ export const useBank = (): any => {
       data.items = response.data.data.data;
     });
   };
+  const filterFacility = () => {
+    if (data.searchTermFacility.length >= 3) {
+      getfacility({ regSearch: data.searchTermFacility }).then(
+        (response: AxiosResponse) => {
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
+          data.filteredItems = response.data.data.data;
+        }
+      );
+    }
+    if (data.searchTermFacility.length === 0) {
+      getfacility({ per_page: 10 }).then((response: AxiosResponse) => {
+        data.filteredItems = [];
+      });
+    }
+  };
+
+  const resetSearchFacility = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
 
   return {
     data,
@@ -227,5 +266,7 @@ export const useBank = (): any => {
     bankName,
     filterBankAccounts,
     resetSearchText,
+    filterFacility,
+    resetSearchFacility,
   };
 };
