@@ -308,6 +308,20 @@
                         class="invoice-tr"
                       >
                         <td>
+                          <!-- <v-select
+                            :items="data.fundingSources"
+                            :item-text="'description'"
+                            v-model="line.funding_source_code"
+                            :name="`data.receipt.items[${index}][fund_source_code]`"
+                            label="Select Fund Source"
+                            item-value="code"
+                            full-width
+                            dense
+                            outlined
+                            item-disabled="disabled"
+                            @change="loadGLAccounts($event, index)"
+                            hide-details
+                          ></v-select> -->
                           <v-select
                             :items="data.fundingSources"
                             :item-text="'description'"
