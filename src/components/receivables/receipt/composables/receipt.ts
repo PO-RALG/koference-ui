@@ -1,24 +1,24 @@
-import { AxiosResponse } from "axios";
-import { Receipt } from "../types";
-import { reactive, onMounted, computed } from "@vue/composition-api";
+import {AxiosResponse} from "axios";
+import {Receipt, RECEIPT_TYPE} from "../types";
+import {computed, onMounted, reactive} from "@vue/composition-api";
 import stringToCurrency from "@/filters/money-to-number";
 
 import {
-  get,
   create,
-  regSearch as receiptSearch,
   destroy,
-  search,
-  printReceipt,
+  get,
   getFundingSourceList,
+  printReceipt,
+  regSearch as receiptSearch,
+  search,
 } from "../services/receipt-service";
-import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
-import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
+import {get as getCustomers} from "@/components/receivables/customer/services/customer.service";
+import {get as getBankAccounts} from "@/components/setup/bank-account/services/bank-account.service";
 import {
   fundingSource,
   glAccount,
 } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
-import { getGlAccounts } from "@/components/receivables/receipt/services/receipt-service";
+import {getGlAccounts} from "@/components/receivables/receipt/services/receipt-service";
 import moment from "moment";
 
 export const useReceipt = (): any => {
@@ -74,6 +74,7 @@ export const useReceipt = (): any => {
 
   const dataItems: Array<Receipt> = [];
   let receiptData: Receipt;
+  let receiptType: RECEIPT_TYPE;
   const HEADERS = [
     {
       text: "Fund Source",
@@ -153,7 +154,6 @@ export const useReceipt = (): any => {
 
     items: dataItems,
     itemsToFilter: [],
-    gl_accounts: [],
     receipt: {
       id: null,
       customer_id: null,
@@ -170,15 +170,18 @@ export const useReceipt = (): any => {
         },
       ],
     },
-
     rows: ["10", "20", "50", "100"],
+
     itemTodelete: "",
     response: {},
     accounts: [],
     customers: [],
     fundingSources: [],
     glAccounts: [],
+    gl_accounts: [],
+    depositAccounts:[],
     receiptdata: receiptData,
+    receiptType: receiptType,
     bankaccounts: [],
     customer: [],
     searchTerm: "",
@@ -254,7 +257,7 @@ export const useReceipt = (): any => {
   };
 
   const cancelDialog = () => {
-    data.isInvoice = "NO";
+    data.receiptType = RECEIPT_TYPE.CASH,
     data.receipt.customer_id = "";
     data.receipt.date = "";
     data.receipt.bank_account_id = "";
@@ -363,7 +366,7 @@ export const useReceipt = (): any => {
     data.modalTitle = "Create";
     data.modal = !data.modal;
     data.isInvoice = "NO";
-
+    loadDepositAccounts();
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
     });
@@ -411,6 +414,27 @@ export const useReceipt = (): any => {
     });
   };
 
+
+
+  const loadDepositAccounts = async () => {
+    const params = {
+      gl_account_type: "DEPOSIT",
+    };
+
+    getGlAccounts({ search: { ...params } }).then((response: AxiosResponse) => {
+       data.depositAccounts = response.data.data.data;
+      if (response.data.data.data.length > 0) {
+     /*   data.depositAccounts = response.data.data.data.map((account) => ({
+          ...account,
+          displayName: account.code,
+        }));*/
+      }
+    });
+  };
+
+
+
+
   const newreceiptItem: any = computed(() => {
     return data.items
       ? data.items.map((data, index) => ({
@@ -452,20 +476,15 @@ export const useReceipt = (): any => {
   };
 
   const isInvoice = computed(() => {
-    data.receipt.customer_id = "";
-    data.receipt.date = "";
-    data.receipt.bank_account_id = "";
-    data.receipt.bank_reference_number = "";
-    data.receipt.description = "";
-    data.receipt.items = [
-      {
-        funding_source_code: null,
-        gl_account_id: null,
-        amount: null,
-      },
-    ];
-    return data.isInvoice === "YES" ? true : false;
+    return data.receiptType == RECEIPT_TYPE.INVOICE;
   });
+  const isCash = computed(() => {
+    return data.receiptType == RECEIPT_TYPE.CASH;
+  });
+  const isDeposit = computed(() => {
+    return data.receiptType == RECEIPT_TYPE.DEPOSIT;
+  });
+
 
   const setCustomer = (invoice) => {
     data.selectedUser = invoice.customer;
@@ -475,8 +494,8 @@ export const useReceipt = (): any => {
     data.minDate = moment(invoice.date).format("YYYY-MM-DD");
   };
 
-  const resetDate = () => {
-    if (data.isInvoice === "NO") {
+  const resetData = () => {
+    if (data.receiptType === RECEIPT_TYPE.INVOICE) {
       data.receipt.customer_id = "";
       data.receipt.date = "";
       data.receipt.bank_account_id = "";
@@ -576,6 +595,12 @@ export const useReceipt = (): any => {
     data.invoicedetails = false;
   };
 
+  const invoiceType = RECEIPT_TYPE.INVOICE;
+  const cashType = RECEIPT_TYPE.CASH;
+  const depositType = RECEIPT_TYPE.DEPOSIT;
+
+
+
   return {
     data,
     reverseReceipt,
@@ -596,12 +621,17 @@ export const useReceipt = (): any => {
     INVOICE_ITEM_HEADERS,
     loadGLAccounts,
     isInvoice,
+    isCash,
+    isDeposit,
     setCustomer,
-    resetDate,
+    resetData,
     reanderSearched,
     mapInvoices,
     filterReceipt,
     resetSearchText,
     filterFundSource,
+    invoiceType,
+    cashType,
+    depositType
   };
 };
