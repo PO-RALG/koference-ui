@@ -30,7 +30,7 @@ export const useInvoice = (): Record<string, unknown> => {
       align: "start",
       sortable: false,
       value: "invoice_number",
-      width: "30%",
+      width: "45%",
     },
 
     {
@@ -41,11 +41,11 @@ export const useInvoice = (): Record<string, unknown> => {
       width: "15%",
     },
     {
-      text: "",
+      text: "Actions",
       align: "center",
       sortable: false,
       value: "amount_pending",
-      width: "13%",
+      width: "5%",
     },
   ];
   const HEADERS_INVOICE_DETAILS = [

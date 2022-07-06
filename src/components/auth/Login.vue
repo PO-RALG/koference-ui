@@ -5,6 +5,25 @@
     fluid
     fill-height
   >
+    <v-snackbar
+      class="mt-12 d-none d-md-flex d-lg-none d-none d-lg-flex"
+      :timeout="6000000"
+      shaped
+      :top="true"
+      color="#1476d7"
+      left
+      clearable
+      v-model="data.showInfo"
+    >
+      <img class="img_top_info" :src="info" />
+
+      <v-icon x-large color="white"> mdi-hand-pointing-right </v-icon>
+      <a href="https://ffars.tamisemi.go.tz/" target="_blank">
+        <span class="white--text">
+          <em>Bofya hapa kuingia katika toleo la zamani (FFARS v 1.0) </em>
+        </span>
+      </a>
+    </v-snackbar>
     <v-layout justify-center align-center class="body_bg">
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
@@ -164,12 +183,13 @@ export default Vue.extend({
       model: 0,
       siteName: "",
       valid: true,
+      showInfo: true,
       errorMessage: "",
       loading: false,
       logo: "/brand.png",
       coat: "/coat_of_arms.svg.png",
       colors: ["primary", "secondary", "yellow darken-2", "red", "orange"],
-      slides: [{ src: "/callcenter.jpeg" }],
+      slides: [{ src: "/corona.jpeg" }, { src: "/callcenter.jpeg" }],
       email: "",
       emailRules: [
         (v: any) => !!v || "Email is required",

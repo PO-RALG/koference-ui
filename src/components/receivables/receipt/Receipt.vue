@@ -79,8 +79,9 @@
                 @click="reverseReceipt(item.id)"
                 text
                 color="grey"
-                ><v-icon>mdi-arrow-u-left-top-bold</v-icon></v-btn
               >
+                <v-icon>mdi-arrow-u-left-top-bold</v-icon>
+              </v-btn>
             </template>
             <span>Reverse</span>
           </v-tooltip>
@@ -119,11 +120,13 @@
           <v-form>
             <v-container>
               <span>Select Receipt Type</span>
-              <v-radio-group v-model="data.isInvoice" row @change="resetDate">
-                <v-radio label="CASH" value="NO"></v-radio>
-                <v-radio label="INVOICE" value="YES"></v-radio>
+              <v-radio-group v-model="data.receiptType" row @change="resetData">
+                <v-radio label="CASH" :value="cashType"></v-radio>
+                <v-radio label="INVOICE" :value="invoiceType"></v-radio>
+                <!-- <v-radio label="DEPOSIT" :value="depositType"></v-radio> -->
               </v-radio-group>
               <v-row>
+                <!-- Start invoice -->
                 <v-col cols="12" md="12" v-if="isInvoice" class="mb-n6">
                   <fetcher :api="'/api/v1/invoices'">
                     <div slot-scope="{ json: invoices, loading }">
@@ -144,9 +147,13 @@
                     </div>
                   </fetcher>
                 </v-col>
-                <v-col cols="12" md="6">
+
+                <v-col
+                  v-if="isInvoice && data.selectedInvoice"
+                  cols="12"
+                  md="6"
+                >
                   <v-text-field
-                    v-if="isInvoice && data.selectedInvoice"
                     v-model="data.selectedUser.name"
                     label="Invoice User"
                     readonly
@@ -154,9 +161,19 @@
                     outlined
                   >
                   </v-text-field>
-
+                </v-col>
+                <v-col
+                  v-if="isInvoice && !data.selectedInvoice"
+                  cols="12"
+                  md="6"
+                >
+                  <v-text-field label="Invoice User" readonly small outlined>
+                  </v-text-field>
+                </v-col>
+                <!-- end of invoice specific content -->
+                <!-- start of cash and  deposit  -->
+                <v-col v-if="!isInvoice" cols="12" md="6">
                   <v-autocomplete
-                    v-else
                     v-model="data.receipt.customer_id"
                     label="Select Customer"
                     :items="data.customers"
@@ -166,6 +183,9 @@
                     small
                   ></v-autocomplete>
                 </v-col>
+                <!-- end  of non invoice content -->
+
+                <!-- common content starts here -->
 
                 <v-col cols="12" md="6" class="mt-3 pr-6 pl-6">
                   <DatePicker
@@ -175,7 +195,7 @@
                     v-model="data.receipt.date"
                   />
                 </v-col>
-                <v-col cols="12" md="6" class="mt-n8">
+                <v-col cols="12" md="6">
                   <v-autocomplete
                     v-model="data.receipt.bank_account_id"
                     label="Select Bank Account"
@@ -186,7 +206,7 @@
                   ></v-autocomplete>
                 </v-col>
 
-                <v-col cols="12" md="6" class="mt-n8">
+                <v-col cols="12" md="6">
                   <v-text-field
                     label="Bank Reference Number"
                     outlined
@@ -194,37 +214,21 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" md="12" class="mt-n8">
+                <v-col cols="12" md="12">
                   <v-textarea
                     label="Description"
                     outlined
                     v-model="data.receipt.description"
                   ></v-textarea>
                 </v-col>
+                <!-- Common content ends here -->
+                <!-- invoice start -->
 
                 <v-col
-                  class="pt-0"
-                  cols="12"
-                  md="12"
-                  v-if="!isInvoice && !data.selectedInvoice"
-                >
-                  <tr class="heading blue-grey lighten-5">
-                    <td colspan="3">
-                      Add GLAccount {{ " " }}{{ "by pressing" }}
-                      <v-icon small color="success"> mdi-plus-circle </v-icon>
-                      {{ " " }} {{ "or" }} {{ "remove by pressing " }}{{ " " }}
-                      <v-icon small color="red"> mdi-minus-circle </v-icon
-                      >{{ " " }}{{ "sign in the right" }}
-                      {{ " " }}
-                      <v-icon color=""> mdi-arrow-right-bold </v-icon>
-                    </td>
-                  </tr>
-                </v-col>
-                <v-col
+                  v-if="isInvoice && data.selectedInvoice"
                   class="pt-2 invoice-table"
                   cols="12"
                   md="12"
-                  v-if="isInvoice && data.selectedInvoice"
                 >
                   <v-data-table
                     :headers="INVOICE_ITEM_HEADERS"
@@ -293,138 +297,181 @@
                     </template>
                   </v-data-table>
                 </v-col>
-                <v-col class="pt-0 invoice-table" cols="12" md="12" v-else>
-                  <v-data-table
-                    :headers="HEADERS"
-                    :items="data.items"
-                    disable-pagination
-                    hide-default-footer
-                    v-if="!isInvoice"
-                  >
-                    <template v-slot:body>
-                      <tr
-                        v-for="(line, index) in data.receipt.items"
-                        :key="index"
-                        class="invoice-tr"
-                      >
-                        <td>
-                          <!-- <v-select
-                            :items="data.fundingSources"
-                            :item-text="'description'"
-                            v-model="line.funding_source_code"
-                            :name="`data.receipt.items[${index}][fund_source_code]`"
-                            label="Select Fund Source"
-                            item-value="code"
-                            full-width
-                            dense
-                            outlined
-                            item-disabled="disabled"
-                            @change="loadGLAccounts($event, index)"
-                            hide-details
-                          ></v-select> -->
-                          <v-select
-                            :items="data.fundingSources"
-                            :item-text="'description'"
-                            v-model="line.funding_source_code"
-                            :name="`data.receipt.items[${index}]`"
-                            label="Select Fund Source"
-                            item-value="code"
-                            full-width
-                            dense
-                            outlined
-                            item-disabled="disabled"
-                            @change="loadGLAccounts($event, index)"
-                            hide-details
-                          >
-                            <template v-slot:selection="{ item }">
-                              {{ item.description }} {{ "-" }} {{ item.code }}
-                            </template>
-                            <template v-slot:item="{ item }">
-                              {{ item.description }} {{ "-" }} {{ item.code }}
-                            </template>
-                            <template v-slot:prepend-item>
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-text-field
-                                    clearable
-                                    outlined
-                                    dense
-                                    label="Search Fund Source"
-                                    v-model="data.searchTerm"
-                                    @input="filterFundSource"
-                                  ></v-text-field>
-                                </v-list-item-content>
-                              </v-list-item>
-                              <v-divider></v-divider>
-                            </template>
-                          </v-select>
-                        </td>
-                        <td>
-                          <v-select
-                            :items="data.gl_accounts[index]"
-                            :item-text="'displayName'"
-                            v-model="line.gl_account_id"
-                            :name="`data.receipt.items[${index}][gl_account_id]`"
-                            label="Select GL Account"
-                            item-value="id"
-                            full-width
-                            dense
-                            outlined
-                            item-disabled="disabled"
-                            hide-details
-                          >
-                          </v-select>
-                        </td>
+                <!-- end of invoice -->
 
-                        <td class="invoice-td">
-                          <v-text-field
-                            dense
-                            hide-details
-                            outlined
-                            onkeydown="javascript: return event.keyCode == 69 ? false : true"
-                            v-model="line.amount"
-                            v-mask="toMoney"
-                            :name="`data.invoice_items[${index}][name]`"
-                          >
-                          </v-text-field>
-                        </td>
-                        <td>
-                          <v-btn
-                            color="blue darken-1"
-                            small
-                            text
-                            v-if="
-                              index || (!index && data.receipt.items.length > 1)
-                            "
-                            @click="removeRow(index)"
-                          >
-                            <v-icon small color="red">
-                              mdi-minus-circle
-                            </v-icon>
-                          </v-btn>
-                          <v-btn
-                            small
-                            color="blue darken-1"
-                            text
-                            @click="addRow"
-                            v-if="index == data.receipt.items.length - 1"
-                          >
-                            <v-icon small color="success">
-                              mdi-plus-circle
-                            </v-icon>
-                          </v-btn>
-                        </td>
-                      </tr>
-                    </template>
-                    <template v-slot:[`item.icon`]="{ item }">
-                      <v-icon class="mr-2">{{ item.icon }}</v-icon>
-                    </template>
-                  </v-data-table>
-                </v-col>
+                <!-- start of cash -->
+
+                <!-- cash start -->
+                <v-container v-if="isCash">
+                  <v-col class="pt-0" cols="12" md="12">
+                    <tr class="heading blue-grey lighten-5">
+                      <td colspan="3">
+                        Add GLAccount {{ " " }}{{ "by pressing" }}
+                        <v-icon small color="success"> mdi-plus-circle</v-icon>
+                        {{ " " }} {{ "or" }} {{ "remove by pressing "
+                        }}{{ " " }}
+                        <v-icon small color="red"> mdi-minus-circle </v-icon>
+                        {{ " " }}{{ "sign in the right" }}
+                        {{ " " }}
+                        <v-icon color=""> mdi-arrow-right-bold</v-icon>
+                      </td>
+                    </tr>
+                  </v-col>
+
+                  <v-col
+                    v-if="isCash"
+                    class="pt-0 invoice-table"
+                    cols="12"
+                    md="12"
+                  >
+                    <v-data-table
+                      :headers="HEADERS"
+                      :items="data.items"
+                      disable-pagination
+                      hide-default-footer
+                    >
+                      <template v-slot:body>
+                        <tr
+                          v-for="(line, index) in data.receipt.items"
+                          :key="index"
+                          class="invoice-tr"
+                        >
+                          <td>
+                            <v-select
+                              :items="data.fundingSources"
+                              :item-text="'description'"
+                              v-model="line.funding_source_code"
+                              :name="`data.receipt.items[${index}]`"
+                              label="Select Fund Source"
+                              item-value="code"
+                              full-width
+                              dense
+                              outlined
+                              item-disabled="disabled"
+                              @change="loadGLAccounts($event, index)"
+                              hide-details
+                            >
+                              <template v-slot:selection="{ item }">
+                                {{ item.description }} {{ "-" }} {{ item.code }}
+                              </template>
+                              <template v-slot:item="{ item }">
+                                {{ item.description }} {{ "-" }} {{ item.code }}
+                              </template>
+                              <template v-slot:prepend-item>
+                                <v-list-item>
+                                  <v-list-item-content>
+                                    <v-text-field
+                                      clearable
+                                      outlined
+                                      dense
+                                      label="Search Fund Source"
+                                      v-model="data.searchTerm"
+                                      @input="filterFundSource"
+                                    ></v-text-field>
+                                  </v-list-item-content>
+                                </v-list-item>
+                                <v-divider></v-divider>
+                              </template>
+                            </v-select>
+                          </td>
+                          <td>
+                            <v-select
+                              :items="data.gl_accounts[index]"
+                              :item-text="'displayName'"
+                              v-model="line.gl_account_id"
+                              :name="`data.receipt.items[${index}][gl_account_id]`"
+                              label="Select GL Account"
+                              item-value="id"
+                              full-width
+                              dense
+                              outlined
+                              item-disabled="disabled"
+                              hide-details
+                            >
+                            </v-select>
+                          </td>
+
+                          <td class="invoice-td">
+                            <v-text-field
+                              dense
+                              hide-details
+                              outlined
+                              onkeydown="javascript: return event.keyCode == 69 ? false : true"
+                              v-model="line.amount"
+                              v-mask="toMoney"
+                              :name="`data.invoice_items[${index}][name]`"
+                            >
+                            </v-text-field>
+                          </td>
+                          <td>
+                            <v-btn
+                              color="blue darken-1"
+                              small
+                              text
+                              v-if="
+                                index ||
+                                (!index && data.receipt.items.length > 1)
+                              "
+                              @click="removeRow(index)"
+                            >
+                              <v-icon small color="red">
+                                mdi-minus-circle
+                              </v-icon>
+                            </v-btn>
+                            <v-btn
+                              small
+                              color="blue darken-1"
+                              text
+                              @click="addRow"
+                              v-if="index == data.receipt.items.length - 1"
+                            >
+                              <v-icon small color="success">
+                                mdi-plus-circle
+                              </v-icon>
+                            </v-btn>
+                          </td>
+                        </tr>
+                      </template>
+                      <template v-slot:[`item.icon`]="{ item }">
+                        <v-icon class="mr-2">{{ item.icon }}</v-icon>
+                      </template>
+                    </v-data-table>
+                  </v-col>
+                </v-container>
+                <!-- end of cash -->
+                <!-- deposit start  --->
+                <v-container v-if="isDeposit">
+                  <v-row
+                    v-for="(item, index) in data.receipt.items"
+                    :key="item.id"
+                  >
+                    <v-col cols="9" md="9" class="d-flex">
+                      <v-select
+                        v-model="data.receipt.items[index].gl_account_id"
+                        :items="data.depositAccounts"
+                        item-value="id"
+                        name="description"
+                        item-text="description"
+                        label="Select account"
+                        outlined
+                        required
+                      >
+                      </v-select>
+                    </v-col>
+                    <v-col cols="3" md="3">
+                      <v-text-field
+                        outlined
+                        v-mask="toMoney"
+                        label="Amount"
+                        v-model="data.receipt.items[index].amount"
+                      >
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+                <!-- deposity end -->
               </v-row>
             </v-container>
-            <!--<pre>{{ data.receipt }}</pre>-->
-            <!--<pre v-if="data.selectedInvoice">{{ data.selectedInvoice.invoice_items }}</pre>-->
           </v-form>
         </ModalBody>
       </template>
@@ -444,13 +491,13 @@
       </template>
 
       <template v-slot:body>
-        <ModalBody> Are you sure you want to reverce this receipt ? </ModalBody>
+        <ModalBody> Are you sure you want to reverce this receipt ?</ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
-            >No</v-btn
-          >
+            >No
+          </v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -485,8 +532,10 @@ export default defineComponent({
       HEADERS,
       loadGLAccounts,
       isInvoice,
+      isCash,
+      isDeposit,
       setCustomer,
-      resetDate,
+      resetData,
       INVOICE_ITEM_HEADERS,
       reanderSearched,
       mapInvoices,
@@ -494,6 +543,9 @@ export default defineComponent({
       reverseReceipt,
       filterReceipt,
       resetSearchText,
+      invoiceType,
+      cashType,
+      depositType,
     } = useReceipt();
 
     return {
@@ -515,8 +567,10 @@ export default defineComponent({
       HEADERS,
       loadGLAccounts,
       isInvoice,
+      isCash,
+      isDeposit,
       setCustomer,
-      resetDate,
+      resetData,
       INVOICE_ITEM_HEADERS,
       reanderSearched,
       toMoney,
@@ -525,6 +579,9 @@ export default defineComponent({
       resetSearchText,
       reverseReceipt,
       filterReceipt,
+      invoiceType,
+      cashType,
+      depositType,
     };
   },
 });
@@ -540,10 +597,12 @@ export default defineComponent({
 .underline-amount {
   border-style: double none double;
 }
+
 .underline-invoice-number {
   border-style: none none double;
   border-block-color: rgba(0, 110, 255, 0.76);
 }
+
 .invoice-box {
   max-width: 1100;
   margin: auto;
@@ -553,54 +612,69 @@ export default defineComponent({
   line-height: 24px;
   color: #555;
 }
+
 .invoice-box table {
   width: 100%;
   line-height: inherit;
   text-align: left;
 }
+
 .invoice-box table td {
   padding: 5px;
   vertical-align: top;
 }
+
 .invoice-box table tr td:nth-child(n + 2) {
   text-align: right;
 }
+
 .invoice-box table tr.top table td {
   padding-bottom: 20px;
 }
+
 .invoice-box table tr.top table td.title {
   line-height: 45px;
   color: #333;
 }
+
 .invoice-box table tr.information table td {
   padding-bottom: 40px;
 }
+
 .invoice-box table tr.heading td {
   background: #eee;
   border-bottom: 1px solid #ddd;
 }
+
 .invoice-box table tr.details td {
   padding-bottom: 20px;
 }
+
 .invoice-box table tr.item td {
   border-bottom: 1px solid #eee;
 }
+
 .invoice-box table tr.item.last td {
   border-bottom: none;
 }
+
 .invoice-box table tr.item input {
   padding-left: 5px;
 }
+
 .invoice-box table tr.item td:first-child input {
   margin-left: -5px;
   width: 100%;
 }
+
 .invoice-box table tr.total td:nth-child(2) {
   border-top: 2px solid #eee;
 }
+
 .invoice-box input[type="number"] {
   width: 60px;
 }
+
 @media only screen and (max-width: 600px) {
   .invoice-box table tr.top table td {
     width: 100%;
@@ -613,44 +687,56 @@ export default defineComponent({
     text-align: center;
   }
 }
+
 /** RTL **/
 .rtl table {
   text-align: right;
 }
+
 .rtl table tr td:nth-child(2) {
   text-align: left;
 }
+
 .login-logo {
   height: 160px;
   width: 130px;
 }
+
 tbody tr:nth-of-type(odd) {
   background-color: none;
 }
+
 .invoice-table {
   table {
     border: 1px solid #cccc;
+
     tr.invoice-tr {
       border-right: 1px solid #ccc;
     }
+
     th {
       border-right: 1px solid #ccc;
+
       &:last-child {
         border-right: none;
       }
     }
+
     td {
       border-right: 1px solid #ccc;
       padding: 5px;
+
       &:last-child {
         border-right: none;
       }
     }
   }
+
   .v-card__actions {
     margin-right: 15px;
   }
 }
+
 /*remove arrow in number inputs*/
 /* Chrome, Safari, Edge, Opera */
 input[type="number"]::-webkit-outer-spin-button,
