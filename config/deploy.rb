@@ -30,8 +30,8 @@ namespace :deploy do
   task :restart do
     on roles(:app) do
       within current_path  do
-        execute :yarn, 'install --quiet --non-interactive' # install dependencies silently
-        execute :yarn, 'build --quiet --non-interactive' # build the app silently
+        execute :yarn, 'install --quiet' # install dependencies silently
+        execute :yarn, 'build --quiet' # build the app silently
       end
     end
   end
