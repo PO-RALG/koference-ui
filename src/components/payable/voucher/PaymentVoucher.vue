@@ -59,12 +59,12 @@
           {{ item.amount_paid | toCurrency() }}
         </template>
         <template v-slot:[`item.full_paid`]="{ item }">
-          <span v-if="fullPaid(item)">
-            <v-icon medium color="success">mdi-check</v-icon>
+          <span class="" v-if="fullPaid(item)">
+            <!-- <v-icon medium color="success">mdi-check</v-icon> -->
             Paid
           </span>
-          <span v-else>
-            <v-icon medium color="warning">mdi-close</v-icon>
+          <span class="" v-else>
+            <!-- <v-icon medium color="warning">mdi-close</v-icon> -->
             Not Paid
           </span>
         </template>

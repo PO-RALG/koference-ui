@@ -207,9 +207,15 @@ export const usePayment = (): any => {
       };
       payableData.push(element);
     }
-    data.formData.items = payableData;
 
-    createPayment(data.formData);
+    data.formData.items = payableData;
+    const dataToSave = {
+      ...data.formData,
+      voucher_id: data.formData.voucher_id.id,
+      payable_id: data.formData.voucher_id.payables[0].id,
+    };
+
+    createPayment(dataToSave);
   };
 
   const openDialog = () => {
@@ -255,11 +261,12 @@ export const usePayment = (): any => {
     data.showDate = true;
     data.minDate = moment(voucher.date).format("YYYY-MM-DD");
     findPaymentVoucher(voucher.id).then((response: AxiosResponse) => {
-      console.log(response.data.data.payables);
+      // console.log("xxxxxxx", response.data.data.payables);
       const pvData = response.data.data.payables;
       data.payableItems = [
         ...pvData.map((pv: Record<any, any>) => ({
           payment: Number(pv.amount),
+          id: Number(pv.id),
           required_amount: Number(pv.amount),
           paid_amount: Number(pv.paid_amount),
           balance: Number(pv.amount) - Number(pv.paid_amount),
