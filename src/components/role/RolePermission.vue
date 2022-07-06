@@ -8,19 +8,28 @@
           <v-icon>mdi-arrow-u-left-top</v-icon>
           Back
         </v-btn>
-        <v-btn color="primary" @click="addPermissions" :disabled="cant('addPermissions', 'AuthRole')">
+        <v-btn
+          color="primary"
+          @click="addPermissions"
+          :disabled="cant('addPermissions', 'AuthRole')"
+        >
           <v-icon>mdi-plus</v-icon>
           Save
         </v-btn>
       </div>
     </v-card-actions>
     <v-layout row wrap v-if="permissions">
-      <v-flex xs2 v-for="permission in permissions" :key="permission.id" class="mb-5">
+      <v-flex
+        xs2
+        v-for="permission in permissions"
+        :key="permission.id"
+        class="mb-5"
+      >
         <PermissionList
           :item="permission"
           :selected="data.selected"
           @itemSelected="addToSelection"
-         />
+        />
       </v-flex>
     </v-layout>
   </div>
@@ -42,7 +51,14 @@ export default defineComponent({
     },
   },
   setup(_props, context) {
-    const { data, addToSelection, addPermissions, permissions, filterPermissions, goBack } = useRolePermission(context);
+    const {
+      data,
+      addToSelection,
+      addPermissions,
+      permissions,
+      filterPermissions,
+      goBack,
+    } = useRolePermission(context);
 
     return {
       data,
