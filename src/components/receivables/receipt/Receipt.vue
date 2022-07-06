@@ -81,8 +81,7 @@
                 color="grey"
               >
                 <v-icon>mdi-arrow-u-left-top-bold</v-icon>
-              </v-btn
-              >
+              </v-btn>
             </template>
             <span>Reverse</span>
           </v-tooltip>
@@ -114,7 +113,7 @@
     </v-card>
     <Modal :modal="data.modal" :width="1250">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Receipt`"/>
+        <ModalHeader :title="`${data.modalTitle} Receipt`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.receipt">
@@ -124,14 +123,13 @@
               <v-radio-group v-model="data.receiptType" row @change="resetData">
                 <v-radio label="CASH" :value="cashType"></v-radio>
                 <v-radio label="INVOICE" :value="invoiceType"></v-radio>
-                <v-radio label="DEPOSIT" :value="depositType"></v-radio>
+                <!-- <v-radio label="DEPOSIT" :value="depositType"></v-radio> -->
               </v-radio-group>
               <v-row>
                 <!-- Start invoice -->
                 <v-col cols="12" md="12" v-if="isInvoice" class="mb-n6">
                   <fetcher :api="'/api/v1/invoices'">
                     <div slot-scope="{ json: invoices, loading }">
-
                       <div v-if="loading">Loading...</div>
                       <v-autocomplete
                         v-else
@@ -150,10 +148,12 @@
                   </fetcher>
                 </v-col>
 
-                <v-col v-if="isInvoice && data.selectedInvoice" cols="12" md="6">
-
+                <v-col
+                  v-if="isInvoice && data.selectedInvoice"
+                  cols="12"
+                  md="6"
+                >
                   <v-text-field
-
                     v-model="data.selectedUser.name"
                     label="Invoice User"
                     readonly
@@ -161,13 +161,19 @@
                     outlined
                   >
                   </v-text-field>
-
+                </v-col>
+                <v-col
+                  v-if="isInvoice && !data.selectedInvoice"
+                  cols="12"
+                  md="6"
+                >
+                  <v-text-field label="Invoice User" readonly small outlined>
+                  </v-text-field>
                 </v-col>
                 <!-- end of invoice specific content -->
                 <!-- start of cash and  deposit  -->
                 <v-col v-if="!isInvoice" cols="12" md="6">
                   <v-autocomplete
-
                     v-model="data.receipt.customer_id"
                     label="Select Customer"
                     :items="data.customers"
@@ -176,7 +182,6 @@
                     outlined
                     small
                   ></v-autocomplete>
-
                 </v-col>
                 <!-- end  of non invoice content -->
 
@@ -190,7 +195,7 @@
                     v-model="data.receipt.date"
                   />
                 </v-col>
-                <v-col cols="12" md="6" class="mt-n8">
+                <v-col cols="12" md="6">
                   <v-autocomplete
                     v-model="data.receipt.bank_account_id"
                     label="Select Bank Account"
@@ -201,7 +206,7 @@
                   ></v-autocomplete>
                 </v-col>
 
-                <v-col cols="12" md="6" class="mt-n8">
+                <v-col cols="12" md="6">
                   <v-text-field
                     label="Bank Reference Number"
                     outlined
@@ -209,7 +214,7 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" md="12" class="mt-n8">
+                <v-col cols="12" md="12">
                   <v-textarea
                     label="Description"
                     outlined
@@ -219,9 +224,18 @@
                 <!-- Common content ends here -->
                 <!-- invoice start -->
 
-                <v-col v-if="isInvoice && data.selectedInvoice" class="pt-2 invoice-table" cols="12" md="12">
-                  <v-data-table :headers="INVOICE_ITEM_HEADERS" :items="data.selectedInvoice.invoice_items"
-                                disable-pagination hide-default-footer>
+                <v-col
+                  v-if="isInvoice && data.selectedInvoice"
+                  class="pt-2 invoice-table"
+                  cols="12"
+                  md="12"
+                >
+                  <v-data-table
+                    :headers="INVOICE_ITEM_HEADERS"
+                    :items="data.selectedInvoice.invoice_items"
+                    disable-pagination
+                    hide-default-footer
+                  >
                     <template v-slot:body>
                       <tr
                         v-for="(line, index) in data.selectedInvoice
@@ -294,10 +308,9 @@
                       <td colspan="3">
                         Add GLAccount {{ " " }}{{ "by pressing" }}
                         <v-icon small color="success"> mdi-plus-circle</v-icon>
-                        {{ " " }} {{ "or" }} {{ "remove by pressing " }}{{ " " }}
-                        <v-icon small color="red"> mdi-minus-circle
-                        </v-icon
-                        >
+                        {{ " " }} {{ "or" }} {{ "remove by pressing "
+                        }}{{ " " }}
+                        <v-icon small color="red"> mdi-minus-circle </v-icon>
                         {{ " " }}{{ "sign in the right" }}
                         {{ " " }}
                         <v-icon color=""> mdi-arrow-right-bold</v-icon>
@@ -305,8 +318,18 @@
                     </tr>
                   </v-col>
 
-                  <v-col v-if="isCash" class="pt-0 invoice-table" cols="12" md="12">
-                    <v-data-table :headers="HEADERS" :items="data.items" disable-pagination hide-default-footer>
+                  <v-col
+                    v-if="isCash"
+                    class="pt-0 invoice-table"
+                    cols="12"
+                    md="12"
+                  >
+                    <v-data-table
+                      :headers="HEADERS"
+                      :items="data.items"
+                      disable-pagination
+                      hide-default-footer
+                    >
                       <template v-slot:body>
                         <tr
                           v-for="(line, index) in data.receipt.items"
@@ -314,7 +337,6 @@
                           class="invoice-tr"
                         >
                           <td>
-
                             <v-select
                               :items="data.fundingSources"
                               :item-text="'description'"
@@ -387,8 +409,9 @@
                               small
                               text
                               v-if="
-                              index || (!index && data.receipt.items.length > 1)
-                            "
+                                index ||
+                                (!index && data.receipt.items.length > 1)
+                              "
                               @click="removeRow(index)"
                             >
                               <v-icon small color="red">
@@ -414,39 +437,39 @@
                       </template>
                     </v-data-table>
                   </v-col>
-
                 </v-container>
                 <!-- end of cash -->
                 <!-- deposit start  --->
-                <v-container  v-if="isDeposit">
-                <v-row v-for="(item, index) in data.receipt.items" :key="item.id">
-                  <v-col cols="9" md="9" class="d-flex">
-
-                    <v-select
-                      v-model="data.receipt.items[index].gl_account_id"
-                      :items="data.depositAccounts"
-                      item-value="id"
-                      name="description"
-                      item-text="description"
-                      label="Select account"
-                      outlined
-                      required
-                    >
-                    </v-select>
-                  </v-col>
-                  <v-col cols="3" md="3">
-
-                    <v-text-field
-                      outlined
-                      v-mask="toMoney"
-                      v-model="data.receipt.items[index].amount"
-                    >
-                    </v-text-field>
-                  </v-col>
-                </v-row>
+                <v-container v-if="isDeposit">
+                  <v-row
+                    v-for="(item, index) in data.receipt.items"
+                    :key="item.id"
+                  >
+                    <v-col cols="9" md="9" class="d-flex">
+                      <v-select
+                        v-model="data.receipt.items[index].gl_account_id"
+                        :items="data.depositAccounts"
+                        item-value="id"
+                        name="description"
+                        item-text="description"
+                        label="Select account"
+                        outlined
+                        required
+                      >
+                      </v-select>
+                    </v-col>
+                    <v-col cols="3" md="3">
+                      <v-text-field
+                        outlined
+                        v-mask="toMoney"
+                        label="Amount"
+                        v-model="data.receipt.items[index].amount"
+                      >
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
                 </v-container>
                 <!-- deposity end -->
-
               </v-row>
             </v-container>
           </v-form>
@@ -456,7 +479,7 @@
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
           <v-btn color="green darken-1" text @click="save"
-          >{{ data.modalTitle }}
+            >{{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
       </template>
@@ -464,7 +487,7 @@
 
     <Modal :modal="data.deletemodal" :width="400">
       <template v-slot:header>
-        <ModalHeader :title="`Cancel Receipt `"/>
+        <ModalHeader :title="`Cancel Receipt `" />
       </template>
 
       <template v-slot:body>
@@ -473,9 +496,8 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
-          >No
-          </v-btn
-          >
+            >No
+          </v-btn>
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -484,9 +506,9 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from "@vue/composition-api";
-import {useReceipt} from "./composables/receipt";
-import {toMoney} from "@/filters/CurrencyFormatter";
+import { defineComponent } from "@vue/composition-api";
+import { useReceipt } from "./composables/receipt";
+import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({
   name: "ManageReceipt",
@@ -523,7 +545,7 @@ export default defineComponent({
       resetSearchText,
       invoiceType,
       cashType,
-      depositType
+      depositType,
     } = useReceipt();
 
     return {
@@ -560,9 +582,8 @@ export default defineComponent({
       invoiceType,
       cashType,
       depositType,
-
-    }
-  }
+    };
+  },
 });
 </script>
 
