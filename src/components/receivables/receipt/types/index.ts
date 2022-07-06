@@ -12,5 +12,5 @@ export interface Receipt {
 export  enum RECEIPT_TYPE {
   "CASH" = 1,
   "INVOICE" = 2,
-  "DEPOSIT" = 1
+  "DEPOSIT" = 3
 }
