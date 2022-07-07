@@ -1,5 +1,6 @@
 module.exports = {
   transpileDependencies: ["vuetify"],
+  publicPath: "/",
   pages: {
     index: {
       // entry for the page
