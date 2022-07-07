@@ -16,7 +16,7 @@ const { useState } = createNamespacedHelpers("Loader");
 
 export default defineComponent({
   setup() {
-    let { loading } = useState(["loading"]);
+    const { loading } = useState(["loading"]);
     return {
       loading,
     };

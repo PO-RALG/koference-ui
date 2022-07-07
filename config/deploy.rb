@@ -25,13 +25,18 @@ set :nvm_type, :user
 set :nvm_node, 'v16.15.1'
 
 namespace :deploy do
-
+  set :yarn_target_path, nil
+  set :yarn_flags, '--production'
+  set :yarn_roles, :all
+  set :yarn_env_variables, {}
+  set :yarn_bin, :yarn
   desc 'Restart'
   task :restart do
     on roles(:app) do
       within current_path  do
         execute :yarn, 'install -s' # install dependencies silently
-        execute :yarn, 'build -s' # build the app silently
+        # execute :yarn, 'build -s' # build the app silently
+        execute fetch(:yarn_bin), 'build', fetch(:yarn_flags)
       end
     end
   end
