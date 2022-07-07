@@ -12,11 +12,8 @@
         Add New
       </v-btn>
 
-        <!-- v-if="can('create', 'FundingSource')" -->
-      <v-btn
-        color="primary"
-        @click="pullSegmentsFromPlanRep"
-      >
+      <!-- v-if="can('create', 'FundingSource')" -->
+      <v-btn color="primary" @click="pullSegmentsFromPlanRep">
         <v-icon>mdi-sync</v-icon>
         Segments From PlanRep
       </v-btn>
@@ -90,7 +87,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="600">
+    <Modal :modal="data.modal" :width="1000">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Funding Sources`" />
       </template>

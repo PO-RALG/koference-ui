@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="drawer" app v-if="user">
+  <v-navigation-drawer v-model="drawer" width="16%" app v-if="user">
     <template v-slot:prepend>
       <SidebarToolbar @onSidebarClose="toggleSidebar" />
     </template>

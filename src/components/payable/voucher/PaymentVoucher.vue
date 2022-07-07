@@ -412,7 +412,9 @@
               </div>
             </v-col>
             <v-col class="d-flex justify-center">
-              <div class="text-subtitle-1 font-weight-bold">VOUCHER</div>
+              <div class="text-subtitle-1 font-weight-bold">
+                PAYMENT VOUCHER
+              </div>
             </v-col>
             <v-col>
               <table width="100%">
@@ -456,12 +458,13 @@
                         </tr>
                       </table>
                     </td>
-                    <td class="text-right">
+                    <!-- <td class="text-right">
                       <table class="float-right">
                         <tr>
                           <td>
                             <span>REF #: </span><br />
-                            <span>Date: </span><br /><br /><br />
+                            <span>Date:</span><br />
+                            <span>REF #: </span><br /><br /><br />
                           </td>
                           <td>
                             <span class="font-weight-bold">
@@ -474,7 +477,26 @@
                             >
                             <br /><br /><br />
                           </td>
-                        </tr>
+                      </table>
+                    </td> -->
+                    <td class="text-right pt-2">
+                      <table class="float-right">
+                        <td class="text-left">
+                          <span>REF #: </span><br />
+                          <span>Date : </span><br />
+                          <span>Cheque #:</span><br /><br /><br />
+                        </td>
+                        <td>
+                          <span class="font-weight-bold">
+                            {{ data.pvDetails.reference_no }} </span
+                          ><br />
+                          <span class="font-weight-bold">
+                            {{
+                              data.pvDetails.date | format("DD/MM/YYYY")
+                            }}</span
+                          >
+                          <br /><br /><br />
+                        </td>
                       </table>
                     </td>
                   </tr>
@@ -516,6 +538,79 @@
                 </template>
               </v-data-table>
             </v-col>
+            <v-col>
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <td class="text-left text-h6">AUTHORITY:</td>
+                  </tr>
+                  <tr>
+                    <td colspan="4">
+                      Certify that the above sum of shillings (in words)
+                      <span class="font-weight-bold">
+                        {{ data.pvDetails.amount_in_words }} only
+                      </span>
+                      is correctly payable to the above-named person and that
+                      the rates of payment/price(s) is/are in accordance without
+                      Regulations/the Terms of the Contract and the funds are
+                      available under the Sub-Vote/Cost Centre and Item quoted
+                      above to meet this payment.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </v-col>
+            <v-col>
+              <table width="100%">
+                <tbody>
+                  <tr>
+                    <td class="text-left">
+                      Prepared By:
+                      <span class="text-uppercase">
+                        {{
+                          data.pvDetails.user
+                            ? data.pvDetails.user.first_name
+                            : ""
+                        }}
+                        {{
+                          data.pvDetails.user
+                            ? data.pvDetails.user.middle_name
+                            : ""
+                        }}
+                        {{
+                          data.pvDetails.user
+                            ? data.pvDetails.user.last_name
+                            : ""
+                        }}
+                      </span>
+                    </td>
+                    <td class="text-left">Approved By:</td>
+                    <td class="text-left">Authorized By:</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left pt-10"><hr width="80%" /></td>
+                    <td class="text-left pt-10"><hr width="80%" /></td>
+                    <td class="text-left pt-10"><hr width="80%" /></td>
+                  </tr>
+                  <tr>
+                    <td class="text-left">Signature</td>
+                    <td class="text-left">Signature</td>
+                    <td class="text-left">Signature</td>
+                  </tr>
+                  <tr>
+                    <td class="text-left pt-10">
+                      Date: ..............................
+                    </td>
+                    <td class="text-left pt-10">
+                      Date: ..............................
+                    </td>
+                    <td class="text-left pt-10">
+                      Date: ..............................
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </v-col>
             <v-col class="pt-10">
               <table width="100%">
                 <tbody>
@@ -535,16 +630,10 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn
-            class="pb-5"
-            color="red darken-1"
-            text
-            @click="cancelPreviewDialog"
-          >
+          <v-btn color="red darken-1" text @click="cancelPreviewDialog">
             Cancel
           </v-btn>
           <v-btn
-            class="pb-5"
             color="green darken-1"
             text
             @click="printPaymentVoucher(data.pvDetails.id)"

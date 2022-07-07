@@ -23,7 +23,11 @@
           {{ message.title }}
         </p>
         <ul v-if="typeof message.error === 'object'">
-          <li v-for="(entry, index) in message.error" :key="index" :class="message.class">
+          <li
+            v-for="(entry, index) in message.error"
+            :key="index"
+            :class="message.class"
+          >
             {{ entry }}
           </li>
         </ul>
@@ -35,7 +39,9 @@
       </v-col>
     </v-row>
     <template v-slot:action="{ attrs }">
-      <v-btn :class="message.class" text v-bind="attrs" @click="dismiss">Close</v-btn>
+      <v-btn :class="message.class" text v-bind="attrs" @click="dismiss"
+        >Close</v-btn
+      >
     </template>
   </v-snackbar>
 </template>
@@ -48,7 +54,7 @@ import store from "@/store";
 
 export default defineComponent({
   setup() {
-    let { show, message } = useState(["show", "message"]);
+    const { show, message } = useState(["show", "message"]);
 
     let data = reactive({
       timeout: 10000,
