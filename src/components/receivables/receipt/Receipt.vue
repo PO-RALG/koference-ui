@@ -439,6 +439,7 @@
                     <v-text-field
                       outlined
                       v-mask="toMoney"
+                      label="Amount"
                       v-model="data.receipt.items[index].amount"
                     >
                     </v-text-field>

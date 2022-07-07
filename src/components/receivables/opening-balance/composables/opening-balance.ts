@@ -3,7 +3,7 @@ import {AxiosResponse} from "axios";
 
 import {OpeningBalance} from "../types/OpeningBalance";
 import {Item} from "../types/items";
-import {create, get} from "../services/opening.balance.service";
+import {create, get,destroy} from "../services/opening.balance.service";
 import {get as getBankAccounts} from "@/components/setup/bank-account/services/bank-account.service";
 import {getFundingSourceList} from "@/components/receivables/receipt/services/receipt-service";
 
@@ -46,7 +46,10 @@ export const useOpeningBalance = (): any => {
         align: "end",
         sortable: false,
         value: "amount"
-      }
+      },
+      { text: "Actions",
+        value: "actions",
+        sortable: false },
     ],
     modal: false,
     deletemodal: false,
@@ -115,6 +118,7 @@ export const useOpeningBalance = (): any => {
   const removeItem = (index: number) => {
     data.formData.items.splice(index, 1);
   };
+
   const openDialog = () => {
     data.formData = {
       items: [{funding_source_id: 1999, amount: 0.0}],
@@ -136,6 +140,13 @@ export const useOpeningBalance = (): any => {
       cancelDialog();
     });
   };
+
+  const  reverse = (id: number)=>{
+    destroy(id).then((response) => {
+      console.log("reversed  Opening Balance", response.data.data);
+      reloadData();
+    });
+  }
 
   const getData = (params: any) => {
     data.response = params;
@@ -165,5 +176,6 @@ export const useOpeningBalance = (): any => {
     addItem,
     removeItem,
     totalAmount,
+    reverse
   };
 };
