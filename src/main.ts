@@ -23,15 +23,12 @@ import "@/components/shared";
 import capitalize from "@/helpers/FormatHelper";
 import getCurrentUser from "@/helpers/CurrentUserHelper";
 
-const BASE_URLS = [
-  process.env.VUE_APP_SERVER1_URL,
-  process.env.VUE_APP_SERVER2_URL,
-];
+const BASE_URLS = [process.env.VUE_APP_SERVER1_URL];
 
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 
-axios.defaults.baseURL = _.sample(BASE_URLS);
+axios.defaults.baseURL = process.env.VUE_APP_SERVER1_URL;
 
 axios.defaults["isLoading"] = true;
 const cancelSource = axios.CancelToken.source();
