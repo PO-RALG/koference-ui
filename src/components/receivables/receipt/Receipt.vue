@@ -123,7 +123,7 @@
               <v-radio-group v-model="data.receiptType" row @change="resetData">
                 <v-radio label="CASH" :value="cashType"></v-radio>
                 <v-radio label="INVOICE" :value="invoiceType"></v-radio>
-                <!-- <v-radio label="DEPOSIT" :value="depositType"></v-radio> -->
+                <v-radio label="DEPOSIT" :value="depositType"></v-radio>
               </v-radio-group>
               <v-row>
                 <!-- Start invoice -->
