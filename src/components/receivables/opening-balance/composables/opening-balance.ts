@@ -1,11 +1,12 @@
-import {computed, onMounted, reactive} from "@vue/composition-api";
-import {AxiosResponse} from "axios";
+import { computed, onMounted, reactive } from "@vue/composition-api";
+import { AxiosResponse } from "axios";
 
-import {OpeningBalance} from "../types/OpeningBalance";
-import {Item} from "../types/items";
-import {create, get,destroy} from "../services/opening.balance.service";
-import {get as getBankAccounts} from "@/components/setup/bank-account/services/bank-account.service";
-import {getFundingSourceList} from "@/components/receivables/receipt/services/receipt-service";
+import { OpeningBalance } from "../types/OpeningBalance";
+import { Item } from "../types/items";
+import { create, get, destroy } from "../services/opening.balance.service";
+import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
+import { getFundingSourceList } from "@/components/receivables/receipt/services/receipt-service";
+import stringToCurrency from "@/filters/money-to-number";
 
 export const useOpeningBalance = (): any => {
   const dataItems: Array<OpeningBalance> = [];
@@ -21,7 +22,7 @@ export const useOpeningBalance = (): any => {
         text: "Date",
         align: "start",
         sortable: false,
-        value: "date"
+        value: "date",
       },
       {
         text: "Bank Account Name",
@@ -39,17 +40,15 @@ export const useOpeningBalance = (): any => {
         text: "Legal Number",
         align: "start",
         sortable: false,
-        value: "op_number"
+        value: "op_number",
       },
       {
         text: "Amount",
         align: "end",
         sortable: false,
-        value: "amount"
+        value: "amount",
       },
-      { text: "Actions",
-        value: "actions",
-        sortable: false },
+      { text: "Actions", value: "actions", sortable: false },
     ],
     modal: false,
     deletemodal: false,
@@ -65,46 +64,48 @@ export const useOpeningBalance = (): any => {
   });
 
   onMounted(() => {
-    get({per_page: 10}).then((response: AxiosResponse) => {
-      const {from, to, total, current_page, per_page, last_page} =
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
-      data.response = {from, to, total, current_page, per_page, last_page};
+      data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data;
       data.itemsToFilter = response.data.data;
     });
-    getBankAccounts({per_page: 2000}).then((response: AxiosResponse) => {
+    getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
     });
-    getFundingSourceList({per_page: 2000}).then((response: AxiosResponse) => {
+    getFundingSourceList({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.fundingsources = response.data.data.data;
     });
   });
 
   const totalAmount = computed(() => {
-    return data.formData.items.reduce((sum: number, item: Item) => {
-      const totalAmount = item.amount ? +item.amount : 0;
+    return data.formData.items.reduce((sum: number, item: any) => {
+      console.log("items", item);
+      const totalAmount = item.amount ? +stringToCurrency(item.amount) : 0;
+
       return +sum + +totalAmount;
     }, 0);
   });
 
   const reloadData = () => {
-    get({per_page: 10}).then((response: AxiosResponse) => {
-      const {from, to, total, current_page, per_page, last_page} =
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
-      data.response = {from, to, total, current_page, per_page, last_page};
+      data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data;
     });
-    getBankAccounts({per_page: 2000}).then((response: AxiosResponse) => {
+    getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
     });
-    getFundingSourceList({per_page: 2000}).then((response: AxiosResponse) => {
+    getFundingSourceList({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.fundingsources = response.data.data.data;
     });
   };
 
   const cancelDialog = () => {
     data.formData = {
-      items: [{funding_source_id: 1999, amount: 0.0}],
+      items: [{ funding_source_id: 1999, amount: 0.0 }],
     };
     data.modal = !data.modal;
   };
@@ -121,7 +122,7 @@ export const useOpeningBalance = (): any => {
 
   const openDialog = () => {
     data.formData = {
-      items: [{funding_source_id: 1999, amount: 0.0}],
+      items: [{ funding_source_id: 1999, amount: 0 }],
     };
     data.modalTitle = "Add Opening Balance";
 
@@ -134,19 +135,56 @@ export const useOpeningBalance = (): any => {
   };
 
   const createOpeningBalance = (data: any) => {
-    create(data).then((response) => {
+    const items = data.items.map((entry) => ({
+      ...entry,
+      amount: stringToCurrency(entry.amount),
+    }));
+    const dataToSave = {
+      ...data,
+      items: items,
+    };
+
+    create(dataToSave).then((response) => {
       console.log("Added Opening Balance", response.data.data);
       reloadData();
       cancelDialog();
     });
   };
 
-  const  reverse = (id: number)=>{
+  const reverse = (id: number) => {
     destroy(id).then((response) => {
       console.log("reversed  Opening Balance", response.data.data);
       reloadData();
     });
-  }
+  };
+
+  const filterFundSource = () => {
+    if (data.searchTerm.length >= 3) {
+      getFundingSourceList({ regSearch: data.searchTerm }).then(
+        (response: AxiosResponse) => {
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
+          data.fundingsources = response.data.data.data;
+        }
+      );
+    }
+    if (data.searchTerm.length === 0) {
+      getFundingSourceList({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.fundingsources = response.data.data.data;
+      });
+    }
+  };
 
   const getData = (params: any) => {
     data.response = params;
@@ -154,15 +192,15 @@ export const useOpeningBalance = (): any => {
       data.response = response.data;
       data.items = response.data.data;
     });
-    getBankAccounts({per_page: 2000}).then((response: AxiosResponse) => {
+    getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
     });
-    getFundingSourceList({per_page: 2000}).then((response: AxiosResponse) => {
+    getFundingSourceList({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.fundingsources = response.data.data.data;
     });
     data.formData.items = [
-      {funding_source_id: 1, amount: 0.0},
-      {funding_source_id: 2, amount: 0.3},
+      { funding_source_id: 1, amount: 0.0 },
+      { funding_source_id: 2, amount: 0.3 },
     ];
   };
 
@@ -176,6 +214,7 @@ export const useOpeningBalance = (): any => {
     addItem,
     removeItem,
     totalAmount,
-    reverse
+    reverse,
+    filterFundSource,
   };
 };

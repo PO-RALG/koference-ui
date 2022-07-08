@@ -17,7 +17,6 @@
         disable-pagination
         hide-default-footer
       >
-
         <template v-slot:[`item.date`]="{ item }">
           <span>{{ item.date | format("DD/MM/YYYY") }}</span>
         </template>
@@ -34,7 +33,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on" @click="reverse(item.id)"
-              >mdi-trash-can-outline</v-icon
+                >mdi-trash-can-outline</v-icon
               >
             </template>
             <span>Reverse</span>
@@ -51,19 +50,14 @@
     </v-card>
     <Modal :modal="data.modal" :width="1200">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle}`"/>
+        <ModalHeader :title="`${data.modalTitle}`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
           <v-form v-model="data.valid">
             <v-container>
               <v-row align="center">
-                <v-col
-                  class="d-flex"
-                  cols="12"
-                  sm="6"
-                >
-
+                <v-col class="d-flex" cols="12" sm="6">
                   <v-select
                     v-model="data.formData.bank_account_id"
                     :items="data.bankaccounts"
@@ -75,7 +69,6 @@
                     required
                   >
                   </v-select>
-
                 </v-col>
 
                 <v-col cols="12" md="6" sm="12">
@@ -95,24 +88,49 @@
                 </v-col>
               </v-row>
 
-
               <v-card>
                 <v-card-title class="blue-grey darken-1">
                   <span class="text-h5 white--text">Amount By Fund Source</span>
                   <v-spacer></v-spacer>
                 </v-card-title>
                 <v-container pa-5 ma-5>
-                  <v-row v-for="(item, index) of  data.formData.items" :key="item.id" align="center">
+                  <v-row
+                    v-for="(item, index) of data.formData.items"
+                    :key="item.id"
+                    align="center"
+                  >
                     <v-col cols="10" md="7" class="d-flex">
                       <v-select
-                        v-model="data.formData.items[index].funding_source_id"
                         :items="data.fundingsources"
-                        item-value="id"
-                        item-text="description"
+                        :item-text="'description'"
+                        v-model="data.formData.items[index].funding_source_id"
+                        :name="`data.receipt.items[${index}]`"
                         label="Select Fund Source"
+                        item-value="id"
                         outlined
-                        required
+                        item-disabled="disabled"
                       >
+                        <template v-slot:selection="{ item }">
+                          {{ item.description }} {{ "-" }} {{ item.code }}
+                        </template>
+                        <template v-slot:item="{ item }">
+                          {{ item.description }} {{ "-" }} {{ item.code }}
+                        </template>
+                        <template v-slot:prepend-item>
+                          <v-list-item>
+                            <v-list-item-content>
+                              <v-text-field
+                                clearable
+                                outlined
+                                dense
+                                label="Search Fund Source"
+                                v-model="data.searchTerm"
+                                @input="filterFundSource"
+                              ></v-text-field>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-divider></v-divider>
+                        </template>
                       </v-select>
                     </v-col>
                     <v-col cols="10" md="3">
@@ -121,42 +139,39 @@
                         label="Amount"
                         outlined
                         required
+                        v-mask="toMoney"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="1" md="1">
-                      <span v-if="(index != data.formData.items.length - 1) && data.formData.items.length > 1 ">
-                      <v-btn color="grey darken-2" text @click="removeItem(index)">
-
-                        <v-icon
-                          dark
-                          left
+                      <span
+                        v-if="
+                          index != data.formData.items.length - 1 &&
+                          data.formData.items.length > 1
+                        "
+                      >
+                        <v-btn
+                          color="grey darken-2"
+                          text
+                          @click="removeItem(index)"
                         >
-                          mdi-minus-circle
-                        </v-icon>Remove
-                      </v-btn>
-                        </span>
+                          <v-icon dark left> mdi-minus-circle </v-icon>Remove
+                        </v-btn>
+                      </span>
                       <span v-if="index == data.formData.items.length - 1">
-                      <v-btn color="green darken-2" text @click="addItem">
-
-                        <v-icon
-                          dark
-                          left
-                        >
-                          mdi-plus-circle
-                        </v-icon>add
-                      </v-btn>
-                        </span>
+                        <v-btn color="green darken-2" text @click="addItem">
+                          <v-icon dark left> mdi-plus-circle </v-icon>add
+                        </v-btn>
+                      </span>
                     </v-col>
-
                   </v-row>
 
                   <v-row align="center">
                     <v-col cols="10" md="7">
-                      Total Amount:
+                      <strong> Total Amount:</strong>
                     </v-col>
-                    <v-col cols="10" md="3">
-                      {{ totalAmount }}
+                    <v-col cols="10" md="3" class="pa-1">
+                      <strong> {{ totalAmount | toCurrency() }} </strong>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -169,7 +184,7 @@
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
           <v-btn color="blue darken-1" text @click="save"
-          >{{ data.modalTitle }}
+            >{{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
       </template>
@@ -178,9 +193,9 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from "@vue/composition-api";
-
-import {useOpeningBalance} from "./composables/opening-balance";
+import { defineComponent } from "@vue/composition-api";
+import { useOpeningBalance } from "./composables/opening-balance";
+import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({
   name: "OpeningBalance",
@@ -195,7 +210,8 @@ export default defineComponent({
       addItem,
       removeItem,
       totalAmount,
-      reverse
+      reverse,
+      filterFundSource,
     } = useOpeningBalance();
 
     return {
@@ -208,7 +224,9 @@ export default defineComponent({
       removeItem,
       reloadData,
       totalAmount,
-      reverse
+      reverse,
+      filterFundSource,
+      toMoney,
     };
   },
 });
