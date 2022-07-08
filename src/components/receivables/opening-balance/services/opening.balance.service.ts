@@ -16,4 +16,8 @@ const create = async (payload: any) => {
   return await axios.post(`${API}`, payload);
 };
 
-export { get, find, create };
+const destroy = async (id: string | number) => {
+  return await axios.delete(`${API}/${id}`);
+};
+
+export { get, find, create,destroy };

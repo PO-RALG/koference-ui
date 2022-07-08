@@ -30,7 +30,16 @@
         <template v-slot:[`item.amount`]="{ item }">
           <span>{{ item.amount }}</span>
         </template>
-
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon v-bind="attrs" v-on="on" @click="reverse(item.id)"
+              >mdi-trash-can-outline</v-icon
+              >
+            </template>
+            <span>Reverse</span>
+          </v-tooltip>
+        </template>
         <template v-slot:footer>
           <Paginate
             :params="data.response"
@@ -185,7 +194,8 @@ export default defineComponent({
       save,
       addItem,
       removeItem,
-      totalAmount
+      totalAmount,
+      reverse
     } = useOpeningBalance();
 
     return {
@@ -197,7 +207,8 @@ export default defineComponent({
       addItem,
       removeItem,
       reloadData,
-      totalAmount
+      totalAmount,
+      reverse
     };
   },
 });

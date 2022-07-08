@@ -14,3 +14,13 @@ export interface Account {
   totalExpenditure: number;
   balance: number;
 }
+
+export  enum VOUCHER_TYPE {
+  "NORMAL" = 1,
+  "DEPOSIT" = 3
+}
+export interface Payable {
+  gl_account_id:number
+  amount:number
+}
+

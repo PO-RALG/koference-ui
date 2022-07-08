@@ -14,17 +14,20 @@ import {
 import stringToCurrency from "@/filters/money-to-number";
 
 import { get as getFundSources } from "@/components/coa/funding-source/services/funding-sources";
-import { PaymentVoucher, Account } from "../types/PaymentVoucher";
+import {PaymentVoucher, Account, VOUCHER_TYPE, Payable} from "../types/PaymentVoucher";
 import { get as getSupplier } from "@/components/payable/supplier/services/supplier.services";
 import { get as getActivity } from "@/components/planning/activity/services/activity.service";
 import { getBudget } from "@/components/payable/fund-allocation/services/fund-allocation.services";
 import { Activity } from "@/components/planning/activity/types/Activity";
 import { FundSources } from "@/components/coa/funding-source/types/index";
 import moment from "moment";
+import {RECEIPT_TYPE} from "@/components/receivables/receipt/types";
+import {getGlAccounts} from "@/components/receivables/receipt/services/receipt-service";
 
 export const usePaymentVoucher = (): any => {
   const dataItems: Array<PaymentVoucher> = [];
   const paymentVoucherData = {} as PaymentVoucher;
+  const payables = []; //:Payable[]
   const activityItem = {} as Activity;
   const fundSourceItem = {} as FundSources;
 
@@ -92,6 +95,7 @@ export const usePaymentVoucher = (): any => {
     items: dataItems,
     itemsToFilter: [],
     formData: paymentVoucherData,
+    payables: payables,
     params: {
       total: 100,
       size: 10,
@@ -106,10 +110,12 @@ export const usePaymentVoucher = (): any => {
     gfsCodes: [],
     fundingSources: [],
     accounts: [],
-    payables: [],
     coat: "/coat_of_arms.svg.png",
     pvDetails: { printDate: "" },
     paymentVoucherModal: false,
+    voucherType: VOUCHER_TYPE.NORMAL,
+    depositAccounts:[],
+
   });
 
   onMounted(() => {
@@ -177,6 +183,15 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  const resetData = ()=> {
+    if(data.voucherType == VOUCHER_TYPE.NORMAL){
+      data.payables = [];
+    }else if(data.voucherType == VOUCHER_TYPE.DEPOSIT){
+      data.payables = [{id : null, amount : 0.00}];
+    }
+
+  }
+
   const openConfirmDialog = (deleteId: string) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
@@ -221,12 +236,29 @@ export const usePaymentVoucher = (): any => {
     data.searchTerm = "";
     getSupplierData();
     getFundingSources();
+    loadDepositAccounts();
     data.payables = [];
     data.accounts = [];
     data.fundingSources = [];
     data.gfsCodes = [];
     data.modal = !data.modal;
   };
+  const loadDepositAccounts = async () => {
+    const params = {
+      gl_account_type: "DEPOSIT",
+    };
+
+    getGlAccounts({ search: { ...params } }).then((response: AxiosResponse) => {
+      data.depositAccounts = response.data.data.data;
+      if (response.data.data.data.length > 0) {
+        /*   data.depositAccounts = response.data.data.data.map((account) => ({
+             ...account,
+             displayName: account.code,
+           }));*/
+      }
+    });
+  };
+
 
   const createVoucher = (data: PaymentVoucher) => {
     create(data).then(() => {
@@ -356,6 +388,8 @@ export const usePaymentVoucher = (): any => {
     data.payables.splice(index, 1);
   };
 
+
+
   const payableHeader = [
     {
       text: "Item",
@@ -439,6 +473,16 @@ export const usePaymentVoucher = (): any => {
     return data.activities;
   });
 
+  const isNormal = computed(() => {
+    return data.voucherType == VOUCHER_TYPE.NORMAL;
+  });
+  const isDeposit = computed(() => {
+    return data.voucherType == VOUCHER_TYPE.DEPOSIT;
+  });
+
+  const normalType = VOUCHER_TYPE.NORMAL;
+  const depositType = RECEIPT_TYPE.DEPOSIT;
+
   return {
     data,
     openDialog,
@@ -468,5 +512,10 @@ export const usePaymentVoucher = (): any => {
     filterActivities,
     activities,
     searchFundSource,
+    isNormal,
+    isDeposit,
+    depositType,
+    normalType,
+    resetData
   };
 };

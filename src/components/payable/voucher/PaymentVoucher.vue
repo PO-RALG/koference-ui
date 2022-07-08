@@ -99,6 +99,11 @@
       <template v-slot:body>
         <ModalBody v-if="data.formData">
           <v-form v-model="data.valid">
+            <span>Select Receipt Type</span>
+            <v-radio-group v-model="data.voucherType" row  @change = 'resetData'>
+              <v-radio label="NORMAL VOUCHER" :value="normalType"></v-radio>
+              <v-radio label="DEPOSIT VOUCHER" :value="depositType"></v-radio>
+            </v-radio-group>
             <v-container>
               <v-row class="pt-5 pl-5 pr-5">
                 <v-col cols="12" md="6" sm="12">
@@ -146,6 +151,10 @@
                   </v-textarea>
                 </v-col>
               </v-row>
+
+
+              <!-- for normal voucher --->
+            <v-container  v-if="isNormal">
               <v-row class="pl-3 pr-5 mt-n8">
                 <v-col md="4" sm="12" cols="12">
                   <v-select
@@ -303,6 +312,40 @@
                   </v-data-table>
                 </v-col>
               </template>
+            </v-container>
+              <!-- end of section specific for normal voucher  -->
+              <!-- start of deposit voucher -->
+              <!-- deposit start  --->
+              <v-container  v-if="isDeposit">
+                <v-row v-for="(item, index) in data.payables" :key="item.id">
+                  <v-col cols="9" md="9" class="d-flex">
+
+                    <v-select
+                      v-model="data.payables[index].id"
+                      :items="data.depositAccounts"
+                      item-value="id"
+                      name="description"
+                      item-text="description"
+                      label="Select account"
+                      outlined
+                      required
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="3" md="3">
+
+                    <v-text-field
+                      outlined
+                      v-mask="toMoney"
+                      v-model="data.payables[index].amount"
+                      label="Amount"
+                    >
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <!-- deposity end -->
+              <!-- end of details for deposit voucher -->
             </v-container>
           </v-form>
         </ModalBody>
@@ -642,6 +685,11 @@ export default defineComponent({
       activities,
       searchFundSource,
       loadBudget,
+      isNormal,
+      isDeposit,
+      depositType,
+      normalType,
+      resetData
     } = usePaymentVoucher();
 
     return {
@@ -676,6 +724,11 @@ export default defineComponent({
       activities,
       searchFundSource,
       loadBudget,
+      isNormal,
+      isDeposit,
+      depositType,
+      normalType,
+      resetData
     };
   },
 });

@@ -15,7 +15,7 @@
       clearable
       v-model="data.showInfo"
     >
-      <img class="img_top_info" :src="info" />
+      <!-- <img class="img_top_info" :src="info" /> -->
 
       <v-icon x-large color="white"> mdi-hand-pointing-right </v-icon>
       <a href="https://ffars.tamisemi.go.tz/" target="_blank">
