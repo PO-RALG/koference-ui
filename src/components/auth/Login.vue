@@ -1,7 +1,7 @@
 <template>
   <v-app
     justify-center
-    class="grey lighten-3 pa-2 text-center main-body"
+    class="grey lighten-3 pa-0 text-center main-body"
     fluid
     fill-height
   >
@@ -28,7 +28,7 @@
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
           <v-col cols="8" sm="8" md="7">
-            <v-row class="mb-6 pa-0" justify="center">
+            <v-row class="mb-0 pa-0" justify="center">
               <v-col md="auto">
                 <v-flex class="col-md12">
                   <v-row class="mb-0 pa-0" justify="center" no-gutters>
@@ -46,14 +46,19 @@
                 </v-flex>
               </v-col>
             </v-row>
-            <v-card height="fit" class="elevation-8 pa-0">
+            <v-card height="fit" class="elevation-8 pa-n16">
               <v-row
                 dense
                 class="mr-0 ml-0 mr-0 ml-0"
                 v-if="data.slides.length > 0"
               >
                 <!-- class="d-none d-md-flex d-lg-none d-none d-lg-flex d-xl-none d-none " -->
-                <v-col md="6" cols="12" sm="12" class="pa-0">
+                <v-col
+                  md="6"
+                  cols="12"
+                  sm="12"
+                  class="d-none d-md-flex d-lg-none d-none d-lg-flex"
+                >
                   <v-carousel
                     cycle
                     hide-delimiters
@@ -73,13 +78,15 @@
                 <v-col md="6" cols="12" sm="12">
                   <!-- <v-col cols="12" md="4" sm="12"> -->
                   <v-card-text class>
-                    <img :src="data.coat" class="login-logo" />
+                    <v-row class="mb-0 pa-0" justify="center" no-gutters>
+                      <img :src="data.coat" class="login-logo"
+                    /></v-row>
                     <h2 class="text-center pa-6 login-header" color="primary">
                       LOGIN to your account
                     </h2>
-                    <h4 class="siteName pa-0 pb-4" v-if="isDemo()">
-                      ({{ data.siteName }})
-                    </h4>
+                    <v-row class="mb-0 pa-0" justify="center" no-gutters>
+                      <h4 class="siteName pa-0 pb-4">({{ data.siteName }})</h4>
+                    </v-row>
                     <v-form
                       ref="form"
                       v-model="data.valid"
@@ -105,7 +112,7 @@
                         outlined
                         class="mr-3 ml-3"
                       ></v-text-field>
-                      <v-card-actions class="mr-1 ml-3 mt-n4">
+                      <v-card-actions class="mr-1 ml-0 mt-n4">
                         <v-btn
                           x-small
                           class="mx-2 d-none d-sm-flex ml-0"
