@@ -15,7 +15,7 @@
       clearable
       v-model="data.showInfo"
     >
-      <!-- <img class="img_top_info" :src="info" /> -->
+      <img class="img_top_info" :src="info" />
 
       <v-icon x-large color="white"> mdi-hand-pointing-right </v-icon>
       <a href="https://ffars.tamisemi.go.tz/" target="_blank">
@@ -28,23 +28,21 @@
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
           <v-col cols="8" sm="8" md="7">
-            <v-row class="mb-6 pa-0" justify="center" no-gutters>
+            <v-row class="mb-6 pa-0" justify="center">
               <v-col md="auto">
                 <v-flex class="col-md12">
-                  <h4 class="white--text">
-                    <strong> {{ "THE UNITED REPUBLIC OF TANZANIA" }}</strong>
-                  </h4>
+                  <v-row class="mb-0 pa-0" justify="center" no-gutters>
+                    <h4 class="white--text">
+                      <strong>
+                        {{ "THE UNITED REPUBLIC OF TANZANIA" }}
+                      </strong>
+                    </h4>
+                  </v-row>
                   <h4 class="white--text">
                     {{
                       "FACILITY FINANCIAL ACCOUNTING AND REPORTING SYSTEM (FFARS)"
                     }}
                   </h4>
-                  <v-layout
-                    justify-center
-                    class="white--text font-weight-light"
-                  >
-                    <br />
-                  </v-layout>
                 </v-flex>
               </v-col>
             </v-row>
@@ -137,26 +135,27 @@
                 <!-- login form end -->
               </v-row>
             </v-card>
-            <div class="pt-3">
-              <small class="white--text">
-                {{ "Copyright" }}
-              </small>
-              <small class="white--text">
-                {{ " ©2022 PORALG" }}
-              </small>
-              <small class="white--text">
-                {{ ". All right reserved." }}
-              </small>
-              <small class="white--text">
-                <strong>{{ " FFARS v 2.0 ." }}</strong>
-              </small>
+            <div class="pt-5">
               <v-row class="mb-6 pa-0" justify="center" no-gutters>
+                <small class="white--text">
+                  {{ "Copyright" }}
+                </small>
+                <small class="white--text">
+                  {{ " ©2022 PORALG" }}
+                </small>
+                <small class="white--text">
+                  {{ ". All right reserved." }}
+                </small>
+                <small class="white--text">
+                  <strong>{{ " FFARS v 2.0 ." }}</strong>
+                </small>
                 <small class="white--text">
                   {{
                     "For any Technical inquiry, please contact your ICT Support Team ."
                   }}
                 </small>
               </v-row>
+              <v-row class="mb-n8 pa-0" justify="center" no-gutters> </v-row>
             </div>
           </v-col>
           <v-col cols="8" sm="8" md="7">
