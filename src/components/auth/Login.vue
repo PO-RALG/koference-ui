@@ -15,8 +15,6 @@
       clearable
       v-model="data.showInfo"
     >
-      <img class="img_top_info" :src="info" />
-
       <v-icon x-large color="white"> mdi-hand-pointing-right </v-icon>
       <a href="https://ffars.tamisemi.go.tz/" target="_blank">
         <span class="white--text">
@@ -90,7 +88,7 @@
                     <v-form
                       ref="form"
                       v-model="data.valid"
-                      @submit.prevent="login"
+                      @submit.prevent="loginUser"
                     >
                       <v-text-field
                         prepend-inner-icon="mdi-account-box"
@@ -183,8 +181,10 @@ import router from "@/router";
 
 export default Vue.extend({
   props: ["source", "query"],
+
   setup(props) {
     const query = props.query;
+
     let data = reactive({
       model: 0,
       siteName: "",
@@ -214,7 +214,7 @@ export default Vue.extend({
       });
     });
 
-    const login = () => {
+    const loginUser = () => {
       const payload = {
         email: data.email,
         password: data.password,
@@ -232,7 +232,7 @@ export default Vue.extend({
     };
 
     return {
-      login,
+      loginUser,
       data,
     };
   },

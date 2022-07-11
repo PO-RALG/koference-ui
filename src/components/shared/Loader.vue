@@ -11,12 +11,12 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import { createNamespacedHelpers } from "vuex-composition-helpers";
-const { useState } = createNamespacedHelpers("Loader");
+import { useState } from "vuex-composition-helpers";
+import store from "@/store";
 
 export default defineComponent({
   setup() {
-    const { loading } = useState(["loading"]);
+    const { loading } = useState(store, "Loader", ["loading"]);
     return {
       loading,
     };
