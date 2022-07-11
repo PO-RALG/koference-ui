@@ -1,7 +1,10 @@
 import Vue from "vue";
 
 Vue.component("TreeBrowser", () => import("./tree-browser/TreeBrowser.vue"));
-Vue.component("ReportTreeBrowser", () => import("./report-tree/ReportTreeBrowser.vue"));
+Vue.component(
+  "ReportTreeBrowser",
+  () => import("./report-tree/ReportTreeBrowser.vue")
+);
 Vue.component("InfoDialog", () => import("./info-dialog/InfoDialog.vue"));
 Vue.component("Fetcher", () => import("./form/Fetcher.vue"));
 Vue.component("DualMultiSelect", () => import("./DualMultiSelect.vue"));

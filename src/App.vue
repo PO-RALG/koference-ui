@@ -13,7 +13,7 @@ import SnackBar from "@/components/shared/SnackBar.vue";
 export default defineComponent({
   components: {
     SnackBar,
-  }
+  },
 });
 </script>
 

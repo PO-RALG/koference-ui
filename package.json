@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.172",
-    "@vue/composition-api": "^1.1.1",
+    "@vue/composition-api": "1.1.1",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "jspdf": "^2.3.1",
@@ -19,7 +19,7 @@
     "moment": "^2.29.1",
     "text-mask-addons": "^3.8.0",
     "v-mask": "^2.3.0",
-    "vue": "^2.6.11",
+    "vue": "2.6.14",
     "vue-axios": "^3.2.5",
     "vue-class-component": "^7.2.3",
     "vue-currency-input": "^2.1.2",
@@ -34,7 +34,7 @@
     "vuetify": "^2.4.0",
     "vuetify-mask": "^1.1.2",
     "vuex": "^3.4.0",
-    "vuex-composition-helpers": "^1.0.23"
+    "vuex-composition-helpers": "^1.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
@@ -61,7 +61,7 @@
     "sass-loader": "^10.0.0",
     "typescript": "~4.1.5",
     "vue-cli-plugin-vuetify": "~2.4.2",
-    "vue-template-compiler": "^2.6.11",
+    "vue-template-compiler": "2.6.14",
     "vuetify-loader": "^1.7.0",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.9.2",
