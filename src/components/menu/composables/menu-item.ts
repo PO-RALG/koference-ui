@@ -175,7 +175,7 @@ export const useMenuItems = (): any => {
 
     getResourceCategories({ categories: true }).then((response: AxiosResponse) => {
       data.categories = response.data.data;
-      data.categoryOptions = response.data.data.map((entry) => {
+      data.categoryOptions = response.data.data.data.map((entry) => {
         return entry.category;
       });
     });
