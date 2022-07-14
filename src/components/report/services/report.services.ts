@@ -31,7 +31,7 @@ const printReport = async (reportID: number, payload?: any) => {
   const currentUser = await getCurrentUser();
   const token = currentUser.token;
   const query = serializeParams(payload);
-  const url = `${process.env.VUE_APP_SERVER_URL}/${API}/${reportID}/print?${query}&token=${token}`;
+  const url = `${process.env.VUE_APP_SERVER2_URL}/${API}/${reportID}/print?${query}&token=${token}`;
   return window.open(url);
 };
 
