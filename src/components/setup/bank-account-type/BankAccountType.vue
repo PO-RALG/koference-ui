@@ -67,7 +67,7 @@
                 :disabled="cant('delete', 'BankAccountType')"
                 v-bind="attrs"
                 v-on="on"
-                @click="deleteCustomer(item.id)"
+                @click="deleteBankAccountType(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -168,7 +168,7 @@ export default defineComponent({
       getData,
       openDialog,
       cancelDialog,
-      deleteCustomer,
+      deleteBankAccountType,
       save,
       reloadData,
       remove,
@@ -182,7 +182,7 @@ export default defineComponent({
       getData,
       openDialog,
       cancelDialog,
-      deleteCustomer,
+      deleteBankAccountType,
       save,
       reloadData,
       remove,

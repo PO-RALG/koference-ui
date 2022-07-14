@@ -78,6 +78,7 @@ export const useBankAccountType = (): any => {
   const deleteBankAccountType = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
+    remove();
   };
 
   const cancelDialog = () => {
