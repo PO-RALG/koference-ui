@@ -122,8 +122,8 @@ const routes: Array<RouteConfig> = [
       ...approvalRoleRoutes,
       ...approvalStatusRoutes,
       ...approvalUserRoutes,
-      ...notFoundRoute,
-      ...cashbookRoutes
+      ...cashbookRoutes,
+      ...notFoundRoute
     ],
   },
 ];
