@@ -14,15 +14,20 @@ import {
 import stringToCurrency from "@/filters/money-to-number";
 
 import { get as getFundSources } from "@/components/coa/funding-source/services/funding-sources";
-import {PaymentVoucher, Account, VOUCHER_TYPE, Payable} from "../types/PaymentVoucher";
+import {
+  PaymentVoucher,
+  Account,
+  VOUCHER_TYPE,
+  Payable,
+} from "../types/PaymentVoucher";
 import { get as getSupplier } from "@/components/payable/supplier/services/supplier.services";
 import { get as getActivity } from "@/components/planning/activity/services/activity.service";
 import { getBudget } from "@/components/payable/fund-allocation/services/fund-allocation.services";
 import { Activity } from "@/components/planning/activity/types/Activity";
 import { FundSources } from "@/components/coa/funding-source/types/index";
 import moment from "moment";
-import {RECEIPT_TYPE} from "@/components/receivables/receipt/types";
-import {getGlAccounts} from "@/components/receivables/receipt/services/receipt-service";
+import { RECEIPT_TYPE } from "@/components/receivables/receipt/types";
+import { getGlAccounts } from "@/components/receivables/receipt/services/receipt-service";
 
 export const usePaymentVoucher = (): any => {
   const dataItems: Array<PaymentVoucher> = [];
@@ -114,8 +119,7 @@ export const usePaymentVoucher = (): any => {
     pvDetails: { printDate: "" },
     paymentVoucherModal: false,
     voucherType: VOUCHER_TYPE.NORMAL,
-    depositAccounts:[],
-
+    depositAccounts: [],
   });
 
   onMounted(() => {
@@ -183,14 +187,13 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
-  const resetData = ()=> {
-    if(data.voucherType == VOUCHER_TYPE.NORMAL){
+  const resetData = () => {
+    if (data.voucherType == VOUCHER_TYPE.NORMAL) {
       data.payables = [];
-    }else if(data.voucherType == VOUCHER_TYPE.DEPOSIT){
-      data.payables = [{id : null, amount : 0.00}];
+    } else if (data.voucherType == VOUCHER_TYPE.DEPOSIT) {
+      data.payables = [{ id: null, amount: 0.0 }];
     }
-
-  }
+  };
 
   const openConfirmDialog = (deleteId: string) => {
     data.deletemodal = !data.modal;
@@ -258,7 +261,6 @@ export const usePaymentVoucher = (): any => {
       }
     });
   };
-
 
   const createVoucher = (data: PaymentVoucher) => {
     create(data).then(() => {
@@ -388,8 +390,6 @@ export const usePaymentVoucher = (): any => {
     data.payables.splice(index, 1);
   };
 
-
-
   const payableHeader = [
     {
       text: "Item",
@@ -516,6 +516,6 @@ export const usePaymentVoucher = (): any => {
     isDeposit,
     depositType,
     normalType,
-    resetData
+    resetData,
   };
 };

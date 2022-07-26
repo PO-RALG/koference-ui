@@ -100,7 +100,7 @@
         <ModalBody v-if="data.formData">
           <v-form v-model="data.valid">
             <span>Select Receipt Type</span>
-            <v-radio-group v-model="data.voucherType" row  @change = 'resetData'>
+            <v-radio-group v-model="data.voucherType" row @change="resetData">
               <v-radio label="NORMAL VOUCHER" :value="normalType"></v-radio>
               <v-radio label="DEPOSIT VOUCHER" :value="depositType"></v-radio>
             </v-radio-group>
@@ -152,174 +152,170 @@
                 </v-col>
               </v-row>
 
-
               <!-- for normal voucher --->
-            <v-container  v-if="isNormal">
-              <v-row class="pl-3 pr-5 mt-n8">
-                <v-col md="4" sm="12" cols="12">
-                  <v-select
-                    :items="data.fundingSources"
-                    item-text="code"
-                    label="Select Funding Sources"
-                    @change="getActivities($event)"
-                    outlined
-                    return-object
-                  >
-                    <template v-slot:selection="{ item }">
-                      {{ item.code }} - {{ item.description }}
-                    </template>
-                    <template v-slot:item="{ item }">
-                      {{ item.code }} - {{ item.description }}
-                    </template>
-                    <template v-slot:prepend-item>
-                      <v-list-item>
-                        <v-list-item-content>
-                          <v-text-field
-                            v-model="data.searchTerm"
-                            placeholder="Search"
-                            outlined
-                            @input="searchFundSource"
-                          ></v-text-field>
-                        </v-list-item-content>
-                      </v-list-item>
-                      <v-divider></v-divider>
-                    </template>
-                  </v-select>
-                </v-col>
-                <v-col md="4" sm="12" cols="12">
-                  <v-select
-                    :items="activities"
-                    item-text="name"
-                    label="Select Activity"
-                    @change="searchGfsCodes($event)"
-                    outlined
-                    required
-                  >
-                    <template v-slot:selection="{ item }">
-                      {{ item.code }} - {{ item.description }} ({{
-                        item.sub_budget_class.description
-                      }})
-                    </template>
-                    <template v-slot:item="{ item }">
-                      {{ item.code }} - {{ item.description }} ({{
-                        item.sub_budget_class.description
-                      }})
-                    </template>
-                  </v-select>
-                </v-col>
-                <v-col md="4" sm="12" cols="12">
-                  <v-select
-                    :items="data.gfsCodes"
-                    item-value="code"
-                    item-text="name"
-                    label="Select GFS Code"
-                    outlined
-                    @change="filterGfsCodes($event)"
-                    v-model="data.selectedGfsCodes"
-                  >
-                    <template v-slot:selection="{ item }">
-                      {{ item.code }} - {{ item.name }}
-                    </template>
-                    <template v-slot:item="{ item }">
-                      {{ item.code }} - {{ item.name }}
-                    </template>
-                  </v-select>
-                </v-col>
-                <span
-                  v-if="data.accounts.length && data.selectedGfsCodes"
-                  class="primary--text lighten-5 pl-3 pa-5"
-                >
-                  Click/Select GL to allocate Funds
-                  <v-icon small color="success"> mdi-arrow-down-bold </v-icon>
-                </span>
-              </v-row>
-
-              <template>
-                <v-simple-table v-if="data.selectedGfsCodes">
-                  <template v-slot:default>
-                    <tbody>
-                      <tr v-for="(account, i) in data.accounts" :key="i">
-                        <td
-                          class="py-2"
-                          @click="addPayable(account)"
-                          colspan="2"
-                        >
-                          <span>{{ account.code }}</span>
-                          <br />
-                          <span style="color: teal">
-                            {{ account.description }}
-                          </span>
-                          <br />
-                          <span>
-                            {{
-                              (account.allocation - account.totalExpenditure)
-                                | toCurrency()
-                            }}
-                          </span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-
-                <v-col
-                  cols="12"
-                  md="12"
-                  class="pb-3 pt-7 data-table"
-                  v-if="data.payables.length"
-                >
-                  <v-data-table
-                    :headers="payableHeader"
-                    disable-pagination
-                    hide-default-footer
-                  >
-                    <template v-slot:body>
-                      <tbody>
-                        <tr v-for="(item, i) in data.payables" :key="i">
-                          <td class="pt-5 pb-2">
-                            <span class="text-lg-body-1">{{ item.code }}</span>
-                            <br />
-                            <span style="color: teal">{{
-                              item.description
-                            }}</span>
-                            <br />
-                            <span class="text--primary">{{
-                              item.balance
-                            }}</span>
-                          </td>
-                          <td class="pt-5 pb-2">
+              <v-container v-if="isNormal">
+                <v-row class="pl-3 pr-5 mt-n8">
+                  <v-col md="4" sm="12" cols="12">
+                    <v-select
+                      :items="data.fundingSources"
+                      item-text="code"
+                      label="Select Funding Sources"
+                      @change="getActivities($event)"
+                      outlined
+                      return-object
+                    >
+                      <template v-slot:selection="{ item }">
+                        {{ item.code }} - {{ item.description }}
+                      </template>
+                      <template v-slot:item="{ item }">
+                        {{ item.code }} - {{ item.description }}
+                      </template>
+                      <template v-slot:prepend-item>
+                        <v-list-item>
+                          <v-list-item-content>
                             <v-text-field
-                              dense
+                              v-model="data.searchTerm"
+                              placeholder="Search"
                               outlined
-                              v-mask="toMoney"
-                              v-model="item.amount"
-                              persistent-hint
-                              :hint="'Available balance: ' + item.balance"
-                            >
-                              <!-- :rules="[maxRules(item.balance)]" -->
-                            </v-text-field>
-                          </td>
-                          <td>
-                            <v-btn text @click="removePayable(i)">
-                              <v-icon color="red darken-1"
-                                >mdi-minus-circle</v-icon
-                              >
-                            </v-btn>
+                              @input="searchFundSource"
+                            ></v-text-field>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                      </template>
+                    </v-select>
+                  </v-col>
+                  <v-col md="4" sm="12" cols="12">
+                    <v-select
+                      :items="activities"
+                      item-text="name"
+                      label="Select Activity"
+                      @change="searchGfsCodes($event)"
+                      outlined
+                      required
+                    >
+                      <template v-slot:selection="{ item }">
+                        {{ item.code }} - {{ item.description }}
+                      </template>
+                      <template v-slot:item="{ item }">
+                        {{ item.code }} - {{ item.description }}
+                      </template>
+                    </v-select>
+                  </v-col>
+                  <v-col md="4" sm="12" cols="12">
+                    <v-select
+                      :items="data.gfsCodes"
+                      item-value="code"
+                      item-text="name"
+                      label="Select GFS Code"
+                      outlined
+                      @change="filterGfsCodes($event)"
+                      v-model="data.selectedGfsCodes"
+                    >
+                      <template v-slot:selection="{ item }">
+                        {{ item.code }} - {{ item.name }}
+                      </template>
+                      <template v-slot:item="{ item }">
+                        {{ item.code }} - {{ item.name }}
+                      </template>
+                    </v-select>
+                  </v-col>
+                  <span
+                    v-if="data.accounts.length && data.selectedGfsCodes"
+                    class="primary--text lighten-5 pl-3 pa-5"
+                  >
+                    Click/Select GL to allocate Funds
+                    <v-icon small color="success"> mdi-arrow-down-bold </v-icon>
+                  </span>
+                </v-row>
+
+                <template>
+                  <v-simple-table v-if="data.selectedGfsCodes">
+                    <template v-slot:default>
+                      <tbody>
+                        <tr v-for="(account, i) in data.accounts" :key="i">
+                          <td
+                            class="py-2"
+                            @click="addPayable(account)"
+                            colspan="2"
+                          >
+                            <span>{{ account.code }}</span>
+                            <br />
+                            <span style="color: teal">
+                              {{ account.description }}
+                            </span>
+                            <br />
+                            <span>
+                              {{
+                                (account.allocation - account.totalExpenditure)
+                                  | toCurrency()
+                              }}
+                            </span>
                           </td>
                         </tr>
                       </tbody>
                     </template>
-                  </v-data-table>
-                </v-col>
-              </template>
-            </v-container>
+                  </v-simple-table>
+
+                  <v-col
+                    cols="12"
+                    md="12"
+                    class="pb-3 pt-7 data-table"
+                    v-if="data.payables.length"
+                  >
+                    <v-data-table
+                      :headers="payableHeader"
+                      disable-pagination
+                      hide-default-footer
+                    >
+                      <template v-slot:body>
+                        <tbody>
+                          <tr v-for="(item, i) in data.payables" :key="i">
+                            <td class="pt-5 pb-2">
+                              <span class="text-lg-body-1">{{
+                                item.code
+                              }}</span>
+                              <br />
+                              <span style="color: teal">{{
+                                item.description
+                              }}</span>
+                              <br />
+                              <span class="text--primary">{{
+                                item.balance
+                              }}</span>
+                            </td>
+                            <td class="pt-5 pb-2">
+                              <v-text-field
+                                dense
+                                outlined
+                                v-mask="toMoney"
+                                v-model="item.amount"
+                                persistent-hint
+                                :hint="'Available balance: ' + item.balance"
+                              >
+                                <!-- :rules="[maxRules(item.balance)]" -->
+                              </v-text-field>
+                            </td>
+                            <td>
+                              <v-btn text @click="removePayable(i)">
+                                <v-icon color="red darken-1"
+                                  >mdi-minus-circle</v-icon
+                                >
+                              </v-btn>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-data-table>
+                  </v-col>
+                </template>
+              </v-container>
               <!-- end of section specific for normal voucher  -->
               <!-- start of deposit voucher -->
               <!-- deposit start  --->
-              <v-container  v-if="isDeposit">
+              <v-container v-if="isDeposit">
                 <v-row v-for="(item, index) in data.payables" :key="item.id">
                   <v-col cols="9" md="9" class="d-flex">
-
                     <v-select
                       v-model="data.payables[index].id"
                       :items="data.depositAccounts"
@@ -333,7 +329,6 @@
                     </v-select>
                   </v-col>
                   <v-col cols="3" md="3">
-
                     <v-text-field
                       outlined
                       v-mask="toMoney"
@@ -689,7 +684,7 @@ export default defineComponent({
       isDeposit,
       depositType,
       normalType,
-      resetData
+      resetData,
     } = usePaymentVoucher();
 
     return {
@@ -728,7 +723,7 @@ export default defineComponent({
       isDeposit,
       depositType,
       normalType,
-      resetData
+      resetData,
     };
   },
 });
