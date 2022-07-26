@@ -41,7 +41,7 @@ export const useRevenueProjection = (): any => {
         text: "GFS",
         align: "start",
         sortable: false,
-        value: "gfs_code",
+        value: "gfs_code.name",
       },
       {
         text: "Amount",
