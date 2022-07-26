@@ -48,10 +48,12 @@ import { approvalRoleRoutes } from "@/components/approval/role";
 import { approvalStatusRoutes } from "@/components/approval/status";
 import { approvalUserRoutes } from "@/components/approval/user";
 import { notFoundRoute } from "@/components/404";
+import {openingBalanceRoutes} from "@/components/receivables/opening-balance";
+import {cashbookRoutes} from "@/components/cash-management/cashbook-report";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
-import {openingBalanceRoutes} from "@/components/receivables/opening-balance";
+import budgetRoutes from "@/components/coa/budget/routes/budget-routes";
 
 Vue.use(VueRouter);
 
@@ -121,7 +123,9 @@ const routes: Array<RouteConfig> = [
       ...approvalRoleRoutes,
       ...approvalStatusRoutes,
       ...approvalUserRoutes,
-      ...notFoundRoute,
+      ...cashbookRoutes,
+      ...budgetRoutes,
+      ...notFoundRoute
     ],
   },
 ];
