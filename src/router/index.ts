@@ -53,6 +53,7 @@ import {cashbookRoutes} from "@/components/cash-management/cashbook-report";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+import budgetRoutes from "@/components/coa/budget/routes/budget-routes";
 
 Vue.use(VueRouter);
 
@@ -123,6 +124,7 @@ const routes: Array<RouteConfig> = [
       ...approvalStatusRoutes,
       ...approvalUserRoutes,
       ...cashbookRoutes,
+      ...budgetRoutes,
       ...notFoundRoute
     ],
   },
