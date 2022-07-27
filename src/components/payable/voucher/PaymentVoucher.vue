@@ -193,6 +193,7 @@
                       @change="searchGfsCodes($event)"
                       outlined
                       required
+                      v-model="data.selectedActivity"
                     >
                       <template v-slot:selection="{ item }">
                         {{ item.code }} - {{ item.description }}

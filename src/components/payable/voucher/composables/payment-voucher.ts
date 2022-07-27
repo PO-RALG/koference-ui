@@ -120,6 +120,7 @@ export const usePaymentVoucher = (): any => {
     paymentVoucherModal: false,
     voucherType: VOUCHER_TYPE.NORMAL,
     depositAccounts: [],
+    selectedActivity: null,
   });
 
   onMounted(() => {
@@ -365,7 +366,7 @@ export const usePaymentVoucher = (): any => {
 
   const filterGfsCodes = (item: string) => {
     getBudget({
-      activity_code: data.activityItem.code,
+      activity_code: data.selectedActivity.code,
       fund_code: data.fundSourceItem.code,
       gfs_code: item,
     }).then((response: AxiosResponse) => {
