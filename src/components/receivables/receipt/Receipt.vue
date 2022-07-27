@@ -191,7 +191,6 @@
                   <DatePicker
                     :label="'Receipt Date'"
                     :max="data.maxDate"
-                    :min="data.minDate"
                     v-model="data.receipt.date"
                   />
                 </v-col>
