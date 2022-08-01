@@ -11,7 +11,7 @@ const findReport = async (id) => {
   if (id) return axios.get(`${API}/${id}`);
 };
 
-const getParams = async (id ) => {
+const getParams = async (id) => {
   return axios.get(`${API}/${id}/parameters`);
 };
 
@@ -31,7 +31,7 @@ const printReport = async (reportID: number, payload?: any) => {
   const currentUser = await getCurrentUser();
   const token = currentUser.token;
   const query = serializeParams(payload);
-  const url = `${process.env.VUE_APP_SERVER2_URL}/${API}/${reportID}/print?${query}&token=${token}`;
+  const url = `https://ffars.tamisemi.go.tz/${API}/${reportID}/print?${query}&token=${token}`;
   return window.open(url);
 };
 
@@ -49,7 +49,9 @@ const deleteReport = async (payload) => {
 
 const fetchReportTree = async ({ location_id, facility_id }) => {
   if (facility_id) {
-    return await axios.get(`${API}/by-location?location_id=${location_id}&facility_id=${facility_id}`);
+    return await axios.get(
+      `${API}/by-location?location_id=${location_id}&facility_id=${facility_id}`
+    );
   } else {
     return await axios.get(`${API}/by-location?location_id=${location_id}`);
   }
