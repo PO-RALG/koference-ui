@@ -21,6 +21,10 @@
             />
           </v-card>
         </v-tab-item>
+        <v-tab @change="loadBankAccounts">Opening Balance</v-tab>
+        <v-tab-item>
+          <v-card flat class="pa-5"><OpeningBalance /> </v-card>
+        </v-tab-item>
       </v-tabs>
     </v-card>
   </div>
@@ -34,6 +38,7 @@ import {
   computed,
 } from "@vue/composition-api";
 import BankAccount from "./components/BankAccount.vue";
+import OpeningBalance from "../../../components/receivables/opening-balance/OpeningBalance.vue";
 import { useBank } from "@/components/setup/bank-account/composables/bank";
 import { find as findFacility } from "@/components/facility/facility/services/facility.service";
 import router from "@/router";
@@ -47,6 +52,7 @@ import {
 export default defineComponent({
   components: {
     BankAccount,
+    OpeningBalance,
   },
   setup() {
     const { data: accountData, bankName, reloadData, cancelDialog } = useBank();
