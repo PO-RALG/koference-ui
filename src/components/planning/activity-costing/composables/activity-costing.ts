@@ -35,6 +35,12 @@ export const useActivityCosting = (): any => {
         value: "activity.code",
       },
       {
+        text: "Activity Description",
+        align: "start",
+        sortable: false,
+        value: "activity.description",
+      },
+      {
         text: "GFS name",
         align: "start",
         sortable: false,
