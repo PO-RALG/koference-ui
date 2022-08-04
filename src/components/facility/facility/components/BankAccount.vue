@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
 
       <v-btn
-        :disabled="cant('update', 'Facility')"
+        :disabled="cant('create', 'BankAccount')"
         color="primary"
         @click="openDialog"
       >
