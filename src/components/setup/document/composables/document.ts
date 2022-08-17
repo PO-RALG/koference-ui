@@ -1,8 +1,20 @@
-import { reactive, watch, onMounted, computed, ref } from "@vue/composition-api";
+import {
+  reactive,
+  watch,
+  onMounted,
+  computed,
+  ref,
+} from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
 import { Document } from "../types/Document";
-import { get, create, update, destroy, search } from "../services/document.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../services/document.service";
 import { get as getDocumentCategories } from "../../document-category/services/documentcategory.service";
 
 export const useDocument = (): any => {
@@ -12,6 +24,7 @@ export const useDocument = (): any => {
   const imageUrl: any = ref("");
 
   const data = reactive({
+    file: "",
     title: "Manage Document",
     modalTitle: "",
     headers: [
@@ -48,7 +61,8 @@ export const useDocument = (): any => {
 
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
@@ -70,7 +84,8 @@ export const useDocument = (): any => {
   };
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -108,8 +123,17 @@ export const useDocument = (): any => {
     if (data.formData.id) {
       updateDocument(data.formData);
     } else {
-      data.formData.created_by = 1;
-      createDocument(data.formData);
+      const formData = new FormData();
+
+      formData.append("document_file", data.file);
+      formData.append("name", data.formData.name);
+      formData.append("description", data.formData.description);
+      formData.append(
+        "document_category_id",
+        data.formData.document_category_id
+      );
+      formData.append("validity", data.formData.validity);
+      createDocument(formData);
     }
   };
 
@@ -157,6 +181,11 @@ export const useDocument = (): any => {
       data.items = response.data.data.data;
     });
   };
+  const selectedFile = (event: any) => {
+    console.log(event.target.files[0]);
+    data.file = event.target.files[0];
+  };
+
   // watching a getter
 
   watch(fileToupload, (fileToupload: any) => {
@@ -188,5 +217,6 @@ export const useDocument = (): any => {
     handleSelectedFiles,
     imageUrl,
     getData,
+    selectedFile,
   };
-}
+};
