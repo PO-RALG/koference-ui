@@ -21,28 +21,33 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Name"
-                @change="searchCategory($event)"
-                :items="data.itemsToFilter"
-                :item-text="'name'"
-                :item-divider="true"
-                return-object
-                required
+              <v-text-field
                 outlined
+                label="Filter Document"
+                @keyup="filterDocument()"
+                :items="data.itemsToFilter"
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
                 clearable
-              ></v-autocomplete>
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
-        <template v-slot:[`item.startDate`]="{ item }">
-          <span>{{ item.startDate }}</span>
-        </template>
-        <template v-slot:[`item.endDate`]="{ item }">
-          <span>{{ item.endDate }}</span>
-        </template>
 
         <template v-slot:[`item.actions`]="{ item }">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="downloadFile(item.link)"
+              >
+                mdi-download
+              </v-icon>
+            </template>
+            <span>Download</span>
+          </v-tooltip>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -56,6 +61,7 @@
             </template>
             <span>Edit</span>
           </v-tooltip>
+
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -102,7 +108,7 @@
                     <template v-slot:item="{ item }">
                       {{ item.name }} -{{ item.description }}
                     </template>
-                    <template v-slot:prepend-item>
+                    <!-- <template v-slot:prepend-item>
                       <v-list-item>
                         <v-list-item-content>
                           <v-text-field
@@ -115,7 +121,7 @@
                         </v-list-item-content>
                       </v-list-item>
                       <v-divider></v-divider>
-                    </template>
+                    </template> -->
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="6" class="mb-n8">
@@ -206,6 +212,8 @@ export default defineComponent({
       handleSelectedFiles,
       createDocument,
       selectedFile,
+      downloadFile,
+      filterDocument,
     } = useDocument();
 
     return {
@@ -225,6 +233,8 @@ export default defineComponent({
       handleSelectedFiles,
       createDocument,
       selectedFile,
+      downloadFile,
+      filterDocument,
     };
   },
 });

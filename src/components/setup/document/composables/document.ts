@@ -14,6 +14,7 @@ import {
   update,
   destroy,
   search,
+  searchCategories,
 } from "../services/document.service";
 import { get as getDocumentCategories } from "../../document-category/services/documentcategory.service";
 
@@ -36,10 +37,10 @@ export const useDocument = (): any => {
         value: "description",
       },
       {
-        text: "Link",
+        text: "Document category",
         align: "start",
         sortable: false,
-        value: "link",
+        value: "document_category.name",
       },
 
       { text: "Actions", value: "actions", sortable: false },
@@ -53,6 +54,8 @@ export const useDocument = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},
+    searchTerm: "",
+    search: "",
   });
 
   onMounted(() => {
@@ -73,15 +76,30 @@ export const useDocument = (): any => {
     });
   };
 
-  const searchCategory = (categoryName) => {
-    if (categoryName != null) {
-      search({ name: categoryName.name }).then((response: any) => {
-        data.items = response.data.data.data;
+  // const searchCategory = (categoryName) => {
+  //   if (categoryName != null) {
+  //     searchCategories({ name: categoryName.name }).then((response: any) => {
+  //       data.items = response.data.data.data;
+  //     });
+  //   } else {
+  //     reloadData();
+  //   }
+  // };
+
+  const searchCategory = (item: string) => {
+    if (item) {
+      const regSearchTerm = item ? item : "";
+      searchCategories({
+        active: true,
+        regSearch: regSearchTerm,
+      }).then((response: AxiosResponse) => {
+        data.documentcategories = response.data.data.data;
       });
     } else {
       reloadData();
     }
   };
+
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
@@ -146,6 +164,55 @@ export const useDocument = (): any => {
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
+  };
+
+  const downloadFile = (filepath?: any) => {
+    const path: any = "https://ffars.tamisemi.go.tz" + filepath;
+    // const path: any = "http://localhost:8000" + filepath;
+    window.open(path, "_blank");
+  };
+
+  const filterDocument = () => {
+    if (data.searchTerm.length >= 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
   };
 
   const updateDocument = (data: any) => {
@@ -218,5 +285,7 @@ export const useDocument = (): any => {
     imageUrl,
     getData,
     selectedFile,
+    downloadFile,
+    filterDocument,
   };
 };

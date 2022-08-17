@@ -10,6 +10,13 @@ const search = async (payload: any) => {
     },
   });
 };
+const searchCategories = async (payload: any) => {
+  return await axios.get(`/api/v1/document-categories/`, {
+    params: {
+      search: JSON.stringify(payload),
+    },
+  });
+};
 
 const find = async (id: string | number) => {
   return await axios.get(`/api/v1/documents/${id}`);
@@ -27,4 +34,4 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/documents/` + payload);
 };
 
-export { get, find, create, update, destroy, search };
+export { get, find, create, update, destroy, search, searchCategories };
