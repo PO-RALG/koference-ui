@@ -28,6 +28,7 @@ export const useReportDetail = (props, { root }) => {
   ];
 
   const data = reactive({
+    location_id: null,
     valid: true,
     currentReport: null,
     reportParameters: [],
@@ -50,6 +51,8 @@ export const useReportDetail = (props, { root }) => {
   });
 
   onMounted(() => {
+    data.location_id = root.$route.params.location_id;
+
     const user: any = localStorage.getItem("FFARS_USER");
     const userObj = JSON.parse(user);
     if (userObj.facility) {
@@ -134,6 +137,12 @@ export const useReportDetail = (props, { root }) => {
     }
   };
 
+  const isFacility = computed(() => {
+    const user: any = localStorage.getItem("FFARS_USER");
+    const userObj = JSON.parse(user);
+    return userObj.facility ? true : false;
+  });
+
   const reportParams = computed(() => {
     const user: any = localStorage.getItem("FFARS_USER");
     const userObj = JSON.parse(user);
@@ -160,6 +169,8 @@ export const useReportDetail = (props, { root }) => {
         data.reportParameters
           .filter((p: any) => p.name !== "source_path")
           .filter((p: any) => p.name !== "location_id")
+          .filter((p: any) => p.name !== "facility_id")
+
           //.filter((p: any) => p.required === 1)
           .map((param: any, idx: number) => ({
             ...param,
@@ -197,5 +208,6 @@ export const useReportDetail = (props, { root }) => {
     data,
     print,
     reportParams,
+    isFacility,
   };
 };

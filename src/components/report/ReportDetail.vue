@@ -56,6 +56,25 @@
                 </div>
               </fetcher>
             </v-flex>
+            <v-flex xs6 class="mb-5 pl-5 pr-5">
+              <fetcher
+                v-if="!isFacility"
+                :api="'/api/v1/facilities?' + 'location_id=' + data.location_id"
+              >
+                <div slot-scope="{ json: items, loading }">
+                  <div v-if="loading">Loading...</div>
+                  <BaseSelect
+                    v-else
+                    :items="items"
+                    :item-text="'name'"
+                    label="Facility"
+                    outlined
+                    required
+                    v-model="data.formData.facility_id"
+                  />
+                </div>
+              </fetcher>
+            </v-flex>
           </v-layout>
         </v-form>
         <!--<pre>{{ data.formData }}</pre>-->
@@ -75,11 +94,15 @@ import { defineComponent } from "@vue/composition-api";
 import { useReportDetail } from "./composables/use-report-detail";
 export default defineComponent({
   setup(props, context) {
-    const { data, reportParams, print } = useReportDetail(props, context);
+    const { data, reportParams, print, isFacility } = useReportDetail(
+      props,
+      context
+    );
 
     return {
       data,
       reportParams,
+      isFacility,
       print,
     };
   },

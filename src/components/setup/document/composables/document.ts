@@ -167,8 +167,8 @@ export const useDocument = (): any => {
   };
 
   const downloadFile = (filepath?: any) => {
-    const path: any = "https://ffars.tamisemi.go.tz" + filepath;
-    // const path: any = "http://localhost:8000" + filepath;
+    // const path: any = "https://ffars.tamisemi.go.tz" + filepath;
+    const path: any = "http://localhost:8000" + filepath;
     window.open(path, "_blank");
   };
 
