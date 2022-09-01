@@ -4,12 +4,12 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
+        class="ma-2 d-none d-sm-flex white--text"
         color="primary"
-        @click="openDialog"
-        :disabled="cant('create', 'Voucher')"
-      >
-        <v-icon>mdi-plus</v-icon>
-        Add New
+        router-link
+        to="/payment-vouchers"
+        tag="button"
+        ><v-icon>mdi-arrow-left-circle</v-icon>Back
       </v-btn>
     </v-card-actions>
     <v-card>
@@ -92,6 +92,27 @@
         </template>
       </v-data-table>
     </v-card>
+    <Modal :modal="data.approvemodal" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Approve Payment Voucher `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-col class="pt-6 pl-6 pr-6 red--text" cols="12" md="12">
+            Press <strong>YES</strong> to confirm an approve of this payment
+            voucher?
+          </v-col>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="approvePaymet">Yes</v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
     <Modal :modal="data.modal" :width="1200">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Payment Voucher`" />
@@ -386,6 +407,18 @@
       </template>
       <template v-slot:body>
         <ModalBody>
+          <v-card-actions class="pa-0">
+            <v-spacer></v-spacer>
+            <v-btn color="red darken-1" text @click="cancelPreviewDialog">
+              Cancel
+            </v-btn>
+
+            <v-btn @click="approvePV(data.pvDetails.id)" color="primary" text>
+              <v-icon>mdi-check-decagram</v-icon>
+              APPROVE PAYMENT VOUCHER
+            </v-btn>
+          </v-card-actions>
+
           <div class="" v-if="data.pvDetails">
             <v-col class="d-flex justify-center">
               <div class="font-weight-bold text-center">
@@ -626,16 +659,9 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelPreviewDialog">
+          <!-- <v-btn color="red darken-1" text @click="cancelPreviewDialog">
             Cancel
-          </v-btn>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="printPaymentVoucher(data.pvDetails.id)"
-          >
-            Print
-          </v-btn>
+          </v-btn> -->
         </ModalFooter>
       </template>
     </Modal>
@@ -686,6 +712,8 @@ export default defineComponent({
       depositType,
       normalType,
       resetData,
+      approvePV,
+      approvePaymet,
     } = usePaymentVoucher();
 
     return {
@@ -725,6 +753,8 @@ export default defineComponent({
       depositType,
       normalType,
       resetData,
+      approvePV,
+      approvePaymet,
     };
   },
 });

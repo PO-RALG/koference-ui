@@ -269,26 +269,6 @@
         </ModalFooter>
       </template>
     </Modal>
-    <Modal :modal="data.approvemodal" :width="600">
-      <template v-slot:header>
-        <ModalHeader :title="`Approve Payment `" />
-      </template>
-      <template v-slot:body>
-        <ModalBody>
-          <v-col class="pt-6 pl-6 pr-6 red--text" cols="12" md="12">
-            Press <strong>YES</strong> to confirm an approve of this payment?
-          </v-col>
-        </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
-            Cancel
-          </v-btn>
-          <v-btn color="green darken-1" text @click="approvePaymet">Yes</v-btn>
-        </ModalFooter>
-      </template>
-    </Modal>
 
     <Modal :fullScreen="true" :modal="data.paymentModal" :width="1260">
       <template v-slot:header>
@@ -307,10 +287,6 @@
               @click="printPayment(data.pvDetails.id)"
             >
               Print
-            </v-btn>
-            <v-btn @click="approvePV(data.pvDetails.id)" color="primary" text>
-              <v-icon>mdi-check-decagram</v-icon>
-              APPROVE
             </v-btn>
           </v-card-actions>
           <div class="" v-if="data.pvDetails">
@@ -564,7 +540,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelPreviewDialog">
+          <!-- <v-btn color="red darken-1" text @click="cancelPreviewDialog">
             Cancel
           </v-btn>
           <v-btn
@@ -573,7 +549,7 @@
             @click="printPayment(data.pvDetails.id)"
           >
             Print
-          </v-btn>
+          </v-btn> -->
         </ModalFooter>
       </template>
     </Modal>
@@ -609,7 +585,6 @@ export default defineComponent({
       filterPayment,
       resetSearchText,
       mappedVouchers,
-      approvePV,
     } = usePayment();
 
     return {
@@ -633,7 +608,6 @@ export default defineComponent({
       filterPayment,
       resetSearchText,
       mappedVouchers,
-      approvePV,
       approvePaymet,
     };
   },

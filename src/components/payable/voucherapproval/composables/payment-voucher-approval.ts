@@ -89,11 +89,11 @@ export const usePaymentVoucher = (): any => {
         value: "description",
         width: 450,
       },
-      {
-        text: "Actions",
-        value: "actions",
-        sortable: false,
-      },
+      // {
+      //   text: "Actions",
+      //   value: "actions",
+      //   sortable: false,
+      // },
     ],
     modal: false,
     deletemodal: false,
@@ -121,11 +121,21 @@ export const usePaymentVoucher = (): any => {
     voucherType: VOUCHER_TYPE.NORMAL,
     depositAccounts: [],
     selectedActivity: null,
+    approvemodal: false,
+    itemToApprove: "",
   });
 
   onMounted(() => {
     getTableData();
   });
+
+  const approvePV = (deleteId: any) => {
+    data.approvemodal = !data.modal;
+    data.itemToApprove = deleteId;
+  };
+  const approvePaymet = () => {
+    console.log("itemToApprove", data.itemToApprove);
+  };
 
   const filterVoucher = () => {
     if (data.searchTerm.length > 3) {
@@ -211,6 +221,7 @@ export const usePaymentVoucher = (): any => {
   const cancelConfirmDialog = () => {
     data.formData = {} as PaymentVoucher;
     data.deletemodal = false;
+    data.approvemodal = false;
   };
 
   const remove = () => {
@@ -518,5 +529,7 @@ export const usePaymentVoucher = (): any => {
     depositType,
     normalType,
     resetData,
+    approvePV,
+    approvePaymet,
   };
 };
