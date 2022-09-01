@@ -69,7 +69,6 @@
                     :item-text="'name'"
                     label="Facility"
                     outlined
-                    required
                     v-model="data.formData.facility_id"
                   />
                 </div>
