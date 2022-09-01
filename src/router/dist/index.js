@@ -10,7 +10,6 @@ exports.__esModule = true;
 var vue_1 = require("vue");
 var vue_router_1 = require("vue-router");
 var vue_route_middleware_1 = require("vue-route-middleware");
-var store_1 = require("@/store");
 var dashboard_1 = require("@/components/dashboard");
 var user_1 = require("@/components/user");
 var role_1 = require("@/components/role");
@@ -52,13 +51,19 @@ var cheque_list_1 = require("@/components/payable/cheque-list");
 //import { testRoutes } from "@/components/test";
 var bank_reconciliation_1 = require("@/components/cash-management/bank-reconciliation");
 var receipt_1 = require("@/components/receivables/receipt");
+var approvereversereceipt_1 = require("@/components/receivables/approvereversereceipt");
+var voucherapproval_1 = require("@/components/payable/voucherapproval");
+var approvereverseinvoice_1 = require("@/components/receivables/approvereverseinvoice");
 var stale_cheque_1 = require("@/components/stale-cheque");
 var role_2 = require("@/components/approval/role");
 var status_1 = require("@/components/approval/status");
 var user_2 = require("@/components/approval/user");
 var _404_1 = require("@/components/404");
+var opening_balance_1 = require("@/components/receivables/opening-balance");
+var cashbook_report_1 = require("@/components/cash-management/cashbook-report");
 // import route middlewares
 var middleware_1 = require("@/middleware");
+var budget_routes_1 = require("@/components/coa/budget/routes/budget-routes");
 vue_1["default"].use(vue_router_1["default"]);
 var routes = [
     {
@@ -78,7 +83,7 @@ var routes = [
             title: "Dashboard",
             middleware: [middleware_1.setTitle, middleware_1.validateToken, middleware_1.setHeaders, middleware_1.auth]
         },
-        children: __spreadArrays(dashboard_1.dashboardRoutes, user_1.userRoutes, financial_year_1.financialYearRoutes, gfs_code_1.gfsCodesRoutes, user_1.userRoutes, level_1.levelRoutes, admin_area_1.adminAreaRoutes, fund_type_1.fundTypesRoutes, gfs_category_1.gfsCategoriesRoutes, project_1.projectRoutes, customer_1.customerRoutes, generic_customer_1.genericCustomerRoutes, document_category_1.documentCategoryRoutes, document_1.documentRoutes, funding_source_1.fundingSourceRoutes, sub_budget_class_1.subBudgetClassRoutes, bank_account_1.bankAccountRoutes, role_1.roleRoutes, facility_type_1.facilityTypeRoutes, menu_1.menuRoutes, facility_1.facilityRoutes, bank_account_type_1.bankAccountTypesRoutes, invoice_item_definition_1.invoiceItemDefinitionRoutes, activity_1.activityRoutes, activity_costing_1.activityCostingRoutes, invoice_1.invoiceRoutes, revenue_projection_1.revenueProjectionRoutes, supplier_1.supplierRoutes, gl_account_1.glAccountRoutes, transaction_1.glTransactionRoutes, report_1.glReportRoutes, debtors_1.debtorRoutes, journal_voucher_1.jvRoutes, fund_allocation_1.fundAllocationRoutes, voucher_1.voucherRoutes, payment_1.paymentRoutes, report_2.reportRoutes, creditor_1.creditorRoutes, cheque_list_1.chequeListRoutes, receipt_1.receiptRoutes, bank_reconciliation_1.bankReconciliationRoutes, stale_cheque_1.staleChequeRoutes, role_2.approvalRoleRoutes, status_1.approvalStatusRoutes, user_2.approvalUserRoutes, _404_1.notFoundRoute)
+        children: __spreadArrays(dashboard_1.dashboardRoutes, user_1.userRoutes, financial_year_1.financialYearRoutes, gfs_code_1.gfsCodesRoutes, user_1.userRoutes, level_1.levelRoutes, admin_area_1.adminAreaRoutes, fund_type_1.fundTypesRoutes, gfs_category_1.gfsCategoriesRoutes, project_1.projectRoutes, customer_1.customerRoutes, generic_customer_1.genericCustomerRoutes, document_category_1.documentCategoryRoutes, document_1.documentRoutes, funding_source_1.fundingSourceRoutes, sub_budget_class_1.subBudgetClassRoutes, bank_account_1.bankAccountRoutes, role_1.roleRoutes, facility_type_1.facilityTypeRoutes, menu_1.menuRoutes, facility_1.facilityRoutes, bank_account_type_1.bankAccountTypesRoutes, invoice_item_definition_1.invoiceItemDefinitionRoutes, activity_1.activityRoutes, activity_costing_1.activityCostingRoutes, invoice_1.invoiceRoutes, revenue_projection_1.revenueProjectionRoutes, supplier_1.supplierRoutes, gl_account_1.glAccountRoutes, transaction_1.glTransactionRoutes, report_1.glReportRoutes, debtors_1.debtorRoutes, journal_voucher_1.jvRoutes, fund_allocation_1.fundAllocationRoutes, voucher_1.voucherRoutes, payment_1.paymentRoutes, report_2.reportRoutes, creditor_1.creditorRoutes, cheque_list_1.chequeListRoutes, receipt_1.receiptRoutes, opening_balance_1.openingBalanceRoutes, bank_reconciliation_1.bankReconciliationRoutes, stale_cheque_1.staleChequeRoutes, role_2.approvalRoleRoutes, status_1.approvalStatusRoutes, user_2.approvalUserRoutes, cashbook_report_1.cashbookRoutes, budget_routes_1["default"], approvereversereceipt_1.approveReceiptRoutes, approvereverseinvoice_1.approveInvoiceReversalRoutes, voucherapproval_1.voucherApprovalRoutes, _404_1.notFoundRoute)
     },
 ];
 var router = new vue_router_1["default"]({
@@ -87,22 +92,5 @@ var router = new vue_router_1["default"]({
     routes: routes
 });
 // middlewares
-var isLoggedIn = function (to, _, next) {
-    var loginStatus = store_1["default"].getters["Auth/getLoginStatus"];
-    var loggedIn = loginStatus ? loginStatus.isLoggedIn : false;
-    var currentUser = store_1["default"].getters["Auth/getCurrentUser"];
-    if (to.matched.some(function (record) { return record.meta.requiresAuth; })) {
-        if (loggedIn && currentUser) {
-            console.log("user is logged in");
-            next();
-        }
-        else {
-            console.log("redirect to login page");
-        }
-    }
-    else {
-        next();
-    }
-};
 router.beforeEach(vue_route_middleware_1["default"]({ setTitle: middleware_1.setTitle, validateToken: middleware_1.validateToken, setHeaders: middleware_1.setHeaders, auth: middleware_1.auth }));
 exports["default"] = router;

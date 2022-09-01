@@ -11,7 +11,7 @@ import {
   printReceipt,
   regSearch as receiptSearch,
   search,
-} from "../services/receipt-service";
+} from "../services/approvereceipt-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import {
@@ -100,7 +100,7 @@ export const useReceipt = (): any => {
   ];
 
   const data = reactive({
-    title: "Manage Receipts",
+    title: "Approve Reversal Receipts",
     isInvoice: "NO",
     selectedUser: null,
     selectedInvoice: null,
@@ -142,7 +142,7 @@ export const useReceipt = (): any => {
         value: "bank_account",
       },
       {
-        text: "Actions",
+        text: "Print",
         align: "center",
         sortable: false,
         value: "actions",
@@ -173,6 +173,7 @@ export const useReceipt = (): any => {
     rows: ["10", "20", "50", "100"],
 
     itemTodelete: "",
+    itemToApprove: "",
     response: {},
     accounts: [],
     customers: [],
@@ -201,6 +202,9 @@ export const useReceipt = (): any => {
     init();
   });
 
+  const approvereceipRevasalFA = () => {
+    console.log("itemToApprove", data.itemToApprove);
+  };
   const init = () => {
     data.receipt = {
       id: null,
@@ -582,9 +586,9 @@ export const useReceipt = (): any => {
     }
   };
 
-  const reverseReceipt = (deleteId: any) => {
+  const approveReverseReceipt = (approveId: any) => {
     data.deletemodal = !data.modal;
-    data.itemTodelete = deleteId;
+    data.itemToApprove = approveId;
     data.invoicedetails = false;
   };
 
@@ -594,7 +598,7 @@ export const useReceipt = (): any => {
 
   return {
     data,
-    reverseReceipt,
+    approveReverseReceipt,
     getData,
     addRow,
     removeRow,
@@ -624,5 +628,6 @@ export const useReceipt = (): any => {
     invoiceType,
     cashType,
     depositType,
+    approvereceipRevasalFA,
   };
 };

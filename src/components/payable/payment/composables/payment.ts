@@ -81,6 +81,7 @@ export const usePayment = (): any => {
     ],
     modal: false,
     deletemodal: false,
+    approvemodal: false,
     items: dataItems,
     itemsToFilter: [],
     formData: paymentData,
@@ -104,6 +105,7 @@ export const usePayment = (): any => {
     pvDetails: { printDate: "" },
     supplier: [],
     itemTodelete: "",
+    itemToApprove: "",
   });
 
   onMounted(() => {
@@ -188,6 +190,7 @@ export const usePayment = (): any => {
   const cancelConfirmDialog = () => {
     data.formData = {} as Payment;
     data.deletemodal = false;
+    data.approvemodal = false;
   };
 
   const remove = () => {
@@ -323,6 +326,13 @@ export const usePayment = (): any => {
   const printPayment = (id: number) => {
     printPdf(id);
   };
+  const approvePV = (deleteId: any) => {
+    data.approvemodal = !data.modal;
+    data.itemToApprove = deleteId;
+  };
+  const approvePaymet = () => {
+    console.log("itemToApprove", data.itemToApprove);
+  };
 
   const payablePrintHeader = [
     {
@@ -374,9 +384,11 @@ export const usePayment = (): any => {
     previewPayment,
     cancelPreviewDialog,
     printPayment,
+    approvePV,
     payablePrintHeader,
     filterPayment,
     resetSearchText,
     mappedVouchers,
+    approvePaymet,
   };
 };

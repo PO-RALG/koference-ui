@@ -3,21 +3,14 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        v-if="can('create', 'Invoice')"
-        color="primary"
-        @click="openDialog"
-      >
-        <v-icon>mdi-plus</v-icon>
-        Create Invoice
-      </v-btn>
+
       <v-btn
         class="ma-2 d-none d-sm-flex white--text"
-        color="red"
+        color="primary"
         router-link
-        to="/manage-approve-reversal-invoices"
+        to="/manage-invoices"
         tag="button"
-        ><v-icon>mdi-arrow-right-circle</v-icon>Approve invoice reversal
+        ><v-icon>mdi-arrow-left-circle</v-icon>Back
       </v-btn>
     </v-card-actions>
     <v-card>
@@ -267,6 +260,30 @@
       </template>
     </Modal>
 
+    <Modal :modal="data.approvemodal" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Approve Invoice Reversal `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-col class="pt-6 pl-6 pr-6 red--text" cols="12" md="12">
+            Press <strong>YES</strong> to confirm an approve of this invoice
+            reversal?
+          </v-col>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="approveInvoiceReversal"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
+
     <Modal :fullScreen="true" :modal="data.invoicedetails" :width="1120">
       <template v-slot:header>
         <ModalHeader :title="`Invoice Details`" />
@@ -278,21 +295,15 @@
               <v-btn color="red darken-1" text @click="cancelInvoiceDialog"
                 ><v-icon>mdi-close</v-icon> Close</v-btn
               >
+
               <v-btn
-                color="green darken-1"
+                @click="approveInvoiceRevDialog(data.invoiceData.id)"
+                color="primary"
                 text
-                @click="print(data.invoiceData.id)"
               >
-                <v-icon>mdi-printer</v-icon>
-                Print
+                <v-icon>mdi-check-decagram</v-icon>
+                APPROVE INVOICE REVERSE
               </v-btn>
-              <v-btn
-                v-show="can('delete', 'Invoice')"
-                @click="reverseInvoice(data.invoiceData.id)"
-                color="warning darken-1"
-                text
-                ><v-icon>mdi-arrow-u-left-top-bold</v-icon>Reverse</v-btn
-              >
             </td>
             <div class="invoice-box" v-if="data.invoiceData">
               <AppLocationHeader
@@ -595,7 +606,7 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import { useInvoice } from "./composables/invoice";
+import { useInvoice } from "./composables/invoiceReversal";
 import { toMoney } from "@/filters/CurrencyFormatter";
 export default defineComponent({
   name: "ManageInvoice",
@@ -633,6 +644,8 @@ export default defineComponent({
       print,
       filterInvoice,
       resetSearchText,
+      approveInvoiceRevDialog,
+      approveInvoiceReversal,
     } = useInvoice();
     return {
       data,
@@ -668,6 +681,8 @@ export default defineComponent({
       toMoney,
       filterInvoice,
       resetSearchText,
+      approveInvoiceRevDialog,
+      approveInvoiceReversal,
     };
   },
 });

@@ -3,21 +3,14 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        v-if="can('create', 'Receipt')"
-        color="primary"
-        @click="openDialog"
-      >
-        <v-icon>mdi-plus</v-icon>
-        Create Receipt
-      </v-btn>
+
       <v-btn
         class="ma-2 d-none d-sm-flex white--text"
-        color="red"
+        color="primary"
         router-link
-        to="/manage-approve-reversal-receipts"
+        to="/manage-receipts"
         tag="button"
-        ><v-icon>mdi-arrow-right-circle</v-icon>Approve recept reversal
+        ><v-icon>mdi-arrow-left-circle</v-icon>Back
       </v-btn>
     </v-card-actions>
     <v-card>
@@ -80,22 +73,6 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                v-on="on"
-                v-show="can('delete', 'Receipt')"
-                @click="reverseReceipt(item.id)"
-                text
-                color="grey"
-              >
-                <v-icon>mdi-arrow-u-left-top-bold</v-icon>
-              </v-btn>
-            </template>
-            <span>Reverse</span>
-          </v-tooltip>
-
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
               <v-btn @click="print(item.id)" text color="grey">
                 <v-icon
                   v-if="can('delete', 'Receipt')"
@@ -108,6 +85,20 @@
               </v-btn>
             </template>
             <span>Print</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                @click="approveReverseReceipt(item.id)"
+                text
+                color="grey"
+              >
+                <v-icon>mdi-check-decagram</v-icon>
+              </v-btn>
+            </template>
+            <span>Approve Receipt Reversal</span>
           </v-tooltip>
         </template>
         <template v-slot:footer>
@@ -492,20 +483,26 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.deletemodal" :width="400">
+    <Modal :modal="data.deletemodal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`Cancel Receipt `" />
+        <ModalHeader :title="`Approve Receipt Reversal`" />
       </template>
-
       <template v-slot:body>
-        <ModalBody> Are you sure you want to reverce this receipt ?</ModalBody>
+        <ModalBody>
+          <v-col class="pt-6 pl-6 pr-6 red--text" cols="12" md="12">
+            Press <strong>YES</strong> to confirm an approve of this receipt
+            reversal ?
+          </v-col>
+        </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
-            >No
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Cancel
           </v-btn>
-          <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
+          <v-btn color="green darken-1" text @click="approvereceipRevasalFA"
+            >Yes</v-btn
+          >
         </ModalFooter>
       </template>
     </Modal>
@@ -514,7 +511,7 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import { useReceipt } from "./composables/receipt";
+import { useReceipt } from "./composables/approvereceipt";
 import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({
@@ -547,12 +544,13 @@ export default defineComponent({
       reanderSearched,
       mapInvoices,
       filterFundSource,
-      reverseReceipt,
+      approveReverseReceipt,
       filterReceipt,
       resetSearchText,
       invoiceType,
       cashType,
       depositType,
+      approvereceipRevasalFA,
     } = useReceipt();
 
     return {
@@ -584,11 +582,12 @@ export default defineComponent({
       mapInvoices,
       filterFundSource,
       resetSearchText,
-      reverseReceipt,
+      approveReverseReceipt,
       filterReceipt,
       invoiceType,
       cashType,
       depositType,
+      approvereceipRevasalFA,
     };
   },
 });

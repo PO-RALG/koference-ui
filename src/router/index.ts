@@ -43,13 +43,16 @@ import { chequeListRoutes } from "@/components/payable/cheque-list";
 //import { testRoutes } from "@/components/test";
 import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
 import { receiptRoutes } from "@/components/receivables/receipt";
+import { approveReceiptRoutes } from "@/components/receivables/approvereversereceipt";
+import { voucherApprovalRoutes } from "@/components/payable/voucherapproval";
+import { approveInvoiceReversalRoutes } from "@/components/receivables/approvereverseinvoice";
 import { staleChequeRoutes } from "@/components/stale-cheque";
 import { approvalRoleRoutes } from "@/components/approval/role";
 import { approvalStatusRoutes } from "@/components/approval/status";
 import { approvalUserRoutes } from "@/components/approval/user";
 import { notFoundRoute } from "@/components/404";
-import {openingBalanceRoutes} from "@/components/receivables/opening-balance";
-import {cashbookRoutes} from "@/components/cash-management/cashbook-report";
+import { openingBalanceRoutes } from "@/components/receivables/opening-balance";
+import { cashbookRoutes } from "@/components/cash-management/cashbook-report";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -125,7 +128,10 @@ const routes: Array<RouteConfig> = [
       ...approvalUserRoutes,
       ...cashbookRoutes,
       ...budgetRoutes,
-      ...notFoundRoute
+      ...approveReceiptRoutes,
+      ...approveInvoiceReversalRoutes,
+      ...voucherApprovalRoutes,
+      ...notFoundRoute,
     ],
   },
 ];
