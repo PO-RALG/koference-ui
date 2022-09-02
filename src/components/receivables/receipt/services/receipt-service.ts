@@ -48,7 +48,8 @@ const regSearch = async (payload: any) => {
 
 const printReceipt = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
-  const url = `https://ffars.tamisemi.go.tz/api/v1/receipts/${id}?token=${user.token}`;
+  const url = `http://196.192.73.13/api/v1/receipts/${id}?token=${user.token}`;
+  // const url = `https://ffars.tamisemi.go.tz/api/v1/receipts/${id}?token=${user.token}`;
   // const url = `${process.env.VUE_APP_SERVER_URL}/api/v1/receipts/${id}?token=${user.token}`;
   return window.open(url);
 };
