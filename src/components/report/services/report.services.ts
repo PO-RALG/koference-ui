@@ -31,7 +31,9 @@ const printReport = async (reportID: number, payload?: any) => {
   const currentUser = await getCurrentUser();
   const token = currentUser.token;
   const query = serializeParams(payload);
-  const url = `https://ffars.tamisemi.go.tz/${API}/${reportID}/print?${query}&token=${token}`;
+  // const url = `https://ffars.tamisemi.go.tz/${API}/${reportID}/print?${query}&token=${token}`;
+  const url = `http://196.192.73.13/${API}/${reportID}/print?${query}&token=${token}`;
+
   return window.open(url);
 };
 
