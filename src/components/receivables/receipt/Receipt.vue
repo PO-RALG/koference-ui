@@ -11,14 +11,14 @@
         <v-icon>mdi-plus</v-icon>
         Create Receipt
       </v-btn>
-      <v-btn
+      <!-- <v-btn
         class="ma-2 d-none d-sm-flex white--text"
         color="red"
         router-link
         to="/manage-approve-reversal-receipts"
         tag="button"
         ><v-icon>mdi-arrow-right-circle</v-icon>Approve recept reversal
-      </v-btn>
+      </v-btn> -->
     </v-card-actions>
     <v-card>
       <v-data-table
