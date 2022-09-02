@@ -15,6 +15,14 @@
         class="ma-2 d-none d-sm-flex white--text"
         color="red"
         router-link
+        to="/manage-approve-deposit-receipts"
+        tag="button"
+        ><v-icon>mdi-arrow-right-circle</v-icon>Approve deposit recept
+      </v-btn>
+      <v-btn
+        class="ma-2 d-none d-sm-flex white--text"
+        color="warning"
+        router-link
         to="/manage-approve-reversal-receipts"
         tag="button"
         ><v-icon>mdi-arrow-right-circle</v-icon>Approve recept reversal

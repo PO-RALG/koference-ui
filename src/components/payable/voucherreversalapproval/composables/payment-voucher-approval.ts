@@ -454,14 +454,16 @@ export const usePaymentVoucher = (): any => {
       width: "",
     },
   ];
-  const previewPaymentVoucher = (id: number) => {
-    find(id).then((response: AxiosResponse) => {
+  const previewPaymentVoucher = (item: any) => {
+    find(item.id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
       data.pvDetails.printDate = moment(new Date()).format(
         "DD/MM/YYYY H:mm:ss"
       );
       data.paymentVoucherModal = !data.paymentVoucherModal;
     });
+
+    console.log("item", item);
   };
 
   const cancelPreviewDialog = () => {

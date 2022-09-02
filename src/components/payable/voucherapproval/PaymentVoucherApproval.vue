@@ -43,7 +43,7 @@
               class="text-link"
               exact
               light
-              @click="previewPaymentVoucher(item.id)"
+              @click="previewPaymentVoucher(item)"
             >
               {{ item.reference_no }}
             </v-list-item>

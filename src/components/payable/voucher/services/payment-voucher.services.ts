@@ -1,5 +1,8 @@
 import axios from "axios";
 
+const getWorkflow = async (params: any) => {
+  return await axios.get("/api/v1/work-flows-actions", { params });
+};
 const get = async (params: any) => {
   return await axios.get("/api/v1/vouchers", { params });
 };
@@ -60,4 +63,5 @@ export {
   fundByActivityFundSource,
   printPdf,
   activitiesByFundSource,
+  getWorkflow,
 };

@@ -28,6 +28,7 @@ import { FundSources } from "@/components/coa/funding-source/types/index";
 import moment from "moment";
 import { RECEIPT_TYPE } from "@/components/receivables/receipt/types";
 import { getGlAccounts } from "@/components/receivables/receipt/services/receipt-service";
+import { flow } from "lodash";
 
 export const usePaymentVoucher = (): any => {
   const dataItems: Array<PaymentVoucher> = [];
@@ -454,14 +455,28 @@ export const usePaymentVoucher = (): any => {
       width: "",
     },
   ];
-  const previewPaymentVoucher = (id: number) => {
-    find(id).then((response: AxiosResponse) => {
+  const previewPaymentVoucher = (item: any) => {
+    find(item.id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
       data.pvDetails.printDate = moment(new Date()).format(
         "DD/MM/YYYY H:mm:ss"
       );
       data.paymentVoucherModal = !data.paymentVoucherModal;
     });
+
+    const getJson: any = localStorage.getItem("WORK_FLOW");
+    // const arrayName: any = JSON.parse(getJson);
+    if (getJson) {
+      console.log(
+        "xxxxxxxxxxxx",
+        getJson
+        // .find((flow) => flow.workflow == "PAYMENT_VOUCHER")
+        // .map((approve) => ({
+        //   id: approve.id,
+        //   title: approve.workflow,
+        // }))
+      );
+    }
   };
 
   const cancelPreviewDialog = () => {

@@ -8,6 +8,7 @@ import {
   destroy,
   printPdf,
   fundByActivity,
+  getWorkflow,
   fundByActivityFundSource,
   activitiesByFundSource,
 } from "../services/payment-voucher.services";
@@ -125,6 +126,11 @@ export const usePaymentVoucher = (): any => {
 
   onMounted(() => {
     getTableData();
+
+    getWorkflow(data.params).then((response: AxiosResponse) => {
+      const sendJson = JSON.stringify(response.data);
+      localStorage.setItem("WORK_FLOW", sendJson);
+    });
   });
 
   const filterVoucher = () => {
