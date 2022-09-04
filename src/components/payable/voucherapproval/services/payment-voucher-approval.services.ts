@@ -18,6 +18,9 @@ const find = async (id: string | number) => {
 const create = async (payload: any) => {
   return await axios.post(`/api/v1/vouchers`, payload);
 };
+const approvePVFacility = async (payload: any) => {
+  return await axios.post(`/api/v1/payment_voucher/approval`, payload);
+};
 
 const update = async (payload: any) => {
   return await axios.put(`/api/v1/vouchers/` + payload.id, payload);
@@ -60,4 +63,5 @@ export {
   fundByActivityFundSource,
   printPdf,
   activitiesByFundSource,
+  approvePVFacility,
 };

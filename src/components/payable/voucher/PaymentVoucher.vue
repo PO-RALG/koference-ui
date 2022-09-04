@@ -12,6 +12,7 @@
         Add New
       </v-btn>
       <v-btn
+        v-if="can('approve', 'Voucher')"
         class="ma-2 d-none d-sm-flex white--text"
         color="red"
         router-link
@@ -19,7 +20,7 @@
         tag="button"
         ><v-icon>mdi-arrow-right-circle</v-icon>Approve Payment Vouchers
       </v-btn>
-      <v-btn
+      <!-- <v-btn
         class="ma-2 d-none d-sm-flex white--text"
         color="warning"
         router-link
@@ -27,7 +28,7 @@
         tag="button"
         ><v-icon>mdi-arrow-right-circle</v-icon>Payment Vouchers Reversal
         Approve
-      </v-btn>
+      </v-btn> -->
     </v-card-actions>
     <v-card>
       <v-data-table

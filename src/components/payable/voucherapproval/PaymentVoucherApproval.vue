@@ -412,8 +412,13 @@
             <v-btn color="red darken-1" text @click="cancelPreviewDialog">
               Cancel
             </v-btn>
-
-            <v-btn @click="approvePV(data.pvDetails.id)" color="primary" text>
+            <!-- {{ data.pvDetails.approves }} -->
+            <v-btn
+              v-if="can('approve', 'Voucher')"
+              @click="approvePV(data.pvDetails.id)"
+              color="primary"
+              text
+            >
               <v-icon>mdi-check-decagram</v-icon>
               APPROVE PAYMENT VOUCHER
             </v-btn>

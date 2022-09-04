@@ -8,6 +8,7 @@ import {
   destroy,
   printPdf,
   fundByActivity,
+  approvePVFacility,
   fundByActivityFundSource,
   activitiesByFundSource,
 } from "../services/payment-voucher-approval.services";
@@ -124,6 +125,7 @@ export const usePaymentVoucher = (): any => {
     selectedActivity: null,
     approvemodal: false,
     itemToApprove: "",
+    approveFacility: {},
   });
 
   onMounted(() => {
@@ -134,8 +136,13 @@ export const usePaymentVoucher = (): any => {
     data.approvemodal = !data.modal;
     data.itemToApprove = deleteId;
   };
+
   const approvePaymet = () => {
-    console.log("itemToApprove", data.itemToApprove);
+    approvePVFacility(data.approveFacility).then(() => {
+      console.log("saved");
+    });
+
+    console.log("itemToApprove", data.approveFacility);
   };
 
   const filterVoucher = () => {
@@ -464,19 +471,17 @@ export const usePaymentVoucher = (): any => {
       data.paymentVoucherModal = !data.paymentVoucherModal;
     });
 
-    const getJson: any = localStorage.getItem("WORK_FLOW");
+    data.approveFacility["approval"] = item.approves.find(
+      (approve) => approve.workflow == "PAYMENT_VOUCHER"
+    );
+    // const getJson: any = localStorage.getItem("WORK_FLOW");
     // const arrayName: any = JSON.parse(getJson);
-    if (getJson) {
-      console.log(
-        "xxxxxxxxxxxx",
-        getJson
-        // .find((flow) => flow.workflow == "PAYMENT_VOUCHER")
-        // .map((approve) => ({
-        //   id: approve.id,
-        //   title: approve.workflow,
-        // }))
-      );
-    }
+    // if (getJson) {
+    //   console.log(
+    //     "item",
+    //     item.approves.find((approve) => approve.workflow == "PAYMENT_VOUCHER")
+    //   );
+    // }
   };
 
   const cancelPreviewDialog = () => {
