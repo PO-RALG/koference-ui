@@ -1,8 +1,5 @@
 import axios from "axios";
 
-const getWorkflow = async (params: any) => {
-  return await axios.get("/api/v1/work-flows-actions", { params });
-};
 const get = async (params: any) => {
   return await axios.get("/api/v1/vouchers", { params });
 };
@@ -47,7 +44,8 @@ const activitiesByFundSource = async (id: number | string) => {
 
 const printPdf = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
-  const url = `/api/v1/vouchers/${id}/print?token=${user.token}`;
+  const url = `https://ffars.tamisemi.go.tz/api/v1/vouchers/${id}/print?token=${user.token}`;
+  // const url = `${process.env.VUE_APP_SERVER_URL}/api/v1/vouchers/${id}/print?token=${user.token}`;
   return window.open(url);
 };
 
@@ -62,5 +60,4 @@ export {
   fundByActivityFundSource,
   printPdf,
   activitiesByFundSource,
-  getWorkflow,
 };

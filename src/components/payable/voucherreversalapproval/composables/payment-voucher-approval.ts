@@ -8,10 +8,9 @@ import {
   destroy,
   printPdf,
   fundByActivity,
-  approvePVFacility,
   fundByActivityFundSource,
   activitiesByFundSource,
-} from "../services/payment-voucher-approval.services";
+} from "../services/payment-voucher-reversal-approval.services";
 import stringToCurrency from "@/filters/money-to-number";
 
 import { get as getFundSources } from "@/components/coa/funding-source/services/funding-sources";
@@ -29,7 +28,6 @@ import { FundSources } from "@/components/coa/funding-source/types/index";
 import moment from "moment";
 import { RECEIPT_TYPE } from "@/components/receivables/receipt/types";
 import { getGlAccounts } from "@/components/receivables/receipt/services/receipt-service";
-import { flow } from "lodash";
 
 export const usePaymentVoucher = (): any => {
   const dataItems: Array<PaymentVoucher> = [];
@@ -39,7 +37,7 @@ export const usePaymentVoucher = (): any => {
   const fundSourceItem = {} as FundSources;
 
   const data = reactive({
-    title: "Approve Payment Vouchers",
+    title: "Approve Reverse Payment Vouchers",
     selectedGfsCodes: null,
     valid: false,
     isOpen: false,
@@ -125,7 +123,6 @@ export const usePaymentVoucher = (): any => {
     selectedActivity: null,
     approvemodal: false,
     itemToApprove: "",
-    approveFacility: {},
   });
 
   onMounted(() => {
@@ -136,13 +133,8 @@ export const usePaymentVoucher = (): any => {
     data.approvemodal = !data.modal;
     data.itemToApprove = deleteId;
   };
-
   const approvePaymet = () => {
-    approvePVFacility(data.approveFacility).then(() => {
-      console.log("saved");
-    });
-
-    console.log("itemToApprove", data.approveFacility);
+    console.log("itemToApprove", data.itemToApprove);
   };
 
   const filterVoucher = () => {
@@ -471,17 +463,7 @@ export const usePaymentVoucher = (): any => {
       data.paymentVoucherModal = !data.paymentVoucherModal;
     });
 
-    data.approveFacility["approval"] = item.approves.find(
-      (approve) => approve.workflow == "PAYMENT_VOUCHER"
-    );
-    // const getJson: any = localStorage.getItem("WORK_FLOW");
-    // const arrayName: any = JSON.parse(getJson);
-    // if (getJson) {
-    //   console.log(
-    //     "item",
-    //     item.approves.find((approve) => approve.workflow == "PAYMENT_VOUCHER")
-    //   );
-    // }
+    console.log("item", item);
   };
 
   const cancelPreviewDialog = () => {

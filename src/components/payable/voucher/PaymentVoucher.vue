@@ -11,13 +11,22 @@
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
-      <!-- <v-btn
+      <v-btn
+        v-if="can('approve', 'Voucher')"
         class="ma-2 d-none d-sm-flex white--text"
         color="red"
         router-link
         to="/payment-vouchers-approval"
         tag="button"
-        ><v-icon>mdi-arrow-right-circle</v-icon>Approve Payment Vouchers
+        ><v-icon>mdi-arrow-right-circle</v-icon>Approve Payment Vouchers</v-btn>
+      <!-- <v-btn
+        class="ma-2 d-none d-sm-flex white--text"
+        color="warning"
+        router-link
+        to="/payment-vouchers-reversal-approval"
+        tag="button"
+        ><v-icon>mdi-arrow-right-circle</v-icon>Payment Vouchers Reversal
+        Approve
       </v-btn> -->
     </v-card-actions>
     <v-card>
@@ -85,10 +94,10 @@
                 @click="openConfirmDialog(item.id)"
                 :disabled="cant('delete', 'Voucher')"
               >
-                mdi-trash-can-outline
+                mdi-arrow-u-left-top-bold
               </v-icon>
             </template>
-            <span>Delete</span>
+            <span>Reverse Payment Voucher</span>
           </v-tooltip>
         </template>
         <template v-slot:footer>
@@ -371,12 +380,12 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.deletemodal" :width="300">
+    <Modal :modal="data.deletemodal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Payment Voucher `" />
+        <ModalHeader :title="`Reverse Payment Voucher `" />
       </template>
       <template v-slot:body>
-        <ModalBody> Are you sure? </ModalBody>
+        <ModalBody> Are you sure you want to reverse? </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>

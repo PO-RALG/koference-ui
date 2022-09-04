@@ -31,6 +31,7 @@ const printReport = async (reportID: number, payload?: any) => {
   const currentUser = await getCurrentUser();
   const token = currentUser.token;
   const query = serializeParams(payload);
+
   const url = `${API}/${reportID}/print?${query}&token=${token}`;
 
   return window.open(url);

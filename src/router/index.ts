@@ -53,6 +53,7 @@ import { approvalUserRoutes } from "@/components/approval/user";
 import { notFoundRoute } from "@/components/404";
 import { openingBalanceRoutes } from "@/components/receivables/opening-balance";
 import { cashbookRoutes } from "@/components/cash-management/cashbook-report";
+import { voucherReversalApprovalRoutes } from "@/components/payable/voucherreversalapproval";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
@@ -131,6 +132,7 @@ const routes: Array<RouteConfig> = [
       ...approveReceiptRoutes,
       ...approveInvoiceReversalRoutes,
       ...voucherApprovalRoutes,
+      ...voucherReversalApprovalRoutes,
       ...notFoundRoute,
     ],
   },

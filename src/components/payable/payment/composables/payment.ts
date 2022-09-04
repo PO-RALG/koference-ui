@@ -326,13 +326,6 @@ export const usePayment = (): any => {
   const printPayment = (id: number) => {
     printPdf(id);
   };
-  const approvePV = (deleteId: any) => {
-    data.approvemodal = !data.modal;
-    data.itemToApprove = deleteId;
-  };
-  const approvePaymet = () => {
-    console.log("itemToApprove", data.itemToApprove);
-  };
 
   const payablePrintHeader = [
     {
@@ -384,11 +377,9 @@ export const usePayment = (): any => {
     previewPayment,
     cancelPreviewDialog,
     printPayment,
-    approvePV,
     payablePrintHeader,
     filterPayment,
     resetSearchText,
     mappedVouchers,
-    approvePaymet,
   };
 };

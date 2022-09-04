@@ -246,7 +246,7 @@
                     v-if="data.accounts.length && data.selectedGfsCodes"
                     class="primary--text lighten-5 pl-3 pa-5"
                   >
-                    Click to select GL account
+                    Click/Select GL to allocate Funds
                     <v-icon small color="success"> mdi-arrow-down-bold </v-icon>
                   </span>
                 </v-row>
@@ -412,13 +412,8 @@
             <v-btn color="red darken-1" text @click="cancelPreviewDialog">
               Cancel
             </v-btn>
-            <!-- {{ data.pvDetails.approves }} -->
-            <v-btn
-              v-if="can('approve', 'Voucher')"
-              @click="approvePV(data.pvDetails.id)"
-              color="primary"
-              text
-            >
+
+            <v-btn @click="approvePV(data.pvDetails.id)" color="primary" text>
               <v-icon>mdi-check-decagram</v-icon>
               APPROVE PAYMENT VOUCHER
             </v-btn>
