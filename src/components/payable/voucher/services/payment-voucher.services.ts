@@ -44,9 +44,7 @@ const activitiesByFundSource = async (id: number | string) => {
 
 const printPdf = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
-  const url = `http://196.192.73.13/api/v1/vouchers/${id}/print?token=${user.token}`;
-  // const url = `https://ffars.tamisemi.go.tz/api/v1/vouchers/${id}/print?token=${user.token}`;
-  // const url = `${process.env.VUE_APP_SERVER_URL}/api/v1/vouchers/${id}/print?token=${user.token}`;
+  const url = `/api/v1/vouchers/${id}/print?token=${user.token}`;
   return window.open(url);
 };
 
