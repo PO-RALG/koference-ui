@@ -225,7 +225,7 @@
                     v-if="data.accounts.length && data.selectedGfsCodes"
                     class="primary--text lighten-5 pl-3 pa-5"
                   >
-                    Click/Select GL to allocate Funds
+                    Click to select GL account
                     <v-icon small color="success"> mdi-arrow-down-bold </v-icon>
                   </span>
                 </v-row>
