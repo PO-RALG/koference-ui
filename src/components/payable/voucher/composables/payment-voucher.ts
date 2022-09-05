@@ -92,6 +92,13 @@ export const usePaymentVoucher = (): any => {
         width: 450,
       },
       {
+        text: "Approve Status",
+        align: "start",
+        sortable: false,
+        value: "approve",
+        // value: "approve.facility_approved",
+      },
+      {
         text: "Actions",
         value: "actions",
         sortable: false,
@@ -179,13 +186,36 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  // const getTableData = () => {
+  //   get({ per_page: 10 }).then((response: AxiosResponse) => {
+  //     const { from, to, total, current_page, per_page, last_page } =
+  //       response.data.data;
+  //     data.items = response.data.data.data;
+  //     data.itemsToFilter = response.data.data.data;
+  //     data.response = { from, to, total, current_page, per_page, last_page };
+  //   });
+  // };
+
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
-      data.items = response.data.data.data;
+      // data.items = response.data.data.data;
+      data.items = response.data.data.data.map((approve: any) => ({
+        ...approve,
+        approve: approve.approves.find(
+          (flow) => flow.workflow == "PAYMENT_VOUCHER"
+        ),
+      }));
       data.itemsToFilter = response.data.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
+      data.response = {
+        from,
+        to,
+        total,
+        current_page,
+        per_page,
+        last_page,
+      };
     });
   };
 

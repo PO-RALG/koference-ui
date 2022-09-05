@@ -86,6 +86,11 @@
             Not Paid
           </span>
         </template>
+
+        <template v-slot:[`item.approve`]="{ item }">
+          <span v-if="item.approve.facility_approved">{{ "Approved" }}</span>
+          <span v-else>{{ "Waiting for Approval" }}</span>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
