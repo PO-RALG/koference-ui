@@ -10,7 +10,8 @@ import {
   fundByActivity,
   getWorkflow,
   fundByActivityFundSource,
-  activitiesByFundSource, approvePVFacilityService,
+  activitiesByFundSource,
+  approvePVFacilityService,
 } from "../services/payment-voucher.services";
 import stringToCurrency from "@/filters/money-to-number";
 
@@ -209,46 +210,44 @@ export const usePaymentVoucher = (): any => {
     data.itemtodelete = deleteId;
   };
 
-  const approvePVFacility = (model:any) => {
+  const approvePVFacility = (model: any) => {
     data.formData = model;
-    data.modalTitle = 'Accept to Approve this Payment Voucher'
+    data.modalTitle = "Accept to Approve this Payment Voucher";
     data.genericDialogAction = approvePVFacilityComplete;
     data.genericConfirmModel = true;
   };
 
   const approvePVFacilityComplete = () => {
-
-    if(typeof data.formData.approves == 'undefined' ||  data.formData.approves.length === 0){
+    if (
+      typeof data.formData.approves == "undefined" ||
+      data.formData.approves.length === 0
+    ) {
       return false;
     }
     let currentFlowable = null;
-    const  approves = data.formData.approves;
+    const approves = data.formData.approves;
 
-    approves.forEach(function (flowable){
-      if((flowable.facility_appoved == null )){
+    approves.forEach(function (flowable) {
+      if (flowable.facility_appoved == null) {
         currentFlowable = flowable;
       }
     });
-    if(currentFlowable == null){
+    if (currentFlowable == null) {
       return false;
     }
     const approveData = {
-      'approval':currentFlowable
+      approval: currentFlowable,
     };
 
     approvePVFacilityService(approveData).then(() => {
       data.genericConfirmModel = false;
       getTableData();
     });
-
   };
-
 
   const cancelGenericConfirmDialog = () => {
     data.genericConfirmModel = false;
   };
-
-
 
   const cancelDialog = () => {
     data.formData = {} as PaymentVoucher;
@@ -318,8 +317,6 @@ export const usePaymentVoucher = (): any => {
       getTableData();
     });
   };
-
-
 
   const getSupplierData = () => {
     getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
@@ -571,6 +568,6 @@ export const usePaymentVoucher = (): any => {
     resetData,
     cancelGenericConfirmDialog,
     approvePVFacility,
-    approvePVFacilityComplete
+    approvePVFacilityComplete,
   };
 };
