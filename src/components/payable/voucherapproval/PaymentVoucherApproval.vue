@@ -414,7 +414,7 @@
             </v-btn>
             <!-- {{ data.pvDetails.approves }} -->
             <v-btn
-              v-if="can('approve', 'Voucher')"
+              v-if="canApproveFacility(data.pvDetails,'approve', 'Voucher')"
               @click="approvePV(data.pvDetails.id)"
               color="primary"
               text

@@ -10,7 +10,7 @@ import {
   fundByActivity,
   getWorkflow,
   fundByActivityFundSource,
-  activitiesByFundSource,
+  activitiesByFundSource, approvePVFacilityService,
 } from "../services/payment-voucher.services";
 import stringToCurrency from "@/filters/money-to-number";
 
@@ -98,9 +98,11 @@ export const usePaymentVoucher = (): any => {
     ],
     modal: false,
     deletemodal: false,
+    genericConfirmModel: false,
     items: dataItems,
     itemsToFilter: [],
     formData: paymentVoucherData,
+    genericDialogAction: null,
     payables: payables,
     params: {
       total: 100,
@@ -207,6 +209,47 @@ export const usePaymentVoucher = (): any => {
     data.itemtodelete = deleteId;
   };
 
+  const approvePVFacility = (model:any) => {
+    data.formData = model;
+    data.modalTitle = 'Accept to Approve this Payment Voucher'
+    data.genericDialogAction = approvePVFacilityComplete;
+    data.genericConfirmModel = true;
+  };
+
+  const approvePVFacilityComplete = () => {
+
+    if(typeof data.formData.approves == 'undefined' ||  data.formData.approves.length === 0){
+      return false;
+    }
+    let currentFlowable = null;
+    const  approves = data.formData.approves;
+
+    approves.forEach(function (flowable){
+      if((flowable.facility_appoved == null )){
+        currentFlowable = flowable;
+      }
+    });
+    if(currentFlowable == null){
+      return false;
+    }
+    const approveData = {
+      'approval':currentFlowable
+    };
+
+    approvePVFacilityService(approveData).then(() => {
+      data.genericConfirmModel = false;
+      getTableData();
+    });
+
+  };
+
+
+  const cancelGenericConfirmDialog = () => {
+    data.genericConfirmModel = false;
+  };
+
+
+
   const cancelDialog = () => {
     data.formData = {} as PaymentVoucher;
     data.fundingSources = [];
@@ -275,6 +318,8 @@ export const usePaymentVoucher = (): any => {
       getTableData();
     });
   };
+
+
 
   const getSupplierData = () => {
     getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
@@ -524,5 +569,8 @@ export const usePaymentVoucher = (): any => {
     depositType,
     normalType,
     resetData,
+    cancelGenericConfirmDialog,
+    approvePVFacility,
+    approvePVFacilityComplete
   };
 };

@@ -3,6 +3,9 @@ import axios from "axios";
 const getWorkflow = async (params: any) => {
   return await axios.get("/api/v1/work-flows-actions", { params });
 };
+const approvePVFacilityService = async (payload: any) => {
+  return await axios.post(`/api/v1/payment_voucher/approval`, payload);
+};
 const get = async (params: any) => {
   return await axios.get("/api/v1/vouchers", { params });
 };
@@ -63,4 +66,5 @@ export {
   printPdf,
   activitiesByFundSource,
   getWorkflow,
+  approvePVFacilityService
 };

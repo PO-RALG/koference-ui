@@ -96,6 +96,24 @@
               >
                 mdi-arrow-u-left-top-bold
               </v-icon>
+              <v-btn
+               v-if="canApproveFacility(item,'PAYMENT_VOUCHER','approve', 'Voucher')"
+                @click="approvePVFacility(item)"
+                color="primary"
+                text
+              >
+                <v-icon>mdi-check-decagram</v-icon>
+                APPROVE
+              </v-btn>
+              <v-btn
+               v-if="canApproveFacility(item,'PAYMENT_VOUCHER_REVERSE','approve', 'Voucher')"
+                @click="approvePVFacility(item)"
+                color="primary"
+                text
+              >
+                <v-icon>mdi-check-decagram</v-icon>
+                APPROVE REVERSE
+              </v-btn>
             </template>
             <span>Reverse Payment Voucher</span>
           </v-tooltip>
@@ -393,6 +411,23 @@
             Cancel
           </v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+
+    <Modal :modal="data.genericConfirmModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> {{data.modalTitle}}</ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="data.genericDialogAction">Yes</v-btn>
         </ModalFooter>
       </template>
     </Modal>
@@ -703,6 +738,9 @@ export default defineComponent({
       depositType,
       normalType,
       resetData,
+      cancelGenericConfirmDialog,
+      approvePVFacility,
+      approvePVFacilityComplete
     } = usePaymentVoucher();
 
     return {
@@ -742,6 +780,9 @@ export default defineComponent({
       depositType,
       normalType,
       resetData,
+      cancelGenericConfirmDialog,
+      approvePVFacility,
+      approvePVFacilityComplete
     };
   },
 });
