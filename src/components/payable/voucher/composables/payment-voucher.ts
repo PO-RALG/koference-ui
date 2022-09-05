@@ -137,10 +137,10 @@ export const usePaymentVoucher = (): any => {
   onMounted(() => {
     getTableData();
 
-    getWorkflow(data.params).then((response: AxiosResponse) => {
-      const sendJson = JSON.stringify(response.data);
-      localStorage.setItem("WORK_FLOW", sendJson);
-    });
+    // getWorkflow(data.params).then((response: AxiosResponse) => {
+    //   const sendJson = JSON.stringify(response.data);
+    //   localStorage.setItem("WORK_FLOW", sendJson);
+    // });
   });
 
   const filterVoucher = () => {
