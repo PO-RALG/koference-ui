@@ -1,15 +1,11 @@
 <template>
   <div>
     <v-card-actions class="pa-0">
-      <h2>{{ title }}</h2>
+      <h2>{{ title }} --- {{data.formData.date}}</h2>
       <v-spacer></v-spacer>
       <v-btn @click="navigateToList()" class="ma-2" outlined color="black">
-        <v-icon>mdi-progress-download</v-icon>
-        View Reconciliations
-      </v-btn>
-      <v-btn @click="openDialog('LOAD')" class="ma-2" outlined color="black">
-        <v-icon>mdi-progress-download</v-icon>
-        Load Cashbook Entries
+        <v-icon>mdi-arrow-u-left-top</v-icon>
+        Go To  Reconciliations List
       </v-btn>
       <v-btn v-if="data.report && data.report.confirmed" color="green">
         <v-icon small>mdi-lock</v-icon>
@@ -22,6 +18,14 @@
       >
         <v-icon small>mdi-lock-open-outline</v-icon>
         Unlock Report
+      </v-btn>
+      <v-btn
+        :disabled="(data.report && data.report.confirmed)  || !data.showConfirm"
+        color="primary"
+        @click="showConfirmDialog()"
+      >
+        <v-icon small>mdi-lock-open-outline</v-icon>
+        Confirm Reconciliation
       </v-btn>
     </v-card-actions>
     <v-card class="elevation-0">
@@ -309,6 +313,7 @@ export default defineComponent({
       navigateToList,
     };
   },
+
 });
 </script>
 
