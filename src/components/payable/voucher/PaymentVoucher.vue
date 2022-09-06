@@ -88,7 +88,9 @@
         </template>
 
         <template v-slot:[`item.approve`]="{ item }">
-          <span v-if="item.approve.facility_approved">{{ "Approved" }}</span>
+          <span v-if="item && item.approve && item.approve.facility_approved">{{
+            "Approved"
+          }}</span>
           <span v-else>{{ "Waiting for Approval" }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
