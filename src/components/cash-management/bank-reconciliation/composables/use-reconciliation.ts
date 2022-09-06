@@ -42,13 +42,14 @@ export const useBankReconciliation = ({ root }): any => {
     showBalance: true,
     rows: ["10", "20", "50", "60", "100"],
     headers: [
-      { text: "Ref Number", value: "reference_no" },
-      { text: "Reconciled?", value: "status", sortable: false },
       { text: "Date", value: "date" },
-      { text: "Acc", value: "account", sortable: false },
-      { text: "Name", value: "name", sortable: false },
+      { text: "Ref Number", value: "reference_no" },
+      { text: "Bank Ref Number", value: "bank_reference_number" },
+      { text: "Description", value: "description", sortable: false },
+      { text: "Reconciled", value: "status", sortable: false },
       { text: "Type", value: "type", sortable: false },
-      { text: "Amount", align: "start", sortable: true, value: "amount" },
+      { text: "DR", align: "start", sortable: true, value: "dr_amount" },
+      { text: "CR", align: "start", sortable: true, value: "cr_amount" },
     ],
     statuses: ["RECONCILE"],
     balanceRules: [(v: string) => !!v || "Bank Balance is Required"],
@@ -388,14 +389,15 @@ export const useBankReconciliation = ({ root }): any => {
 
   const getType = (transaction_type: string): string => {
     const type = transaction_type.split("\\")[2];
-    switch (type) {
+    return type;
+    /*switch (type) {
       case "Payment":
         return "OUTSTANDING PAYMENTS";
       case "Receipt":
         return "OUTSTANDING DEPOSITS";
       default:
         return "NO TYPE";
-    }
+    }*/
   };
 
   const getAccount = (transaction_type: string): string => {
@@ -438,9 +440,6 @@ export const useBankReconciliation = ({ root }): any => {
         return {
           ...entry,
           type: getType(entry.transaction_type),
-          account: `${getAccount(entry.transaction_type)}`,
-          name: "-",
-          amount: getAmount(entry),
         };
       }),
       "date"
