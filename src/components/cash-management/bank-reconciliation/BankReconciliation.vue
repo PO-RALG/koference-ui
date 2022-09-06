@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card-actions class="pa-0">
-      <h2>{{ title }} --- {{data.formData.date}}</h2>
+      <h2>{{ title }}</h2>
       <v-spacer></v-spacer>
       <v-btn @click="navigateToList()" class="ma-2" outlined color="black">
         <v-icon>mdi-arrow-u-left-top</v-icon>

@@ -416,8 +416,10 @@ export const useBankReconciliation = ({ root }): any => {
       ? `Bank Reconciliation locked as of ${moment(data.report.month).format(
           "YYYY-MM-DD"
         )}`
-      : data.title;
-    return title;
+      : data.title +  `-- ${moment(data.formData.date).format(
+      "YYYY-MM-DD"
+    )}`;
+    return title   ;
   });
 
   const getAmount = (entry) => {
