@@ -11,14 +11,15 @@
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
-      <v-btn
+      <!-- <v-btn
         v-if="can('approve', 'Voucher')"
         class="ma-2 d-none d-sm-flex white--text"
         color="red"
         router-link
         to="/payment-vouchers-approval"
         tag="button"
-        ><v-icon>mdi-arrow-right-circle</v-icon>Approve Payment Vouchers</v-btn>
+        ><v-icon>mdi-arrow-right-circle</v-icon>Approve Payment Vouchers</v-btn
+      > -->
       <!-- <v-btn
         class="ma-2 d-none d-sm-flex white--text"
         color="warning"
@@ -85,6 +86,11 @@
             Not Paid
           </span>
         </template>
+
+        <template v-slot:[`item.approve`]="{ item }">
+          <span v-if="item.approve.facility_approved">{{ "Approved" }}</span>
+          <span v-else>{{ "Waiting for Approval" }}</span>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -97,7 +103,14 @@
                 mdi-arrow-u-left-top-bold
               </v-icon>
               <v-btn
-               v-if="canApproveFacility(item,'PAYMENT_VOUCHER','approve', 'Voucher')"
+                v-if="
+                  canApproveFacility(
+                    item,
+                    'PAYMENT_VOUCHER',
+                    'approve',
+                    'Voucher'
+                  )
+                "
                 @click="approvePVFacility(item)"
                 color="primary"
                 text
@@ -106,7 +119,14 @@
                 APPROVE
               </v-btn>
               <v-btn
-               v-if="canApproveFacility(item,'PAYMENT_VOUCHER_REVERSE','approve', 'Voucher')"
+                v-if="
+                  canApproveFacility(
+                    item,
+                    'PAYMENT_VOUCHER_REVERSE',
+                    'approve',
+                    'Voucher'
+                  )
+                "
                 @click="approvePVFacility(item)"
                 color="primary"
                 text
@@ -420,14 +440,16 @@
         <ModalHeader :title="data.modalTitle" />
       </template>
       <template v-slot:body>
-        <ModalBody> {{data.modalTitle}}</ModalBody>
+        <ModalBody> {{ data.modalTitle }}</ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
             Cancel
           </v-btn>
-          <v-btn color="green darken-1" text @click="data.genericDialogAction">Yes</v-btn>
+          <v-btn color="green darken-1" text @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
         </ModalFooter>
       </template>
     </Modal>
@@ -740,7 +762,7 @@ export default defineComponent({
       resetData,
       cancelGenericConfirmDialog,
       approvePVFacility,
-      approvePVFacilityComplete
+      approvePVFacilityComplete,
     } = usePaymentVoucher();
 
     return {
@@ -782,7 +804,7 @@ export default defineComponent({
       resetData,
       cancelGenericConfirmDialog,
       approvePVFacility,
-      approvePVFacilityComplete
+      approvePVFacilityComplete,
     };
   },
 });

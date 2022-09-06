@@ -1,6 +1,6 @@
 import Vue from "vue";
 import store from "@/store";
-import _, {flow, forEach} from "lodash";
+import _, { flow, forEach } from "lodash";
 import Customer from "@/components/receivables/customer/Customer.vue";
 import app from "@/App.vue";
 
@@ -31,39 +31,43 @@ Vue.mixin({
         return !result;
       }
     },
-    canApproveFacility(model: any, workflowIn: any, action, resource: string): boolean {
-
-      if(typeof model.approves == 'undefined' ||  model.approves.length === 0){
+    canApproveFacility(
+      model: any,
+      workflowIn: any,
+      action,
+      resource: string
+    ): boolean {
+      if (typeof model.approves == "undefined" || model.approves.length === 0) {
         return false;
       }
       let currentFlowable = null;
-      const  approves = model.approves;
+      const approves = model.approves;
 
-      approves.forEach(function (flowable){
-        if((flowable.facility_approved == null )){
+      approves.forEach(function (flowable) {
+        if (flowable.facility_approved == null) {
           currentFlowable = flowable;
         }
       });
-      if(currentFlowable == null){
+      if (currentFlowable == null) {
         return false;
       }
 
       const workflow = currentFlowable.workflow;
 
-      if(workflow == workflowIn){
+      if (workflow == workflowIn) {
         const user = store.getters["Auth/getCurrentUser"];
 
-      const found = _.find(user.permissions, {
-        action,
-        resource,
-      });
-      if (user) {
-        const result = !!found;
-        return result;
-      }else{
-       return false;
-      }
-      }else{
+        const found = _.find(user.permissions, {
+          action,
+          resource,
+        });
+        if (user) {
+          const result = !!found;
+          return result;
+        } else {
+          return false;
+        }
+      } else {
         return false;
       }
     },
@@ -73,7 +77,7 @@ Vue.mixin({
       return site.name === "demo" ? true : false;
     },
     stringToCurrency(value: string): number {
-      return Number(value.replace(/[^0-9.-]+/g,""));
+      return Number(value.replace(/[^0-9.-]+/g, ""));
     },
   },
 });
