@@ -166,8 +166,8 @@ export const useDocument = (): any => {
     data.modal = !data.modal;
   };
 
-  const downloadFile = (id: any) => {
-    const path: any = `/api/v1/document-download/${id}` ;
+  const downloadFile = (filepath?: any) => {
+    const path: any = "/" + filepath;
     window.open(path, "_blank");
   };
 
