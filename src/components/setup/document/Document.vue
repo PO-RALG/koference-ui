@@ -45,7 +45,7 @@
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
-                @click="downloadFile(item.link)"
+                @click="downloadFile(item.id)"
               >
                 mdi-download
               </v-icon>
