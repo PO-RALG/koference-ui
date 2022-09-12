@@ -73,6 +73,12 @@ export const useFacility = (): any => {
         value: "location.name",
       },
       {
+        text: "Location Level",
+        align: "start",
+        sortable: false,
+        value: "location.level.name",
+      },
+      {
         text: "Active",
         align: "start",
         sortable: false,
