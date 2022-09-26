@@ -2,6 +2,7 @@ import axios from "axios";
 import { getCurrentUser } from "@/middleware";
 
 const API = "/api/v1/reports";
+const API2 = "localhost:8000/api/v1/reports";
 
 const getReports = async (payload) => {
   return axios.get(API, { params: payload });

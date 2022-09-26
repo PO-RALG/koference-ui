@@ -45,7 +45,7 @@
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
-                @click="downloadFile(item.link)"
+                @click="downloadFile(item.id)"
               >
                 mdi-download
               </v-icon>
@@ -72,7 +72,7 @@
                 v-bind="attrs"
                 v-on="on"
                 @click="deleteDocumentCategory(item.id)"
-                >mdi-trash-can-outline</v-icon
+              >mdi-trash-can-outline</v-icon
               >
             </template>
             <span>Delete</span>
@@ -167,7 +167,7 @@
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
           <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
+          >{{ data.modalTitle }}
           </v-btn>
         </ModalFooter>
       </template>
@@ -183,7 +183,7 @@
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="green darken-1" text @click="cancelConfirmDialog"
-            >Cancel</v-btn
+          >Cancel</v-btn
           >
           <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
