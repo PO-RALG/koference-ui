@@ -3,6 +3,9 @@ import axios from "axios";
 const get = async (payload: any) => {
   return await axios.get("/api/v1/customers", { params: payload });
 };
+const getTrushed = async (payload: any) => {
+  return await axios.get("/api/v1/customers/trushed", { params: payload });
+};
 const customers = async (payload: any) => {
   return await axios.get("/api/v1/customers", {
     params: {
@@ -40,9 +43,18 @@ const create = async (payload: any) => {
 const update = async (payload: any) => {
   return await axios.put(`/api/v1/customers/` + payload.id, payload);
 };
+
 const destroy = async (payload: any) => {
   console.log("payload", payload);
   return await axios.delete(`/api/v1/customers/` + payload);
+};
+
+const restoreCustomer = async (payload: any) => {
+  // console.log("payload", payload);
+  return await axios.put(
+    `/api/v1/customers/restore/` + payload.id + "/trashed-customer",
+    payload
+  );
 };
 
 export {
@@ -55,4 +67,6 @@ export {
   activation,
   customers,
   regSearch,
+  getTrushed,
+  restoreCustomer,
 };

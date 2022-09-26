@@ -9,6 +9,8 @@ import {
   destroy,
   regSearch,
   activation,
+  getTrushed,
+  restoreCustomer,
 } from "../services/customer.service";
 import { search as listOfGenericCustomer } from "../../../receivables/generic-customer/services/generic.customer.service";
 
@@ -30,15 +32,19 @@ export const useCustomer = (): any => {
       { text: "Actions", value: "actions", sortable: false },
     ],
     modal: false,
+    trushModal: false,
     deletemodal: false,
     items: dataItems,
     itemsToFilter: [],
     formData: customerData,
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
+    restoreId: "",
     response: {},
     addcustomer: false,
     genericCustomer: [],
+    itemsDeleted: [],
+    restoreTrashedmodal: false,
   });
 
   onMounted(() => {
@@ -129,11 +135,25 @@ export const useCustomer = (): any => {
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
+
+    getTrushed({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.itemsDeleted = response.data.data.data;
+      data.itemsToFilter = response.data.data.data;
+    });
   };
 
   const deleteCustomer = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
+    // console.log("delete year", data);
+  };
+
+  const openRestoreTrashedDialog = (restoreId: any) => {
+    data.restoreTrashedmodal = !data.modal;
+    data.restoreId = restoreId;
     // console.log("delete year", data);
   };
   const getCustomer = () => {
@@ -151,13 +171,26 @@ export const useCustomer = (): any => {
   const cancelConfirmDialog = () => {
     data.formData = {} as Customer;
     data.deletemodal = false;
+    data.trushModal = false;
+  };
+
+  const cancelRestoreDialog = () => {
+    data.restoreTrashedmodal = false;
   };
 
   const remove = () => {
-    console.log("delete data with id", data.itemtodelete);
+    // console.log("delete data with id", data.itemtodelete);
     destroy(data.itemtodelete).then(() => {
       reloadData();
       data.deletemodal = false;
+    });
+  };
+
+  const restore = () => {
+    console.log("restore data with id", data.restoreId);
+    restoreCustomer(data.restoreId).then(() => {
+      reloadData();
+      data.restoreTrashedmodal = false;
     });
   };
 
@@ -169,6 +202,17 @@ export const useCustomer = (): any => {
       delete data.formData.id;
       createCustomer(data.formData);
     }
+  };
+
+  const openTrushedDialog = () => {
+    getTrushed({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.itemsDeleted = response.data.data.data;
+      data.itemsToFilter = response.data.data.data;
+    });
+    data.trushModal = !data.modal;
   };
 
   const openDialog = (formData?: any) => {
@@ -229,6 +273,7 @@ export const useCustomer = (): any => {
     openDialog,
     cancelDialog,
     deleteCustomer,
+    openRestoreTrashedDialog,
     getCustomer,
     updatecustomer,
     save,
@@ -243,5 +288,8 @@ export const useCustomer = (): any => {
     filterCustomers,
     resetSearchText,
     isUpdate,
+    openTrushedDialog,
+    cancelRestoreDialog,
+    restore,
   };
 };
