@@ -43,7 +43,6 @@ export const useCustomer = (): any => {
 
       { text: "Address", align: "start", sortable: false, value: "address" },
       { text: "Phone", align: "start", sortable: false, value: "phone" },
-      { text: "Activation", value: "activations", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
     modal: false,

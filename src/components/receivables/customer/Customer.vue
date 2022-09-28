@@ -263,14 +263,14 @@
             <template v-slot:[`item.endDate`]="{ item }">
               <span>{{ item.endDate }}</span>
             </template>
-            <template v-slot:[`item.activations`]="{ item }">
+            <!-- <template v-slot:[`item.activations`]="{ item }">
               <v-switch
                 disabled
                 :input-value="item.active"
                 @change="setActivation(item)"
                 value
               ></v-switch>
-            </template>
+            </template> -->
             <template v-slot:[`item.actions`]="{ item }">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
