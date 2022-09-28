@@ -16,7 +16,7 @@
         @click="openTrushedDialog"
       >
         <v-icon>mdi-delete-empty-outline</v-icon>
-        Trush
+        Restore deleted customers
       </v-btn>
       <v-btn
         v-if="can('create', 'Customer')"
@@ -228,14 +228,19 @@
       <template v-slot:body>
         <ModalBody>
           <v-data-table
-            :headers="data.headers"
-            :items="data.itemsDeleted"
+            :headers="data.headersTrash"
+            :items="trushedNew"
             :single-expand="true"
             class="elevation-0"
             disable-pagination
             hide-default-footer
           >
-            <template v-slot:top>
+            <template v-slot: [`item.index`]="{ item }">
+              <span>
+                {{ item.index }}
+              </span>
+            </template>
+            <!-- <template v-slot:top>
               <v-card-title>
                 <v-spacer></v-spacer>
                 <v-col cols="6" sm="12" md="12" class="pa-0">
@@ -251,7 +256,7 @@
                   ></v-text-field>
                 </v-col>
               </v-card-title>
-            </template>
+            </template> -->
             <template v-slot:[`item.startDate`]="{ item }">
               <span>{{ item.startDate }}</span>
             </template>
@@ -335,6 +340,7 @@ export default defineComponent({
       openTrushedDialog,
       cancelRestoreDialog,
       restore,
+      trushedNew,
     } = useCustomer();
 
     return {
@@ -361,6 +367,7 @@ export default defineComponent({
       openTrushedDialog,
       cancelRestoreDialog,
       restore,
+      trushedNew,
     };
   },
 });

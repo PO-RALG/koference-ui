@@ -3,9 +3,11 @@ import axios from "axios";
 const get = async (payload: any) => {
   return await axios.get("/api/v1/customers", { params: payload });
 };
+
 const getTrushed = async (payload: any) => {
   return await axios.get("/api/v1/customers/trushed", { params: payload });
 };
+
 const customers = async (payload: any) => {
   return await axios.get("/api/v1/customers", {
     params: {

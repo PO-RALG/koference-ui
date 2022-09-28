@@ -31,6 +31,21 @@ export const useCustomer = (): any => {
       { text: "Activation", value: "activations", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
+    headersTrash: [
+      {
+        text: "No",
+        align: "start",
+        sortable: false,
+        value: "index",
+      },
+      { text: "Name", align: "start", sortable: false, value: "name" },
+      { text: "Email", align: "start", sortable: false, value: "email" },
+
+      { text: "Address", align: "start", sortable: false, value: "address" },
+      { text: "Phone", align: "start", sortable: false, value: "phone" },
+      { text: "Activation", value: "activations", sortable: false },
+      { text: "Actions", value: "actions", sortable: false },
+    ],
     modal: false,
     trushModal: false,
     deletemodal: false,
@@ -107,8 +122,19 @@ export const useCustomer = (): any => {
     });
   };
 
-  computed(() => {
-    return "test";
+  const trushedNew = computed(() => {
+    return data.itemsDeleted
+      .map((trashed: any) => ({
+        ...trashed,
+      }))
+      .sort(function (a, b) {
+        if (a > b) return 1;
+        return -1;
+      })
+      .map((item, index) => ({
+        ...item,
+        index: ++index,
+      }));
   });
 
   const isUpdate = computed(() => {
@@ -120,7 +146,6 @@ export const useCustomer = (): any => {
 
     if (categoryName != null) {
       regSearch({ name: categoryName.name }).then((response: any) => {
-        //// data", response.data.data);
         data.items = response.data.data;
       });
     } else {
@@ -148,13 +173,11 @@ export const useCustomer = (): any => {
   const deleteCustomer = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
-    // console.log("delete year", data);
   };
 
   const openRestoreTrashedDialog = (restoreId: any) => {
     data.restoreTrashedmodal = !data.modal;
     data.restoreId = restoreId;
-    // console.log("delete year", data);
   };
   const getCustomer = () => {
     get(data).then((response) => {
@@ -179,7 +202,6 @@ export const useCustomer = (): any => {
   };
 
   const remove = () => {
-    // console.log("delete data with id", data.itemtodelete);
     destroy(data.itemtodelete).then(() => {
       reloadData();
       data.deletemodal = false;
@@ -187,7 +209,6 @@ export const useCustomer = (): any => {
   };
 
   const restore = () => {
-    console.log("restore data with id", data.restoreId);
     restoreCustomer(data.restoreId).then(() => {
       reloadData();
       data.restoreTrashedmodal = false;
@@ -291,5 +312,6 @@ export const useCustomer = (): any => {
     openTrushedDialog,
     cancelRestoreDialog,
     restore,
+    trushedNew,
   };
 };

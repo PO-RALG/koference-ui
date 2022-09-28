@@ -8,6 +8,7 @@ import {
   toggleActive,
   resetPassword,
   addApprovalRoles,
+  getTrushed,
 } from "../services/user.service";
 import { get as getApprovalRoles } from "@/components/approval/role/services/approval-role-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
@@ -47,6 +48,10 @@ export const useUser = (type?: string): Record<string, unknown> => {
     roles: [],
     approvalUsers: [],
     modalTitle: "",
+    itemsDeleted: [],
+    itemsToFilter: [],
+    trushModal: false,
+
     headers: [
       { text: "Check Number", value: "check_number" },
       { text: "Phone Number", value: "phone_number" },
@@ -98,6 +103,32 @@ export const useUser = (type?: string): Record<string, unknown> => {
       initialize();
     }
   });
+
+  const trushedNew = computed(() => {
+    return data.itemsDeleted
+      .map((trashed: any) => ({
+        ...trashed,
+      }))
+      .sort(function (a, b) {
+        if (a > b) return 1;
+        return -1;
+      })
+      .map((item, index) => ({
+        ...item,
+        index: ++index,
+      }));
+  });
+
+  const openTrushedDialog = () => {
+    getTrushed({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.itemsDeleted = response.data.data.data;
+      data.itemsToFilter = response.data.data.data;
+    });
+    data.trushModal = !data.modal;
+  };
 
   const loadApprovalUsers = () => {
     get({ search: { can_approve: true } }).then((response: AxiosResponse) => {
@@ -391,14 +422,12 @@ export const useUser = (type?: string): Record<string, unknown> => {
     filterRoles,
     selectedRoles,
     confirmTitle,
-
     loadFacilities,
     getData,
     users,
     filterUsers,
     message,
     closeActivationDialog,
-
     updateUser,
     save,
     deleteItem,
@@ -411,5 +440,8 @@ export const useUser = (type?: string): Record<string, unknown> => {
     resetSearchText,
     canGetApprovalRole,
     setApprovalRole,
+    openTrushedDialog,
+    trushedNew,
+    getTrushed,
   };
 };

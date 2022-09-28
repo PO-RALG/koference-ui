@@ -40,6 +40,10 @@ const addApprovalRoles = async (payload: any) => {
   return await axios.put(`${API}/add-approval-roles/${payload.id}`, payload);
 };
 
+const getTrushed = async (payload: any) => {
+  return await axios.get(`${API}/trashed/`, payload);
+};
+
 export {
   get,
   find,
@@ -49,4 +53,5 @@ export {
   toggleActive,
   resetPassword,
   addApprovalRoles,
+  getTrushed,
 };
