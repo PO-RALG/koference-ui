@@ -9,6 +9,7 @@ import {
   resetPassword,
   addApprovalRoles,
   getTrushed,
+  restoreUser,
 } from "../services/user.service";
 import { get as getApprovalRoles } from "@/components/approval/role/services/approval-role-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
@@ -51,7 +52,17 @@ export const useUser = (type?: string): Record<string, unknown> => {
     itemsDeleted: [],
     itemsToFilter: [],
     trushModal: false,
+    restoreTrashedmodal: false,
+    restoreId: "",
 
+    trush_headers: [
+      { text: "No", value: "index" },
+      { text: "Check Number", value: "check_number" },
+      { text: "Phone Number", value: "phone_number" },
+      { text: "Name", align: "start", sortable: false, value: "fullName" },
+      { text: "Email", value: "email" },
+      { text: "Actions", value: "actions", sortable: false },
+    ],
     headers: [
       { text: "Check Number", value: "check_number" },
       { text: "Phone Number", value: "phone_number" },
@@ -68,6 +79,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
       { text: "Actions", value: "actions", sortable: false },
     ],
     searchTerm: "",
+    searchTermTrushed: "",
     modal: false,
     items: dataItems,
     formData: userData,
@@ -104,6 +116,74 @@ export const useUser = (type?: string): Record<string, unknown> => {
     }
   });
 
+  const filterTrushedUser = () => {
+    if (data.searchTermTrushed.length > 3) {
+      getTrushed({ regSearch: data.searchTermTrushed }).then(
+        (response: AxiosResponse) => {
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
+          data.itemsDeleted = response.data.data.data;
+        }
+      );
+    }
+    if (
+      data.searchTermTrushed.length === 0 ||
+      data.searchTermTrushed === null
+    ) {
+      getTrushed({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.itemsDeleted = response.data.data.data;
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
+
+  const cancelConfirmDialog = () => {
+    data.trushModal = false;
+  };
+
+  const openRestoreTrashedDialog = (restoreId: any) => {
+    data.restoreTrashedmodal = !data.modal;
+    data.restoreId = restoreId;
+  };
+
+  const cancelRestoreDialog = () => {
+    data.restoreTrashedmodal = false;
+  };
+
+  const restore = () => {
+    restoreUser(data.restoreId).then(() => {
+      // reloadData();
+      data.restoreTrashedmodal = false;
+    });
+  };
+
   const trushedNew = computed(() => {
     return data.itemsDeleted
       .map((trashed: any) => ({
@@ -116,8 +196,21 @@ export const useUser = (type?: string): Record<string, unknown> => {
       .map((item, index) => ({
         ...item,
         index: ++index,
+        fullName: `${item.first_name} ${item.middle_name}  ${item.last_name}`,
       }));
   });
+
+  // const approvalUsers = computed(() => {
+  //   return data.items
+  //     .map((user: any) => ({
+  //       ...user,
+  //       fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
+  //       displayRoles: user.approval_role.name,
+  //     }))
+  //     .filter((user: any) => {
+  //       return user.can_approve === true;
+  //     });
+  // });
 
   const openTrushedDialog = () => {
     getTrushed({ per_page: 10 }).then((response: AxiosResponse) => {
@@ -198,15 +291,15 @@ export const useUser = (type?: string): Record<string, unknown> => {
     }
   };
 
-  const resetSearchText = () => {
-    data.searchTerm = "";
-    get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data;
-    });
-  };
+  // const resetSearchText = () => {
+  //   data.searchTerm = "";
+  //   get({ per_page: 10 }).then((response: AxiosResponse) => {
+  //     const { from, to, total, current_page, per_page, last_page } =
+  //       response.data.data;
+  //     data.response = { from, to, total, current_page, per_page, last_page };
+  //     data.items = response.data.data.data;
+  //   });
+  // };
 
   const users = computed(() => {
     return data.items.map((user: any) => ({
@@ -413,7 +506,8 @@ export const useUser = (type?: string): Record<string, unknown> => {
     data,
     openActivationDialog,
     openApprovalRoleDialog,
-
+    filterTrushedUser,
+    resetSearchText,
     openDialog,
     toggleStatus,
     cancelDialog,
@@ -437,11 +531,14 @@ export const useUser = (type?: string): Record<string, unknown> => {
     usersToAssign,
     onUserSelection,
     addApprovalRole,
-    resetSearchText,
     canGetApprovalRole,
     setApprovalRole,
     openTrushedDialog,
     trushedNew,
     getTrushed,
+    cancelConfirmDialog,
+    openRestoreTrashedDialog,
+    cancelRestoreDialog,
+    restore,
   };
 };
