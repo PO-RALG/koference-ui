@@ -179,7 +179,8 @@ export const useUser = (type?: string): Record<string, unknown> => {
 
   const restore = () => {
     restoreUser(data.restoreId).then(() => {
-      // reloadData();
+      initialize();
+      initializeTrushed();
       data.restoreTrashedmodal = false;
     });
   };
@@ -237,6 +238,15 @@ export const useUser = (type?: string): Record<string, unknown> => {
       data.items = response.data.data.data;
     });
     data.currentUser = currentUser;
+  };
+  const initializeTrushed = () => {
+    getTrushed({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.itemsDeleted = response.data.data.data;
+      data.itemsToFilter = response.data.data.data;
+    });
   };
 
   const cancelDialog = () => {
@@ -540,5 +550,6 @@ export const useUser = (type?: string): Record<string, unknown> => {
     openRestoreTrashedDialog,
     cancelRestoreDialog,
     restore,
+    initializeTrushed,
   };
 };
