@@ -108,7 +108,7 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-
+ <v-container v-if="data.formData.date < '2022-07-01'">
               <v-card>
                 <v-card-title class="blue-grey darken-1">
                   <span class="text-h5 white--text">Amount By Fund Source</span>
@@ -160,7 +160,6 @@
                         label="Amount"
                         outlined
                         required
-                        v-mask="toMoney"
                       ></v-text-field>
                     </v-col>
 
@@ -197,6 +196,52 @@
                   </v-row>
                 </v-container>
               </v-card>
+ </v-container>
+              <v-container v-if="data.formData.date > '2022-07-01'">
+              <v-card>
+                <v-select
+                  :items="data.glAccounts"
+                  :item-text="'code'"
+                  v-model="data.formData.gl_account"
+                  :name="`data.formData.gl_account`"
+                  label=" Account "
+                  item-value="id"
+                  outlined
+                  item-disabled="disabled"
+                >
+                  <template v-slot:selection="{ item }">
+                    {{ item.description }} {{ "-" }} {{ item.code }}
+                  </template>
+                  <template v-slot:item="{ item }">
+                    {{ item.description }} {{ "-" }} {{ item.code }}({{item.fund_source.description}})
+                  </template>
+                  <template v-slot:prepend-item>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-text-field
+                          clearable
+                          outlined
+                          dense
+                          label="Search GL Account"
+                          v-model="data.searchTerm"
+                          @input="filterGLAccounts"
+                        ></v-text-field>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-divider></v-divider>
+                  </template>
+                </v-select>
+              </v-card>
+                <v-card cols="10" md="3">
+                  <v-text-field
+                    v-model="data.formData.amount"
+                    label="Amount"
+                    outlined
+                    required
+                  ></v-text-field>
+                </v-card>
+
+              </v-container>
             </v-container>
           </v-form>
         </ModalBody>
@@ -233,6 +278,7 @@ export default defineComponent({
       totalAmount,
       reverse,
       filterFundSource,
+      filterGLAccounts
     } = useBankAdjustment();
 
     return {
@@ -247,6 +293,7 @@ export default defineComponent({
       totalAmount,
       reverse,
       filterFundSource,
+      filterGLAccounts,
       toMoney,
     };
   },

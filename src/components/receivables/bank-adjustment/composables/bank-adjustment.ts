@@ -5,8 +5,10 @@ import { BankAdjustment } from "../types/BankAdjustment";
 import { Item } from "../types/items";
 import { create, get, destroy } from "../services/bank.adjustment.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
+import { getAdjustmentAccount as getGlAccounts } from "@/components/general-ledger/gl-account/services/gl.account.service";
 import { getFundingSourceList } from "@/components/receivables/receipt/services/receipt-service";
 import stringToCurrency from "@/filters/money-to-number";
+import GLAccount from "@/components/general-ledger/gl-account/GLAccount.vue";
 
 export const useBankAdjustment = (): any => {
   const dataItems: Array<BankAdjustment> = [];
@@ -60,6 +62,7 @@ export const useBankAdjustment = (): any => {
     response: {},
     searchTerm: "",
     bankaccounts: {},
+    glAccounts: {},
     effects:[{
       "id": "plus",
       "name": "Plus(debit)"
@@ -81,6 +84,9 @@ export const useBankAdjustment = (): any => {
     });
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
+    });
+    getGlAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
+      data.glAccounts = response.data.data.data;
     });
     getFundingSourceList({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.fundingsources = response.data.data.data;
@@ -105,6 +111,9 @@ export const useBankAdjustment = (): any => {
     });
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
+    });
+    getGlAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
+      data.glAccounts = response.data.data.data;
     });
     getFundingSourceList({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.fundingsources = response.data.data.data;
@@ -143,12 +152,14 @@ export const useBankAdjustment = (): any => {
   };
 
   const createBankAdjustment = (data: any) => {
-    const items = data.items.map((entry) => ({
+    const items = data.items
+   /* const items = data.items?.map((entry) => ({
       ...entry,
       amount: stringToCurrency(entry.amount),
-    }));
+    }));*/
     const dataToSave = {
       ...data,
+      amount: data.amount,
       items: items,
     };
 
@@ -203,6 +214,10 @@ export const useBankAdjustment = (): any => {
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
     });
+    getGlAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
+      data.glAccounts = response.data.data.data;
+    });
+
 
     getFundingSourceList({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.fundingsources = response.data.data.data;
@@ -211,6 +226,23 @@ export const useBankAdjustment = (): any => {
       { funding_source_id: 1, amount: 0.0 },
       { funding_source_id: 2, amount: 0.3 },
     ];
+  };
+
+  const filterGLAccounts = () => {
+    if (data.searchTerm.length >= 3) {
+      getGlAccounts({ regSearch: data.searchTerm }).then(
+        (response: AxiosResponse) => {
+
+          data.glAccounts = response.data.data.data;
+        }
+      );
+    }
+    if (data.searchTerm.length === 0) {
+      getGlAccounts({ per_page: 200 }).then((response: AxiosResponse) => {
+
+        data.glAccounts = response.data.data.data;
+      });
+    }
   };
 
   return {
@@ -225,5 +257,6 @@ export const useBankAdjustment = (): any => {
     totalAmount,
     reverse,
     filterFundSource,
+    filterGLAccounts
   };
 };
