@@ -42,7 +42,7 @@ export const useBankAdjustment = (): any => {
         text: "Legal Number",
         align: "start",
         sortable: false,
-        value: "ab_number",
+        value: "ba_number",
       },
       {
         text: "Amount",
@@ -79,8 +79,8 @@ export const useBankAdjustment = (): any => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data;
-      data.itemsToFilter = response.data.data;
+      data.items = response.data.data.data;
+      data.itemsToFilter = response.data.data.data;
     });
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
@@ -106,8 +106,9 @@ export const useBankAdjustment = (): any => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
+      console.log(response);
       data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data;
+      data.items = response.data.data.data;
     });
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
@@ -209,7 +210,7 @@ export const useBankAdjustment = (): any => {
     data.response = params;
     get(params).then((response: AxiosResponse) => {
       data.response = response.data;
-      data.items = response.data.data;
+      data.items = response.data.data.data;
     });
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
