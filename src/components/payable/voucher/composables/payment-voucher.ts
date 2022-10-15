@@ -186,16 +186,6 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
-  // const getTableData = () => {
-  //   get({ per_page: 10 }).then((response: AxiosResponse) => {
-  //     const { from, to, total, current_page, per_page, last_page } =
-  //       response.data.data;
-  //     data.items = response.data.data.data;
-  //     data.itemsToFilter = response.data.data.data;
-  //     data.response = { from, to, total, current_page, per_page, last_page };
-  //   });
-  // };
-
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
@@ -228,7 +218,10 @@ export const usePaymentVoucher = (): any => {
   };
 
   const resetData = () => {
-    if (data.voucherType == VOUCHER_TYPE.NORMAL) {
+    if (
+      data.voucherType == VOUCHER_TYPE.NORMAL ||
+      data.voucherType == VOUCHER_TYPE.MMAMA
+    ) {
       data.payables = [];
     } else if (data.voucherType == VOUCHER_TYPE.DEPOSIT) {
       data.payables = [{ id: null, amount: 0.0 }];
@@ -555,11 +548,17 @@ export const usePaymentVoucher = (): any => {
   const isNormal = computed(() => {
     return data.voucherType == VOUCHER_TYPE.NORMAL;
   });
+
+  const isMmama = computed(() => {
+    return data.voucherType == VOUCHER_TYPE.MMAMA;
+  });
+
   const isDeposit = computed(() => {
     return data.voucherType == VOUCHER_TYPE.DEPOSIT;
   });
 
   const normalType = VOUCHER_TYPE.NORMAL;
+  const mmamaType = VOUCHER_TYPE.MMAMA;
   const depositType = RECEIPT_TYPE.DEPOSIT;
 
   return {
@@ -592,9 +591,11 @@ export const usePaymentVoucher = (): any => {
     activities,
     searchFundSource,
     isNormal,
+    isMmama,
     isDeposit,
     depositType,
     normalType,
+    mmamaType,
     resetData,
     cancelGenericConfirmDialog,
     approvePVFacility,

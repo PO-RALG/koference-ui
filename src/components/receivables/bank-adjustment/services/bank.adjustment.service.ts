@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API = "/api/v1/bank-adjustments";
+const APIAPPROVAL = "/api/v1/bank_adjustment/approval";
 
 const get = async (payload: any) => {
   return await axios.get(`${API}`, {
@@ -20,5 +21,8 @@ const destroy = async (id: string | number) => {
   return await axios.delete(`${API}/${id}`);
 };
 
+const approveBAFacilityService = async (payload: any) => {
+  return await axios.post(`${APIAPPROVAL}`, payload);
+};
 
-export { get, find, create,destroy };
+export { get, find, create, destroy, approveBAFacilityService };
