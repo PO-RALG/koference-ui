@@ -88,9 +88,10 @@
         </template>
 
         <template v-slot:[`item.approve`]="{ item }">
-          <span v-if="item && item.approve && !item.approve.facility_approved">{{
-              "Waiting for Approval"
-          }}</span>
+          <span
+            v-if="item && item.approve && !item.approve.facility_approved"
+            >{{ "Waiting for Approval" }}</span
+          >
           <span v-else>{{ "Approved" }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
@@ -160,6 +161,7 @@
             <v-radio-group v-model="data.voucherType" row @change="resetData">
               <v-radio label="NORMAL VOUCHER" :value="normalType"></v-radio>
               <v-radio label="DEPOSIT VOUCHER" :value="depositType"></v-radio>
+              <v-radio label="M MAMA VOUCHER" :value="mmamaType"></v-radio>
             </v-radio-group>
             <v-container>
               <v-row class="pt-5 pl-5 pr-5">
@@ -368,7 +370,166 @@
                   </v-col>
                 </template>
               </v-container>
-              <!-- end of section specific for normal voucher  -->
+              <!-- for mmama voucher --->
+              <v-container v-if="isMmama">
+                <v-row class="pl-3 pr-5 mt-n8">
+                  <v-col md="4" sm="12" cols="12">
+                    <v-select
+                      :items="data.fundingSources"
+                      item-text="code"
+                      label="Select Funding Sources"
+                      @change="getActivities($event)"
+                      outlined
+                      return-object
+                    >
+                      <template v-slot:selection="{ item }">
+                        {{ item.code }} - {{ item.description }}
+                      </template>
+                      <template v-slot:item="{ item }">
+                        {{ item.code }} - {{ item.description }}
+                      </template>
+                      <template v-slot:prepend-item>
+                        <v-list-item>
+                          <v-list-item-content>
+                            <v-text-field
+                              v-model="data.searchTerm"
+                              placeholder="Search"
+                              outlined
+                              @input="searchFundSource"
+                            ></v-text-field>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                      </template>
+                    </v-select>
+                  </v-col>
+                  <v-col md="4" sm="12" cols="12">
+                    <v-select
+                      :items="activities"
+                      item-text="name"
+                      label="Select Activity"
+                      @change="searchGfsCodes($event)"
+                      outlined
+                      required
+                      v-model="data.selectedActivity"
+                    >
+                      <template v-slot:selection="{ item }">
+                        {{ item.code }} - {{ item.description }}
+                      </template>
+                      <template v-slot:item="{ item }">
+                        {{ item.code }} - {{ item.description }}
+                      </template>
+                    </v-select>
+                  </v-col>
+                  <v-col md="4" sm="12" cols="12">
+                    <v-select
+                      :items="data.gfsCodes"
+                      item-value="code"
+                      item-text="name"
+                      label="Select GFS Code"
+                      outlined
+                      @change="filterGfsCodes($event)"
+                      v-model="data.selectedGfsCodes"
+                    >
+                      <template v-slot:selection="{ item }">
+                        {{ item.code }} - {{ item.name }}
+                      </template>
+                      <template v-slot:item="{ item }">
+                        {{ item.code }} - {{ item.name }}
+                      </template>
+                    </v-select>
+                  </v-col>
+                  <span
+                    v-if="data.accounts.length && data.selectedGfsCodes"
+                    class="primary--text lighten-5 pl-3 pa-5"
+                  >
+                    Click to select GL account
+                    <v-icon small color="success"> mdi-arrow-down-bold </v-icon>
+                  </span>
+                </v-row>
+
+                <template>
+                  <v-simple-table v-if="data.selectedGfsCodes">
+                    <template v-slot:default>
+                      <tbody>
+                        <tr v-for="(account, i) in data.accounts" :key="i">
+                          <td
+                            class="py-2"
+                            @click="addPayable(account)"
+                            colspan="2"
+                          >
+                            <span>{{ account.code }}</span>
+                            <br />
+                            <span style="color: teal">
+                              {{ account.description }}
+                            </span>
+                            <br />
+                            <span>
+                              {{
+                                (account.allocation - account.totalExpenditure)
+                                  | toCurrency()
+                              }}
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+
+                  <v-col
+                    cols="12"
+                    md="12"
+                    class="pb-3 pt-7 data-table"
+                    v-if="data.payables.length"
+                  >
+                    <v-data-table
+                      :headers="payableHeader"
+                      disable-pagination
+                      hide-default-footer
+                    >
+                      <template v-slot:body>
+                        <tbody>
+                          <tr v-for="(item, i) in data.payables" :key="i">
+                            <td class="pt-5 pb-2">
+                              <span class="text-lg-body-1">{{
+                                item.code
+                              }}</span>
+                              <br />
+                              <span style="color: teal">{{
+                                item.description
+                              }}</span>
+                              <br />
+                              <span class="text--primary">{{
+                                item.balance
+                              }}</span>
+                            </td>
+                            <td class="pt-5 pb-2">
+                              <v-text-field
+                                dense
+                                outlined
+                                v-mask="toMoney"
+                                v-model="item.amount"
+                                persistent-hint
+                                :hint="'Available balance: ' + item.balance"
+                              >
+                                <!-- :rules="[maxRules(item.balance)]" -->
+                              </v-text-field>
+                            </td>
+                            <td>
+                              <v-btn text @click="removePayable(i)">
+                                <v-icon color="red darken-1"
+                                  >mdi-minus-circle</v-icon
+                                >
+                              </v-btn>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-data-table>
+                  </v-col>
+                </template>
+              </v-container>
+              <!-- end of section specific for mmama voucher  -->
               <!-- start of deposit voucher -->
               <!-- deposit start  --->
               <v-container v-if="isDeposit">
@@ -759,8 +920,10 @@ export default defineComponent({
       loadBudget,
       isNormal,
       isDeposit,
+      isMmama,
       depositType,
       normalType,
+      mmamaType,
       resetData,
       cancelGenericConfirmDialog,
       approvePVFacility,
@@ -768,6 +931,8 @@ export default defineComponent({
     } = usePaymentVoucher();
 
     return {
+      isMmama,
+      mmamaType,
       toMoney,
       data,
       openDialog,

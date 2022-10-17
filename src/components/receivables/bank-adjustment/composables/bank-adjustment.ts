@@ -3,18 +3,24 @@ import { AxiosResponse } from "axios";
 
 import { BankAdjustment } from "../types/BankAdjustment";
 import { Item } from "../types/items";
-import { create, get, destroy } from "../services/bank.adjustment.service";
+import {
+  create,
+  get,
+  destroy,
+  approveBAFacilityService,
+} from "../services/bank.adjustment.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import { getAdjustmentAccount as getGlAccounts } from "@/components/general-ledger/gl-account/services/gl.account.service";
 import { getFundingSourceList } from "@/components/receivables/receipt/services/receipt-service";
 import stringToCurrency from "@/filters/money-to-number";
 import GLAccount from "@/components/general-ledger/gl-account/GLAccount.vue";
-
+import { BankAdjustmentPayload } from "../types/BankAdjustment";
 export const useBankAdjustment = (): any => {
   const dataItems: Array<BankAdjustment> = [];
   let bankAdjustmentData: {
     items: { funding_source_id: number; amount: number }[];
   };
+  const bankAdjustmentData2 = {} as BankAdjustmentPayload;
 
   const data = reactive({
     title: "Manage Bank Adjustment ",
@@ -50,6 +56,12 @@ export const useBankAdjustment = (): any => {
         sortable: false,
         value: "amount",
       },
+      {
+        text: "Approve Status",
+        align: "start",
+        sortable: false,
+        value: "approve",
+      },
       { text: "Actions", value: "actions", sortable: false },
     ],
     modal: false,
@@ -57,21 +69,26 @@ export const useBankAdjustment = (): any => {
     items: dataItems,
     itemsToFilter: [],
     formData: bankAdjustmentData,
+    formData2: bankAdjustmentData2,
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},
     searchTerm: "",
     bankaccounts: {},
     glAccounts: {},
-    effects:[{
-      "id": "plus",
-      "name": "Plus(debit)"
-    },{
-      "id": "minus ",
-      "name": "Minus(credit)"
-    }
+    effects: [
+      {
+        id: "plus",
+        name: "Plus(debit)",
+      },
+      {
+        id: "minus ",
+        name: "Minus(credit)",
+      },
     ],
     fundingsources: {},
+    genericDialogAction: null,
+    genericConfirmModel: false,
   });
 
   onMounted(() => {
@@ -79,7 +96,12 @@ export const useBankAdjustment = (): any => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data;
+      data.items = response.data.data.data.map((approve: any) => ({
+        ...approve,
+        approve: approve.approves.find(
+          (flow) => flow.workflow == "BANK_ADJUSTMENT"
+        ),
+      }));
       data.itemsToFilter = response.data.data.data;
     });
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
@@ -92,6 +114,45 @@ export const useBankAdjustment = (): any => {
       data.fundingsources = response.data.data.data;
     });
   });
+
+  const cancelGenericConfirmDialog = () => {
+    data.genericConfirmModel = false;
+  };
+
+  const approveBAFacility = (model: any) => {
+    data.formData2 = model;
+    data.modalTitle = "Accept to Approve this Bank Adjustment";
+    data.genericDialogAction = approveBAFacilityComplete;
+    data.genericConfirmModel = true;
+  };
+
+  const approveBAFacilityComplete = () => {
+    if (
+      typeof data.formData2.approves == "undefined" ||
+      data.formData2.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData2.approves;
+
+    approves.forEach(function (flowable) {
+      if (flowable.facility_appoved == null) {
+        currentFlowable = flowable;
+      }
+    });
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+    };
+
+    approveBAFacilityService(approveData).then(() => {
+      data.genericConfirmModel = false;
+      reloadData();
+    });
+  };
 
   const totalAmount = computed(() => {
     return data.formData.items.reduce((sum: number, item: any) => {
@@ -153,8 +214,8 @@ export const useBankAdjustment = (): any => {
   };
 
   const createBankAdjustment = (data: any) => {
-    const items = data.items
-   /* const items = data.items?.map((entry) => ({
+    const items = data.items;
+    /* const items = data.items?.map((entry) => ({
       ...entry,
       amount: stringToCurrency(entry.amount),
     }));*/
@@ -219,7 +280,6 @@ export const useBankAdjustment = (): any => {
       data.glAccounts = response.data.data.data;
     });
 
-
     getFundingSourceList({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.fundingsources = response.data.data.data;
     });
@@ -233,14 +293,12 @@ export const useBankAdjustment = (): any => {
     if (data.searchTerm.length >= 3) {
       getGlAccounts({ regSearch: data.searchTerm }).then(
         (response: AxiosResponse) => {
-
           data.glAccounts = response.data.data.data;
         }
       );
     }
     if (data.searchTerm.length === 0) {
       getGlAccounts({ per_page: 200 }).then((response: AxiosResponse) => {
-
         data.glAccounts = response.data.data.data;
       });
     }
@@ -258,6 +316,8 @@ export const useBankAdjustment = (): any => {
     totalAmount,
     reverse,
     filterFundSource,
-    filterGLAccounts
+    filterGLAccounts,
+    approveBAFacility,
+    cancelGenericConfirmDialog,
   };
 };

@@ -16,12 +16,12 @@ export interface Account {
   balance: number;
 }
 
-export  enum VOUCHER_TYPE {
+export enum VOUCHER_TYPE {
   "NORMAL" = 1,
-  "DEPOSIT" = 3
+  "DEPOSIT" = 3,
+  "MMAMA" = 4,
 }
 export interface Payable {
-  gl_account_id:number
-  amount:number
+  gl_account_id: number;
+  amount: number;
 }
-
