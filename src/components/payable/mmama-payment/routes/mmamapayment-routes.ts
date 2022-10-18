@@ -4,10 +4,10 @@ const mmamaPaymentRoutes = [
   {
     path: "/manage-mmama-payments",
     component: () =>
-      import(/* webpackChunkName: "FinancialYear" */ "../MmamaPayment.vue"),
+      import(/* webpackChunkName: "MmamaPayment" */ "../MmamaPayment.vue"),
     meta: {
       requiresAuth: true,
-      title: "Manage Financial Years",
+      title: "Manage Mmama Payment",
       middleware: [setTitle, validateToken, setHeaders, auth],
     },
   },

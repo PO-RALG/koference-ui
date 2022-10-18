@@ -3,14 +3,10 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        v-if="can('create', 'BankAdjustment')"
-        color="primary"
-        @click="openDialog(data.formData)"
-      >
+      <!-- <v-btn color="primary" @click="openDialog(data.formData)">
         <v-icon>mdi-plus</v-icon>
         Add Bank Adjustment
-      </v-btn>
+      </v-btn> -->
     </v-card-actions>
     <v-card>
       <v-data-table
@@ -22,10 +18,9 @@
         hide-default-footer
       >
         <template v-slot:[`item.approve`]="{ item }">
-          <span
-            v-if="item && item.approve && !item.approve.facility_approved"
-            >{{ "Waiting for Approval" }}</span
-          >
+          <span v-if="item && item.approve && !item.approve.council_approved">{{
+            "Waiting for Approval"
+          }}</span>
           <span v-else>{{ "Approved" }}</span>
         </template>
         <template v-slot:[`item.date`]="{ item }">
@@ -41,24 +36,16 @@
           <span>{{ item.amount }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip v-if="can('delete', 'BankAdjustment')" bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon v-bind="attrs" v-on="on" @click="reverse(item.id)"
-                >mdi-trash-can-outline</v-icon
-              >
-            </template>
-            <span>Reverse</span>
-          </v-tooltip>
           <v-btn
             v-if="
-              canApproveFacility(
+              canApproveCouncil(
                 item,
                 'BANK_ADJUSTMENT',
-                'approve',
+                'approvalPendingCouncil',
                 'BankAdjustment'
               )
             "
-            @click="approveBAFacility(item)"
+            @click="approveBACouncil(item)"
             color="primary"
             text
           >
@@ -75,12 +62,79 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.genericConfirmModel" :width="600">
+    <Modal :modal="data.genericConfirmModel" :width="800">
       <template v-slot:header>
         <ModalHeader :title="data.modalTitle" />
       </template>
       <template v-slot:body>
-        <ModalBody> {{ data.modalTitle }}</ModalBody>
+        <ModalBody>
+          <v-list three-line>
+            <template>
+              <v-subheader>ADJUSTMENT DETAILS</v-subheader>
+
+              <v-divider></v-divider>
+
+              <v-list-item>
+                <v-list-item-avatar>
+                  <v-img>
+                    <v-icon>mdi-information-variant</v-icon>
+                  </v-img>
+                </v-list-item-avatar>
+
+                <v-list-item-content>
+                  <v-list-item-title>{{ "GL ACCOUNT" }}</v-list-item-title>
+                  <v-list-item-subtitle
+                    v-html="data.formData2.gl_account"
+                  ></v-list-item-subtitle>
+                  <v-divider class="pt-5"></v-divider>
+
+                  <v-list-item-title> {{ "BANK NAME" }}</v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ data.formData2.bank_account.bank }} {{ " - " }}
+                    {{
+                      data.formData2.bank_account.branch
+                    }}</v-list-item-subtitle
+                  >
+                  <v-divider></v-divider>
+                  <v-simple-table class="pt-5">
+                    <template v-slot:default>
+                      <thead>
+                        <tr>
+                          <th class="text-left">Fund Source</th>
+                          <th class="text-left">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="item in data.formData2.items" :key="item.id">
+                          <td>{{ item.funding_source.description }}</td>
+                          <td>{{ item.amount }}</td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-list>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
+    <Modal :modal="data.previewBAModal" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> {{ "Accept to" }} {{ data.modalTitle }}</ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
@@ -306,7 +360,7 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import { useBankAdjustment } from "./composables/bank-adjustment";
+import { useBankAdjustmentCouncilApprove } from "./composables/bank-adjustment-council-approval";
 import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({
@@ -325,9 +379,9 @@ export default defineComponent({
       reverse,
       filterFundSource,
       filterGLAccounts,
-      approveBAFacility,
+      approveBACouncil,
       cancelGenericConfirmDialog,
-    } = useBankAdjustment();
+    } = useBankAdjustmentCouncilApprove();
 
     return {
       data,
@@ -343,7 +397,7 @@ export default defineComponent({
       filterFundSource,
       filterGLAccounts,
       toMoney,
-      approveBAFacility,
+      approveBACouncil,
       cancelGenericConfirmDialog,
     };
   },

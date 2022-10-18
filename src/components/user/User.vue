@@ -9,7 +9,7 @@
         @click="openTrushedDialog"
       >
         <v-icon>mdi-delete-empty-outline</v-icon>
-        Restore Trushed Users
+        Restore Trashed Users
       </v-btn>
       <v-btn
         color="primary"

@@ -3,6 +3,7 @@ import axios from "axios";
 const API = "/api/v1/bank-adjustments";
 const APIPENNDING = "/api/v1/bank_adjustment/approval-pending-council";
 const APIAPPROVAL = "/api/v1/bank_adjustment/approval";
+const APIAPPROVALCOUNCIL = "/api/v1/bank_adjustment/approvalCouncil";
 
 const get = async (payload: any) => {
   return await axios.get(`${API}`, {
@@ -30,6 +31,9 @@ const destroy = async (id: string | number) => {
 const approveBAFacilityService = async (payload: any) => {
   return await axios.post(`${APIAPPROVAL}`, payload);
 };
+const approveBACouncilService = async (payload: any) => {
+  return await axios.post(`${APIAPPROVALCOUNCIL}`, payload);
+};
 
 export {
   get,
@@ -38,4 +42,5 @@ export {
   destroy,
   approveBAFacilityService,
   getPendingApproveCouncil,
+  approveBACouncilService,
 };

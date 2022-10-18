@@ -16,7 +16,7 @@ export const useMmamaPayment = (): any => {
   let financialYearData: FinancialYear;
 
   const data = reactive({
-    title: "M Mama Payments",
+    title: "M Mama Financial Report",
     modalTitle: "",
     headers: [
       {

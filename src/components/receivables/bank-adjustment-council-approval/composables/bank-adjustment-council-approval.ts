@@ -6,16 +6,17 @@ import { Item } from "../types/items";
 import {
   create,
   get,
+  getPendingApproveCouncil,
   destroy,
-  approveBAFacilityService,
-} from "../services/bank.adjustment.service";
+  approveBACouncilService,
+} from "../services/bank.adjustmentcouncilapproval.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import { getAdjustmentAccount as getGlAccounts } from "@/components/general-ledger/gl-account/services/gl.account.service";
 import { getFundingSourceList } from "@/components/receivables/receipt/services/receipt-service";
 import stringToCurrency from "@/filters/money-to-number";
 import GLAccount from "@/components/general-ledger/gl-account/GLAccount.vue";
 import { BankAdjustmentPayload } from "../types/BankAdjustment";
-export const useBankAdjustment = (): any => {
+export const useBankAdjustmentCouncilApprove = (): any => {
   const dataItems: Array<BankAdjustment> = [];
   let bankAdjustmentData: {
     items: { funding_source_id: number; amount: number }[];
@@ -23,8 +24,21 @@ export const useBankAdjustment = (): any => {
   const bankAdjustmentData2 = {} as BankAdjustmentPayload;
 
   const data = reactive({
-    title: "Manage Bank Adjustment ",
+    title: "Council Bank Adjustment Approval",
     modalTitle: "Add Bank Adjustment",
+    itemsx: [
+      { header: "Today" },
+      {
+        title: "GL ACCOUNT?",
+        subtitle: `<span class="text--primary">Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+      },
+      {
+        title: "Ammount?",
+        subtitle: `<span class="text--primary">Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+      },
+      { divider: true, inset: true },
+    ],
+
     headers: [
       {
         text: "Date",
@@ -89,44 +103,39 @@ export const useBankAdjustment = (): any => {
     fundingsources: {},
     genericDialogAction: null,
     genericConfirmModel: false,
+    previewBAModal: false,
   });
 
   onMounted(() => {
-    get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data.map((approve: any) => ({
-        ...approve,
-        approve: approve.approves.find(
-          (flow) => flow.workflow == "BANK_ADJUSTMENT"
-        ),
-      }));
-      data.itemsToFilter = response.data.data.data;
-    });
-    getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.bankaccounts = response.data.data.data;
-    });
-    getGlAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.glAccounts = response.data.data.data;
-    });
-    getFundingSourceList({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.fundingsources = response.data.data.data;
-    });
+    getPendingApproveCouncil({ per_page: 10 }).then(
+      (response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data.map((approve: any) => ({
+          ...approve,
+          approve: approve.approves.find(
+            (flow) => flow.workflow == "BANK_ADJUSTMENT"
+          ),
+        }));
+        data.itemsToFilter = response.data.data.data;
+      }
+    );
   });
 
   const cancelGenericConfirmDialog = () => {
     data.genericConfirmModel = false;
+    data.previewBAModal = false;
   };
 
-  const approveBAFacility = (model: any) => {
+  const approveBACouncil = (model: any) => {
     data.formData2 = model;
-    data.modalTitle = "Accept to Approve this Bank Adjustment";
-    data.genericDialogAction = approveBAFacilityComplete;
+    data.modalTitle = "Approve Bank Adjustment";
+    data.genericDialogAction = approveBACouncilComplete;
     data.genericConfirmModel = true;
   };
 
-  const approveBAFacilityComplete = () => {
+  const approveBACouncilComplete = () => {
     if (
       typeof data.formData2.approves == "undefined" ||
       data.formData2.approves.length === 0
@@ -147,8 +156,7 @@ export const useBankAdjustment = (): any => {
     const approveData = {
       approval: currentFlowable,
     };
-
-    approveBAFacilityService(approveData).then(() => {
+    approveBACouncilService(approveData).then(() => {
       data.genericConfirmModel = false;
       reloadData();
     });
@@ -164,30 +172,20 @@ export const useBankAdjustment = (): any => {
   });
 
   const reloadData = () => {
-    get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data.map((approve: any) => ({
-        ...approve,
-        approve: approve.approves.find(
-          (flow) => flow.workflow == "BANK_ADJUSTMENT"
-        ),
-      }));
-      data.itemsToFilter = response.data.data.data;
-    });
-
-    getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.bankaccounts = response.data.data.data;
-    });
-
-    getGlAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.glAccounts = response.data.data.data;
-    });
-
-    getFundingSourceList({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.fundingsources = response.data.data.data;
-    });
+    getPendingApproveCouncil({ per_page: 10 }).then(
+      (response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data.map((approve: any) => ({
+          ...approve,
+          approve: approve.approves.find(
+            (flow) => flow.workflow == "BANK_ADJUSTMENT"
+          ),
+        }));
+        data.itemsToFilter = response.data.data.data;
+      }
+    );
   };
 
   const cancelDialog = () => {
@@ -325,7 +323,7 @@ export const useBankAdjustment = (): any => {
     reverse,
     filterFundSource,
     filterGLAccounts,
-    approveBAFacility,
+    approveBACouncil,
     cancelGenericConfirmDialog,
   };
 };

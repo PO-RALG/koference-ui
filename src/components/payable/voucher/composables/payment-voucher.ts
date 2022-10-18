@@ -218,12 +218,16 @@ export const usePaymentVoucher = (): any => {
   };
 
   const resetData = () => {
-    if (
-      data.voucherType == VOUCHER_TYPE.NORMAL ||
-      data.voucherType == VOUCHER_TYPE.MMAMA
-    ) {
+    if (data.voucherType == VOUCHER_TYPE.NORMAL) {
       data.payables = [];
+      getSupplierData(data.voucherType);
+    }
+
+    if (data.voucherType == VOUCHER_TYPE.MMAMA) {
+      data.payables = [];
+      getSupplierData(data.voucherType);
     } else if (data.voucherType == VOUCHER_TYPE.DEPOSIT) {
+      getSupplierData(data.voucherType);
       data.payables = [{ id: null, amount: 0.0 }];
     }
   };
@@ -302,6 +306,9 @@ export const usePaymentVoucher = (): any => {
       payableData.push(element);
     }
     data.formData.payables = payableData;
+    if (isMmama) {
+      data.formData.is_mmama = true;
+    }
     createVoucher(data.formData);
   };
 
@@ -309,7 +316,7 @@ export const usePaymentVoucher = (): any => {
     data.formData = {} as PaymentVoucher;
     data.modalTitle = "Create";
     data.searchTerm = "";
-    getSupplierData();
+    getSupplierData(1);
     getFundingSources();
     loadDepositAccounts();
     data.payables = [];
@@ -341,16 +348,32 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
-  const getSupplierData = () => {
-    getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
-      const allSuppliers = response.data.data.data;
-      for (let i = 0; i < allSuppliers.length; i++) {
-        const element = allSuppliers[i];
-        if (element.active === true) {
-          data.suppliers.push(element);
+  const getSupplierData = (voucher: any) => {
+    console.log("voucherType", voucher);
+    if (voucher == 4) {
+      data.suppliers = [];
+
+      getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
+        const allSuppliers = response.data.data.data;
+        for (let i = 0; i < allSuppliers.length; i++) {
+          const element = allSuppliers[i];
+          if (element.ismmama === true) {
+            data.suppliers.push(element);
+          }
         }
-      }
-    });
+      });
+    } else {
+      data.suppliers = [];
+      getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
+        const allSuppliers = response.data.data.data;
+        for (let i = 0; i < allSuppliers.length; i++) {
+          const element = allSuppliers[i];
+          if (element.active === true && !element.ismmama === true) {
+            data.suppliers.push(element);
+          }
+        }
+      });
+    }
   };
 
   const searchSuppliers = (item: string) => {
