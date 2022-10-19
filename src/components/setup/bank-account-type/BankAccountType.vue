@@ -33,6 +33,7 @@
                 :item-divider="true"
                 return-object
                 required
+                outlined
                 clearable
               ></v-autocomplete>
             </v-col>
@@ -66,7 +67,7 @@
                 :disabled="cant('delete', 'BankAccountType')"
                 v-bind="attrs"
                 v-on="on"
-                @click="deleteCustomer(item.id)"
+                @click="deleteBankAccountType(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
@@ -94,11 +95,12 @@
                 <v-col cols="12" md="12">
                   <v-text-field
                     v-model="data.formData.name"
+                    outlined
                     label="Name"
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="12" class="mt-n8 mb-n8">
                   <v-autocomplete
                     v-model="data.formData.gfs_code_id"
                     label="Gfs Codes"
@@ -106,6 +108,7 @@
                     :item-text="`fullName`"
                     item-value="id"
                     :item-divider="true"
+                    outlined
                     required
                     clearable
                   ></v-autocomplete>
@@ -165,7 +168,7 @@ export default defineComponent({
       getData,
       openDialog,
       cancelDialog,
-      deleteCustomer,
+      deleteBankAccountType,
       save,
       reloadData,
       remove,
@@ -179,7 +182,7 @@ export default defineComponent({
       getData,
       openDialog,
       cancelDialog,
-      deleteCustomer,
+      deleteBankAccountType,
       save,
       reloadData,
       remove,

@@ -6,8 +6,7 @@
       :nudge-right="40"
       transition="scale-transition"
       offset-y
-      max-width="290px"
-      min-width="290px"
+      outlined
     >
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
@@ -17,6 +16,7 @@
           :value="value"
           :error-messages="errors"
           v-bind="attrs"
+          outlined
           v-on="on"
         >
         </v-text-field>
@@ -27,6 +27,7 @@
         :max="max"
         :min="min"
         no-title
+        outlined
         @change="$emit('input', $event)"
       ></v-date-picker>
     </v-menu>

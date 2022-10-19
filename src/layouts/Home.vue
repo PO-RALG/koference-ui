@@ -40,11 +40,11 @@ export default defineComponent({
     })
 
     const currentUser = computed(() => {
-      return store.getters['Auth/getCurrentUser']
+      return store.getters["Auth/getCurrentUser"]
     })
 
     onMounted(() => {
-      enableInterceptor()
+      enableInterceptor();
     })
 
     const enableInterceptor = () => {

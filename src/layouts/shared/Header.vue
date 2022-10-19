@@ -1,5 +1,10 @@
 <template>
-  <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="primary" dark>
+  <v-app-bar
+    :clipped-left="$vuetify.breakpoint.lgAndUp"
+    app
+    color="primary"
+    dark
+  >
     <v-app-bar-nav-icon @click.stop="toggleSidebar"></v-app-bar-nav-icon>
     <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
       <span class="hidden-sm-and-down">FFARS</span>
@@ -15,8 +20,20 @@
       offset-y
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-btn @click="toggleMenu" color="transparent" class="text--white elevation-0">
-          <v-badge :content="messages" :value="data.messages" :bind="attrs" class="mr-5" :on="on" color="green" overlap>
+        <v-btn
+          @click="toggleMenu"
+          color="transparent"
+          class="text--white elevation-0"
+        >
+          <v-badge
+            :content="messages"
+            :value="data.messages"
+            :bind="attrs"
+            class="mr-5"
+            :on="on"
+            color="green"
+            overlap
+          >
             <v-icon medium>mdi-bell-ring-outline</v-icon>
           </v-badge>
         </v-btn>
@@ -25,7 +42,12 @@
         <v-list>
           <v-list-item>
             <v-list-item-avatar>
-              <img :src="data.avatar" class="login-logo" @click="toggleUserMenu" alt="fullName" />
+              <img
+                :src="data.avatar"
+                class="login-logo"
+                @click="toggleUserMenu"
+                alt="fullName"
+              />
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title>{{ fullName }}</v-list-item-title>
@@ -58,7 +80,13 @@
         </v-card-actions>
       </v-card>
     </v-menu>
-    <v-menu class="top-menu" v-model="data.userMenu" :close-on-content-click="true" :nudge-width="200" offset-y>
+    <v-menu
+      class="top-menu"
+      v-model="data.userMenu"
+      :close-on-content-click="true"
+      :nudge-width="200"
+      offset-y
+    >
       <template v-slot:activator="{ on, attrs }">
         <img
           :src="data.avatar"
@@ -132,7 +160,11 @@ export default defineComponent({
     const data = reactive({
       messages: [
         { id: 1, title: "You have documents pending for approval" },
-        { id: 2, title: "Your documents have been approved, please proceed with the next step" },
+        {
+          id: 2,
+          title:
+            "Your documents have been approved, please proceed with the next step",
+        },
       ],
       menu: false,
       userMenu: false,

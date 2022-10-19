@@ -1,7 +1,8 @@
 import axios from "axios";
 import { getCurrentUser } from "@/middleware";
 
-const API = "api/v1/reports";
+const API = "/api/v1/reports";
+const API2 = "localhost:8000/api/v1/reports";
 
 const getReports = async (payload) => {
   return axios.get(API, { params: payload });
@@ -31,7 +32,9 @@ const printReport = async (reportID: number, payload?: any) => {
   const currentUser = await getCurrentUser();
   const token = currentUser.token;
   const query = serializeParams(payload);
-  const url = `${process.env.VUE_APP_SERVER_URL}/${API}/${reportID}/print?${query}&token=${token}`;
+
+  const url = `${API}/${reportID}/print?${query}&token=${token}`;
+
   return window.open(url);
 };
 
@@ -49,7 +52,9 @@ const deleteReport = async (payload) => {
 
 const fetchReportTree = async ({ location_id, facility_id }) => {
   if (facility_id) {
-    return await axios.get(`${API}/by-location?location_id=${location_id}&facility_id=${facility_id}`);
+    return await axios.get(
+      `${API}/by-location?location_id=${location_id}&facility_id=${facility_id}`
+    );
   } else {
     return await axios.get(`${API}/by-location?location_id=${location_id}`);
   }

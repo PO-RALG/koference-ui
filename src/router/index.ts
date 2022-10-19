@@ -1,7 +1,6 @@
 import Vue from "vue";
-import VueRouter, { RouteConfig } from "vue-router";
+import VueRouter, { Route, RouteConfig } from "vue-router";
 import VueRouteMiddleware from "vue-route-middleware";
-import store from "@/store";
 
 import { dashboardRoutes } from "@/components/dashboard";
 import { userRoutes } from "@/components/user";
@@ -39,17 +38,29 @@ import { fundAllocationRoutes } from "@/components/payable/fund-allocation";
 import { voucherRoutes } from "@/components/payable/voucher";
 import { paymentRoutes } from "@/components/payable/payment";
 import { reportRoutes } from "@/components/report";
-//import { testRoutes } from "@/components/test";
 import { creditorRoutes } from "@/components/payable/creditor";
 import { chequeListRoutes } from "@/components/payable/cheque-list";
 //import { testRoutes } from "@/components/test";
 import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
-import { notFoundRoute } from "@/components/404";
 import { receiptRoutes } from "@/components/receivables/receipt";
-
+import { approveReceiptRoutes } from "@/components/receivables/approvereversereceipt";
+import { voucherApprovalRoutes } from "@/components/payable/voucherapproval";
+import { approveInvoiceReversalRoutes } from "@/components/receivables/approvereverseinvoice";
+import { staleChequeRoutes } from "@/components/stale-cheque";
+import { approvalRoleRoutes } from "@/components/approval/role";
+import { approvalStatusRoutes } from "@/components/approval/status";
+import { approvalUserRoutes } from "@/components/approval/user";
+import { notFoundRoute } from "@/components/404";
+import { openingBalanceRoutes } from "@/components/receivables/opening-balance";
+import { bankAdjustmentRoutes } from "@/components/receivables/bank-adjustment";
+import { cashbookRoutes } from "@/components/cash-management/cashbook-report";
+import { voucherReversalApprovalRoutes } from "@/components/payable/voucherreversalapproval";
+import { mmamaPaymentRoutes } from "@/components/payable/mmama-payment";
+import { bankAdjustmentCouncilApprovalRoutes } from "@/components/receivables/bank-adjustment-council-approval";
 
 // import route middlewares
 import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
+import budgetRoutes from "@/components/coa/budget/routes/budget-routes";
 
 Vue.use(VueRouter);
 
@@ -61,7 +72,7 @@ const routes: Array<RouteConfig> = [
       title: "Login",
       middleware: [setTitle],
     },
-    props: (route: any) => ({ query: route.query }),
+    props: (route: Route) => ({ query: route.query }),
   },
   {
     path: "/",
@@ -113,7 +124,21 @@ const routes: Array<RouteConfig> = [
       ...creditorRoutes,
       ...chequeListRoutes,
       ...receiptRoutes,
+      ...openingBalanceRoutes,
+      ...bankAdjustmentRoutes,
       ...bankReconciliationRoutes,
+      ...staleChequeRoutes,
+      ...approvalRoleRoutes,
+      ...approvalStatusRoutes,
+      ...approvalUserRoutes,
+      ...cashbookRoutes,
+      ...budgetRoutes,
+      ...approveReceiptRoutes,
+      ...approveInvoiceReversalRoutes,
+      ...voucherApprovalRoutes,
+      ...voucherReversalApprovalRoutes,
+      ...mmamaPaymentRoutes,
+      ...bankAdjustmentCouncilApprovalRoutes,
       ...notFoundRoute,
     ],
   },
@@ -126,23 +151,6 @@ const router = new VueRouter({
 });
 
 // middlewares
-const isLoggedIn = (to, _, next) => {
-  const loginStatus = store.getters["Auth/getLoginStatus"];
-  const loggedIn = loginStatus ? loginStatus.isLoggedIn : false;
-  const currentUser = store.getters["Auth/getCurrentUser"];
-
-  if (to.matched.some((record: any) => record.meta.requiresAuth)) {
-    if (loggedIn && currentUser) {
-      console.log("user is logged in");
-      next();
-    } else {
-      console.log("redirect to login page");
-    }
-  } else {
-    next();
-  }
-};
-
 router.beforeEach(
   VueRouteMiddleware({ setTitle, validateToken, setHeaders, auth })
 );

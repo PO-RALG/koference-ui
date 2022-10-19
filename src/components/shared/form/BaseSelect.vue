@@ -12,6 +12,7 @@
         ...$attrs,
       }"
       @change="$emit('input', $event)"
+      outlined
     >
     </v-select>
     <v-select
@@ -25,6 +26,7 @@
         ...$attrs,
       }"
       @change="$emit('input', $event)"
+      outlined
     >
     </v-select>
   </div>
@@ -63,7 +65,7 @@ export default defineComponent({
   setup(props) {
     const data = reactive({
       rules: {
-        select: [v => !!v || 'Item is required'],
+        select: [(v) => !!v || "Item is required"],
       },
     });
     const entries = computed(() => {

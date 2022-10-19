@@ -31,9 +31,7 @@ export const useSubBudgetClass = (): any => {
         align: "start",
         sortable: false,
         value: "carryover_fund_type.code",
-      },
-
-      { text: "Actions", value: "actions", sortable: false },
+      }
     ],
     modal: false,
     deletemodal: false,
@@ -91,10 +89,6 @@ export const useSubBudgetClass = (): any => {
   const deleteSubBudgetClass = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
-  };
-
-  const getSubBudgetClass = () => {
-    get(data).then((response) => {});
   };
 
   const cancelDialog = () => {
@@ -161,7 +155,6 @@ export const useSubBudgetClass = (): any => {
     openDialog,
     cancelDialog,
     deleteSubBudgetClass,
-    getSubBudgetClass,
     updateSubBudgetClass,
     save,
     reloadData,

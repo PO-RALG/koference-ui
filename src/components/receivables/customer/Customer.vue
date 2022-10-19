@@ -3,7 +3,26 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <!-- <v-btn
+        v-if="can('create', 'Customer')"
+        color="primary"
+        @click="openDialog"
+      >
+        <v-icon>mdi-delete-variant</v-icon>
+      </v-btn> -->
+      <v-btn
+        v-if="can('create', 'Customer')"
+        color="warning"
+        @click="openTrushedDialog"
+      >
+        <v-icon>mdi-delete-empty-outline</v-icon>
+        Restore deleted customers
+      </v-btn>
+      <v-btn
+        v-if="can('create', 'Customer')"
+        color="primary"
+        @click="openDialog"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -21,16 +40,16 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Name"
-                @change="searchCategory($event)"
+              <v-text-field
+                prepend-inner-icon="mdi-filter-outline"
+                outlined
+                label="Enter Filter Term"
+                @keyup="filterCustomers()"
                 :items="data.itemsToFilter"
-                :item-text="'name'"
-                :item-divider="true"
-                return-object
-                required
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
                 clearable
-              ></v-autocomplete>
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -110,8 +129,8 @@
                     outlined
                     hide-details
                     dense
-                    :disabled="isUpdate"
                   ></v-text-field>
+                  <!-- :disabled="isUpdate" -->
                 </v-col>
                 <v-col v-if="data.modalTitle != 'Update'" cols="1" md="1">
                   <v-btn
@@ -134,21 +153,25 @@
                   <v-text-field
                     v-model="data.formData.email"
                     label="Email"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.phone"
-                    label="Phone"
+                    outlined
                     required
+                    label="Phone"
+                    v-mask="'#### ### ###'"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="12" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.address"
                     label="Address"
                     required
+                    outlined
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -182,6 +205,106 @@
         </ModalFooter>
       </template>
     </Modal>
+    <Modal :modal="data.restoreTrashedmodal" :width="400">
+      <template v-slot:header>
+        <ModalHeader :title="`Restore Customers From Trash `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> Are you sure you want to restore this? </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="blue darken-1" text @click="cancelRestoreDialog"
+            >Cancel</v-btn
+          >
+          <v-btn color="red darken-1" text @click="restore">Yes</v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+    <Modal :modal="data.trushModal" :width="1200">
+      <template v-slot:header>
+        <ModalHeader :title="`Trashed Customers `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-data-table
+            :headers="data.headersTrash"
+            :items="trushedNew"
+            :single-expand="true"
+            class="elevation-0"
+            disable-pagination
+            hide-default-footer
+          >
+            <template v-slot: [`item.index`]="{ item }">
+              <span>
+                {{ item.index }}
+              </span>
+            </template>
+            <!-- <template v-slot:top>
+              <v-card-title>
+                <v-spacer></v-spacer>
+                <v-col cols="6" sm="12" md="12" class="pa-0">
+                  <v-text-field
+                    prepend-inner-icon="mdi-filter-outline"
+                    outlined
+                    label="Search"
+                    @keyup="filterCustomers()"
+                    :items="data.itemsToFilter"
+                    v-model="data.searchTerm"
+                    @click:clear="resetSearchText()"
+                    clearable
+                  ></v-text-field>
+                </v-col>
+              </v-card-title>
+            </template> -->
+            <template v-slot:[`item.startDate`]="{ item }">
+              <span>{{ item.startDate }}</span>
+            </template>
+            <template v-slot:[`item.endDate`]="{ item }">
+              <span>{{ item.endDate }}</span>
+            </template>
+            <!-- <template v-slot:[`item.activations`]="{ item }">
+              <v-switch
+                disabled
+                :input-value="item.active"
+                @change="setActivation(item)"
+                value
+              ></v-switch>
+            </template> -->
+            <template v-slot:[`item.actions`]="{ item }">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    large
+                    v-bind="attrs"
+                    v-on="on"
+                    class="mr-2"
+                    @click="openRestoreTrashedDialog(item)"
+                  >
+                    mdi-restore
+                  </v-icon>
+                </template>
+                <span>Restore</span>
+              </v-tooltip>
+            </template>
+            <template v-slot:footer>
+              <Paginate
+                :params="data.response"
+                :rows="data.rows"
+                @onPageChange="getData"
+              />
+            </template>
+          </v-data-table>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog"
+            >Close</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -199,6 +322,7 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       deleteCustomer,
+      openRestoreTrashedDialog,
       getCustomer,
       updatecustomer,
       save,
@@ -211,6 +335,12 @@ export default defineComponent({
       setGenericValue,
       populateFormData,
       isUpdate,
+      filterCustomers,
+      resetSearchText,
+      openTrushedDialog,
+      cancelRestoreDialog,
+      restore,
+      trushedNew,
     } = useCustomer();
 
     return {
@@ -219,6 +349,7 @@ export default defineComponent({
       openDialog,
       cancelDialog,
       deleteCustomer,
+      openRestoreTrashedDialog,
       getCustomer,
       updatecustomer,
       save,
@@ -231,6 +362,12 @@ export default defineComponent({
       setGenericValue,
       populateFormData,
       isUpdate,
+      filterCustomers,
+      resetSearchText,
+      openTrushedDialog,
+      cancelRestoreDialog,
+      restore,
+      trushedNew,
     };
   },
 });

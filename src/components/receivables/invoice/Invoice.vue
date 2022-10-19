@@ -4,13 +4,21 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
-        :disabled="cant('create', 'Invoice')"
+        v-if="can('create', 'Invoice')"
         color="primary"
         @click="openDialog"
       >
         <v-icon>mdi-plus</v-icon>
         Create Invoice
       </v-btn>
+      <!-- <v-btn
+        class="ma-2 d-none d-sm-flex white--text"
+        color="red"
+        router-link
+        to="/manage-approve-reversal-invoices"
+        tag="button"
+        ><v-icon>mdi-arrow-right-circle</v-icon>Approve invoice reversal
+      </v-btn> -->
     </v-card-actions>
     <v-card>
       <v-data-table
@@ -27,37 +35,15 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-select
+              <v-text-field
+                outlined
+                label="Filter Invoice"
+                @keyup="filterInvoice()"
                 :items="data.itemsToFilter"
-                label="Search Invoice"
-                :item-text="'name'"
-                item-value="name"
-                @change="reanderSearched($event)"
-                v-model="data.search"
-              >
-                <template v-slot:selection="{ item }">
-                  {{ item.invoice_number }}
-                </template>
-                <template v-slot:item="{ item }">
-                  {{ item.invoice_number }}
-                </template>
-                <template v-slot:prepend-item>
-                  <v-list-item>
-                    <v-list-item-content>
-                      <v-text-field
-                        clearable
-                        outlined
-                        dense
-                        label="Search"
-                        placeholder="Eg: INV-2022-000047"
-                        @input="searchCategory"
-                        hint="Enter atleast two (2) characters"
-                      ></v-text-field>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider></v-divider>
-                </template>
-              </v-select>
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
+                clearable
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -110,6 +96,7 @@
                     :items="data.customers"
                     prepend-inner-icon="mdi-account"
                     label="Select Customer"
+                    outlined
                     v-model="data.formData.customer_id"
                     :item-text="'name'"
                     item-value="id"
@@ -146,6 +133,7 @@
                   <DatePicker
                     :label="'Invoice Date'"
                     :max="data.maxDate"
+                    outlined
                     v-model="data.formData.date"
                   />
                 </v-col>
@@ -206,9 +194,9 @@
                             dense
                             hide-details
                             outlined
-                            type="number"
                             onkeydown="javascript: return event.keyCode == 69 ? false : true"
                             v-model="invoice.amount"
+                            v-mask="toMoney"
                             :name="`data.invoice_items[${index}][name]`"
                           >
                           </v-text-field>
@@ -299,8 +287,8 @@
                 Print
               </v-btn>
               <v-btn
-                v-show="can('delete', 'Receipt')"
-                @click="deleteInvoiceItemdefinition(data.invoiceData.id)"
+                v-show="can('delete', 'Invoice')"
+                @click="reverseInvoice(data.invoiceData.id)"
                 color="warning darken-1"
                 text
                 ><v-icon>mdi-arrow-u-left-top-bold</v-icon>Reverse</v-btn
@@ -608,6 +596,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import { useInvoice } from "./composables/invoice";
+import { toMoney } from "@/filters/CurrencyFormatter";
 export default defineComponent({
   name: "ManageInvoice",
   setup() {
@@ -619,7 +608,7 @@ export default defineComponent({
       removeRow,
       openDialog,
       cancelDialog,
-      deleteInvoiceItemdefinition,
+      reverseInvoice,
       getInvoiceItemdefinition,
       updateInvoiceItemDefinition,
       save,
@@ -642,6 +631,8 @@ export default defineComponent({
       searchCustomer,
       reanderSearched,
       print,
+      filterInvoice,
+      resetSearchText,
     } = useInvoice();
     return {
       data,
@@ -651,7 +642,7 @@ export default defineComponent({
       removeRow,
       openDialog,
       cancelDialog,
-      deleteInvoiceItemdefinition,
+      reverseInvoice,
       getInvoiceItemdefinition,
       updateInvoiceItemDefinition,
       save,
@@ -674,6 +665,9 @@ export default defineComponent({
       searchCustomer,
       reanderSearched,
       print,
+      toMoney,
+      filterInvoice,
+      resetSearchText,
     };
   },
 });

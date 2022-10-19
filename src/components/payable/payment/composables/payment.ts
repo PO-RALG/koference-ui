@@ -2,7 +2,13 @@ import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import moment from "moment";
 
-import { get, create, destroy, find, printPdf } from "../services/payment.services";
+import {
+  get,
+  create,
+  destroy,
+  find,
+  printPdf,
+} from "../services/payment.services";
 import { Payment } from "../types/Payment";
 import { find as findPaymentVoucher } from "@/components/payable/voucher/services/payment-voucher.services";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
@@ -75,9 +81,13 @@ export const usePayment = (): any => {
     ],
     modal: false,
     deletemodal: false,
+    approvemodal: false,
     items: dataItems,
     itemsToFilter: [],
     formData: paymentData,
+    reverseForm: {
+      id: "",
+    },
     params: {
       total: 100,
       size: 10,
@@ -94,15 +104,61 @@ export const usePayment = (): any => {
     paymentModal: false,
     pvDetails: { printDate: "" },
     supplier: [],
+    itemTodelete: "",
+    itemToApprove: "",
   });
 
   onMounted(() => {
     getTableData();
   });
 
+  const filterPayment = () => {
+    if (data.searchTerm.length > 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0 || data.searchTerm === null) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
+
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
@@ -117,8 +173,9 @@ export const usePayment = (): any => {
     });
   };
 
-  const openRequestReversalDialog = (deleteId: string) => {
-    console.log(deleteId);
+  const openRequestReversalDialog = (deleteId: any) => {
+    data.deletemodal = !data.modal;
+    data.reverseForm.id = deleteId;
   };
 
   const openHistoryDialog = (deleteId: string) => {
@@ -133,10 +190,11 @@ export const usePayment = (): any => {
   const cancelConfirmDialog = () => {
     data.formData = {} as Payment;
     data.deletemodal = false;
+    data.approvemodal = false;
   };
 
   const remove = () => {
-    destroy(data.itemtodelete).then(() => {
+    destroy(data.reverseForm).then(() => {
       data.deletemodal = false;
       getTableData();
     });
@@ -152,9 +210,15 @@ export const usePayment = (): any => {
       };
       payableData.push(element);
     }
-    data.formData.items = payableData;
 
-    createPayment(data.formData);
+    data.formData.items = payableData;
+    const dataToSave = {
+      ...data.formData,
+      voucher_id: data.formData.voucher_id.id,
+      payable_id: data.formData.voucher_id.payables[0].id,
+    };
+
+    createPayment(dataToSave);
   };
 
   const openDialog = () => {
@@ -162,7 +226,6 @@ export const usePayment = (): any => {
     data.modalTitle = "Create";
     data.searchTerm = "";
     getBankAccountData();
-    getPaymentVoucherData();
     data.modal = !data.modal;
   };
 
@@ -192,26 +255,28 @@ export const usePayment = (): any => {
   };
 
   const maxRules = (propertyType: number) => {
-    return (v: number) => (v && v <= propertyType) || `Amount must be less or equal to ${propertyType}`;
+    return (v: number) =>
+      (v && v <= propertyType) ||
+      `Amount must be less or equal to ${propertyType}`;
   };
 
-  const setPayableItems = (id: number) => {
+  const setPayableItems = (voucher: Record<any, any>) => {
     data.showDate = true;
-    const payable = data.paymentVouchers.find((item) => item.id === id);
-    data.minDate = moment(payable.date).format("YYYY-MM-DD");
-    data.payableItems = [];
-    findPaymentVoucher(id).then((response: AxiosResponse) => {
-      const pvData = response.data.data;
-      for (let j = 0; j < pvData.payables.length; j++) {
-        const e = pvData.payables[j];
-        e.payment = Number(e.amount);
-        e.required_amount = Number(e.amount);
-        e.paid_amount = Number(e.paid_amount);
-        e.balance = Number(e.amount) - Number(e.paid_amount);
-
-        data.payableItems.push(e);
-      }
-      return data.payableItems;
+    data.minDate = moment(voucher.date).format("YYYY-MM-DD");
+    findPaymentVoucher(voucher.id).then((response: AxiosResponse) => {
+      // console.log("xxxxxxx", response.data.data.payables);
+      const pvData = response.data.data.payables;
+      data.payableItems = [
+        ...pvData.map((pv: Record<any, any>) => ({
+          payment: Number(pv.amount),
+          id: Number(pv.id),
+          required_amount: Number(pv.amount),
+          paid_amount: Number(pv.paid_amount),
+          balance: Number(pv.amount) - Number(pv.paid_amount),
+          description: pv.description,
+          funding_source: pv.funding_source,
+        })),
+      ];
     });
   };
 
@@ -246,7 +311,9 @@ export const usePayment = (): any => {
   const previewPayment = (id: number) => {
     find(id).then((response: AxiosResponse) => {
       data.pvDetails = response.data.data;
-      data.pvDetails.printDate = moment(new Date()).format("DD/MM/YYYY H:mm:ss");
+      data.pvDetails.printDate = moment(new Date()).format(
+        "DD/MM/YYYY H:mm:ss"
+      );
       data.supplier = response.data.data.voucher.supplier;
       data.paymentModal = !data.paymentModal;
     });
@@ -288,6 +355,12 @@ export const usePayment = (): any => {
     },
   ];
 
+  const mappedVouchers = (vouchers: any) => {
+    return vouchers.filter(
+      (voucher) => parseFloat(voucher.amount) > parseFloat(voucher.amount_paid)
+    );
+  };
+
   return {
     data,
     openDialog,
@@ -305,5 +378,8 @@ export const usePayment = (): any => {
     cancelPreviewDialog,
     printPayment,
     payablePrintHeader,
+    filterPayment,
+    resetSearchText,
+    mappedVouchers,
   };
 };

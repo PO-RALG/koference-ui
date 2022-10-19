@@ -1,18 +1,62 @@
 <template>
   <v-app
     justify-center
-    class="grey lighten-3 pa-2 text-center main-body"
+    class="grey lighten-3 pa-0 text-center main-body"
     fluid
     fill-height
   >
+    <v-snackbar
+      class="mt-12 d-none d-md-flex d-lg-none d-none d-lg-flex"
+      :timeout="6000000"
+      shaped
+      :top="true"
+      color="#1476d7"
+      left
+      clearable
+      v-model="data.showInfo"
+    >
+      <v-icon x-large color="white"> mdi-hand-pointing-right </v-icon>
+      <a href="http://197.149.179.125/" target="_blank">
+        <span class="white--text">
+          <em>Bofya hapa kuingia katika toleo la zamani (FFARS v 1.0) </em>
+        </span>
+      </a>
+    </v-snackbar>
     <v-layout justify-center align-center class="body_bg">
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
           <v-col cols="8" sm="8" md="7">
-            <v-card height="fit" class="elevation-8 pa-0">
-              <v-row dense class="mr-0 ml-0" v-if="data.slides.length > 0">
+            <v-row class="mb-0 pa-0" justify="center">
+              <v-col md="auto">
+                <v-flex class="col-md12">
+                  <v-row class="mb-0 pa-0" justify="center" no-gutters>
+                    <h4 class="white--text">
+                      <strong>
+                        {{ "THE UNITED REPUBLIC OF TANZANIA" }}
+                      </strong>
+                    </h4>
+                  </v-row>
+                  <h4 class="white--text">
+                    {{
+                      "FACILITY FINANCIAL ACCOUNTING AND REPORTING SYSTEM (FFARS)"
+                    }}
+                  </h4>
+                </v-flex>
+              </v-col>
+            </v-row>
+            <v-card height="fit" class="elevation-8 pa-n16">
+              <v-row
+                dense
+                class="mr-0 ml-0 mr-0 ml-0"
+                v-if="data.slides.length > 0"
+              >
                 <!-- class="d-none d-md-flex d-lg-none d-none d-lg-flex d-xl-none d-none " -->
-                <v-col md="6" cols="12" sm="12" class="pa-0">
+                <v-col
+                  md="6"
+                  cols="12"
+                  sm="12"
+                  class="d-none d-md-flex d-lg-none d-none d-lg-flex"
+                >
                   <v-carousel
                     cycle
                     hide-delimiters
@@ -32,17 +76,19 @@
                 <v-col md="6" cols="12" sm="12">
                   <!-- <v-col cols="12" md="4" sm="12"> -->
                   <v-card-text class>
-                    <img :src="data.coat" class="login-logo" />
+                    <v-row class="mb-0 pa-0" justify="center" no-gutters>
+                      <img :src="data.coat" class="login-logo"
+                    /></v-row>
                     <h2 class="text-center pa-6 login-header" color="primary">
                       LOGIN to your account
                     </h2>
-                    <h4 class="siteName pa-0 pb-4" v-if="isDemo()">
-                      ({{ data.siteName }})
-                    </h4>
+                    <v-row class="mb-0 pa-0" justify="center" no-gutters>
+                      <h4 class="siteName pa-0 pb-4">({{ data.siteName }})</h4>
+                    </v-row>
                     <v-form
                       ref="form"
                       v-model="data.valid"
-                      @submit.prevent="login"
+                      @submit.prevent="loginUser"
                     >
                       <v-text-field
                         prepend-inner-icon="mdi-account-box"
@@ -64,7 +110,7 @@
                         outlined
                         class="mr-3 ml-3"
                       ></v-text-field>
-                      <v-card-actions class="mr-1 ml-3 mt-n4">
+                      <v-card-actions class="mr-1 ml-0 mt-n4">
                         <v-btn
                           x-small
                           class="mx-2 d-none d-sm-flex ml-0"
@@ -94,6 +140,28 @@
                 <!-- login form end -->
               </v-row>
             </v-card>
+            <div class="pt-5">
+              <v-row class="mb-6 pa-0" justify="center" no-gutters>
+                <small class="white--text">
+                  {{ "Copyright" }}
+                </small>
+                <small class="white--text">
+                  {{ " ©2022 PORALG" }}
+                </small>
+                <small class="white--text">
+                  {{ ". All right reserved." }}
+                </small>
+                <small class="white--text">
+                  <strong>{{ " FFARS v 2.0 ." }}</strong>
+                </small>
+                <small class="white--text">
+                  {{
+                    "For any Technical inquiry, please contact your ICT Support Team ."
+                  }}
+                </small>
+              </v-row>
+              <v-row class="mb-n8 pa-0" justify="center" no-gutters> </v-row>
+            </div>
           </v-col>
           <v-col cols="8" sm="8" md="7">
             <div class="text-center"></div>
@@ -113,18 +181,21 @@ import router from "@/router";
 
 export default Vue.extend({
   props: ["source", "query"],
+
   setup(props) {
     const query = props.query;
+
     let data = reactive({
       model: 0,
       siteName: "",
       valid: true,
+      showInfo: true,
       errorMessage: "",
       loading: false,
       logo: "/brand.png",
       coat: "/coat_of_arms.svg.png",
       colors: ["primary", "secondary", "yellow darken-2", "red", "orange"],
-      slides: [{ src: "/callcenter.jpeg" }],
+      slides: [{ src: "/corona.jpeg" }, { src: "/callcenter.jpeg" }],
       email: "",
       emailRules: [
         (v: any) => !!v || "Email is required",
@@ -143,7 +214,7 @@ export default Vue.extend({
       });
     });
 
-    const login = () => {
+    const loginUser = () => {
       const payload = {
         email: data.email,
         password: data.password,
@@ -161,7 +232,7 @@ export default Vue.extend({
     };
 
     return {
-      login,
+      loginUser,
       data,
     };
   },
@@ -177,7 +248,8 @@ export default Vue.extend({
   background: #ccc !important;
 }
 .body_bg {
-  background-image: url(/sisbackground.jpg) !important;
+  /* background-image: url("@/assets/ffars_background.jpg") !important; */
+  background-color: #054c97;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center center !important; /* optional, center the image */
@@ -198,11 +270,11 @@ export default Vue.extend({
   width: inherit;
 }
 .bdt {
-  border-top: solid 5px #107b72;
+  border-top: solid 5px #1476d7;
 }
 
 .bdw {
-  border-bottom: solid 2px #136d38;
+  border-bottom: solid 2px #1476d7;
 }
 .login-logo {
   border-radius: 50%;

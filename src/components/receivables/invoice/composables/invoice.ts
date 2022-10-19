@@ -18,8 +18,9 @@ import {
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import { itemdefinitions } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
 import moment from "moment";
+import stringToCurrency from "@/filters/money-to-number";
 
-export const useInvoice = (): any => {
+export const useInvoice = (): Record<string, unknown> => {
   const dataItems: Array<Invoice> = [];
   let invoiceData: Invoice;
 
@@ -29,7 +30,7 @@ export const useInvoice = (): any => {
       align: "start",
       sortable: false,
       value: "invoice_number",
-      width: "30%",
+      width: "45%",
     },
 
     {
@@ -40,11 +41,11 @@ export const useInvoice = (): any => {
       width: "15%",
     },
     {
-      text: "",
+      text: "Actions",
       align: "center",
       sortable: false,
       value: "amount_pending",
-      width: "13%",
+      width: "5%",
     },
   ];
   const HEADERS_INVOICE_DETAILS = [
@@ -264,7 +265,7 @@ export const useInvoice = (): any => {
     );
   };
 
-  const deleteInvoiceItemdefinition = (deleteId: any) => {
+  const reverseInvoice = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemTodelete = deleteId;
     data.invoicedetails = false;
@@ -375,7 +376,12 @@ export const useInvoice = (): any => {
   };
 
   const save = () => {
-    data.formData.items = data.invoice_items;
+    const items = data.invoice_items.map((entry) => ({
+      ...entry,
+      amount: stringToCurrency(entry.amount),
+    }));
+
+    data.formData.items = items;
     if (data.formData.id) {
       updateInvoiceItemDefinition(data.formData);
     } else {
@@ -491,6 +497,35 @@ export const useInvoice = (): any => {
     printInvoice(id);
   };
 
+  const filterInvoice = () => {
+    if (data.searchTerm.length >= 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
+
   return {
     data,
     getData,
@@ -499,7 +534,7 @@ export const useInvoice = (): any => {
     removeRow,
     openDialog,
     cancelDialog,
-    deleteInvoiceItemdefinition,
+    reverseInvoice,
     getInvoiceItemdefinition,
     updateInvoiceItemDefinition,
     save,
@@ -522,5 +557,7 @@ export const useInvoice = (): any => {
     searchCustomer,
     reanderSearched,
     print,
+    filterInvoice,
+    resetSearchText,
   };
 };

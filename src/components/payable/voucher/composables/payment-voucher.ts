@@ -1,4 +1,4 @@
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
 import {
@@ -8,24 +8,39 @@ import {
   destroy,
   printPdf,
   fundByActivity,
+  getWorkflow,
   fundByActivityFundSource,
+  activitiesByFundSource,
+  approvePVFacilityService,
 } from "../services/payment-voucher.services";
-import { PaymentVoucher, Account } from "../types/PaymentVoucher";
+import stringToCurrency from "@/filters/money-to-number";
+
+import { get as getFundSources } from "@/components/coa/funding-source/services/funding-sources";
+import {
+  PaymentVoucher,
+  Account,
+  VOUCHER_TYPE,
+  Payable,
+} from "../types/PaymentVoucher";
 import { get as getSupplier } from "@/components/payable/supplier/services/supplier.services";
 import { get as getActivity } from "@/components/planning/activity/services/activity.service";
 import { getBudget } from "@/components/payable/fund-allocation/services/fund-allocation.services";
 import { Activity } from "@/components/planning/activity/types/Activity";
 import { FundSources } from "@/components/coa/funding-source/types/index";
 import moment from "moment";
+import { RECEIPT_TYPE } from "@/components/receivables/receipt/types";
+import { getGlAccounts } from "@/components/receivables/receipt/services/receipt-service";
 
 export const usePaymentVoucher = (): any => {
   const dataItems: Array<PaymentVoucher> = [];
   const paymentVoucherData = {} as PaymentVoucher;
+  const payables = []; //:Payable[]
   const activityItem = {} as Activity;
   const fundSourceItem = {} as FundSources;
 
   const data = reactive({
     title: "Payment Vouchers",
+    selectedGfsCodes: null,
     valid: false,
     isOpen: false,
     node: null,
@@ -37,6 +52,7 @@ export const usePaymentVoucher = (): any => {
         align: "start",
         sortable: false,
         value: "reference_no",
+        width: 200,
       },
       {
         text: "Date",
@@ -63,7 +79,7 @@ export const usePaymentVoucher = (): any => {
         value: "amount_paid",
       },
       {
-        text: "Full Paid",
+        text: "Status",
         align: "start",
         sortable: false,
         value: "full_paid",
@@ -73,6 +89,14 @@ export const usePaymentVoucher = (): any => {
         align: "start",
         sortable: false,
         value: "description",
+        width: 450,
+      },
+      {
+        text: "Approve Status",
+        align: "start",
+        sortable: false,
+        value: "approve",
+        // value: "approve.facility_approved",
       },
       {
         text: "Actions",
@@ -82,9 +106,12 @@ export const usePaymentVoucher = (): any => {
     ],
     modal: false,
     deletemodal: false,
+    genericConfirmModel: false,
     items: dataItems,
     itemsToFilter: [],
     formData: paymentVoucherData,
+    genericDialogAction: null,
+    payables: payables,
     params: {
       total: 100,
       size: 10,
@@ -99,23 +126,86 @@ export const usePaymentVoucher = (): any => {
     gfsCodes: [],
     fundingSources: [],
     accounts: [],
-    payables: [],
     coat: "/coat_of_arms.svg.png",
     pvDetails: { printDate: "" },
     paymentVoucherModal: false,
+    voucherType: VOUCHER_TYPE.NORMAL,
+    depositAccounts: [],
+    selectedActivity: null,
   });
 
   onMounted(() => {
     getTableData();
+
+    // getWorkflow(data.params).then((response: AxiosResponse) => {
+    //   const sendJson = JSON.stringify(response.data);
+    //   localStorage.setItem("WORK_FLOW", sendJson);
+    // });
   });
+
+  const filterVoucher = () => {
+    if (data.searchTerm.length > 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0 || data.searchTerm === null) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
-      data.items = response.data.data.data;
+      // data.items = response.data.data.data;
+      data.items = response.data.data.data.map((approve: any) => ({
+        ...approve,
+        approve: approve.approves.find(
+          (flow) => flow.workflow == "PAYMENT_VOUCHER"
+        ),
+      }));
       data.itemsToFilter = response.data.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
+      data.response = {
+        from,
+        to,
+        total,
+        current_page,
+        per_page,
+        last_page,
+      };
     });
   };
 
@@ -127,13 +217,69 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  const resetData = () => {
+    if (data.voucherType == VOUCHER_TYPE.NORMAL) {
+      data.payables = [];
+      getSupplierData(data.voucherType);
+    }
+
+    if (data.voucherType == VOUCHER_TYPE.MMAMA) {
+      data.payables = [];
+      getSupplierData(data.voucherType);
+    } else if (data.voucherType == VOUCHER_TYPE.DEPOSIT) {
+      getSupplierData(data.voucherType);
+      data.payables = [{ id: null, amount: 0.0 }];
+    }
+  };
+
   const openConfirmDialog = (deleteId: string) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
   };
 
+  const approvePVFacility = (model: any) => {
+    data.formData = model;
+    data.modalTitle = "Accept to Approve this Payment Voucher";
+    data.genericDialogAction = approvePVFacilityComplete;
+    data.genericConfirmModel = true;
+  };
+
+  const approvePVFacilityComplete = () => {
+    if (
+      typeof data.formData.approves == "undefined" ||
+      data.formData.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData.approves;
+
+    approves.forEach(function (flowable) {
+      if (flowable.facility_appoved == null) {
+        currentFlowable = flowable;
+      }
+    });
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+    };
+
+    approvePVFacilityService(approveData).then(() => {
+      data.genericConfirmModel = false;
+      getTableData();
+    });
+  };
+
+  const cancelGenericConfirmDialog = () => {
+    data.genericConfirmModel = false;
+  };
+
   const cancelDialog = () => {
     data.formData = {} as PaymentVoucher;
+    data.fundingSources = [];
+    data.activities = [];
     data.modal = !data.modal;
   };
 
@@ -155,12 +301,14 @@ export const usePaymentVoucher = (): any => {
     for (let i = 0; i < payableItems.length; i++) {
       const element = {
         gl_account_id: payableItems[i].id,
-        amount: payableItems[i].amount,
+        amount: stringToCurrency(payableItems[i].amount),
       };
       payableData.push(element);
     }
     data.formData.payables = payableData;
-
+    if (isMmama) {
+      data.formData.is_mmama = true;
+    }
     createVoucher(data.formData);
   };
 
@@ -168,13 +316,29 @@ export const usePaymentVoucher = (): any => {
     data.formData = {} as PaymentVoucher;
     data.modalTitle = "Create";
     data.searchTerm = "";
-    getSupplierData();
-    getActivityData();
+    getSupplierData(1);
+    getFundingSources();
+    loadDepositAccounts();
     data.payables = [];
     data.accounts = [];
     data.fundingSources = [];
     data.gfsCodes = [];
     data.modal = !data.modal;
+  };
+  const loadDepositAccounts = async () => {
+    const params = {
+      gl_account_type: "DEPOSIT",
+    };
+
+    getGlAccounts({ search: { ...params } }).then((response: AxiosResponse) => {
+      data.depositAccounts = response.data.data.data;
+      if (response.data.data.data.length > 0) {
+        /*   data.depositAccounts = response.data.data.data.map((account) => ({
+             ...account,
+             displayName: account.code,
+           }));*/
+      }
+    });
   };
 
   const createVoucher = (data: PaymentVoucher) => {
@@ -184,16 +348,32 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
-  const getSupplierData = () => {
-    getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
-      const allSuppliers = response.data.data.data;
-      for (let i = 0; i < allSuppliers.length; i++) {
-        const element = allSuppliers[i];
-        if (element.active === true) {
-          data.suppliers.push(element);
+  const getSupplierData = (voucher: any) => {
+    console.log("voucherType", voucher);
+    if (voucher == 4) {
+      data.suppliers = [];
+
+      getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
+        const allSuppliers = response.data.data.data;
+        for (let i = 0; i < allSuppliers.length; i++) {
+          const element = allSuppliers[i];
+          if (element.ismmama === true) {
+            data.suppliers.push(element);
+          }
         }
-      }
-    });
+      });
+    } else {
+      data.suppliers = [];
+      getSupplier({ per_page: 10 }).then((response: AxiosResponse) => {
+        const allSuppliers = response.data.data.data;
+        for (let i = 0; i < allSuppliers.length; i++) {
+          const element = allSuppliers[i];
+          if (element.active === true && !element.ismmama === true) {
+            data.suppliers.push(element);
+          }
+        }
+      });
+    }
   };
 
   const searchSuppliers = (item: string) => {
@@ -217,6 +397,17 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  const getFundingSources = async () => {
+    const response = await getFundSources({ per_page: 500 });
+    data.fundingSources = response.data.data.data;
+  };
+
+  const filterActivities = (activity) => {
+    data.activities = data.activities.filter(
+      (entry) => entry.code === activity
+    );
+  };
+
   const searchActivities = (item: string) => {
     const regSearchTerm = item ? item : data.searchTerm;
     getActivity({ per_page: 10, regSearch: regSearchTerm }).then(
@@ -226,26 +417,41 @@ export const usePaymentVoucher = (): any => {
     );
   };
 
-  const searchFundingSource = (item: Activity) => {
-    data.activityItem = item;
-    fundByActivity(item.id).then((response: AxiosResponse) => {
-      data.fundingSources = response.data.data;
-    });
+  const searchFundSource = (item: string) => {
+    const regSearchTerm = item ? item : data.searchTerm;
+    getFundSources({ per_page: 10, regSearch: regSearchTerm }).then(
+      (response: AxiosResponse) => {
+        data.fundingSources = response.data.data.data;
+      }
+    );
+  };
 
+  const getActivities = async (fundingSource: any) => {
+    data.fundSourceItem = fundingSource;
+    const response = await activitiesByFundSource(fundingSource.id);
+    const res = response.data.data;
+    const key = "code";
+    const uniqueEntries = [
+      ...new Map(res.map((item) => [item[key], item])).values(),
+    ];
+    data.activities = uniqueEntries;
+  };
+
+  const loadBudget = (item: Activity) => {
+    data.activityItem = item;
     getBudget({ activity_code: item.code }).then((response: AxiosResponse) => {
       data.accounts = response.data.data;
     });
   };
 
-  const searchGfsCodes = (fund: FundSources) => {
-    data.fundSourceItem = fund;
-    fundByActivityFundSource(data.activityItem.id, data.fundSourceItem.id).then(
+  const searchGfsCodes = (activity: any) => {
+    fundByActivityFundSource(activity.id, data.fundSourceItem.id).then(
       (response: AxiosResponse) => {
         data.gfsCodes = response.data.data;
       }
     );
     getBudget({
-      activity_code: data.activityItem.code,
+      activity_code: activity.code,
       fund_code: data.fundSourceItem.code,
     }).then((response: AxiosResponse) => {
       data.accounts = response.data.data;
@@ -254,7 +460,7 @@ export const usePaymentVoucher = (): any => {
 
   const filterGfsCodes = (item: string) => {
     getBudget({
-      activity_code: data.activityItem.code,
+      activity_code: data.selectedActivity.code,
       fund_code: data.fundSourceItem.code,
       gfs_code: item,
     }).then((response: AxiosResponse) => {
@@ -358,6 +564,26 @@ export const usePaymentVoucher = (): any => {
     }
   };
 
+  const activities = computed(() => {
+    return data.activities;
+  });
+
+  const isNormal = computed(() => {
+    return data.voucherType == VOUCHER_TYPE.NORMAL;
+  });
+
+  const isMmama = computed(() => {
+    return data.voucherType == VOUCHER_TYPE.MMAMA;
+  });
+
+  const isDeposit = computed(() => {
+    return data.voucherType == VOUCHER_TYPE.DEPOSIT;
+  });
+
+  const normalType = VOUCHER_TYPE.NORMAL;
+  const mmamaType = VOUCHER_TYPE.MMAMA;
+  const depositType = RECEIPT_TYPE.DEPOSIT;
+
   return {
     data,
     openDialog,
@@ -372,7 +598,7 @@ export const usePaymentVoucher = (): any => {
     removePayable,
     searchActivities,
     searchGfsCodes,
-    searchFundingSource,
+    loadBudget,
     filterGfsCodes,
     maxRules,
     payableHeader,
@@ -381,5 +607,21 @@ export const usePaymentVoucher = (): any => {
     previewPaymentVoucher,
     printPaymentVoucher,
     fullPaid,
+    filterVoucher,
+    resetSearchText,
+    getActivities,
+    filterActivities,
+    activities,
+    searchFundSource,
+    isNormal,
+    isMmama,
+    isDeposit,
+    depositType,
+    normalType,
+    mmamaType,
+    resetData,
+    cancelGenericConfirmDialog,
+    approvePVFacility,
+    approvePVFacilityComplete,
   };
 };

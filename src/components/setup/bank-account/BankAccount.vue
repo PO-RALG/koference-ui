@@ -3,8 +3,9 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
+
       <v-btn
-        :disabled="cant('create', 'BankAccount')"
+        v-if="can('create', 'BankAccount')"
         color="primary"
         @click="openDialog"
       >
@@ -23,17 +24,15 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Bank Name"
-                @change="searchCategory($event)"
-                :items="bankName"
-                :item-text="'fullName'"
-                :item-divider="true"
-                return-object
-                required
+              <v-text-field
+                outlined
+                label="Filter Bank Account"
+                @keyup="filterBankAccounts()"
+                :items="data.itemsToFilter"
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
                 clearable
-                hide-details
-              ></v-autocomplete>
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -86,10 +85,31 @@
               <v-row>
                 <v-col cols="12" md="6">
                   <v-text-field
+                    v-model="data.formData.bank"
+                    label="Bank"
+                    outlined
+                    required
+                    :hide-details="true"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
                     v-model="data.formData.branch"
                     label="Branch"
                     required
                     outlined
+                    :hide-details="true"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="data.formData.number"
+                    label="Number"
+                    required
+                    outlined
+                    v-mask="'###############'"
                     :hide-details="true"
                   ></v-text-field>
                 </v-col>
@@ -102,26 +122,8 @@
                     :hide-details="true"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.bank"
-                    label="Bank"
-                    outlined
-                    required
-                    :hide-details="true"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="data.formData.number"
-                    label="Number"
-                    required
-                    outlined
-                    :hide-details="true"
-                  ></v-text-field>
-                </v-col>
 
-                <v-col cols="12" md="12">
+                <v-col cols="12" md="12" class="mb-n8">
                   <v-autocomplete
                     v-model="data.formData.bank_account_type_id"
                     label="Bank Account Type"
@@ -197,6 +199,10 @@ export default defineComponent({
       cancelConfirmDialog,
       searchBankAccounts,
       bankName,
+      filterBankAccounts,
+      resetSearchText,
+      filterFacility,
+      resetSearchFacility,
     } = useBank();
 
     return {
@@ -211,6 +217,10 @@ export default defineComponent({
       cancelConfirmDialog,
       searchBankAccounts,
       bankName,
+      filterBankAccounts,
+      resetSearchText,
+      filterFacility,
+      resetSearchFacility,
     };
   },
 });

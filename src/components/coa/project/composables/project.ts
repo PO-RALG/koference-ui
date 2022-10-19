@@ -11,10 +11,10 @@ import {
 import { Project } from "../types/Project";
 
 export const useProject = (): any => {
-  let dataItems: Array<Project> = [];
+  const dataItems: Array<Project> = [];
   let financialYearData: Project;
 
-  let data = reactive({
+  const data = reactive({
     title: "Manage projects",
     modalTitle: "",
     headers: [
@@ -29,8 +29,7 @@ export const useProject = (): any => {
         align: "start",
         sortable: false,
         value: "description",
-      },
-      { text: "Actions", value: "actions", sortable: false },
+      }
     ],
     modal: false,
     deletemodal: false,
@@ -44,7 +43,7 @@ export const useProject = (): any => {
 
   onMounted(() => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      let { from, to, total, current_page, per_page, last_page } =
+      const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
       data.response = {
         from,
@@ -74,7 +73,7 @@ export const useProject = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      let { from, to, total, current_page, per_page, last_page } =
+      const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;

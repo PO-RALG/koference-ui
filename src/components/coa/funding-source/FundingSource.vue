@@ -3,9 +3,19 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog">
+      <v-btn
+        v-if="can('create', 'FundingSource')"
+        color="primary"
+        @click="openDialog"
+      >
         <v-icon>mdi-plus</v-icon>
         Add New
+      </v-btn>
+
+      <!-- v-if="can('create', 'FundingSource')" -->
+      <v-btn color="primary" @click="pullSegmentsFromPlanRep">
+        <v-icon>mdi-sync</v-icon>
+        Segments From PlanRep
       </v-btn>
     </v-card-actions>
     <v-card>
@@ -21,16 +31,15 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Code"
-                @change="searchCategory($event)"
+              <v-text-field
+                outlined
+                label="Filter Fund Source"
+                @keyup="filterFundSource()"
                 :items="data.itemsToFilter"
-                :item-text="'code'"
-                :item-divider="true"
-                return-object
-                required
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
                 clearable
-              ></v-autocomplete>
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -41,10 +50,11 @@
           <span>{{ item.endDate }}</span>
         </template>
 
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                :disabled="cant('addGFS', 'FundingSource')"
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
@@ -58,6 +68,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                disabled
                 v-bind="attrs"
                 v-on="on"
                 @click="deleteFundingSource(item.id)"
@@ -76,7 +87,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <Modal :modal="data.modal" :width="600">
+    <Modal :modal="data.modal" :width="1000">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Funding Sources`" />
       </template>
@@ -88,6 +99,7 @@
                 <v-col cols="12" md="6">
                   <v-text-field
                     v-model="data.formData.code"
+                    outlined
                     label="Code"
                     required
                   ></v-text-field>
@@ -96,6 +108,7 @@
                   <v-text-field
                     v-model="data.formData.description"
                     label="Description"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
@@ -164,6 +177,9 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       onChangeList,
+      pullSegmentsFromPlanRep,
+      filterFundSource,
+      resetSearchText,
     } = useFundSource();
 
     return {
@@ -180,6 +196,9 @@ export default defineComponent({
       cancelConfirmDialog,
       searchCategory,
       onChangeList,
+      pullSegmentsFromPlanRep,
+      filterFundSource,
+      resetSearchText,
     };
   },
 });

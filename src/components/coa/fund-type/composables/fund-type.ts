@@ -18,13 +18,16 @@ export const useFundType = (): any => {
         value: "name",
       },
       {
-        text: "Code",
+        text: "Current Code",
         align: "start",
         sortable: false,
-        value: "code",
-      },
-
-      { text: "Actions", value: "actions", sortable: false },
+        value: "current_code",
+      }, {
+        text: "Carryover Code",
+        align: "start",
+        sortable: false,
+        value: "carryover_code",
+      }
     ],
 
     modal: false,
@@ -76,10 +79,6 @@ export const useFundType = (): any => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
     // console.log("delete year", data);
-  };
-
-  const getFundTypes = () => {
-    get(data).then((response) => {});
   };
 
   const cancelDialog = () => {
@@ -146,7 +145,6 @@ export const useFundType = (): any => {
     openDialog,
     cancelDialog,
     deleteFundType,
-    getFundTypes,
     updateFundType,
     save,
     reloadData,

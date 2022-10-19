@@ -16,17 +16,29 @@ export const useActivityCosting = (): any => {
     response: {},
     modalTitle: "",
     headers: [
-      {
+   /*   {
         text: "Activity",
         align: "start",
         sortable: false,
         value: "activity.description",
+      },*/
+      {
+        text: "Account",
+        align: "start",
+        sortable: false,
+        value: "account.code",
       },
       {
         text: "Activity code",
         align: "start",
         sortable: false,
         value: "activity.code",
+      },
+      {
+        text: "Activity Description",
+        align: "start",
+        sortable: false,
+        value: "activity.description",
       },
       {
         text: "GFS name",

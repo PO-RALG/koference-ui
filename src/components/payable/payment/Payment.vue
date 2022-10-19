@@ -24,16 +24,16 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Reference number"
-                @change="searchItem($event)"
+              <v-text-field
+                prepend-inner-icon="mdi-filter-outline"
+                outlined
+                label="Enter Last Three (3) Payment or PV Number"
+                @keyup="filterPayment()"
                 :items="data.itemsToFilter"
-                :item-text="'reference_no'"
-                :item-divider="true"
-                return-object
-                required
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
                 clearable
-              ></v-autocomplete>
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -69,12 +69,12 @@
                 @click="openRequestReversalDialog(item.id)"
                 :disabled="cant('delete', 'Payment')"
               >
-                mdi-undo
+                mdi-arrow-u-left-top-bold
               </v-icon>
             </template>
             <span>Reverse Payment</span>
           </v-tooltip>
-          <v-tooltip bottom>
+          <!-- <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 v-bind="attrs"
@@ -86,7 +86,7 @@
               </v-icon>
             </template>
             <span>View History for the approval requests and responses</span>
-          </v-tooltip>
+          </v-tooltip> -->
         </template>
         <template v-slot:footer>
           <Paginate
@@ -108,18 +108,31 @@
             <v-container>
               <v-row class="pa-2">
                 <v-col cols="12" :md="data.showDate ? '6' : '12'" sm="12">
-                  <v-select
-                    :outlined="!data.showDate"
-                    v-model="data.formData.voucher_id"
-                    :items="data.paymentVouchers"
-                    item-text="reference_no"
-                    item-value="id"
-                    label="Select PV"
-                    @change="setPayableItems($event)"
-                  >
-                  </v-select>
+                  <fetcher :api="'/api/v1/vouchers'">
+                    <div slot-scope="{ json: vouchers, loading }">
+                      <div v-if="loading">Loading...</div>
+                      <v-autocomplete
+                        v-else
+                        v-model="data.formData.voucher_id"
+                        :items="mappedVouchers(vouchers)"
+                        item-text="reference_no"
+                        item-value="id"
+                        label="Select PV"
+                        @change="setPayableItems($event)"
+                        return-object
+                        outlined
+                        small
+                      >
+                      </v-autocomplete>
+                    </div>
+                  </fetcher>
                 </v-col>
-                <v-col class="pt-6" cols="12" md="6" v-if="data.showDate">
+                <v-col
+                  class="pt-6 pl-6 pr-6"
+                  cols="12"
+                  md="6"
+                  v-if="data.showDate"
+                >
                   <DatePicker
                     :label="'Date'"
                     v-model="data.formData.payment_date"
@@ -128,36 +141,40 @@
                     required
                   />
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="6" sm="12" class="mt-n8">
                   <v-select
                     v-model="data.formData.bank_account_id"
                     :items="data.bankAccounts"
                     item-text="name"
                     item-value="id"
                     label="Select Bank Account"
+                    outlined
                     required
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="6" sm="12" class="mt-n8">
                   <v-select
                     v-model="data.formData.cheque_type"
                     :items="data.chequeTypes"
                     label="Select Cheque Type"
                     required
+                    outlined
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="6" sm="12" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.cheque"
                     label="Cheque"
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="6" sm="12" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.description"
                     label="Description"
+                    outlined
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -168,10 +185,12 @@
                   class="data-table"
                   v-if="data.formData.voucher_id"
                 >
+                  <!-- <pre>{{ data.payableItems }}</pre> -->
                   <v-data-table
                     :headers="payableHeader"
                     disable-pagination
                     hide-default-footer
+                    v-if="data.payableItems.length > 0"
                   >
                     <template v-slot:body>
                       <tbody>
@@ -219,12 +238,27 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.deletemodal" :width="300">
+    <Modal :modal="data.deletemodal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Payment `" />
+        <ModalHeader :title="`Reverse Payment `" />
       </template>
       <template v-slot:body>
-        <ModalBody> Are you sure? </ModalBody>
+        <ModalBody>
+          <v-form v-model="data.valid">
+            <v-col class="pt-6 pl-6 pr-6" cols="12" md="12">
+              <DatePicker
+                :label="'Canselation Date'"
+                v-model="data.reverseForm.date"
+                :max="data.maxDate"
+                :min="data.minDate"
+                required
+              />
+            </v-col>
+            <v-col class="pt-6 pl-6 pr-6 red--text" cols="12" md="12">
+              Are you sure you want to reverse this payment?
+            </v-col>
+          </v-form>
+        </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
@@ -242,12 +276,26 @@
       </template>
       <template v-slot:body>
         <ModalBody>
+          <v-card-actions class="pa-0">
+            <v-spacer></v-spacer>
+            <v-btn color="red darken-1" text @click="cancelPreviewDialog">
+              Cancel
+            </v-btn>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="printPayment(data.pvDetails.id)"
+            >
+              Print
+            </v-btn>
+          </v-card-actions>
           <div class="" v-if="data.pvDetails">
             <v-col class="d-flex justify-center">
               <div class="font-weight-bold text-center">
                 <img :src="data.coat" class="login-logo pt-5" /><br />
                 The United Republic of Tanzania <br />
-                President's Office Regional Administration and Local Government
+                President's Office<br />
+                Regional Administration and Local Government
                 <br />
                 {{ data.pvDetails.council ? data.pvDetails.council.name : "" }}
                 <br />
@@ -492,7 +540,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelPreviewDialog">
+          <!-- <v-btn color="red darken-1" text @click="cancelPreviewDialog">
             Cancel
           </v-btn>
           <v-btn
@@ -501,7 +549,7 @@
             @click="printPayment(data.pvDetails.id)"
           >
             Print
-          </v-btn>
+          </v-btn> -->
         </ModalFooter>
       </template>
     </Modal>
@@ -522,6 +570,7 @@ export default defineComponent({
       openRequestReversalDialog,
       save,
       remove,
+      approvePaymet,
       cancelConfirmDialog,
       searchItem,
       getData,
@@ -533,6 +582,9 @@ export default defineComponent({
       cancelPreviewDialog,
       printPayment,
       payablePrintHeader,
+      filterPayment,
+      resetSearchText,
+      mappedVouchers,
     } = usePayment();
 
     return {
@@ -553,6 +605,10 @@ export default defineComponent({
       cancelPreviewDialog,
       printPayment,
       payablePrintHeader,
+      filterPayment,
+      resetSearchText,
+      mappedVouchers,
+      approvePaymet,
     };
   },
 });

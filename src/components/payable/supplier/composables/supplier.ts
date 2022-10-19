@@ -100,7 +100,7 @@ export const useSupplier = (): any => {
     phoneRules: [
       (v: string) => !!v || "Phone number is required",
       (v: string) =>
-        (v && v.length <= 10) || "Phone number must be less than 10 characters",
+        (v && v.length <= 12) || "Phone number must be less than 12 characters",
     ],
     tinRules: [
       (v: string) => !!v || "TIN is required",
@@ -113,11 +113,65 @@ export const useSupplier = (): any => {
       (v: string) =>
         (v && v.length <= 10) || "Number must be less than 10 characters",
     ],
+    nameRules: [(v: string) => !!v || "Name is required"],
+    typeRules: [(v: string) => !!v || "Type is required"],
+    idRules: [(v: string) => !!v || "ID is required"],
+    bankRules: [(v: string) => !!v || "Bank Name is required"],
+    bankAccountNameRules: [
+      (v: string) => !!v || "Bank Account Name is required",
+    ],
+    bankAccountNumberRules: [
+      (v: string) => !!v || "Bank Account Number is required",
+    ],
+    bankAddressNumberRules: [(v: string) => !!v || "Adress is required"],
   });
 
   onMounted(() => {
     getTableData();
   });
+
+  const filterSupplier = () => {
+    if (data.searchTerm.length > 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0 || data.searchTerm === null) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
@@ -218,5 +272,7 @@ export const useSupplier = (): any => {
     searchItem,
     getData,
     setActivation,
+    filterSupplier,
+    resetSearchText,
   };
 };

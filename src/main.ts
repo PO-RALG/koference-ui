@@ -1,10 +1,12 @@
 import Vue from "vue";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import VueJwtDecode from "vue-jwt-decode";
 import VueAxios from "vue-axios";
 import PerfectScrollbar from "vue2-perfect-scrollbar";
 import VueCompositionAPI from "@vue/composition-api";
+import VueMask from "v-mask";
 import moment from "moment"; //require
+import _ from "lodash";
 
 import "./plugins/vuetify-mask";
 
@@ -21,9 +23,12 @@ import "@/components/shared";
 import capitalize from "@/helpers/FormatHelper";
 import getCurrentUser from "@/helpers/CurrentUserHelper";
 
+const BASE_URLS = [process.env.VUE_APP_SERVER1_URL];
+
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
-axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
+
+axios.defaults.baseURL = process.env.VUE_APP_SERVER1_URL;
 
 axios.defaults["isLoading"] = true;
 const cancelSource = axios.CancelToken.source();
@@ -73,9 +78,18 @@ const errorHandler = (error: any) => {
   return Promise.reject({ ...error.data });
 };
 
-const successHandler = (response: any) => {
+const successHandler = (response: AxiosResponse) => {
+  let message = null;
+  if (typeof response.data === "object") {
+    message = response.data.message;
+  } else {
+    const messages = response.data.split("\n");
+    const msg = JSON.parse(messages[messages.length - 1]);
+    message = msg.message;
+  }
+
   const payload: SnackBarPayload = {
-    title: capitalize(response.data.message),
+    title: capitalize(message),
     color: "success",
     icon: "mdi-information",
     class: "message success--text",
@@ -132,6 +146,7 @@ Vue.use(VueJwtDecode);
 Vue.use(PerfectScrollbar);
 Vue.use(VueAxios, axios, moment);
 Vue.use(filters);
+Vue.use(VueMask);
 
 Vue.config.productionTip = false;
 

@@ -31,7 +31,7 @@ const update = async (payload: any) => {
 };
 
 const destroy = async (payload: any) => {
-  return await axios.delete(`${API}`, payload);
+  return await axios.delete(`${API}/${payload}`);
 };
 
 export { get, find, create, update, destroy, search, bankaccounttypes };

@@ -10,6 +10,15 @@ const userRoutes = [
       middleware: [setTitle, validateToken, setHeaders, auth],
     },
   },
+  {
+    path: "/approval-users",
+    component: () => import(/* webpackChunkName: "User" */ "../User.vue"),
+    meta: {
+      requiresAuth: true,
+      title: "Manage Approval Users",
+      middleware: [setTitle, validateToken, setHeaders, auth],
+    },
+  },
 ];
 
 export default userRoutes;

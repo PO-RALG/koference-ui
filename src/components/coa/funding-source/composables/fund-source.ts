@@ -8,6 +8,7 @@ import {
   update,
   destroy,
   search,
+  createFundSource,
 } from "../services/funding-sources";
 
 export const useFundSource = (): any => {
@@ -19,18 +20,24 @@ export const useFundSource = (): any => {
     modalTitle: "",
     headers: [
       {
-        text: "Funding Sources Code",
-        align: "start",
-        sortable: false,
-        value: "code",
-      },
-      {
         text: "Description",
         align: "start",
         sortable: false,
         value: "description",
       },
-      { text: "Actions", value: "actions", sortable: false },
+      {
+        text: "Funding Sources Code",
+        align: "start",
+        sortable: false,
+        value: "code",
+      },
+
+      {
+        text: "Actions",
+        align: "center",
+        sortable: false,
+        value: "actions",
+      },
     ],
     modal: false,
     deletemodal: false,
@@ -42,6 +49,7 @@ export const useFundSource = (): any => {
     response: {},
     selectedGfs: [],
     gfscodes: [],
+    searchTerm: "",
   });
 
   onMounted(() => {
@@ -60,6 +68,10 @@ export const useFundSource = (): any => {
       data.itemsToFilter = response.data.data.data;
     });
   });
+
+  const pullSegmentsFromPlanRep = () => {
+    create();
+  };
 
   const searchCategory = (categoryName) => {
     console.log("argument", categoryName);
@@ -114,8 +126,6 @@ export const useFundSource = (): any => {
   };
 
   const save = () => {
-    console.log("Form Data", data.formData);
-
     if (data.formData.id) {
       updateFunfingSources(data.formData);
     } else {
@@ -152,7 +162,7 @@ export const useFundSource = (): any => {
   };
 
   const createFundingSource = (data: any) => {
-    create(data).then((response) => {
+    createFundSource(data).then((response) => {
       console.log("Created data", response.data);
       reloadData();
       cancelDialog();
@@ -192,6 +202,35 @@ export const useFundSource = (): any => {
     data.formData.gfs = gfsCodeIds;
   };
 
+  const filterFundSource = () => {
+    if (data.searchTerm.length >= 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
+
   return {
     data,
     openDialog,
@@ -207,5 +246,8 @@ export const useFundSource = (): any => {
     searchCategory,
     selectedGFS,
     onChangeList,
+    pullSegmentsFromPlanRep,
+    resetSearchText,
+    filterFundSource,
   };
 };

@@ -5,12 +5,18 @@
       <v-col cols="12" sm="12" md="3" class="hierarchy-container elevation-1">
         <v-label><h5>SELECT LOCATION</h5></v-label>
         <TreeBrowser
-        @onClick="loadLocationChildren"
-        :node="data.node"
-        :current-item="data.currentItem"
+          @onClick="loadLocationChildren"
+          :node="data.node"
+          :current-item="data.currentItem"
         />
       </v-col>
-      <v-col cols="12" sm="12" md="3" class="hierarchy-container elevation-1" v-if="data.location">
+      <v-col
+        cols="12"
+        sm="12"
+        md="3"
+        class="hierarchy-container elevation-1"
+        v-if="data.location"
+      >
         <v-label><h5>SELECT REPORT CATEGORY</h5></v-label>
         <ReportTreeBrowser
           :attachment-icon="data.reportIcon"
@@ -37,10 +43,13 @@ import { useReport } from "./composables/use-report";
 
 export default defineComponent({
   setup(props, context) {
-    const { data, loadLocationChildren, loadReportCategories, getLocationTree, closeInfoDialog } = useReport(
-      props,
-      context
-    );
+    const {
+      data,
+      loadLocationChildren,
+      loadReportCategories,
+      getLocationTree,
+      closeInfoDialog,
+    } = useReport(props, context);
 
     return {
       data,

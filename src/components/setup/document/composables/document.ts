@@ -1,8 +1,21 @@
-import { reactive, watch, onMounted, computed, ref } from "@vue/composition-api";
+import {
+  reactive,
+  watch,
+  onMounted,
+  computed,
+  ref,
+} from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
 import { Document } from "../types/Document";
-import { get, create, update, destroy, search } from "../services/document.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+  searchCategories,
+} from "../services/document.service";
 import { get as getDocumentCategories } from "../../document-category/services/documentcategory.service";
 
 export const useDocument = (): any => {
@@ -12,6 +25,7 @@ export const useDocument = (): any => {
   const imageUrl: any = ref("");
 
   const data = reactive({
+    file: "",
     title: "Manage Document",
     modalTitle: "",
     headers: [
@@ -23,10 +37,10 @@ export const useDocument = (): any => {
         value: "description",
       },
       {
-        text: "Link",
+        text: "Document category",
         align: "start",
         sortable: false,
-        value: "link",
+        value: "document_category.name",
       },
 
       { text: "Actions", value: "actions", sortable: false },
@@ -40,6 +54,8 @@ export const useDocument = (): any => {
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},
+    searchTerm: "",
+    search: "",
   });
 
   onMounted(() => {
@@ -48,7 +64,8 @@ export const useDocument = (): any => {
 
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
@@ -59,18 +76,34 @@ export const useDocument = (): any => {
     });
   };
 
-  const searchCategory = (categoryName) => {
-    if (categoryName != null) {
-      search({ name: categoryName.name }).then((response: any) => {
-        data.items = response.data.data.data;
+  // const searchCategory = (categoryName) => {
+  //   if (categoryName != null) {
+  //     searchCategories({ name: categoryName.name }).then((response: any) => {
+  //       data.items = response.data.data.data;
+  //     });
+  //   } else {
+  //     reloadData();
+  //   }
+  // };
+
+  const searchCategory = (item: string) => {
+    if (item) {
+      const regSearchTerm = item ? item : "";
+      searchCategories({
+        active: true,
+        regSearch: regSearchTerm,
+      }).then((response: AxiosResponse) => {
+        data.documentcategories = response.data.data.data;
       });
     } else {
       reloadData();
     }
   };
+
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
@@ -108,8 +141,17 @@ export const useDocument = (): any => {
     if (data.formData.id) {
       updateDocument(data.formData);
     } else {
-      data.formData.created_by = 1;
-      createDocument(data.formData);
+      const formData = new FormData();
+
+      formData.append("document_file", data.file);
+      formData.append("name", data.formData.name);
+      formData.append("description", data.formData.description);
+      formData.append(
+        "document_category_id",
+        data.formData.document_category_id
+      );
+      formData.append("validity", data.formData.validity);
+      createDocument(formData);
     }
   };
 
@@ -122,6 +164,54 @@ export const useDocument = (): any => {
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
+  };
+
+  const downloadFile = (id: any) => {
+    const path: any = `/api/v1/document-download/${id}` ;
+    window.open(path, "_blank");
+  };
+
+  const filterDocument = () => {
+    if (data.searchTerm.length >= 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
   };
 
   const updateDocument = (data: any) => {
@@ -157,6 +247,11 @@ export const useDocument = (): any => {
       data.items = response.data.data.data;
     });
   };
+  const selectedFile = (event: any) => {
+    console.log(event.target.files[0]);
+    data.file = event.target.files[0];
+  };
+
   // watching a getter
 
   watch(fileToupload, (fileToupload: any) => {
@@ -188,5 +283,8 @@ export const useDocument = (): any => {
     handleSelectedFiles,
     imageUrl,
     getData,
+    selectedFile,
+    downloadFile,
+    filterDocument,
   };
-}
+};

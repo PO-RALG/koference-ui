@@ -21,16 +21,16 @@
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
-              <v-autocomplete
-                label="Filter by Name"
-                @change="searchCategory($event)"
+              <v-text-field
+                outlined
+                prepend-inner-icon="mdi-filter-outline"
+                label="Enter Filter Term"
+                @keyup="filterItemDefinition()"
                 :items="data.itemsToFilter"
-                :item-text="'name'"
-                :item-divider="true"
-                return-object
-                required
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
                 clearable
-              ></v-autocomplete>
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -40,14 +40,15 @@
         <template v-slot:[`item.endDate`]="{ item }">
           <span>{{ item.endDate }}</span>
         </template>
-        <template v-slot:item.activations="{ item }">
+
+        <template v-slot:[`item.activations`]="{ item }">
           <v-switch
             :input-value="item.active"
             @change="setActivation(item)"
             value
           ></v-switch>
         </template>
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -95,6 +96,7 @@
                   <v-text-field
                     v-model="data.formData.name"
                     label="Name"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
@@ -103,25 +105,28 @@
                     v-model="data.formData.code"
                     label="Code"
                     required
+                    outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.description"
                     label="Description"
                     required
+                    outlined
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" class="mt-n8">
                   <v-text-field
                     v-model="data.formData.unit_of_measure"
                     label="Unit of measures"
+                    outlined
                     required
                   ></v-text-field>
                 </v-col>
                 <pre></pre>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" class="mt-n8 mb-n8">
                   <v-autocomplete
                     v-model="data.formData.funding_source_id"
                     label="Funding Sources"
@@ -130,13 +135,15 @@
                     item-value="id"
                     :item-divider="true"
                     required
+                    outlined
                     @change="loadGfsCodes($event)"
                   ></v-autocomplete>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" class="mt-n8 mb-n8">
                   <v-autocomplete
                     v-model="data.formData.gfs_code_id"
                     label="Gfs Codes"
+                    outlined
                     :items="
                       data.fundsourcesGfscodes[0]
                         ? data.fundsourcesGfscodes[0].gfs
@@ -207,6 +214,8 @@ export default defineComponent({
       gfsName,
       fundingsourceName,
       loadGfsCodes,
+      filterItemDefinition,
+      resetSearchText,
     } = useInvoiceDefinition();
 
     return {
@@ -226,6 +235,8 @@ export default defineComponent({
       gfsName,
       fundingsourceName,
       loadGfsCodes,
+      filterItemDefinition,
+      resetSearchText,
     };
   },
 });

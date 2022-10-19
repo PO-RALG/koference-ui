@@ -78,6 +78,7 @@ export const useBankAccountType = (): any => {
   const deleteBankAccountType = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
+    remove();
   };
 
   const cancelDialog = () => {
@@ -121,8 +122,8 @@ export const useBankAccountType = (): any => {
   };
 
   const loadGfsCodes = () => {
-    getGfsCodes().then((response: AxiosResponse) => {
-      data.gfscodes = response.data.data.data;
+    getGfsCodes({ per_page: 500 }).then((response: AxiosResponse) => {
+      data.gfscodes = response.data.data;
     });
   };
 

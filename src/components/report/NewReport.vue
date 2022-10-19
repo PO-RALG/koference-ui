@@ -3,7 +3,11 @@
     <v-card-actions class="pt-5 pr-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog" :disabled="cant('create', 'Report')">
+      <v-btn
+        color="primary"
+        @click="openDialog"
+        :disabled="cant('create', 'Report')"
+      >
         <v-icon>mdi-plus</v-icon>
         Add Report
       </v-btn>
@@ -45,18 +49,33 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon v-if="can('writeQuery', 'Report') && item.query" class="mr-2" @click="openCodeEditor(item)">
+          <v-icon
+            v-if="can('writeQuery', 'Report') && item.query"
+            class="mr-2"
+            @click="openCodeEditor(item)"
+          >
             mdi-code-tags
           </v-icon>
-          <v-icon class="mr-2" @click="openDialog(item)" :disabled="cant('edit', 'Report')">
+          <v-icon
+            class="mr-2"
+            @click="openDialog(item)"
+            :disabled="cant('edit', 'Report')"
+          >
             mdi-pencil-box-outline
           </v-icon>
-          <v-icon @click="openConfirmDialog(item.id)" :disabled="cant('delete', 'Report')">
+          <v-icon
+            @click="openConfirmDialog(item.id)"
+            :disabled="cant('delete', 'Report')"
+          >
             mdi-trash-can-outline
           </v-icon>
         </template>
         <template v-slot:footer>
-          <Paginate :params="data.params" :rows="data.rows" @onPageChange="loadReports" />
+          <Paginate
+            :params="data.params"
+            :rows="data.rows"
+            @onPageChange="loadReports"
+          />
         </template>
       </v-data-table>
     </v-card>
@@ -71,18 +90,33 @@
             <v-container>
               <v-row>
                 <v-col cols="12" md="4" sm="6">
-                  <v-select v-model="data.formData.order" :items="data.reportOrders" label="Report Order" required>
+                  <v-select
+                    v-model="data.formData.order"
+                    :items="data.reportOrders"
+                    label="Report Order"
+                    outlined
+                    required
+                  >
                   </v-select>
                 </v-col>
                 <v-col cols="12" md="8" sm="6">
-                  <v-text-field v-model="data.formData.name" label="Report Name" required></v-text-field>
+                  <v-text-field
+                    v-model="data.formData.name"
+                    label="Report Name"
+                    outlined
+                    required
+                  ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" md="12">
-                  <v-text-field v-model="data.formData.template_uri" label="Template URI"></v-text-field>
+                <v-col cols="12" md="12" class="mt-n8">
+                  <v-text-field
+                    v-model="data.formData.template_uri"
+                    outlined
+                    label="Template URI"
+                  ></v-text-field>
                 </v-col>
 
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" class="mt-n8 mb-n8">
                   <fetcher :api="'/api/v1/admin-area-levels'">
                     <div slot-scope="{ json: levels, loading }">
                       <div v-if="loading">Loading...</div>
@@ -92,23 +126,31 @@
                         :items="levels"
                         item-value="id"
                         label="Report Level"
+                        outlined
                         required
                       >
-                        <template v-slot:selection="{ item }">{{ item.name }}</template>
-                        <template v-slot:item="{ item }">{{ item.name }}</template>
+                        <template v-slot:selection="{ item }">{{
+                          item.name
+                        }}</template>
+                        <template v-slot:item="{ item }">{{
+                          item.name
+                        }}</template>
                       </v-select>
                     </div>
                   </fetcher>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" class="mt-n8 mb-n8">
                   <v-select
                     v-model="data.formData.parent_id"
                     :items="data.entries"
                     item-value="id"
                     label="Report Parent"
+                    outlined
                     required
                   >
-                    <template v-slot:selection="{ item }">{{ item.name }}</template>
+                    <template v-slot:selection="{ item }">{{
+                      item.name
+                    }}</template>
                     <template v-slot:item="{ item }">{{ item.name }}</template>
                   </v-select>
                 </v-col>
@@ -136,7 +178,9 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelConfirmDialog"> Cancel </v-btn>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Cancel
+          </v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
         </ModalFooter>
       </template>
@@ -171,8 +215,12 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="closeCodeEditor">Cancel </v-btn>
-          <v-btn color="green darken-1" text @click="saveReportQuery">Yes</v-btn>
+          <v-btn color="red darken-1" text @click="closeCodeEditor"
+            >Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="saveReportQuery"
+            >Yes</v-btn
+          >
         </ModalFooter>
       </template>
     </Modal>

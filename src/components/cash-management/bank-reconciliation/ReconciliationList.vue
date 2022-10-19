@@ -1,11 +1,14 @@
 <template>
   <div>
     <v-card-actions class="pa-0">
-      <h2>View Reconciliation List</h2>
+      <h2> Bank Reconciliation</h2>
       <v-spacer></v-spacer>
-      <v-btn @click="navigateBack()" class="ma-2" outlined color="black">
-        <v-icon>mdi-arrow-u-left-top</v-icon>
-        Back To Reconciliation
+      <v-btn
+        color="primary"
+        @click="navigateBack()"
+      >
+        <v-icon>mdi-plus</v-icon>
+        Add New
       </v-btn>
     </v-card-actions>
     <v-card class="elevation-0">
@@ -47,7 +50,8 @@ import moment from "moment";
 import router from "@/router";
 
 export default defineComponent({
-  setup() {
+  setup(context) {
+
     const data = reactive({
       HEADERS: [
         { text: "Month ", value: "month" },

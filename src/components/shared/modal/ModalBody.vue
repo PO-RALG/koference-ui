@@ -14,6 +14,6 @@ export default defineComponent({});
 
 <style lang="scss">
 .container {
-  padding: 0;
+  padding: 6px 6px 0 6px;
 }
 </style>

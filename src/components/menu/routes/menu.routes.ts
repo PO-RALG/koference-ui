@@ -3,7 +3,10 @@ import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 const menuRoutes = [
   {
     path: "/manage-menu-items",
-    component: () => import(/* webpackChunkName: "MenuItem" */ "../MenuItem.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "MenuItem" */ "@/components/menu/MenuItem.vue"
+      ),
     meta: {
       requiresAuth: true,
       title: "Manage Menu Items",

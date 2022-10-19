@@ -1,7 +1,13 @@
 import axios from "axios";
 
+const getWorkflow = async (params: any) => {
+  return await axios.get("/api/v1/work-flows-actions", { params });
+};
+const approvePVFacilityService = async (payload: any) => {
+  return await axios.post(`/api/v1/payment_voucher/approval`, payload);
+};
 const get = async (params: any) => {
-  return await axios.get("/api/v1/vouchers",  {params});
+  return await axios.get("/api/v1/vouchers", { params });
 };
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/vouchers/`, {
@@ -31,14 +37,34 @@ const fundByActivity = async (id: string | number) => {
   return await axios.get(`/api/v1/budgets/${id}/funds`);
 };
 
-const fundByActivityFundSource = async (activityId: string | number ,id: string | number) => {
+const fundByActivityFundSource = async (
+  activityId: string | number,
+  id: string | number
+) => {
   return await axios.get(`/api/v1/budgets/${activityId}/${id}/gfs`);
+};
+
+const activitiesByFundSource = async (id: number | string) => {
+  return await axios.get(`/api/v1/budgets/${id}/get-activities`);
 };
 
 const printPdf = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
-  let url = `${process.env.VUE_APP_SERVER_URL}/api/v1/vouchers/${id}/print?token=${user.token}`;
+  const url = `/api/v1/vouchers/${id}/print?token=${user.token}`;
   return window.open(url);
-}
+};
 
-export { get, find, create, update, destroy, search, fundByActivity, fundByActivityFundSource, printPdf };
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  search,
+  fundByActivity,
+  fundByActivityFundSource,
+  printPdf,
+  activitiesByFundSource,
+  getWorkflow,
+  approvePVFacilityService
+};

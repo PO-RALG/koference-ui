@@ -4,7 +4,11 @@ import { useRoute } from "vue2-helpers/vue-router";
 import router from "@/router";
 import startCase from "lodash/startCase";
 
-import { findReport, fetchReportParams, printReport } from "../services/report.services";
+import {
+  findReport,
+  fetchReportParams,
+  printReport,
+} from "../services/report.services";
 import { find } from "@/components/admin-area/admin-area/services/admin-area-services";
 
 export const useReportDetail = (props, { root }) => {
@@ -24,6 +28,7 @@ export const useReportDetail = (props, { root }) => {
   ];
 
   const data = reactive({
+    location_id: null,
     valid: true,
     currentReport: null,
     reportParameters: [],
@@ -46,7 +51,14 @@ export const useReportDetail = (props, { root }) => {
   });
 
   onMounted(() => {
-    console.log()
+    data.location_id = root.$route.params.location_id;
+
+    const user: any = localStorage.getItem("FFARS_USER");
+    const userObj = JSON.parse(user);
+    if (userObj.facility) {
+      data.formData.facility_id = userObj.facility.id;
+    }
+    console.log();
     init();
   });
 
@@ -82,7 +94,9 @@ export const useReportDetail = (props, { root }) => {
     nameArray.pop();
     const result = nameArray.join("_").replace(/\s/g, "").toUpperCase();
     const requiresAPI = requireApiCall(name);
-    const API = requiresAPI ? API_MAP.find((api: any) => api.name === result).api : null;
+    const API = requiresAPI
+      ? API_MAP.find((api: any) => api.name === result).api
+      : null;
     return API ? API : null;
   };
 
@@ -123,26 +137,58 @@ export const useReportDetail = (props, { root }) => {
     }
   };
 
-  const reportParams = computed(() => {
-    return (
-      data.reportParameters
-        .filter((p: any) => p.name !== "source_path")
-        .filter((p: any) => p.name !== "location_id")
-        //.filter((p: any) => p.required === 1)
-        .map((param: any, idx: number) => ({
-          ...param,
-          id: idx + 1,
-          componentType: setType(param.name),
-          isRequired: param.required === 0 ? false : true,
-          needsApiCall: requireApiCall(param.name),
-          key: setKey(param.name),
-          description: setDescription(param.name),
-          api: setApi(param.name),
-        }))
-    );
+  const isFacility = computed(() => {
+    const user: any = localStorage.getItem("FFARS_USER");
+    const userObj = JSON.parse(user);
+    return userObj.facility ? true : false;
   });
 
-  watch(() => root.$route.query.report_id, async (newReportID) => {
+  const reportParams = computed(() => {
+    const user: any = localStorage.getItem("FFARS_USER");
+    const userObj = JSON.parse(user);
+    if (userObj.facility) {
+      return (
+        data.reportParameters
+          .filter((p: any) => p.name !== "source_path")
+          .filter((p: any) => p.name !== "location_id")
+          .filter((p: any) => p.name !== "facility_id")
+          //.filter((p: any) => p.required === 1)
+          .map((param: any, idx: number) => ({
+            ...param,
+            id: idx + 1,
+            componentType: setType(param.name),
+            isRequired: param.required === 0 ? false : true,
+            needsApiCall: requireApiCall(param.name),
+            key: setKey(param.name),
+            description: setDescription(param.name),
+            api: setApi(param.name),
+          }))
+      );
+    } else {
+      return (
+        data.reportParameters
+          .filter((p: any) => p.name !== "source_path")
+          .filter((p: any) => p.name !== "location_id")
+          .filter((p: any) => p.name !== "facility_id")
+
+          //.filter((p: any) => p.required === 1)
+          .map((param: any, idx: number) => ({
+            ...param,
+            id: idx + 1,
+            componentType: setType(param.name),
+            isRequired: param.required === 0 ? false : true,
+            needsApiCall: requireApiCall(param.name),
+            key: setKey(param.name),
+            description: setDescription(param.name),
+            api: setApi(param.name),
+          }))
+      );
+    }
+  });
+
+  watch(
+    () => root.$route.query.report_id,
+    async (newReportID) => {
       console.log("report id", newReportID);
       if (newReportID) {
         findReport(newReportID).then((response: AxiosResponse) => {
@@ -162,5 +208,6 @@ export const useReportDetail = (props, { root }) => {
     data,
     print,
     reportParams,
+    isFacility,
   };
 };

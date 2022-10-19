@@ -4,6 +4,8 @@ export interface PaymentVoucher {
   supplier_id: number;
   description: string;
   payables: any[];
+  is_mmama: boolean;
+  approves: any[];
 }
 export interface Account {
   id: number;
@@ -13,4 +15,14 @@ export interface Account {
   allocation: number;
   totalExpenditure: number;
   balance: number;
+}
+
+export enum VOUCHER_TYPE {
+  "NORMAL" = 1,
+  "DEPOSIT" = 3,
+  "MMAMA" = 4,
+}
+export interface Payable {
+  gl_account_id: number;
+  amount: number;
 }

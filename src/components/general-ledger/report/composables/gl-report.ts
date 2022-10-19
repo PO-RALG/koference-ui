@@ -33,7 +33,9 @@ export const useGLReport = (): any => {
     currentDate: null,
     dateRules: [
       (v: any) => !!v || "Email is required",
-      (v: any) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || "E-mail must be a valid email",
+      (v: any) =>
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+        "E-mail must be a valid email",
     ],
   });
 
@@ -100,7 +102,9 @@ export const useGLReport = (): any => {
 
   const getName = (transaction: any) => {
     if (transaction.ledgerable) {
-      return transaction.ledgerable.name ? transaction.ledgerable.name : transaction.ledgerable.descriptions;
+      return transaction.ledgerable.name
+        ? transaction.ledgerable.name
+        : transaction.ledgerable.descriptions;
     } else {
       return "No Description Available ";
     }
@@ -117,10 +121,16 @@ export const useGLReport = (): any => {
   });
 
   const showDateSelection = () => {
-    const fyStartDate = moment(params.financial_year.start_date).format("YYYY-MM-DD");
-    const fyEndDate = moment(params.financial_year.end_date).format("YYYY-MM-DD");
+    const fyStartDate = moment(params.financial_year.start_date).format(
+      "YYYY-MM-DD"
+    );
+    const fyEndDate = moment(params.financial_year.end_date).format(
+      "YYYY-MM-DD"
+    );
 
-    data.maxDate = moment(fyEndDate).isBefore(moment(data.currentDate)) ? fyEndDate : data.currentDate;
+    data.maxDate = moment(fyEndDate).isBefore(moment(data.currentDate))
+      ? fyEndDate
+      : data.currentDate;
     data.minDate = fyStartDate;
     data.showDateSelection = true;
   };

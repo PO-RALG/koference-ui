@@ -13,7 +13,7 @@
       <AppLocationHeader
         :facility="facility"
         :facility-type="facility.facility_type"
-        :location="facility.location"
+        :location="facility.council"
         v-if="facility"
       />
       <v-simple-table>
@@ -39,7 +39,9 @@
           </thead>
           <tbody v-for="(entry, index) in entries" :key="index">
             <tr class="ledger-header">
-              <th colspan="6" class="account-th">{{ entry.account }} - {{ entry.account_description }}</th>
+              <th colspan="6" class="account-th">
+                {{ entry.account }} - {{ entry.account_description }}
+              </th>
             </tr>
             <tr v-for="(trx, idx) in entry.transactions" :key="idx">
               <td>{{ trx.apply_date | format("MM/DD/YYYY") }}</td>
@@ -153,7 +155,9 @@
       <template v-slot:footer>
         <ModalFooter>
           <div class="mt-n8 pb-4">
-            <v-btn color="blue darken-1" text @click="closeDialog">Cancel</v-btn>
+            <v-btn color="blue darken-1" text @click="closeDialog"
+              >Cancel</v-btn
+            >
             <v-btn color="primary" @click="filterReport" class="mr-3">
               <v-icon>mdi-filter</v-icon>
               Filter Report

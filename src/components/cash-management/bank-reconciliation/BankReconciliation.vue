@@ -4,12 +4,8 @@
       <h2>{{ title }}</h2>
       <v-spacer></v-spacer>
       <v-btn @click="navigateToList()" class="ma-2" outlined color="black">
-        <v-icon>mdi-progress-download</v-icon>
-        View Reconciliations
-      </v-btn>
-      <v-btn @click="openDialog('LOAD')" class="ma-2" outlined color="black">
-        <v-icon>mdi-progress-download</v-icon>
-        Load Cashbook Entries
+        <v-icon>mdi-arrow-u-left-top</v-icon>
+        Go To  Reconciliations List
       </v-btn>
       <v-btn v-if="data.report && data.report.confirmed" color="green">
         <v-icon small>mdi-lock</v-icon>
@@ -22,6 +18,14 @@
       >
         <v-icon small>mdi-lock-open-outline</v-icon>
         Unlock Report
+      </v-btn>
+      <v-btn
+        :disabled="(data.report && data.report.confirmed)  || !data.showConfirm"
+        color="primary"
+        @click="showConfirmDialog()"
+      >
+        <v-icon small>mdi-lock-open-outline</v-icon>
+        Confirm Reconciliation
       </v-btn>
     </v-card-actions>
     <v-card class="elevation-0">
@@ -49,7 +53,11 @@
                 <v-form v-else ref="form" @submit.prevent="updateBalance">
                   <v-row>
                     <v-col cols="6" md="5" sm="3">
-                      <v-text-field v-model="data.report.bank_balance" dense>
+                      <v-text-field
+                        v-model="data.report.bank_balance"
+                        dense
+                        outlined
+                      >
                       </v-text-field>
                     </v-col>
                     <v-col cols="6" md="1" sm="3" class="mt-1">
@@ -107,8 +115,8 @@
         <template v-slot:[`item.dr_amount`]="{ item }">
           <span>{{ item.dr_amount | toCurrency }}</span>
         </template>
-        <template v-slot:[`item.amount`]="{ item }">
-          <span>{{ item.amount | toCurrency }}</span>
+        <template v-slot:[`item.cr_amount`]="{ item }">
+          <span>{{ item.cr_amount | toCurrency }}</span>
         </template>
         <template v-slot:[`item.type`]="{ item }">
           <span>{{ item.type }}</span>
@@ -305,6 +313,7 @@ export default defineComponent({
       navigateToList,
     };
   },
+
 });
 </script>
 
