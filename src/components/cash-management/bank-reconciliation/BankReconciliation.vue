@@ -42,7 +42,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="border-bottom">
+            <tr class="border-bottom" style="background: #f2f2f2;">
               <td
                 class="border-right adjustable"
                 @click="rowClicked(data.report)"
@@ -51,8 +51,8 @@
                   data.report.bank_balance | toCurrency
                 }}</strong>
                 <v-form v-else ref="form" @submit.prevent="updateBalance">
-                  <v-row>
-                    <v-col cols="6" md="5" sm="3">
+                  <v-row class="mt-2">
+                    <v-col>
                       <v-text-field
                         v-mask="toMoney"
                         v-model="data.report.bank_balance"
@@ -61,7 +61,7 @@
                       >
                       </v-text-field>
                     </v-col>
-                    <v-col cols="6" md="1" sm="3" class="mt-1">
+                    <v-col>
                       <v-btn
                         color="primary"
                         class="white--text"
