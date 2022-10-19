@@ -32,7 +32,7 @@ Vue.mixin({
 
     isDemo(): boolean {
       const site = store.getters["Auth/getSiteName"];
-      return site.name === "demo" ? true : false;
+      return (site && site.name === "demo") ? true : false;
     },
   },
 });
