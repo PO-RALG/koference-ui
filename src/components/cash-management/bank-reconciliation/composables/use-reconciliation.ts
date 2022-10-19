@@ -1,11 +1,11 @@
-import { reactive, onMounted, computed, watch } from "@vue/composition-api";
+import { computed, onMounted, reactive, watch } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 import {
-  getEntries,
   addBalance,
+  confirmReport,
+  getEntries,
   getReport,
   reconcileEntries as reconcile,
-  confirmReport,
   unlock as unlockReport,
 } from "../services/bank-reconciliation-service";
 import { Params } from "../types";
@@ -48,8 +48,8 @@ export const useBankReconciliation = ({ root }): any => {
       { text: "Description", value: "description", sortable: false },
       { text: "Reconciled", value: "status", sortable: false },
       { text: "Type", value: "type", sortable: false },
-      { text: "DR", align: "start", sortable: true, value: "dr_amount" },
-      { text: "CR", align: "start", sortable: true, value: "cr_amount" },
+      { text: "DR", align: "right", sortable: true, value: "dr_amount" },
+      { text: "CR", align: "right", sortable: true, value: "cr_amount" },
     ],
     statuses: ["RECONCILE"],
     balanceRules: [(v: string) => !!v || "Bank Balance is Required"],
@@ -74,17 +74,22 @@ export const useBankReconciliation = ({ root }): any => {
     const bankAccountId = root.$route.query.bank_account_id
       ? root.$route.query.bank_account_id
       : null;
-    const params = { date: date, bank_account_id: bankAccountId, per_page: 30 };
+    const params = {
+      date: date,
+      bank_account_id: bankAccountId,
+      per_page: 10000,
+    };
     const query = {
       ...params,
     };
+
     data.selectedEntries = [];
     if (date && bankAccountId) {
       data.formData.bank_account_id = parseInt(bankAccountId);
       data.formData.date = date;
       init(query);
-    }else{
-      await openDialog('LOAD');
+    } else {
+      await openDialog("LOAD");
     }
   };
 
@@ -94,7 +99,7 @@ export const useBankReconciliation = ({ root }): any => {
       const { bank_account_id, date } = newQuery;
       const params = { date, bank_account_id };
       if (!date && !bank_account_id) {
-        await  init(params);
+        await init(params);
       }
     }
   );
@@ -121,37 +126,37 @@ export const useBankReconciliation = ({ root }): any => {
           data.entries = response.data.data.data;
         })
         .then(() => {
-    /*      getReport(params).then((response: AxiosResponse) => {
+          /*      getReport(params).then((response: AxiosResponse) => {
+                  if (response.data.data.balance_required) {
+                    openDialog("BALANCE");
+                  } else {
+                    if (response.data.data.diff === 0) {
+                      showConfirmDialog();
+                    }
+                  }
+                });*/
+
+          getReport(data.formData).then((response: AxiosResponse) => {
             if (response.data.data.balance_required) {
+              data.dialog = !data.dialog;
               openDialog("BALANCE");
             } else {
               if (response.data.data.diff === 0) {
-                showConfirmDialog();
+                //showConfirmDialog();
               }
-            }
-          });*/
-
-            getReport(data.formData).then((response: AxiosResponse) => {
-              if (response.data.data.balance_required) {
-                data.dialog = !data.dialog;
-                openDialog("BALANCE");
+              data.report = response.data.data;
+              if (data.report.confirmed) {
+                data.showEdit = false;
               } else {
-                if (response.data.data.diff === 0) {
-                  //showConfirmDialog();
-                }
-                data.report = response.data.data;
-                if (data.report.confirmed) {
-                  data.showEdit = false;
-                } else {
-                  data.showEdit = true;
-                }
+                data.showEdit = true;
+              }
               if (response.data.data.diff === 0) {
                 data.showConfirm = true;
-              }else{
+              } else {
                 data.showConfirm = false;
               }
-              }
-            });
+            }
+          });
         });
     } else {
       data.entries = [];
@@ -277,7 +282,6 @@ export const useBankReconciliation = ({ root }): any => {
           }
         })
         .then(() => {
-
           getReport(data.formData).then((response: AxiosResponse) => {
             if (response.data.data.balance_required) {
               data.dialog = !data.dialog;
@@ -294,16 +298,11 @@ export const useBankReconciliation = ({ root }): any => {
               }
               if (response.data.data.diff === 0) {
                 data.showConfirm = true;
-              }else{
+              } else {
                 data.showConfirm = false;
               }
             }
           });
-
-
-
-
-
         });
       data.dialog = !data.dialog;
     }
@@ -415,13 +414,9 @@ export const useBankReconciliation = ({ root }): any => {
   const title = computed(() => {
     const reportUnlocked = data.report ? data.report.confirmed : false;
     const title = reportUnlocked
-      ? `Bank Reconciliation locked as of ${moment(data.report.month).format(
-          "YYYY-MM-DD"
-        )}`
-      : data.title +  `-- ${moment(data.formData.date).format(
-      "YYYY-MM-DD"
-    )}`;
-    return title   ;
+      ? `Bank Reconciliation locked as of ${moment(data.report.month).format("DD/MM/YYYY")}`
+      : data.title + ` - (${moment(data.formData.date).format("DD/MM/YYYY")})`;
+    return title;
   });
 
   const getAmount = (entry) => {

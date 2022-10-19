@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <v-btn @click="navigateToList()" class="ma-2" outlined color="black">
         <v-icon>mdi-arrow-u-left-top</v-icon>
-        Go To  Reconciliations List
+        Go To Reconciliations List
       </v-btn>
       <v-btn v-if="data.report && data.report.confirmed" color="green">
         <v-icon small>mdi-lock</v-icon>
@@ -20,7 +20,7 @@
         Unlock Report
       </v-btn>
       <v-btn
-        :disabled="(data.report && data.report.confirmed)  || !data.showConfirm"
+        :disabled="(data.report && data.report.confirmed) || !data.showConfirm"
         color="primary"
         @click="showConfirmDialog()"
       >
@@ -54,6 +54,7 @@
                   <v-row>
                     <v-col cols="6" md="5" sm="3">
                       <v-text-field
+                        v-mask="toMoney"
                         v-model="data.report.bank_balance"
                         dense
                         outlined
@@ -62,7 +63,7 @@
                     </v-col>
                     <v-col cols="6" md="1" sm="3" class="mt-1">
                       <v-btn
-                        color="green"
+                        color="primary"
                         class="white--text"
                         type="submit"
                         dense
@@ -109,6 +110,12 @@
         v-model="data.selectedEntries"
         disable-pagination
       >
+        <template v-slot:header.dr_amount="{ header }">
+          {{ header.text.toUpperCase() }}
+        </template>
+        <template v-slot:header.cr_amount="{ header }">
+          {{ header.text.toUpperCase() }}
+        </template>
         <template v-slot:[`item.date`]="{ item }">
           <span>{{ item.date | format("DD/MM/YYYY") }}</span>
         </template>
@@ -124,13 +131,6 @@
         <template v-slot:[`item.status`]="{ item }">
           <v-icon v-if="item.status" medium color="success">mdi-check</v-icon>
           <v-icon v-else medium color="warning">mdi-close</v-icon>
-        </template>
-        <template v-slot:footer>
-          <Paginate
-            :params="data.response"
-            :rows="data.rows"
-            @onPageChange="fetchData"
-          />
         </template>
       </v-data-table>
 
@@ -223,13 +223,9 @@
             <v-btn color="red darken-1" text @click="cancelDialog"
               >Cancel</v-btn
             >
-            <v-btn
-              color="green darken-1"
-              :disabled="!data.valid"
-              text
-              @click="save"
-              >{{ data.buttonTitle }}</v-btn
-            >
+            <v-btn color="primary" :disabled="!data.valid" text @click="save">{{
+              data.buttonTitle
+            }}</v-btn>
           </ModalFooter>
         </template>
       </Modal>
@@ -257,6 +253,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import { useBankReconciliation } from "./composables/use-reconciliation";
+import { toMoney } from "@/filters/CurrencyFormatter";
 import router from "@/router";
 export default defineComponent({
   setup(_, context) {
@@ -311,9 +308,9 @@ export default defineComponent({
       reconcileEntry,
       selected,
       navigateToList,
+      toMoney,
     };
   },
-
 });
 </script>
 
