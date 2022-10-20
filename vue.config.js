@@ -1,8 +1,17 @@
 const zlib = require("zlib");
+const { defineConfig } = require("@vue/cli-service");
 
-module.exports = {
+module.exports = defineConfig({
   transpileDependencies: ["vuetify"],
   publicPath: "/",
+  css: {
+    extract: false,
+  },
+  configureWebpack: {
+    optimization: {
+      splitChunks: false,
+    },
+  },
   pages: {
     index: {
       // entry for the page
@@ -12,7 +21,7 @@ module.exports = {
   },
   pluginOptions: {
     compression: {
-      modes:['development', 'production'],
+      modes: ["development", "production"],
       brotli: {
         filename: "[file].br[query]",
         algorithm: "brotliCompress",
@@ -32,4 +41,4 @@ module.exports = {
       },
     },
   },
-};
+});

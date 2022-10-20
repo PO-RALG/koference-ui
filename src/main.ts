@@ -8,7 +8,7 @@ import VueMask from "v-mask";
 import moment from "moment"; //require
 import _ from "lodash";
 
-import "./plugins/vuetify-mask";
+import "@/plugins/vuetify-mask";
 
 import App from "@/App.vue";
 import router from "@/router";
@@ -16,7 +16,7 @@ import store from "@/store";
 import vuetify from "@/plugins/vuetify";
 
 import "@/mixins";
-import filters from "./filters";
+import filters from "@/filters";
 
 import "@/assets/main.scss";
 import "@/components/shared";
