@@ -308,9 +308,14 @@ export const useBankReconciliation = ({ root }): any => {
     }
   };
 
+  //  parse comman separated string to float
+  const parseStringToFloat = (value: string) => {
+    return parseFloat(value.replace(/,/g, ""));
+  };
+
   const updateBalance = () => {
     const payload = {
-      balance: data.report.bank_balance,
+      balance: parseStringToFloat(data.report.bank_balance),
       date: root.$route.query.date,
       bank_account_id: root.$route.query.bank_account_id,
     };
@@ -414,7 +419,9 @@ export const useBankReconciliation = ({ root }): any => {
   const title = computed(() => {
     const reportUnlocked = data.report ? data.report.confirmed : false;
     const title = reportUnlocked
-      ? `Bank Reconciliation locked as of ${moment(data.report.month).format("DD/MM/YYYY")}`
+      ? `Bank Reconciliation locked as of ${moment(data.report.month).format(
+        "DD/MM/YYYY"
+      )}`
       : data.title + ` - (${moment(data.formData.date).format("DD/MM/YYYY")})`;
     return title;
   });
