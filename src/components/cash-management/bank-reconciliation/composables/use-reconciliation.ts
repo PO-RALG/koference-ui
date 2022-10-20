@@ -308,7 +308,7 @@ export const useBankReconciliation = ({ root }): any => {
     }
   };
 
-  //  parse comman separated string to float
+  // parse comma separated string to float
   const parseStringToFloat = (value: string) => {
     return parseFloat(value.replace(/,/g, ""));
   };
