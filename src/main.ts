@@ -26,7 +26,7 @@ import getCurrentUser from "@/helpers/CurrentUserHelper";
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 
-axios.defaults.baseURL = process.env.VUE_APP_SERVER1_URL;
+axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
 
 const cancelSource = axios.CancelToken.source();
 
