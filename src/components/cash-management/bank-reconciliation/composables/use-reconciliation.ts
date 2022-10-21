@@ -313,6 +313,7 @@ export const useBankReconciliation = ({ root }): any => {
     return parseFloat(value.replace(/,/g, ""));
   };
 
+
   const updateBalance = () => {
     const payload = {
       balance: parseStringToFloat(data.report.bank_balance),
