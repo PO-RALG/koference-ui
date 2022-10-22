@@ -195,6 +195,10 @@ export const useReceipt = (): any => {
     coat: "/coat_of_arms.svg.png",
     toSave: {},
     search: "",
+    reverseForm: {
+      id: "",
+      date: null,
+    },
   });
 
   onMounted(() => {
@@ -290,6 +294,7 @@ export const useReceipt = (): any => {
   const cancelConfirmDialog = () => {
     data.receipt = receipt;
     data.deletemodal = false;
+    data.reverseForm.date = null;
   };
 
   const remove = () => {
@@ -372,7 +377,7 @@ export const useReceipt = (): any => {
 
     fundingSource({ per_page: 2000 }).then((response: AxiosResponse) => {
       const fundingSources = response.data.data.data;
-      data.fundingSources = fundingSources.map(function (element) {
+      data.fundingSources = fundingSources.map(function(element) {
         return {
           ...element,
           description: element.description + "( " + element.code + ")",
@@ -432,16 +437,16 @@ export const useReceipt = (): any => {
   const newreceiptItem: any = computed(() => {
     return data.items
       ? data.items.map((data, index) => ({
-          ...data,
-          index: ++index,
-          newData: data,
-          bankAccount:
-            data.bank_account.bank +
-            data.bank_account.name +
-            " (" +
-            data.bank_account.number +
-            ")",
-        }))
+        ...data,
+        index: ++index,
+        newData: data,
+        bankAccount:
+          data.bank_account.bank +
+          data.bank_account.name +
+          " (" +
+          data.bank_account.number +
+          ")",
+      }))
       : [];
   });
 
