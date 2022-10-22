@@ -35,8 +35,11 @@
               </template>
             </v-select>
           </v-col>
-          <v-col cols="6" sm="12" md="1" v-if="data.items.length">
+        </v-card-title>
+        <v-card-title>
+          <v-col cols="6" sm="12" md="3" v-if="data.items.length">
             <v-text-field
+              v-mask="toMoney"
               v-model="data.itemUnallocated.carryover"
               label="Carryover Fund"
               outlined
@@ -45,6 +48,7 @@
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field
+              v-mask="toMoney"
               v-model="data.itemUnallocated.current"
               label="Current Fund"
               disabled
@@ -53,6 +57,7 @@
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field
+              v-mask="toMoney"
               v-model="data.itemUnallocated.totalFund"
               label="Total Fund"
               disabled
@@ -61,14 +66,16 @@
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field
+              v-mask="toMoney"
               v-model="data.allocated"
               label="Total Allocated"
               outlined
               disabled
             ></v-text-field>
           </v-col>
-          <v-col cols="6" sm="12" md="2" v-if="data.items.length">
+          <v-col cols="6" sm="12" md="3" v-if="data.items.length">
             <v-text-field
+              v-mask="toMoney"
               v-model="data.running_balance"
               label="Unallocated Amount"
               disabled
@@ -114,6 +121,7 @@
                   </td>
                   <td class="pt-5">
                     <v-text-field
+                      v-mask="toMoney"
                       dense
                       outlined
                       :rules="[
@@ -144,6 +152,7 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import { useFundAllocation } from "./composables/fund-allocation";
+import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({
   name: "FundAllocation",
@@ -166,6 +175,7 @@ export default defineComponent({
       newAllocation,
       maxAllocation,
       maxAvailable,
+      toMoney,
     };
   },
 });

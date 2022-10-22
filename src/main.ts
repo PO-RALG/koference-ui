@@ -1,5 +1,5 @@
 import Vue from "vue";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import VueJwtDecode from "vue-jwt-decode";
 import VueAxios from "vue-axios";
 import PerfectScrollbar from "vue2-perfect-scrollbar";
@@ -8,7 +8,7 @@ import VueMask from "v-mask";
 import moment from "moment"; //require
 import _ from "lodash";
 
-import "./plugins/vuetify-mask";
+import "@/plugins/vuetify-mask";
 
 import App from "@/App.vue";
 import router from "@/router";
@@ -16,21 +16,18 @@ import store from "@/store";
 import vuetify from "@/plugins/vuetify";
 
 import "@/mixins";
-import filters from "./filters";
+import filters from "@/filters";
 
 import "@/assets/main.scss";
 import "@/components/shared";
 import capitalize from "@/helpers/FormatHelper";
 import getCurrentUser from "@/helpers/CurrentUserHelper";
 
-const BASE_URLS = [process.env.VUE_APP_SERVER1_URL];
-
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 
-axios.defaults.baseURL = process.env.VUE_APP_SERVER1_URL;
+axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
 
-axios.defaults["isLoading"] = true;
 const cancelSource = axios.CancelToken.source();
 
 interface SnackBarPayload {
@@ -41,24 +38,26 @@ interface SnackBarPayload {
   class: string;
 }
 
-const requestHandler = async (request: any) => {
+const requestHandler = async (requestConfig: AxiosRequestConfig) => {
+  store.dispatch("Loader/PENDING");
   const currentUser = await getCurrentUser();
-  request.cancelToken = cancelSource.token;
+  requestConfig.cancelToken = cancelSource.token;
 
   // set facility_id in the request params so
-  request.params = request.params || {};
+  requestConfig.params = requestConfig.params || {};
   const facilityID = router.currentRoute.query.facility_id;
-  request.params["facility_id"] = facilityID;
+  requestConfig.params["facility_id"] = facilityID;
 
   axios.defaults.headers.common["Authorization"] = currentUser
     ? `Bearer ${currentUser.token}`
     : null;
   axios.defaults.headers.common["Accept"] = `application/json`;
   axios.defaults.headers.common["Content-Type"] = `application/json`;
-  return request;
+  return requestConfig;
 };
 
 const errorHandler = (error: any) => {
+  store.dispatch("Loader/DONE");
   const payload: SnackBarPayload = {
     error: error.data.errors,
     title: capitalize(error.data.message),
@@ -79,6 +78,7 @@ const errorHandler = (error: any) => {
 };
 
 const successHandler = (response: AxiosResponse) => {
+  store.dispatch("Loader/DONE");
   let message = null;
   if (typeof response.data === "object") {
     message = response.data.message;
@@ -110,34 +110,36 @@ const showLoginDialog = (response: any) => {
 };
 
 axios.interceptors.request.use(
-  (config) => {
-    if (config["isLoading"]) {
-      store.dispatch("Loader/PENDING");
-    }
+  (config: AxiosRequestConfig) => {
+    console.log(config);
     return requestHandler(config);
   },
   (error) => {
-    if (error.config["isLoading"]) {
-      store.dispatch("Loader/DONE");
-    }
+    console.log("error", error);
     return errorHandler(error);
   }
 );
 
 axios.interceptors.response.use(
   (response) => {
-    if (response.config["isLoading"]) {
-      store.dispatch("Loader/DONE");
-    }
     return successHandler(response);
   },
   (error) => {
-    const response = error.response;
-
-    if (response.config["isLoading"]) {
+    let errorResponse = null;
+    if (error && !error.response) {
+      const payload: SnackBarPayload = {
+        title: error,
+        color: "error",
+        icon: "mdi-error",
+        class: "message error--text",
+        error: { errors: "System is down, Contact FFARS Admin" },
+      };
       store.dispatch("Loader/DONE");
+      store.dispatch("SnackBar/SHOW", payload);
+    } else {
+      errorResponse = error.response;
+      return errorHandler(errorResponse);
     }
-    return errorHandler(response);
   }
 );
 
