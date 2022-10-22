@@ -38,8 +38,10 @@ const viewinvoice = async (payload: any) => {
   return await axios.get(`${API}/${payload.id}`, payload);
 };
 
-const destroy = async (payload: any) => {
-  return await axios.delete(`${API}/${payload}`);
+const destroy = async <T>(id: number, date: T) => {
+  return await axios.delete(`${API}/${id}`, {
+    data: { date },
+  });
 };
 
 const regSearch = async (payload: any) => {
@@ -57,15 +59,15 @@ const getGlAccounts = async (params: any): Promise<any> => {
 };
 
 export {
-  get,
-  find,
   create,
-  update,
   destroy,
-  search,
-  viewinvoice,
+  find,
+  get,
+  getFundingSourceList,
+  getGlAccounts,
   printReceipt,
   regSearch,
-  getGlAccounts,
-  getFundingSourceList,
+  search,
+  update,
+  viewinvoice,
 };

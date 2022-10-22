@@ -172,7 +172,7 @@ export const useReceipt = (): any => {
     },
     rows: ["10", "20", "50", "100"],
 
-    itemTodelete: "",
+    itemTodelete: null,
     response: {},
     accounts: [],
     customers: [],
@@ -298,7 +298,7 @@ export const useReceipt = (): any => {
   };
 
   const remove = () => {
-    destroy(data.itemTodelete).then(() => {
+    destroy(data.itemTodelete, data.reverseForm.date).then(() => {
       reloadData();
       data.deletemodal = false;
     });
