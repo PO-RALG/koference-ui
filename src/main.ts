@@ -111,11 +111,9 @@ const showLoginDialog = (response: any) => {
 
 axios.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    console.log(config);
     return requestHandler(config);
   },
   (error) => {
-    console.log("error", error);
     return errorHandler(error);
   }
 );

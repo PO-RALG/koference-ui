@@ -247,14 +247,14 @@
           <v-form v-model="data.valid">
             <v-col class="pt-6 pl-6 pr-6" cols="12" md="12">
               <DatePicker
-                :label="'Canselation Date'"
+                :label="'Cancellation Date'"
                 v-model="data.reverseForm.date"
                 :max="data.maxDate"
                 :min="data.minDate"
                 required
               />
             </v-col>
-            <v-col class="pt-6 pl-6 pr-6 red--text" cols="12" md="12">
+            <v-col class="pt-0 pl-6 pr-6 red--text" cols="12" md="12">
               Are you sure you want to reverse this payment?
             </v-col>
           </v-form>
