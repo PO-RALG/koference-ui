@@ -47,8 +47,7 @@
                 @click="openUnlockDialog(item)"
               >
                 mdi-lock
-              </v-icon
-              >
+              </v-icon>
             </template>
             <span>{{ !item.confirmed ? "" : "UnLock Reconciliation" }}</span>
           </v-tooltip>
