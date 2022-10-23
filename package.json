@@ -29,6 +29,7 @@
     "vue-property-decorator": "^9.1.2",
     "vue-route-middleware": "^1.0.7",
     "vue-router": "^3.2.0",
+    "vue-yup-form-validation": "^0.0.19",
     "vue2-brace-editor": "^2.0.2",
     "vue2-helpers": "^1.1.5",
     "vue2-perfect-scrollbar": "^1.2.0",
