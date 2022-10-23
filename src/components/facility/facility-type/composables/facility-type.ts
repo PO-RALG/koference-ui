@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { FacilityType } from "../types/FacilityType";
-import { reactive, watch, onMounted, computed } from "@vue/composition-api";
+import { reactive, watch, onMounted, computed } from "vue";
 
 import {
   get,

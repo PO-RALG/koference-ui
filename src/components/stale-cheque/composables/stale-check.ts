@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { StaleCheque } from "../types";
-import { reactive, onMounted, ref, computed } from "@vue/composition-api";
+import { reactive, onMounted, ref, computed } from "vue";
 import { get, regSearch as InvoiceSearch } from "../services/stale-cheque";
 
 export const useStaleCheque = (): Record<string, unknown> => {

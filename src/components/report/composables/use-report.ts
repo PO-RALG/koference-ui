@@ -1,4 +1,4 @@
-import { reactive, onMounted, set, computed, watch } from "@vue/composition-api";
+import { reactive, onMounted, set, computed, watch } from "vue";
 import { fetchReportTree } from "../services/report.services";
 import router from "@/router";
 import store from "@/store";

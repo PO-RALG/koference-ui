@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { Invoice } from "../types";
-import { reactive, onMounted, ref, computed } from "@vue/composition-api";
+import { reactive, onMounted, ref, computed } from "vue";
 import {
   get,
   create,

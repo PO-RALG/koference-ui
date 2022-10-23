@@ -1,4 +1,4 @@
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted } from "vue";
 
 export const useApproval = (): Record<string, unknown> => {
   const data = reactive({

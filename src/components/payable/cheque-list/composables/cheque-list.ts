@@ -1,4 +1,4 @@
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted } from "vue";
 import { AxiosResponse } from "axios";
 import { get, getPayments, create, destroy, printPdf } from "../services/cheque-list.services";
 import { ChequeList } from "../types/ChequeList";

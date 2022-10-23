@@ -1,4 +1,4 @@
-import { reactive, watch, computed, onMounted } from "@vue/composition-api";
+import { reactive, watch, computed, onMounted } from "vue";
 import { AxiosResponse } from "axios";
 import { useRoute } from "vue2-helpers/vue-router";
 import router from "@/router";

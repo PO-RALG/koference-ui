@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { Receipt, RECEIPT_TYPE } from "../types";
-import { computed, onMounted, reactive } from "@vue/composition-api";
+import { computed, onMounted, reactive } from "vue";
 import stringToCurrency from "@/filters/money-to-number";
 
 import {

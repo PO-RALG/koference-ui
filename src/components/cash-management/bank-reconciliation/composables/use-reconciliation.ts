@@ -1,4 +1,4 @@
-import { computed, onMounted, reactive, watch } from "@vue/composition-api";
+import { computed, onMounted, reactive, watch } from "vue";
 import { AxiosResponse } from "axios";
 import {
   addBalance,
