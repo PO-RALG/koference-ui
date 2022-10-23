@@ -146,7 +146,7 @@ const routes: Array<RouteConfig> = [
 
 const router = new VueRouter({
   mode: "history",
-  base: import.meta.env.VITE_APP_SERVER_URL,
+  base: "/",
   routes,
 });
 

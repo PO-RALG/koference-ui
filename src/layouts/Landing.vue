@@ -48,7 +48,6 @@ export default defineComponent({
 
     // methods
     const toggleDrawer = () => {
-      console.log(data.drawer);
       data.drawer
         ? store.dispatch("Drawer/CLOSE")
         : store.dispatch("Drawer/OPEN");
