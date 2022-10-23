@@ -125,7 +125,7 @@
                       dense
                       outlined
                       :rules="[
-                        maxAllocation(item.budget - item.allocation),
+                        maxAllocation(item.budget ,item.allocation),
                         maxAvailable(item.allocation - item.totalExpenditure),
                       ]"
                       v-model="item.allocation_amount"
@@ -140,7 +140,7 @@
         </v-card-text>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="save" v-if="data.items.length">
+          <v-btn color="primary" @click="save" v-if="data.items.length && data.valid">
             save
           </v-btn>
         </v-card-actions>
@@ -165,6 +165,7 @@ export default defineComponent({
       newAllocation,
       maxAllocation,
       maxAvailable,
+      removeComma,
     } = useFundAllocation();
 
     return {
@@ -176,6 +177,7 @@ export default defineComponent({
       maxAllocation,
       maxAvailable,
       toMoney,
+      removeComma,
     };
   },
 });

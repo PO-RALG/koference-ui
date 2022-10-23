@@ -70,11 +70,19 @@ export const useFundAllocation = (): any => {
   onMounted(() => {
     getTableData();
   });
-
-  const maxAllocation = (unallocated: number) => {
-    return (v: number) =>
-      (v && v <= unallocated) ||
+  const removeComma = (data:any)=>{
+    const newData = String(data).replace(/[,]/g,'');
+    
+    return Number(newData);
+  }
+  const maxAllocation = (a,b) => {
+    if (a !== null && b !== null) {
+      const unallocated  = removeComma(a) - removeComma(b)     
+    console.log(unallocated)
+    return (v: string) =>
+      (removeComma(v) !== null && removeComma(v) <= 540000) ||
       `Amount must be less or equal to ${unallocated}`;
+    }
   };
 
   const maxAvailable = (available: number) => {
@@ -177,5 +185,6 @@ export const useFundAllocation = (): any => {
     newAllocation,
     maxAllocation,
     maxAvailable,
+    removeComma,
   };
 };
