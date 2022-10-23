@@ -223,7 +223,6 @@
                 </v-col>
               </v-row>
             </v-container>
-            <!--<pre>{{ data.formData }}</pre>-->
           </v-form>
         </ModalBody>
       </template>
