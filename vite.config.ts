@@ -7,7 +7,7 @@ import { loadEnv } from "vite";
 import { resolve } from "path";
 import dayjs from "dayjs";
 import pkg from "./package.json";
-import { viteSingleFile } from "vite-plugin-singlefile"
+import { viteSingleFile } from "vite-plugin-singlefile";
 
 const OUTPUT_DIR = "dist";
 const root = process.cwd();
@@ -36,7 +36,7 @@ module.exports = defineConfig({
       resolvers: [VuetifyResolver()],
     }),
     viteCompression({
-      compressionOptions: {},
+      algorithm: "gzip",
     }),
     viteSingleFile(),
   ],
