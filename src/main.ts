@@ -3,6 +3,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import VueJwtDecode from "vue-jwt-decode";
 import VueAxios from "vue-axios";
 import PerfectScrollbar from "vue2-perfect-scrollbar";
+import VueYupFormValidation from "vue-yup-form-validation";
 import VueMask from "v-mask";
 import moment from "moment"; //require
 import _ from "lodash";
@@ -140,6 +141,7 @@ axios.interceptors.response.use(
   }
 );
 
+Vue.use(VueYupFormValidation);
 Vue.use(VueJwtDecode);
 Vue.use(PerfectScrollbar);
 Vue.use(VueAxios, axios, moment);

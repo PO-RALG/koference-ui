@@ -23,7 +23,23 @@
         </v-tab-item>
         <v-tab @change="loadBankAccounts">Opening Balance</v-tab>
         <v-tab-item>
-          <v-card flat class="pa-5"><OpeningBalance /> </v-card>
+          <v-card flat
+            ><OpeningBalance
+              :headerPadding="'pa-5'"
+              :cardPadding="'pb-8'"
+              :elevation="'elevation-0'"
+            />
+          </v-card>
+        </v-tab-item>
+        <v-tab @change="loadBankReconciliations">Bank Reconciliation</v-tab>
+        <v-tab-item>
+          <v-card flat
+            ><ReconciliationList
+              :headerPadding="'pa-5'"
+              :cardPadding="'pb-8'"
+              :elevation="'elevation-0'"
+            />
+          </v-card>
         </v-tab-item>
       </v-tabs>
     </v-card>
@@ -31,14 +47,10 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  onMounted,
-  computed,
-} from "vue";
-import BankAccount from "./components/BankAccount.vue";
-import OpeningBalance from "../../../components/receivables/opening-balance/OpeningBalance.vue";
+import { defineComponent, reactive, onMounted, computed } from "vue";
+import BankAccount from "@/components/facility/facility/components/BankAccount.vue";
+import OpeningBalance from "@/components/receivables/opening-balance/OpeningBalance.vue";
+import ReconciliationList from "@/components/cash-management/bank-reconciliation/ReconciliationList.vue";
 import { useBank } from "@/components/setup/bank-account/composables/bank";
 import { find as findFacility } from "@/components/facility/facility/services/facility.service";
 import router from "@/router";
@@ -62,13 +74,11 @@ export default defineComponent({
       facility: null,
     });
 
-    const loadUsers = () => {
-      console.log("load users");
-    };
+    const loadUsers = () => {};
 
-    const loadBankAccounts = () => {
-      console.log("load bank accounts");
-    };
+    const loadBankAccounts = () => {};
+
+    const loadBankReconciliations = () => {};
 
     const openConfirmDialog = (id: any) => {
       accountData.itemTodelete = id;
@@ -88,7 +98,6 @@ export default defineComponent({
 
     const save = () => {
       accountData.formData.facility_id = data.facility.id;
-      console.log("Form Data", accountData.formData);
       if (accountData.formData.id) {
         updateBankAccount(accountData.formData);
       } else {
@@ -111,7 +120,6 @@ export default defineComponent({
     };
 
     const remove = () => {
-      console.log(accountData.itemtodelete);
       reloadData();
       accountData.deletemodal = false;
     };
@@ -119,7 +127,6 @@ export default defineComponent({
     const fetchFacility = () => {
       const facilityId = router.currentRoute.query.facility_id;
       findFacility(facilityId).then((response) => {
-        console.log(response);
         data.facility = response.data.data;
       });
     };
@@ -143,6 +150,7 @@ export default defineComponent({
       openDialog,
       remove,
       save,
+      loadBankReconciliations,
       facilityDescription,
       openConfirmDialog,
     };

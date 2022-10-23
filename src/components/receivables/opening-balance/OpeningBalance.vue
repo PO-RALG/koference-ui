@@ -1,6 +1,6 @@
 <template>
   <div class="customers">
-    <v-card-actions class="pa-0">
+    <v-card-actions :class="headerPadding">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn color="primary" @click="openDialog(data.formData)">
@@ -8,12 +8,12 @@
         Add Opening Balance
       </v-btn>
     </v-card-actions>
-    <v-card>
+    <v-card :class="cardPadding">
       <v-data-table
         :headers="data.headers"
         :items="data.items"
         :single-expand="true"
-        class="elevation-1"
+        :class="elevation"
         disable-pagination
         hide-default-footer
       >
@@ -198,6 +198,23 @@ import { useOpeningBalance } from "./composables/opening-balance";
 import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({
+  props: {
+    headerPadding: {
+      type: String,
+      required: false,
+      default: "pa-0",
+    },
+    cardPadding: {
+      type: String,
+      required: false,
+      default: "pa-0",
+    },
+    elevation: {
+      type: String,
+      required: false,
+      default: "elevation-2",
+    },
+  },
   name: "OpeningBalance",
   setup() {
     const {
