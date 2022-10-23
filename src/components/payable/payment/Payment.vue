@@ -74,19 +74,6 @@
             </template>
             <span>Reverse Payment</span>
           </v-tooltip>
-          <!-- <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="openHistoryDialog(item.id)"
-                :disabled="cant('delete', 'Payment')"
-              >
-                mdi-update
-              </v-icon>
-            </template>
-            <span>View History for the approval requests and responses</span>
-          </v-tooltip> -->
         </template>
         <template v-slot:footer>
           <Paginate
