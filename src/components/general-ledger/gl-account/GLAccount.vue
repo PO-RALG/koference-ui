@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useGLAccount } from "./composables/gl-account";
 
 export default defineComponent({

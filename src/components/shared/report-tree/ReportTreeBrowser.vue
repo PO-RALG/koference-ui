@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "@vue/composition-api";
+import { defineComponent, PropType } from "vue";
 import { useReportTree } from "./composables/use-report-tree";
 
 import { TreeNode } from "./types";

@@ -3,7 +3,6 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import VueJwtDecode from "vue-jwt-decode";
 import VueAxios from "vue-axios";
 import PerfectScrollbar from "vue2-perfect-scrollbar";
-import VueCompositionAPI from "@vue/composition-api";
 import VueMask from "v-mask";
 import moment from "moment"; //require
 import _ from "lodash";
@@ -26,7 +25,7 @@ import getCurrentUser from "@/helpers/CurrentUserHelper";
 axios.defaults.headers.common["Accept"] = `application/json`;
 axios.defaults.headers.common["Content-Type"] = `application/json`;
 
-axios.defaults.baseURL = process.env.VUE_APP_SERVER_URL;
+axios.defaults.baseURL = import.meta.env.VITE_APP_SERVER_URL;
 
 const cancelSource = axios.CancelToken.source();
 
@@ -141,7 +140,6 @@ axios.interceptors.response.use(
   }
 );
 
-Vue.use(VueCompositionAPI);
 Vue.use(VueJwtDecode);
 Vue.use(PerfectScrollbar);
 Vue.use(VueAxios, axios, moment);

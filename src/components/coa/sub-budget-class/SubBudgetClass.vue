@@ -165,7 +165,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useSubBudgetClass } from "./composables/sub-budget-class";
 
 export default defineComponent({

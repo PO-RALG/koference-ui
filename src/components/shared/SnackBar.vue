@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "@vue/composition-api";
+import { defineComponent, reactive } from "vue";
 import { useState } from "vuex-composition-helpers";
 import store from "@/store";
 

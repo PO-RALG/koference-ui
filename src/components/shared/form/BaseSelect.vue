@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, computed, defineComponent } from "@vue/composition-api";
+import { reactive, computed, defineComponent } from "vue";
 export default defineComponent({
   props: {
     label: {

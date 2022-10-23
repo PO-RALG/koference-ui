@@ -174,7 +174,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted } from "vue";
 import { authenticate, setUser, getAppName, setAppName } from "./services";
 import { AxiosResponse } from "axios";
 import router from "@/router";

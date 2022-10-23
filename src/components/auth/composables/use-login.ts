@@ -1,4 +1,4 @@
-import { reactive } from "@vue/composition-api";
+import { reactive } from "vue";
 import { authenticate, setUser } from "../services";
 import { AxiosResponse } from "axios";
 import router from "@/router";

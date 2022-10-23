@@ -256,7 +256,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useBankReconciliation } from "./composables/use-reconciliation";
 import { toMoney } from "@/filters/CurrencyFormatter";
 import router from "@/router";

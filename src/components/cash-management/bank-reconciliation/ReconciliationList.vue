@@ -43,7 +43,7 @@ import {
   onMounted,
   reactive,
   computed,
-} from "@vue/composition-api";
+} from "vue";
 import { get } from "./services/bank-reconciliation-service";
 import { AxiosResponse } from "axios";
 import moment from "moment";

@@ -36,7 +36,7 @@ import {
   reactive,
   onMounted,
   computed,
-} from "@vue/composition-api";
+} from "vue";
 import BankAccount from "./components/BankAccount.vue";
 import OpeningBalance from "../../../components/receivables/opening-balance/OpeningBalance.vue";
 import { useBank } from "@/components/setup/bank-account/composables/bank";

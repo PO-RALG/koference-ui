@@ -594,7 +594,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useInvoice } from "./composables/invoice";
 import { toMoney } from "@/filters/CurrencyFormatter";
 export default defineComponent({

@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import UniqueID from "@/features/UniqueID";
 import SetupFormComponent from "@/features/SetupFormComponent";
 

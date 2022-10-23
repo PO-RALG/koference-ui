@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import SnackBar from "@/components/shared/SnackBar.vue";
 
 export default defineComponent({

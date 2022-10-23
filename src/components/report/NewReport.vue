@@ -228,7 +228,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useNewReport } from "./composables/use-new-report";
 
 import brace from "brace";

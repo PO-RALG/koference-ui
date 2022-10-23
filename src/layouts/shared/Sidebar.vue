@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from "@vue/composition-api";
+import { defineComponent, reactive, ref } from "vue";
 import router from "@/router";
 import SidebarToolbar from "./SidebarToolbar.vue";
 import SidebarUserInfo from "./SidebarUserInfo.vue";

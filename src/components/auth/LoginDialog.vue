@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useLoginDialog } from "./composables/use-login-dialog";
 
 export default defineComponent({

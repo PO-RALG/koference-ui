@@ -234,7 +234,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import PermissionList from "@/components/role/PermissionList.vue";
 import { useMenuItems } from "./composables/menu-item";
 

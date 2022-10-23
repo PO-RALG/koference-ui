@@ -557,7 +557,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { usePayment } from "./composables/payment";
 
 export default defineComponent({

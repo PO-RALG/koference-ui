@@ -150,7 +150,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useGfsCode } from "./composables/gfs-code";
 
 export default defineComponent({

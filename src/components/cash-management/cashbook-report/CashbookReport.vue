@@ -140,7 +140,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useCashbookReport } from "./composables/cashbook-report";
 
 export default defineComponent({
