@@ -489,7 +489,7 @@ export const useReceipt = (): any => {
     data.selectedInvoice = invoice;
     data.receipt.customer_id = invoice.customer_id;
     data.receipt.invoice_id = invoice.id;
-    data.minDate = moment(invoice.date).format("YYYY-MM-DD");
+    data.maxDate = moment(invoice.date).format("YYYY-MM-DD");
   };
 
   const resetData = () => {
