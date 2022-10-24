@@ -41,7 +41,7 @@ module.exports = defineConfig({
     viteSingleFile(),
   ],
   server: {
-    port: 4000,
+    port: 8080,
   },
   build: {
     target: "es2015",
