@@ -409,11 +409,6 @@
     postcss "^8.4.14"
     source-map "^0.6.1"
 
-"@vue/composition-api@^1.1.0":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@vue/composition-api/-/composition-api-1.7.1.tgz#aa6831be5a12817d93e89e247460c310dd7a3a32"
-  integrity sha512-xDWoEtxGXhH9Ku3ROYX/rzhcpt4v31hpPU5zF3UeVC/qxA3dChmqU8zvTUYoKh3j7rzpNsoFOwqsWG7XPMlaFA==
-
 "@vue/eslint-config-prettier@^6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@vue/eslint-config-prettier/-/eslint-config-prettier-6.0.0.tgz#ad5912b308f4ae468458e02a2b05db0b9d246700"
@@ -4577,14 +4572,6 @@ vue2-brace-editor@^2.0.2:
   dependencies:
     brace "^0.11.0"
 
-vue2-helpers@^1.1.5:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/vue2-helpers/-/vue2-helpers-1.2.2.tgz#ec8c021330a29ab19592083e7f0fd7b33782b5fe"
-  integrity sha512-/dL4UxX6KvhjB9o9qG5ZG+nUShl6Z02rbPal64olzCLxyEK6v5YCO6OTxzpfrslbUFp6FxTxUP7Ym02m4F+brw==
-  dependencies:
-    "@vue/composition-api" "^1.1.0"
-    vue ">= 2.5 < 2.7"
-
 vue2-perfect-scrollbar@^1.2.0:
   version "1.5.5"
   resolved "https://registry.yarnpkg.com/vue2-perfect-scrollbar/-/vue2-perfect-scrollbar-1.5.5.tgz#1946cdd8f3b757517ea176c30dc77ba19031508e"
@@ -4593,11 +4580,6 @@ vue2-perfect-scrollbar@^1.2.0:
     cssnano "^4.1.3"
     perfect-scrollbar "^1.5.5"
     postcss-import "^12.0.0"
-
-"vue@>= 2.5 < 2.7":
-  version "2.6.14"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.14.tgz#e51aa5250250d569a3fbad3a8a5a687d6036e235"
-  integrity sha512-x2284lgYvjOMj3Za7kqzRcUSxBboHqtgRE2zlos1qWaOye5yUmHn42LB1250NJBLRwEcdrB0JRwyPTEPhfQjiQ==
 
 vue@^2.3.3, vue@^2.6.10, vue@^2.7.3:
   version "2.7.13"

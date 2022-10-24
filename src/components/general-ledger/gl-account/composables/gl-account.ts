@@ -1,7 +1,11 @@
 import { AxiosResponse } from "axios";
-import { reactive, onMounted } from "vue";
-import { useRoute } from "vue2-helpers/vue-router";
-import { get, toggleStatus as toggle, create } from "../services/gl.account.service";
+import { onMounted, reactive } from "vue";
+import { useRoute } from "@/helpers/RouterHelper";
+import {
+  create,
+  get,
+  toggleStatus as toggle,
+} from "../services/gl.account.service";
 
 export const useGLAccount = (): any => {
   const route = useRoute();
@@ -45,7 +49,8 @@ export const useGLAccount = (): any => {
 
   const init = () => {
     get({ per_page: 20 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
     });
