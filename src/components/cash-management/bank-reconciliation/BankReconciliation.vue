@@ -107,7 +107,7 @@
         class="elevation-2"
         :headers="data.headers"
         :items="entries"
-        :show-select="!data.report.confirmed"
+        :show-select="data.report && !data.report.confirmed"
         single-select
         hide-default-footer
         @item-selected="reconcileEntry"
