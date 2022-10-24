@@ -117,7 +117,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useFacilityType } from "./composables/facility-type";
 
 export default defineComponent({

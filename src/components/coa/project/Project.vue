@@ -133,7 +133,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useProject } from "./composables/project";
 
 export default defineComponent({

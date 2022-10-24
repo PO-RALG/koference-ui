@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { reactive, onMounted, computed } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "vue";
 
 import { Entry, GLTransaction, newEntry } from "../types";
 import { get } from "../services/gl-transaction-services";

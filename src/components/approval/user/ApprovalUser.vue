@@ -112,10 +112,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useUser } from "@/components/user/composables/user";
 
 export default defineComponent({
+  name: "ApprovalUserComponent",
   setup() {
     const {
       data,

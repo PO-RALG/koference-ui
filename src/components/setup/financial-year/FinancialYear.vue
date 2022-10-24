@@ -161,7 +161,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useFinancialYear } from "./composables/financial-year";
 
 export default defineComponent({

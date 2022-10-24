@@ -4,7 +4,7 @@ import {
   onMounted,
   computed,
   ref,
-} from "@vue/composition-api";
+} from "vue";
 import { AxiosResponse } from "axios";
 
 import { Document } from "../types/Document";

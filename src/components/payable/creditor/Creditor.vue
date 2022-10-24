@@ -235,7 +235,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useCreditor } from "./composables/creditor";
 
 export default defineComponent({

@@ -47,13 +47,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "@vue/composition-api";
-import { useState } from "vuex-composition-helpers";
+import { defineComponent, reactive } from "vue";
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+const { useState } = createNamespacedHelpers("SnackBar");
 import store from "@/store";
 
 export default defineComponent({
   setup() {
-    const { show, message } = useState(store, "SnackBar", ["show", "message"]);
+    const { show, message } = useState(["show", "message"]);
 
     const data = reactive({
       timeout: 10000,

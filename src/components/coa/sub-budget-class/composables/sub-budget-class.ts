@@ -1,4 +1,4 @@
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted } from "vue";
 import { AxiosResponse } from "axios";
 
 import { get, create, update, destroy, search } from "../services/sub-budget-classes.service";

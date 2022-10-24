@@ -287,11 +287,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useUser } from "./composables/user";
 import UserForm from "./forms/UserForm.vue";
 
 export default defineComponent({
+  name: "MainUserComponent",
   components: {
     UserForm,
   },

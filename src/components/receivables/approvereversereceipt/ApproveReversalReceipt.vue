@@ -510,7 +510,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useReceipt } from "./composables/approvereceipt";
 import { toMoney } from "@/filters/CurrencyFormatter";
 
