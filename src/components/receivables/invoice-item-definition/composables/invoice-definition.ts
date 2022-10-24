@@ -112,10 +112,6 @@ export const useInvoiceDefinition = (): any => {
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
     });
-
-    fundingsources({ per_page: 2000 }).then((response: any) => {
-      data.fundingsources = response.data.data.data;
-    });
   };
 
   const gfsName = computed(() => {
@@ -179,6 +175,7 @@ export const useInvoiceDefinition = (): any => {
     data.formData = {} as ManageInvoiceItemDefinition;
     data.modal = !data.modal;
     data.gfscodes = {} as GfsCategories;
+    data.fundingsources = [];
   };
 
   const cancelConfirmDialog = () => {
@@ -211,6 +208,9 @@ export const useInvoiceDefinition = (): any => {
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
+    fundingsources({ per_page: 2000 }).then((response: any) => {
+      data.fundingsources = response.data.data.data;
+    });
   };
 
   const updateInvoiceItemDefinition = (data: any) => {
@@ -238,11 +238,17 @@ export const useInvoiceDefinition = (): any => {
   };
 
   const loadGfsCodes = (params: any) => {
-    console.log(params);
     data.fundsourcesGfscodes = fundingsourceName.value.filter(
       (gfs) => gfs.id === params
     );
   };
+
+  const newfundsourceGfscodes = computed(() => {
+    return data.fundsourcesGfscodes[0]?.gfs.map((trashed: any) => ({
+      ...trashed,
+      name: `${trashed.name} ${trashed.code}`,
+    }));
+  });
 
   return {
     data,
@@ -263,5 +269,6 @@ export const useInvoiceDefinition = (): any => {
     loadGfsCodes,
     filterItemDefinition,
     resetSearchText,
+    newfundsourceGfscodes,
   };
 };

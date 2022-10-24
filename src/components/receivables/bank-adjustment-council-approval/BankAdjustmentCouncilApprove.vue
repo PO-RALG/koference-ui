@@ -124,7 +124,7 @@
             Cancel
           </v-btn>
           <v-btn color="green darken-1" text @click="data.genericDialogAction"
-            >Yes</v-btn
+            >APPROVE</v-btn
           >
         </ModalFooter>
       </template>

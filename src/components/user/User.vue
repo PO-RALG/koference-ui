@@ -3,11 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        v-if="can('create', 'User')"
-        color="warning"
-        @click="openTrushedDialog"
-      >
+      <v-btn v-if="can('create', 'User')" color="" @click="openTrushedDialog">
         <v-icon>mdi-delete-empty-outline</v-icon>
         Restore Trashed Users
       </v-btn>

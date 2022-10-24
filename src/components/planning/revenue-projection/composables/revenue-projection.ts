@@ -45,7 +45,7 @@ export const useRevenueProjection = (): any => {
       },
       {
         text: "Amount",
-        align: "start",
+        align: "end",
         sortable: false,
         value: "amount",
       },

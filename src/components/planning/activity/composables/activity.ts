@@ -8,6 +8,7 @@ import {
   destroy,
   search,
 } from "../services/activity.service";
+import { get as FinancialYears } from "../../../setup/financial-year/services/financialyear.service";
 import { Activity } from "../types/Activity";
 import { Project } from "@/components/coa/project/types/Project";
 import { get as getProject } from "@/components/coa/project/services/project.service";
@@ -44,6 +45,7 @@ export const useActivity = (): any => {
     deletemodal: false,
     items: dataItems,
     itemsToFilter: [],
+    financialYearToFilter: [],
     formData: activityData,
     params: {
       total: 100,
@@ -68,6 +70,13 @@ export const useActivity = (): any => {
       data.itemsToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
     });
+
+    FinancialYears({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.financialYearToFilter = response.data.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+    });
   };
 
   const searchItem = (itemName: Activity) => {
@@ -78,6 +87,15 @@ export const useActivity = (): any => {
     }
   };
 
+  const searchItemByFYear = (itemName: Activity) => {
+    if (itemName != null) {
+      search({ financial_year_id: itemName.id }).then(
+        (response: AxiosResponse) => {
+          data.items = response.data.data.data;
+        }
+      );
+    }
+  };
   const getData = (params: Activity) => {
     data.response = params;
     get(params).then((response: AxiosResponse) => {
@@ -177,8 +195,53 @@ export const useActivity = (): any => {
     );
   };
 
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
+
+  const filterActivity = () => {
+    if (data.searchTerm.length >= 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
   return {
     data,
+    filterActivity,
+    resetSearchText,
     openDialog,
     cancelDialog,
     openConfirmDialog,
@@ -188,6 +251,7 @@ export const useActivity = (): any => {
     remove,
     cancelConfirmDialog,
     searchItem,
+    searchItemByFYear,
     getData,
     getSubBudgetClassData,
     searchProjects,

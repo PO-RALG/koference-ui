@@ -1,8 +1,15 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import { AxiosResponse } from "axios";
 
-import { get, create, update, destroy, search } from "../services/activity-costing.service";
+import {
+  get,
+  create,
+  update,
+  destroy,
+  search,
+} from "../services/activity-costing.service";
 import { ActivityCosting } from "../types/ActivityCosting";
+import { get as FinancialYears } from "../../../setup/financial-year/services/financialyear.service";
 
 export const useActivityCosting = (): any => {
   const dataItems: Array<ActivityCosting> = [];
@@ -16,7 +23,7 @@ export const useActivityCosting = (): any => {
     response: {},
     modalTitle: "",
     headers: [
-   /*   {
+      /*   {
         text: "Activity",
         align: "start",
         sortable: false,
@@ -53,8 +60,14 @@ export const useActivityCosting = (): any => {
         value: "funding_source.description",
       },
       {
-        text: "Amount",
+        text: "Budget Type",
         align: "start",
+        sortable: false,
+        value: "budget_type",
+      },
+      {
+        text: "Amount",
+        align: "end",
         sortable: false,
         value: "amount",
       },
@@ -63,6 +76,7 @@ export const useActivityCosting = (): any => {
     deletemodal: false,
     items: dataItems,
     itemsToFilter: [],
+    financialYearToFilter: [],
     formData: activityCostingData,
     params: {
       total: 100,
@@ -70,6 +84,7 @@ export const useActivityCosting = (): any => {
     },
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
+    searchTerm: "",
   });
 
   onMounted(() => {
@@ -78,18 +93,27 @@ export const useActivityCosting = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+    });
+    FinancialYears({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.financialYearToFilter = response.data.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
     });
   };
 
   const searchItem = (itemName: ActivityCosting) => {
     if (itemName != null) {
-      search({ code: itemName.activity.code }).then((response: AxiosResponse) => {
-        data.items = response.data.data.data;
-      });
+      search({ code: itemName.activity.code }).then(
+        (response: AxiosResponse) => {
+          data.items = response.data.data.data;
+        }
+      );
     }
   };
 
@@ -156,6 +180,58 @@ export const useActivityCosting = (): any => {
     });
   };
 
+  const searchItemByFYear = (itemName: ActivityCosting) => {
+    if (itemName != null) {
+      search({ financial_year_id: itemName.id }).then(
+        (response: AxiosResponse) => {
+          data.items = response.data.data.data;
+        }
+      );
+    }
+  };
+
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
+  const filterActivity = () => {
+    if (data.searchTerm.length >= 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+      });
+    }
+  };
+
   return {
     data,
     openDialog,
@@ -167,5 +243,8 @@ export const useActivityCosting = (): any => {
     cancelConfirmDialog,
     searchItem,
     getData,
+    searchItemByFYear,
+    resetSearchText,
+    filterActivity,
   };
 };

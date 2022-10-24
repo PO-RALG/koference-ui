@@ -51,6 +51,9 @@
             </v-row>
           </v-card-title>
         </template>
+        <template v-slot:[`item.amount`]="{ item }">
+          {{ item.amount | toCurrency() }}
+        </template>
         <template v-slot:footer>
           <Paginate
             :params="data.response"

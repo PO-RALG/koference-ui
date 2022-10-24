@@ -306,7 +306,7 @@ export const usePaymentVoucher = (): any => {
       payableData.push(element);
     }
     data.formData.payables = payableData;
-    if (isMmama) {
+    if (data.voucherType == 4) {
       data.formData.is_mmama = true;
     }
     createVoucher(data.formData);
