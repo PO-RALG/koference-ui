@@ -51,6 +51,22 @@
             </template>
             <span>{{ !item.confirmed ? "" : "UnLock Reconciliation" }}</span>
           </v-tooltip>
+
+          <v-tooltip bottom v-if="can('reconcileEntries', 'Reconciliation')">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-if="!item.confirmed"
+                medium
+                color="warning"
+                v-bind="attrs"
+                v-on="on"
+                @click="reconcilileReport(item)"
+              >
+                mdi-lock-open
+              </v-icon>
+            </template>
+            <span>{{ !item.confirmed && "Reconcile Report" }}</span>
+          </v-tooltip>
         </template>
 
         <template v-slot:footer>
@@ -173,6 +189,16 @@ export default defineComponent({
       router.push({ path: `/bank-reconciliation` });
     };
 
+    const reconcilileReport = (item) => {
+      router.push({
+        path: `/bank-reconciliation`,
+        query: {
+          date: moment(item.entry_date).format("YYYY-MM-DD"),
+          bank_account_id: item.bank_account.id,
+        },
+      });
+    };
+
     return {
       data,
       entries,
@@ -182,6 +208,7 @@ export default defineComponent({
       closeUnlockDialog,
       openUnlockDialog,
       unlock,
+      reconcilileReport,
     };
   },
 });
