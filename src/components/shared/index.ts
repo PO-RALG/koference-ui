@@ -19,6 +19,6 @@ Vue.component("SearchField", () => import("./SearchField.vue"));
 Vue.component("DatePicker", () => import("./DatePicker.vue"));
 Vue.component("BaseErrorMessage", () => import("./form/BaseErrorMessage.vue"));
 Vue.component("BaseSelect", () => import("./form/BaseSelect.vue"));
-Vue.component("BaseCheckbox", () => import("./form/BaseCheckbox.vue"));
+Vue.component("BaseCheckbox", () => import("./form/Checkbox.vue"));
 Vue.component("Loader", () => import("./Loader.vue"));
 Vue.component("AppLocationHeader", () => import("./AppLocationHeader.vue"));

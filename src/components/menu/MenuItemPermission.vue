@@ -56,7 +56,7 @@ import {
   onMounted,
   watch,
   computed,
-} from "@vue/composition-api";
+} from "vue";
 import { AxiosResponse } from "axios";
 import PermissionList from "@/components/role/PermissionList.vue";
 import router from "@/router";

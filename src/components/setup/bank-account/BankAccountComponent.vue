@@ -181,7 +181,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useBank } from "./composables/bank";
 
 export default defineComponent({

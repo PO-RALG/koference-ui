@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { Receipt, RECEIPT_TYPE } from "../types";
-import { computed, onMounted, reactive } from "@vue/composition-api";
+import { computed, onMounted, reactive } from "vue";
 import stringToCurrency from "@/filters/money-to-number";
 
 import {
@@ -172,7 +172,7 @@ export const useReceipt = (): any => {
     },
     rows: ["10", "20", "50", "100"],
 
-    itemTodelete: "",
+    itemTodelete: null,
     response: {},
     accounts: [],
     customers: [],
@@ -195,6 +195,10 @@ export const useReceipt = (): any => {
     coat: "/coat_of_arms.svg.png",
     toSave: {},
     search: "",
+    reverseForm: {
+      id: "",
+      date: null,
+    },
   });
 
   onMounted(() => {
@@ -290,10 +294,11 @@ export const useReceipt = (): any => {
   const cancelConfirmDialog = () => {
     data.receipt = receipt;
     data.deletemodal = false;
+    data.reverseForm.date = null;
   };
 
   const remove = () => {
-    destroy(data.itemTodelete).then(() => {
+    destroy(data.itemTodelete, data.reverseForm.date).then(() => {
       reloadData();
       data.deletemodal = false;
     });
@@ -372,7 +377,7 @@ export const useReceipt = (): any => {
 
     fundingSource({ per_page: 2000 }).then((response: AxiosResponse) => {
       const fundingSources = response.data.data.data;
-      data.fundingSources = fundingSources.map(function (element) {
+      data.fundingSources = fundingSources.map(function(element) {
         return {
           ...element,
           description: element.description + "( " + element.code + ")",
@@ -432,16 +437,16 @@ export const useReceipt = (): any => {
   const newreceiptItem: any = computed(() => {
     return data.items
       ? data.items.map((data, index) => ({
-          ...data,
-          index: ++index,
-          newData: data,
-          bankAccount:
-            data.bank_account.bank +
-            data.bank_account.name +
-            " (" +
-            data.bank_account.number +
-            ")",
-        }))
+        ...data,
+        index: ++index,
+        newData: data,
+        bankAccount:
+          data.bank_account.bank +
+          data.bank_account.name +
+          " (" +
+          data.bank_account.number +
+          ")",
+      }))
       : [];
   });
 
@@ -484,7 +489,7 @@ export const useReceipt = (): any => {
     data.selectedInvoice = invoice;
     data.receipt.customer_id = invoice.customer_id;
     data.receipt.invoice_id = invoice.id;
-    data.minDate = moment(invoice.date).format("YYYY-MM-DD");
+    data.maxDate = moment(invoice.date).format("YYYY-MM-DD");
   };
 
   const resetData = () => {

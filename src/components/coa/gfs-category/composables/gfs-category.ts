@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { reactive, onMounted, ref } from "@vue/composition-api";
+import { reactive, onMounted, ref } from "vue";
 
 import { GfsCategories } from "../types/";
 import {

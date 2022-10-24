@@ -203,7 +203,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useJv } from "./composables/journal-voucher";
 
 export default defineComponent({

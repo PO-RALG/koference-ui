@@ -170,7 +170,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useGLReport } from "./composables/gl-report";
 
 export default defineComponent({

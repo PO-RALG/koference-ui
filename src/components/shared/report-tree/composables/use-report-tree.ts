@@ -1,4 +1,4 @@
-import { reactive, computed, onMounted } from "@vue/composition-api";
+import { reactive, computed, onMounted } from "vue";
 
 export const useReportTree = (props, { emit }): any => {
   onMounted(() => {

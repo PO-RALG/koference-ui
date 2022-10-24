@@ -149,7 +149,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useFundAllocation } from "./composables/fund-allocation";
 import { toMoney } from "@/filters/CurrencyFormatter";
 

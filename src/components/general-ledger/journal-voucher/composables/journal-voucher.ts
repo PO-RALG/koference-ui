@@ -1,4 +1,4 @@
-import { reactive, onMounted, computed } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "vue";
 import { get, create } from "../services/jv-service";
 import { glAccount as getGLAccounts } from "@/components/receivables/invoice-item-definition/services/invoice-item-definition";
 import { get as getFundingSources } from "@/components/coa/funding-source/services/funding-sources";

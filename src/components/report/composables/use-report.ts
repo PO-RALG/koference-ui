@@ -1,17 +1,17 @@
-import { reactive, onMounted, set, computed, watch } from "@vue/composition-api";
+import { computed, onMounted, reactive, set, watch } from "vue";
 import { fetchReportTree } from "../services/report.services";
 import router from "@/router";
 import store from "@/store";
 import { getCurrentUser } from "@/middleware";
 
 import {
+  find,
   get as fetchLocationTree,
   getChildren,
-  find,
 } from "@/components/admin-area/admin-area/services/admin-area-services";
 
 import { AxiosResponse } from "axios";
-import { useRoute } from "vue2-helpers/vue-router";
+import { useRoute } from "@/helpers/RouterHelper";
 
 export const useReport = (props, { root }): any => {
   const route = useRoute();
@@ -68,7 +68,7 @@ export const useReport = (props, { root }): any => {
     const locationId = data.location.id;
     if (locationId && !report.children) {
       const path = `/reports/${locationId}?report_id=${report.id}`;
-      const currentPath = root.$route.path;
+      const currentPath = route.path;
       if (currentPath === path) {
         return;
       } else {
@@ -77,9 +77,10 @@ export const useReport = (props, { root }): any => {
     } else {
       if (!report.children) {
         data.isInfoDialogOpen = true;
-        data.infoMessage = "Sorry, you can only view reports that have a template";
+        data.infoMessage =
+          "Sorry, you can only view reports that have a template";
       }
-      if (root.$route.path === "/reports") {
+      if (route.path === "/reports") {
         return;
       } else {
         router.push({ path: "/reports" });
@@ -97,7 +98,7 @@ export const useReport = (props, { root }): any => {
     return data.location;
   });
 
-  const locationId = computed(() => parseInt(root.$route.params.location_id));
+  const locationId = computed(() => parseInt(route.params.location_id));
 
   const hasTemplateUrL = computed(() => {
     return reportHasTemplateUrl(data.selectedReport);
@@ -126,7 +127,7 @@ export const useReport = (props, { root }): any => {
   };
 
   onMounted(() => {
-    const locationId = root.$route.params.location_id;
+    const locationId = route.params.location_id;
     // if there's no location id param then
     // add the current user's location_id in the param
     // if there's location don't do anything just load the report categories

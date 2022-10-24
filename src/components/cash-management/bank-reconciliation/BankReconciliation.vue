@@ -20,7 +20,11 @@
         Unlock Report
       </v-btn>
       <v-btn
-        :disabled="(data.report && data.report.confirmed) || !data.showConfirm"
+        :disabled="
+          (data.report && data.report.confirmed) ||
+          !data.showConfirm ||
+          data.diff > 0
+        "
         color="primary"
         @click="showConfirmDialog()"
       >
@@ -42,7 +46,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="border-bottom" style="background: #f2f2f2;">
+            <tr class="border-bottom" style="background: #f2f2f2">
               <td
                 class="border-right adjustable"
                 @click="rowClicked(data.report)"
@@ -103,7 +107,7 @@
         class="elevation-2"
         :headers="data.headers"
         :items="entries"
-        show-select
+        :show-select="!data.report.confirmed"
         single-select
         hide-default-footer
         @item-selected="reconcileEntry"
@@ -247,11 +251,12 @@
         :title="`Unlock Report`"
       />
     </v-card>
+    <!-- <pre>{{ data.report | json }}</pre> -->
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useBankReconciliation } from "./composables/use-reconciliation";
 import { toMoney } from "@/filters/CurrencyFormatter";
 import router from "@/router";

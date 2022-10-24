@@ -11,22 +11,6 @@
         <v-icon>mdi-plus</v-icon>
         Create Receipt
       </v-btn>
-      <!-- <v-btn
-        class="ma-2 d-none d-sm-flex white--text"
-        color="red"
-        router-link
-        to="/manage-approve-deposit-receipts"
-        tag="button"
-        ><v-icon>mdi-arrow-right-circle</v-icon>Approve deposit recept
-      </v-btn>
-      <v-btn
-        class="ma-2 d-none d-sm-flex white--text"
-        color="warning"
-        router-link
-        to="/manage-approve-reversal-receipts"
-        tag="button"
-        ><v-icon>mdi-arrow-right-circle</v-icon>Approve recept reversal
-      </v-btn> -->
     </v-card-actions>
     <v-card>
       <v-data-table
@@ -206,7 +190,7 @@
                 <v-col cols="12" md="6" class="mt-3 pr-6 pl-6">
                   <DatePicker
                     :label="'Receipt Date'"
-                    :max="data.maxDate"
+                    :min="data.maxDate"
                     v-model="data.receipt.date"
                   />
                 </v-col>
@@ -506,14 +490,35 @@
       </template>
 
       <template v-slot:body>
-        <ModalBody> Are you sure you want to reverce this receipt ?</ModalBody>
+        <ModalBody>
+          <v-form v-model="data.valid">
+            <v-col class="pt-6 pl-6 pr-6" cols="12" md="12">
+              <DatePicker
+                :label="'Cancellation Date'"
+                v-model="data.reverseForm.date"
+                :max="data.maxDate"
+                :min="data.minDate"
+                required
+              />
+            </v-col>
+            <v-col class="pt-0 pl-6 pr-6 red--text" cols="12" md="12">
+              Are you sure you want to reverse this receipt?
+            </v-col>
+          </v-form>
+        </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="blue darken-1" text @click="cancelConfirmDialog"
             >No
           </v-btn>
-          <v-btn color="red darken-1" text @click="remove">Yes</v-btn>
+          <v-btn
+            :disabled="!data.reverseForm.date"
+            color="red darken-1"
+            text
+            @click="remove"
+            >Yes</v-btn
+          >
         </ModalFooter>
       </template>
     </Modal>
@@ -521,7 +526,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useReceipt } from "./composables/receipt";
 import { toMoney } from "@/filters/CurrencyFormatter";
 

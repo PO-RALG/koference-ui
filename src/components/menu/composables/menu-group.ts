@@ -1,4 +1,4 @@
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted } from "vue";
 import { AxiosResponse } from "axios";
 import { get, create, update, deleteEntry } from "../services/menu.service";
 import { MenuGroup } from "../types/MenuGroup";

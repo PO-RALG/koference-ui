@@ -359,7 +359,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useBankAdjustmentCouncilApprove } from "./composables/bank-adjustment-council-approval";
 import { toMoney } from "@/filters/CurrencyFormatter";
 

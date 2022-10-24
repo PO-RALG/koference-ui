@@ -74,19 +74,6 @@
             </template>
             <span>Reverse Payment</span>
           </v-tooltip>
-          <!-- <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                @click="openHistoryDialog(item.id)"
-                :disabled="cant('delete', 'Payment')"
-              >
-                mdi-update
-              </v-icon>
-            </template>
-            <span>View History for the approval requests and responses</span>
-          </v-tooltip> -->
         </template>
         <template v-slot:footer>
           <Paginate
@@ -247,14 +234,14 @@
           <v-form v-model="data.valid">
             <v-col class="pt-6 pl-6 pr-6" cols="12" md="12">
               <DatePicker
-                :label="'Canselation Date'"
+                :label="'Cancellation Date'"
                 v-model="data.reverseForm.date"
                 :max="data.maxDate"
                 :min="data.minDate"
                 required
               />
             </v-col>
-            <v-col class="pt-6 pl-6 pr-6 red--text" cols="12" md="12">
+            <v-col class="pt-0 pl-6 pr-6 red--text" cols="12" md="12">
               Are you sure you want to reverse this payment?
             </v-col>
           </v-form>
@@ -557,7 +544,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { usePayment } from "./composables/payment";
 
 export default defineComponent({

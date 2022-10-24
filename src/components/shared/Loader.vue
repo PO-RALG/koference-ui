@@ -10,13 +10,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
-import { useState } from "vuex-composition-helpers";
+import { defineComponent } from "vue";
+import { createNamespacedHelpers } from "vuex-composition-helpers";
+const { useState } = createNamespacedHelpers("Loader");
 import store from "@/store";
 
 export default defineComponent({
   setup() {
-    const { loading } = useState(store, "Loader", ["loading"]);
+    const { loading } = useState(["loading"]);
     return {
       loading,
     };

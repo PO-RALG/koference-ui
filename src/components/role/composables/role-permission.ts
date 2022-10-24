@@ -1,4 +1,4 @@
-import { reactive, onMounted, computed, SetupContext } from "@vue/composition-api";
+import { reactive, onMounted, computed, SetupContext } from "vue";
 import { AxiosResponse } from "axios";
 import { find, getPermissions, addPermissions as assignPermissions } from "../services/role-services";
 import router from "@/router";

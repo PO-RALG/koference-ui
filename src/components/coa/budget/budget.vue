@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import {useBudget} from "./composables/budget";
 
 export default defineComponent({

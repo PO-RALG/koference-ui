@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, PropType, onMounted, defineComponent } from "@vue/composition-api";
+import { reactive, PropType, onMounted, defineComponent } from "vue";
 
 export default defineComponent({
   props: {

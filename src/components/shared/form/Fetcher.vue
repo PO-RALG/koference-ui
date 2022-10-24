@@ -1,7 +1,7 @@
 <script lang="ts">
 import axios from "axios";
 import { AxiosResponse } from "axios";
-import { reactive, onMounted, defineComponent } from "@vue/composition-api";
+import { reactive, onMounted, defineComponent } from "vue";
 
 export default defineComponent({
   props: {

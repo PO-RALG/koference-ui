@@ -89,7 +89,7 @@
 </template>
 
 <script charset="utf-8">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useReportDetail } from "./composables/use-report-detail";
 export default defineComponent({
   setup(props, context) {

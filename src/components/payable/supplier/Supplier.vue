@@ -223,7 +223,6 @@
                 </v-col>
               </v-row>
             </v-container>
-            <!--<pre>{{ data.formData }}</pre>-->
           </v-form>
         </ModalBody>
       </template>
@@ -262,7 +261,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useSupplier } from "./composables/supplier";
 import SimpleMask from "@/components/shared/masks/SimpleMask.vue";
 

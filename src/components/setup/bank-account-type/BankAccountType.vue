@@ -158,7 +158,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useBankAccountType } from "./composables/bank-account-type";
 
 export default defineComponent({

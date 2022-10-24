@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useLevels } from "./composables/level";
 
 export default defineComponent({

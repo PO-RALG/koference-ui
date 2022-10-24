@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { GfsCodes } from "../types/";
-import { reactive, watch, onMounted, ref } from "@vue/composition-api";
+import { reactive, watch, onMounted, ref } from "vue";
 
 import {
   gfscodes,

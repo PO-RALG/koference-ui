@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted } from "vue";
 import { useRoute } from "vue2-helpers/vue-router";
 import { get, toggleStatus as toggle, create } from "../services/gl.account.service";
 
