@@ -75,20 +75,22 @@ export const useFundAllocation = (): any => {
     
     return Number(newData);
   }
-  const maxAllocation = (a,b) => {
-    if (a !== null && b !== null) {
-      const unallocated  = removeComma(a) - removeComma(b)     
-    console.log(unallocated)
-    return (v: string) =>
-      (removeComma(v) !== null && removeComma(v) <= 540000) ||
-      `Amount must be less or equal to ${unallocated}`;
+  const maxAllocation = (budget:any,allocation:any) => {
+    if (budget !== null && allocation !== null) {
+      const unallocated  = removeComma(budget) - removeComma(allocation)
+      return (v: string) =>
+        (removeComma(v) !== null && removeComma(v) <= unallocated) ||
+        `Amount must be less or equal to ${unallocated}`;
     }
   };
 
-  const maxAvailable = (available: number) => {
-    return (v: number) =>
-      (v && v >= available * -1) ||
-      `Amount must be less or equal to ${available}`;
+  const maxAvailable = (allocation:any,totalExpenditure:any) => {
+    // if (allocation !== null && totalExpenditure !== null) {
+    //   const available = removeComma(allocation) - removeComma(totalExpenditure)
+    //   return (v: string) =>
+    //   (removeComma(v) && removeComma(v) >= available * -1) ||
+    //   `Amount must be less or equal to ${available}`;
+    // }
   };
 
   const getTableData = () => {

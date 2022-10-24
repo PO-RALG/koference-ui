@@ -121,12 +121,11 @@
                   </td>
                   <td class="pt-5">
                     <v-text-field
-                      v-mask="toMoney"
                       dense
                       outlined
                       :rules="[
                         maxAllocation(item.budget ,item.allocation),
-                        maxAvailable(item.allocation - item.totalExpenditure),
+                        maxAvailable(item.allocation,item.totalExpenditure),
                       ]"
                       v-model="item.allocation_amount"
                       @input="newAllocation(item.allocation_amount)"
