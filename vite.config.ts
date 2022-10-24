@@ -1,9 +1,8 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import Components from "unplugin-vue-components/vite";
 import { VuetifyResolver } from "unplugin-vue-components/resolvers";
 import vue from "@vitejs/plugin-vue2";
 import viteCompression from "vite-plugin-compression";
-import { loadEnv } from "vite";
 import { resolve } from "path";
 import dayjs from "dayjs";
 import pkg from "./package.json";
@@ -19,34 +18,39 @@ const __APP_INFO__ = {
   lastBuildTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
 };
 
-module.exports = defineConfig({
-  base: "/",
-  root,
-  resolve: {
-    alias: [
-      {
-        find: "@",
-        replacement: resolve(__dirname, "src"),
-      },
+/** @type {import('vite').UserConfig} */
+export default ({ mode }) => {
+  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
+
+  return defineConfig({
+    base: process.env.VITE_APP_PUBLIC_PATH,
+    root,
+    resolve: {
+      alias: [
+        {
+          find: "@",
+          replacement: resolve(__dirname, "src"),
+        },
+      ],
+    },
+    plugins: [
+      vue(),
+      Components({
+        resolvers: [VuetifyResolver()],
+      }),
+      viteCompression({
+        algorithm: "gzip",
+      }),
+      viteSingleFile(),
     ],
-  },
-  plugins: [
-    vue(),
-    Components({
-      resolvers: [VuetifyResolver()],
-    }),
-    viteCompression({
-      algorithm: "gzip",
-    }),
-    viteSingleFile(),
-  ],
-  server: {
-    port: 4000,
-  },
-  build: {
-    target: "es2015",
-    cssTarget: "chrome80",
-    outDir: OUTPUT_DIR,
-    chunkSizeWarningLimit: 2000,
-  },
-});
+    server: {
+      port: process.env.VITE_APP_PORT || 3000 ,
+    },
+    build: {
+      target: "es2015",
+      cssTarget: "chrome80",
+      outDir: OUTPUT_DIR,
+      chunkSizeWarningLimit: 2000,
+    },
+  });
+};

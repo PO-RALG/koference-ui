@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vite --port 4000",
+    "serve": "vite",
     "build": "vite build",
     "dev:build": "vite build --watch",
     "test:unit": "vite test:unit",
