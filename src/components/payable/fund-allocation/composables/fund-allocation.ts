@@ -70,29 +70,35 @@ export const useFundAllocation = (): any => {
   onMounted(() => {
     getTableData();
   });
+
   const removeComma = (data:any)=>{
     const newData = String(data).replace(/[,]/g,'');
-    
     return Number(newData);
   }
-  const maxAllocation = (budget:any,allocation:any) => {
-    if (budget !== null && allocation !== null) {
-      const unallocated  = removeComma(budget) - removeComma(allocation)
-      return (v: string) =>
-        (removeComma(v) !== null && removeComma(v) <= unallocated) ||
-        `Amount must be less or equal to ${unallocated}`;
-    }
+
+  const removeNeg = (data:any)=>{
+    const newData = String(data).replace(/[-]/g,'');
+    return Number(newData);
   };
 
-  const maxAvailable = (allocation:any,totalExpenditure:any) => {
-    if (allocation !== null && totalExpenditure !== null) {
+  const checkChar = (data:string)=>{
+    const inputVal = String(data).includes("-");
+    return inputVal;
+  };
+
+  const maxAllocation = (budget:any,allocation:any,totalExpenditure:any) => {
+    if ((budget !== null && allocation !== null) ||(allocation !== null && totalExpenditure !== null)) {
+      const unallocated  = removeComma(budget) - removeComma(allocation);
       const available = removeComma(allocation) - removeComma(totalExpenditure)
-      const inputValue = (v: string)=>{
-        console.log(v)
-      }
-      // return (v: string) =>
-      // (removeComma(v) && removeComma(v) >= available * -1) ||
-      // `Amount must be less or equal to ${available}`;
+      return (v: string) => {
+        if (checkChar(v)) {
+          return(removeNeg(v) && removeNeg(v) <= available) ||
+            `Amount must be less or equal to ${available}`;
+        }else{
+          return(removeComma(v) !== null && removeComma(v) <= unallocated) ||
+            `Amount must be less or equal to ${unallocated}`;
+        } 
+      } 
     }
   };
 
@@ -189,7 +195,6 @@ export const useFundAllocation = (): any => {
     searchBudgets,
     newAllocation,
     maxAllocation,
-    maxAvailable,
     removeComma,
   };
 };
