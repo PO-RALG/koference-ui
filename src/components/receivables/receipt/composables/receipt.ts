@@ -171,7 +171,7 @@ export const useReceipt = (): any => {
     },
     rows: ["10", "20", "50", "100"],
 
-    itemTodelete: "",
+    itemTodelete: null,
     response: {},
     accounts: [],
     customers: [],
@@ -289,6 +289,7 @@ export const useReceipt = (): any => {
   const cancelConfirmDialog = () => {
     data.receipt = receipt;
     data.deletemodal = false;
+    data.reverseForm.date = null;
   };
 
   const remove = async () => {
@@ -468,7 +469,7 @@ export const useReceipt = (): any => {
     data.selectedInvoice = invoice;
     data.receipt.customer_id = invoice.customer_id;
     data.receipt.invoice_id = invoice.id;
-    data.minDate = moment(invoice.date).format("YYYY-MM-DD");
+    data.maxDate = moment(invoice.date).format("YYYY-MM-DD");
   };
 
   const resetData = () => {
