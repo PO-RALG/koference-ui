@@ -77,7 +77,7 @@ export const useFundAllocation = (): any => {
   }
 
   const removeNeg = (data:any)=>{
-    const newData = String(data).replace(/[-]/g,'');
+    const newData = (String(data).replace(/[-]/g,'')).replace(/[,]/g,'');
     return Number(newData);
   };
 

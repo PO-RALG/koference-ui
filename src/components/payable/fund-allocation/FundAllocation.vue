@@ -123,6 +123,7 @@
                   </td>
                   <td class="pt-5">
                     <v-text-field
+                      v-mask="toNegativeMoney"
                       dense
                       outlined
                       :rules="[
@@ -140,7 +141,12 @@
         </v-card-text>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="save" v-if="data.items.length && data.valid">
+          <v-btn 
+            color="primary" 
+            @click="save" 
+            v-if="data.items.length"
+            :disabled="!data.valid"
+          >
             save
           </v-btn>
         </v-card-actions>
@@ -153,6 +159,7 @@
 import { defineComponent } from "vue";
 import { useFundAllocation } from "./composables/fund-allocation";
 import { toMoney } from "@/filters/CurrencyFormatter";
+import { toNegativeMoney } from "@/filters/NegativeCurrencyFormatter";
 
 export default defineComponent({
   name: "FundAllocation",
@@ -175,6 +182,7 @@ export default defineComponent({
       newAllocation,
       maxAllocation,
       toMoney,
+      toNegativeMoney,
       removeComma,
     };
   },
