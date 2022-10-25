@@ -46,6 +46,7 @@ export const usePaymentVoucher = (): any => {
     node: null,
     response: {},
     modalTitle: "",
+    maxDate: moment(new Date()).format("YYYY-MM-DD"),
     headers: [
       {
         text: "Reference Number",
