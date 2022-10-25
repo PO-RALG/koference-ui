@@ -75,7 +75,7 @@
               <v-btn
                 v-bind="attrs"
                 v-on="on"
-                v-show="can('delete', 'Receipt')"
+                v-if="can('delete', 'Receipt')"
                 @click="reverseReceipt(item.id)"
                 text
                 color="grey"
@@ -485,7 +485,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.deletemodal" :width="400">
+    <Modal :modal="data.deletemodal" :width="500">
       <template v-slot:header>
         <ModalHeader :title="`Cancel Receipt `" />
       </template>
