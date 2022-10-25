@@ -487,12 +487,12 @@ export const useReceipt = (): any => {
         },
       ];
       (data.receipt.invoice_id = null), (data.selectedInvoice = null);
-      data.minDate = null;
-      data.maxDate = moment(new Date()).format("YYYY-MM-DD");
-    } else {
       data.minDate = data.selectedInvoice
         ? moment(data.selectedInvoice.date).format("YYYY-MM-DD")
         : moment(new Date()).format("YYYY-MM-DD");
+      data.maxDate = moment(new Date()).format("YYYY-MM-DD");
+    } else {
+      data.minDate = null;
     }
   };
 

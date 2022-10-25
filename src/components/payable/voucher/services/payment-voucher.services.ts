@@ -66,5 +66,5 @@ export {
   printPdf,
   activitiesByFundSource,
   getWorkflow,
-  approvePVFacilityService
+  approvePVFacilityService,
 };

@@ -50,7 +50,7 @@ const receiptcreate = async (payload: any) => {
 const printInvoice = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
   const url = `/api/v1/invoices/${id}?token=${user.token}`;
-return window.open(url);
+  return window.open(url);
 };
 
 export {
