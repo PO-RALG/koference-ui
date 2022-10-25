@@ -485,7 +485,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.deletemodal" :width="400">
+    <Modal :modal="data.deletemodal" :width="500">
       <template v-slot:header>
         <ModalHeader :title="`Cancel Receipt `" />
       </template>
