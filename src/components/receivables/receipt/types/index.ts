@@ -9,8 +9,8 @@ export interface Receipt {
   date: Date;
 }
 
-export  enum RECEIPT_TYPE {
+export enum RECEIPT_TYPE {
   "CASH" = 1,
   "INVOICE" = 2,
-  "DEPOSIT" = 3
+  "DEPOSIT" = 3,
 }

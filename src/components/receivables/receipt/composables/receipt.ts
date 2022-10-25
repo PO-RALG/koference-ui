@@ -1,4 +1,3 @@
-import { AxiosResponse } from "axios";
 import { Receipt, RECEIPT_TYPE } from "../types";
 import { computed, onMounted, reactive } from "vue";
 import stringToCurrency from "@/filters/money-to-number";
@@ -197,7 +196,7 @@ export const useReceipt = (): any => {
     search: "",
     reverseForm: {
       id: "",
-      date: null,
+      date: "",
     },
   });
 
@@ -205,7 +204,7 @@ export const useReceipt = (): any => {
     init();
   });
 
-  const init = () => {
+  const init = async () => {
     data.receipt = {
       id: null,
       customer_id: null,
@@ -223,41 +222,37 @@ export const useReceipt = (): any => {
       ],
     };
     data.loading = true;
-    get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data;
-      data.itemsToFilter = response.data.data.data;
-      data.loading = false;
-    });
 
-    getCustomers({ per_page: 2000, active: true }).then(
-      (response: AxiosResponse) => {
-        data.customers = response.data.data.data;
-      }
-    );
+    const res = await get({ per_page: 10 });
+    const { from, to, total, current_page, per_page, last_page } =
+      res.data.data;
+
+    data.response = { from, to, total, current_page, per_page, last_page };
+    data.items = res.data.data.data;
+    data.itemsToFilter = res.data.data.data;
+    data.loading = false;
+
+    const response = await getCustomers({ per_page: 2000, active: true });
+    data.customers = response.data.data.data;
   };
 
-  const searchCategory = (categoryName: any) => {
+  const searchCategory = async (categoryName: any) => {
     if (categoryName != null) {
-      search({ receipt_number: categoryName.receipt_number }).then(
-        (response: AxiosResponse) => {
-          data.items = response.data.data.data;
-        }
-      );
+      const response = await search({
+        receipt_number: categoryName.receipt_number,
+      });
+      data.items = response.data.data.data;
     } else {
       reloadData();
     }
   };
 
-  const reloadData = () => {
-    get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data;
-    });
+  const reloadData = async () => {
+    const response = await get({ per_page: 10 });
+    const { from, to, total, current_page, per_page, last_page } =
+      response.data.data;
+    data.response = { from, to, total, current_page, per_page, last_page };
+    data.items = response.data.data.data;
   };
 
   const cancelDialog = () => {
@@ -297,11 +292,10 @@ export const useReceipt = (): any => {
     data.reverseForm.date = null;
   };
 
-  const remove = () => {
-    destroy(data.itemTodelete, data.reverseForm.date).then(() => {
-      reloadData();
-      data.deletemodal = false;
-    });
+  const remove = async () => {
+    await destroy(data.itemTodelete, data.reverseForm.date);
+    await reloadData();
+    data.deletemodal = false;
   };
 
   const geGlAccountId = (account: any): string => {
@@ -316,7 +310,7 @@ export const useReceipt = (): any => {
     return fs.code;
   };
 
-  const save = () => {
+  const save = async () => {
     let payload = {};
     if (isInvoice && data.selectedInvoice) {
       payload = {
@@ -357,39 +351,36 @@ export const useReceipt = (): any => {
       };
       // payload = data.receipt;
     }
-    console.log(payload);
-    create(payload).then((response: AxiosResponse) => {
-      if (response.status === 200) {
-        init();
-        data.modal = false;
-      }
-    });
+    const response = await create(payload);
+    if (response.status === 200) {
+      init();
+      data.modal = false;
+    }
   };
 
-  const openDialog = (formData?: any) => {
+  const openDialog = async (formData?: any) => {
     data.modalTitle = "Create";
     data.modal = !data.modal;
     data.isInvoice = "NO";
-    loadDepositAccounts();
-    getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.bankaccounts = response.data.data.data;
+    await loadDepositAccounts();
+    const response = await getBankAccounts({ per_page: 2000 });
+    data.bankaccounts = response.data.data.data;
+
+    const res = await fundingSource({ per_page: 2000 });
+    const fundingSources = res.data.data.data;
+
+    data.fundingSources = fundingSources.map((fs) => {
+      return {
+        ...fs,
+        description: fs.description + "( " + fs.code + ")",
+      };
     });
 
-    fundingSource({ per_page: 2000 }).then((response: AxiosResponse) => {
-      const fundingSources = response.data.data.data;
-      data.fundingSources = fundingSources.map(function(element) {
-        return {
-          ...element,
-          description: element.description + "( " + element.code + ")",
-        };
-      });
+    const accResp = await glAccount({
+      per_page: 2000,
+      gl_account_type: "REVENUE",
     });
-
-    glAccount({ per_page: 2000, gl_account_type: "REVENUE" }).then(
-      (response: AxiosResponse) => {
-        data.glAccounts = response.data.data.data;
-      }
-    );
+    data.glAccounts = accResp.data.data.data;
   };
 
   const setDisplayName = (account: Record<any, any>) => {
@@ -406,16 +397,16 @@ export const useReceipt = (): any => {
       fund_code: fundSourceCode,
     };
 
-    getGlAccounts({ search: { ...params } }).then((response: AxiosResponse) => {
-      const accounts = response.data.data.data;
-      if (response.data.data.data.length > 0) {
-        const itemsToPush = accounts.map((account) => ({
-          ...account,
-          displayName: setDisplayName(account),
-        }));
-        data.gl_accounts.push(itemsToPush);
-      }
-    });
+    const response = await getGlAccounts({ search: { ...params } });
+    const accounts = response.data.data.data;
+
+    if (response.data.data.data.length > 0) {
+      const itemsToPush = accounts.map((account) => ({
+        ...account,
+        displayName: setDisplayName(account),
+      }));
+      data.gl_accounts.push(itemsToPush);
+    }
   };
 
   const loadDepositAccounts = async () => {
@@ -423,39 +414,26 @@ export const useReceipt = (): any => {
       gl_account_type: "DEPOSIT",
     };
 
-    getGlAccounts({ search: { ...params } }).then((response: AxiosResponse) => {
-      data.depositAccounts = response.data.data.data;
-      if (response.data.data.data.length > 0) {
-        /*   data.depositAccounts = response.data.data.data.map((account) => ({
-          ...account,
-          displayName: account.code,
-        }));*/
-      }
-    });
+    const response = await getGlAccounts({ search: { ...params } });
+    data.depositAccounts = response.data.data.data;
   };
 
   const newreceiptItem: any = computed(() => {
     return data.items
-      ? data.items.map((data, index) => ({
-        ...data,
-        index: ++index,
-        newData: data,
-        bankAccount:
-          data.bank_account.bank +
-          data.bank_account.name +
-          " (" +
-          data.bank_account.number +
-          ")",
-      }))
+      ? data.items.map((item, index) => ({
+          ...item,
+          index: ++index,
+          newData: item,
+          bankAccount: `${item.bank_account.bank} ${item.bank_account.name} (${item.bank_account.number})`,
+        }))
       : [];
   });
 
-  const getData = (params: any) => {
+  const getData = async (params: any) => {
     data.response = params;
-    get(params).then((response: AxiosResponse) => {
-      data.response = response.data.data;
-      data.items = response.data.data.data;
-    });
+    const response = await get(params);
+    data.response = response.data.data;
+    data.items = response.data.data.data;
   };
 
   const addRow = () => {
@@ -477,9 +455,11 @@ export const useReceipt = (): any => {
   const isInvoice = computed(() => {
     return data.receiptType == RECEIPT_TYPE.INVOICE;
   });
+
   const isCash = computed(() => {
     return data.receiptType == RECEIPT_TYPE.CASH;
   });
+
   const isDeposit = computed(() => {
     return data.receiptType == RECEIPT_TYPE.DEPOSIT;
   });
@@ -507,83 +487,78 @@ export const useReceipt = (): any => {
         },
       ];
       (data.receipt.invoice_id = null), (data.selectedInvoice = null);
-      data.minDate = null;
-      data.maxDate = moment(new Date()).format("YYYY-MM-DD");
-    } else {
       data.minDate = data.selectedInvoice
         ? moment(data.selectedInvoice.date).format("YYYY-MM-DD")
         : moment(new Date()).format("YYYY-MM-DD");
+      data.maxDate = moment(new Date()).format("YYYY-MM-DD");
+    } else {
+      data.minDate = null;
     }
   };
 
-  const filterReceipt = () => {
+  const filterReceipt = async () => {
     if (data.searchTerm.length >= 3) {
-      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
-        const { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data;
-      });
-    }
-    if (data.searchTerm.length === 0) {
-      get({ per_page: 10 }).then((response: AxiosResponse) => {
-        const { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data;
-      });
-    }
-  };
-  const filterFundSource = () => {
-    if (data.searchTerm.length >= 3) {
-      getFundingSourceList({ regSearch: data.searchTerm }).then(
-        (response: AxiosResponse) => {
-          const { from, to, total, current_page, per_page, last_page } =
-            response.data.data;
-          data.response = {
-            from,
-            to,
-            total,
-            current_page,
-            per_page,
-            last_page,
-          };
-          data.fundingSources = response.data.data.data;
-        }
-      );
-    }
-    if (data.searchTerm.length === 0) {
-      getFundingSourceList({ per_page: 10 }).then((response: AxiosResponse) => {
-        const { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-        data.fundingSources = response.data.data.data;
-      });
-    }
-  };
-
-  const resetSearchText = () => {
-    data.searchTerm = "";
-    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const response = await get({ regSearch: data.searchTerm });
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
-    });
+    }
+    if (data.searchTerm.length === 0) {
+      const response = await get({ per_page: 10 });
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    }
   };
-  const reanderSearched = (categoryName: any) => {
+
+  const filterFundSource = async () => {
+    if (data.searchTerm.length >= 3) {
+      const response = await getFundingSourceList({
+        regSearch: data.searchTerm,
+      });
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = {
+        from,
+        to,
+        total,
+        current_page,
+        per_page,
+        last_page,
+      };
+      data.fundingSources = response.data.data.data;
+    }
+    if (data.searchTerm.length === 0) {
+      const response = await getFundingSourceList({ per_page: 10 });
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.fundingSources = response.data.data.data;
+    }
+  };
+
+  const resetSearchText = async () => {
+    data.searchTerm = "";
+
+    const response = await get({ per_page: 10 });
+    const { from, to, total, current_page, per_page, last_page } =
+      response.data.data;
+    data.response = { from, to, total, current_page, per_page, last_page };
+    data.items = response.data.data.data;
+  };
+
+  const reanderSearched = async (categoryName: any) => {
     // console.log("categoryname", categoryName.invoice_number);
     if (categoryName != null && categoryName.length >= 2) {
-      receiptSearch({ regSearch: categoryName }).then(
-        (response: AxiosResponse) => {
-          data.itemsToFilter = response.data.data.data;
-        }
-      );
+      const response = await receiptSearch({ regSearch: categoryName });
+      data.itemsToFilter = response.data.data.data;
     } else if (categoryName ? categoryName.length == 0 : "") {
-      reloadData();
+      await reloadData();
       data.search = "";
     } else {
-      reloadData();
+      await reloadData();
     }
   };
 

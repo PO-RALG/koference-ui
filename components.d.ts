@@ -111,6 +111,7 @@ declare module '@vue/runtime-core' {
     TableData: typeof import('./src/components/shared/table/TableData.vue')['default']
     TableFooter: typeof import('./src/components/shared/table/TableFooter.vue')['default']
     TableHeader: typeof import('./src/components/shared/table/TableHeader.vue')['default']
+    TableView: typeof import('./src/components/shared/table/TableView.vue')['default']
     Test: typeof import('./src/components/test/test.vue')['default']
     Tree: typeof import('./src/components/shared/Tree.vue')['default']
     TreeBrowser: typeof import('./src/components/shared/tree-browser/TreeBrowser.vue')['default']

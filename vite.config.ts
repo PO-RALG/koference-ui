@@ -44,7 +44,7 @@ export default ({ mode }) => {
       viteSingleFile(),
     ],
     server: {
-      port: process.env.VITE_APP_PORT || 3000 ,
+      port: process.env.VITE_APP_PORT || 3000,
     },
     build: {
       target: "es2015",

@@ -75,7 +75,7 @@
               <v-btn
                 v-bind="attrs"
                 v-on="on"
-                v-show="can('delete', 'Receipt')"
+                v-if="can('delete', 'Receipt')"
                 @click="reverseReceipt(item.id)"
                 text
                 color="grey"
@@ -190,7 +190,8 @@
                 <v-col cols="12" md="6" class="mt-3 pr-6 pl-6">
                   <DatePicker
                     :label="'Receipt Date'"
-                    :min="data.maxDate"
+                    :min="data.minDate"
+                    :max="data.maxDate"
                     v-model="data.receipt.date"
                   />
                 </v-col>
@@ -484,7 +485,7 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.deletemodal" :width="400">
+    <Modal :modal="data.deletemodal" :width="500">
       <template v-slot:header>
         <ModalHeader :title="`Cancel Receipt `" />
       </template>
