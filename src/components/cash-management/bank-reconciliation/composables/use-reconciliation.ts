@@ -26,6 +26,7 @@ export const useBankReconciliation = ({ root }): any => {
   const data = reactive({
     entries: [],
     selectedEntries: [],
+    isSaveButtonDisabled: true,
     valid: true,
     isOpen: false,
     isUnlockOpen: false,
@@ -95,7 +96,7 @@ export const useBankReconciliation = ({ root }): any => {
 
     data.selectedEntries = [];
     if (date && bankAccountId) {
-      data.formData.bank_account_id = parseInt(bankAccountId);
+      data.formData.bank_account_id = bankAccountId;
       data.formData.date = date;
       init(query);
     } else {
@@ -104,9 +105,10 @@ export const useBankReconciliation = ({ root }): any => {
   };
 
   watch(
-    () => route.query,
+    () => route,
     async (newQuery) => {
-      const { bank_account_id, date } = newQuery;
+      console.log("newQuery", newQuery);
+      const { bank_account_id, date } = route.query;
       const params = { date, bank_account_id };
       if (!date && !bank_account_id) {
         await init(params);
@@ -114,7 +116,13 @@ export const useBankReconciliation = ({ root }): any => {
     }
   );
 
-  const init = async (params: Params) => {
+  interface FormDataPayload {
+    balance?: number;
+    date: string | string[];
+    bank_account_id: string | string[];
+  }
+
+  const init = async <T extends FormDataPayload>(params: T) => {
     if (params.bank_account_id && params.date) {
       const query = {
         ...params,
@@ -211,7 +219,7 @@ export const useBankReconciliation = ({ root }): any => {
     const bankAccountId = route.query.bank_account_id
       ? route.query.bank_account_id
       : null;
-    data.formData.bank_account_id = parseInt(bankAccountId);
+    data.formData.bank_account_id = bankAccountId;
     data.formData.date = date;
     data.formData.balance = null;
 
@@ -426,12 +434,13 @@ export const useBankReconciliation = ({ root }): any => {
   };
 
   const title = computed(() => {
+    const _format = "DD/MM/YYYY";
+    const _title = "Bank Reconciliation locked as of";
+
     const reportUnlocked = data.report ? data.report.confirmed : false;
     const title = reportUnlocked
-      ? `Bank Reconciliation locked as of ${moment(data.report.month).format(
-        "DD/MM/YYYY"
-      )}`
-      : data.title + ` - (${moment(data.formData.date).format("DD/MM/YYYY")})`;
+      ? `${_title} ${moment(data.report.month).format(_format)}`
+      : data.title + ` - (${moment(data.formData.date).format(_format)})`;
     return title;
   });
 
@@ -479,6 +488,10 @@ export const useBankReconciliation = ({ root }): any => {
     });
   });
 
+  const activateButton = () => {
+    data.isSaveButtonDisabled = false;
+  };
+
   return {
     data,
     fetchData,
@@ -501,5 +514,6 @@ export const useBankReconciliation = ({ root }): any => {
     title,
     reconcileEntry,
     selected,
+    activateButton,
   };
 };

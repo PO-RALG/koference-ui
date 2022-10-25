@@ -60,6 +60,7 @@
                       <v-text-field
                         v-mask="toMoney"
                         v-model="data.report.bank_balance"
+                        @change="activateButton()"
                         dense
                         outlined
                       >
@@ -70,6 +71,7 @@
                         color="primary"
                         class="white--text"
                         type="submit"
+                        :disabled="data.isSaveButtonDisabled"
                         dense
                       >
                         Save
@@ -284,6 +286,7 @@ export default defineComponent({
       title,
       reconcileEntry,
       selected,
+      activateButton,
     } = useBankReconciliation(context);
 
     const navigateToList = () => {
@@ -314,6 +317,7 @@ export default defineComponent({
       selected,
       navigateToList,
       toMoney,
+      activateButton,
     };
   },
 });
