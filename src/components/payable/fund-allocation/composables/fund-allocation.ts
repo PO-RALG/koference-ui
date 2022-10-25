@@ -71,16 +71,35 @@ export const useFundAllocation = (): any => {
     getTableData();
   });
 
-  const maxAllocation = (unallocated: number) => {
-    return (v: number) =>
-      (v && v <= unallocated) ||
-      `Amount must be less or equal to ${unallocated}`;
+  const removeComma = (data:any)=>{
+    const newData = String(data).replace(/[,]/g,'');
+    return Number(newData);
+  }
+
+  const removeNeg = (data:any)=>{
+    const newData = (String(data).replace(/[-]/g,'')).replace(/[,]/g,'');
+    return Number(newData);
   };
 
-  const maxAvailable = (available: number) => {
-    return (v: number) =>
-      (v && v >= available * -1) ||
-      `Amount must be less or equal to ${available}`;
+  const checkChar = (data:string)=>{
+    const inputVal = String(data).includes("-");
+    return inputVal;
+  };
+
+  const maxAllocation = (budget:any,allocation:any,totalExpenditure:any) => {
+    if ((budget !== null && allocation !== null) ||(allocation !== null && totalExpenditure !== null)) {
+      const unallocated  = removeComma(budget) - removeComma(allocation);
+      const available = removeComma(allocation) - removeComma(totalExpenditure)
+      return (v: string) => {
+        if (checkChar(v)) {
+          return(removeNeg(v) && removeNeg(v) <= available) ||
+            `Amount must be less or equal to ${available}`;
+        }else{
+          return(removeComma(v) !== null && removeComma(v) <= unallocated) ||
+            `Amount must be less or equal to ${unallocated}`;
+        } 
+      } 
+    }
   };
 
   const getTableData = () => {
@@ -176,6 +195,6 @@ export const useFundAllocation = (): any => {
     searchBudgets,
     newAllocation,
     maxAllocation,
-    maxAvailable,
+    removeComma,
   };
 };
