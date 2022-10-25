@@ -75,7 +75,7 @@
               <v-btn
                 v-bind="attrs"
                 v-on="on"
-                v-show="can('delete', 'Receipt')"
+                v-if="can('delete', 'Receipt')"
                 @click="reverseReceipt(item.id)"
                 text
                 color="grey"
