@@ -116,14 +116,14 @@ export const useReceipt = (): any => {
       { text: "Date", value: "date", sortable: true },
       {
         text: "Amount",
-        align: "start",
+        align: "right",
         sortable: false,
         value: "totalAmt",
       },
 
       {
         text: "From",
-        align: "start",
+        align: "right",
         sortable: false,
         value: "customer.name",
       },
@@ -492,7 +492,8 @@ export const useReceipt = (): any => {
         : moment(new Date()).format("YYYY-MM-DD");
       data.maxDate = moment(new Date()).format("YYYY-MM-DD");
     } else {
-      data.minDate = null;
+      data.maxDate = null;
+      data.minDate = moment(new Date()).format("YYYY-MM-DD");
     }
   };
 

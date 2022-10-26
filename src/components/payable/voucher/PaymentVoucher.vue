@@ -169,6 +169,7 @@
                   <DatePicker
                     :label="'Date'"
                     v-model="data.formData.date"
+                    :max="data.maxDate"
                     required
                   />
                 </v-col>

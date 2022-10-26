@@ -186,12 +186,12 @@
                 <!-- end  of non invoice content -->
 
                 <!-- common content starts here -->
-
+                <!-- {{ data.maxDate }} -->
                 <v-col cols="12" md="6" class="mt-3 pr-6 pl-6">
                   <DatePicker
                     :label="'Receipt Date'"
-                    :min="data.minDate"
-                    :max="data.maxDate"
+                    :min="data.maxDate"
+                    :max="data.minDate"
                     v-model="data.receipt.date"
                   />
                 </v-col>
