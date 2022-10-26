@@ -69,13 +69,13 @@ export const usePaymentVoucher = (): any => {
       },
       {
         text: "Amount",
-        align: "start",
+        align: "right",
         sortable: false,
         value: "amount",
       },
       {
         text: "Amount Paid",
-        align: "start",
+        align: "right",
         sortable: false,
         value: "amount_paid",
       },
