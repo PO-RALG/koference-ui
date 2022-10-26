@@ -11,6 +11,7 @@ import {
 } from "@/components/payable/fund-allocation/types/FundAllocation";
 import { FundSources } from "@/components/coa/funding-source/types/index";
 import { get as getFundingSource } from "@/components/coa/funding-source/services/funding-sources";
+import stringToCurrency from "@/filters/money-to-number";
 
 export const useFundAllocation = (): any => {
   const dataItems = [];
@@ -114,7 +115,7 @@ export const useFundAllocation = (): any => {
     for (let i = 0; i < budgetItems.length; i++) {
       const element = {
         account_id: budgetItems[i].id,
-        amount: budgetItems[i].allocation_amount,
+        amount: stringToCurrency(budgetItems[i].allocation_amount),
       };
       linesData.push(element);
     }
@@ -127,6 +128,7 @@ export const useFundAllocation = (): any => {
 
   const createFundAllocation = (load: FundAllocation) => {
     create(load).then(() => {
+      data.items = [];
       getBudget({ fund_code: data.selectedFund.code }).then(
         (response: AxiosResponse) => {
           const results = [];
