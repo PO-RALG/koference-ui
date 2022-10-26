@@ -492,7 +492,8 @@ export const useReceipt = (): any => {
         : moment(new Date()).format("YYYY-MM-DD");
       data.maxDate = moment(new Date()).format("YYYY-MM-DD");
     } else {
-      data.minDate = null;
+      data.maxDate = null;
+      data.minDate = moment(new Date()).format("YYYY-MM-DD");
     }
   };
 
