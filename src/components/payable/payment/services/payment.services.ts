@@ -3,6 +3,9 @@ import axios from "axios";
 const get = async (params: any) => {
   return await axios.get("/api/v1/payments", { params });
 };
+const getVouchers = async (params: any) => {
+  return await axios.get("/api/v1/vouchers", { params });
+};
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/payments/`, {
     params: {
@@ -38,4 +41,4 @@ const printPdf = (id: number) => {
   return window.open(url);
 };
 
-export { get, find, create, update, destroy, search, printPdf };
+export { get, find, create, update, destroy, search, printPdf, getVouchers };
