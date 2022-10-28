@@ -140,6 +140,14 @@ export const useFundAllocation = (): any => {
           data.items = results;
         }
       );
+      statistic(data.selectedFund.id).then((response: AxiosResponse) => {
+        data.itemUnallocated.allocated = parseFloat(response.data.data.allocated);
+        data.itemUnallocated.carryover = response.data.data.carryover;
+        data.itemUnallocated.current = response.data.data.current;
+        data.itemUnallocated.totalFund = response.data.data.totalFund;
+        data.allocated = parseFloat(response.data.data.allocated);
+        data.running_balance = data.itemUnallocated.totalFund - data.allocated;
+      });
     });
   };
 
