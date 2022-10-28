@@ -50,6 +50,9 @@ const activitiesByFundSource = async (id: number | string) => {
 
 const printPdf = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
+  // const url = `${
+  //   import.meta.env.VITE_APP_SERVER_URL
+  // }/api/v1/vouchers/${id}/print?token=${user.token}`;
   const url = `/api/v1/vouchers/${id}/print?token=${user.token}`;
   return window.open(url);
 };

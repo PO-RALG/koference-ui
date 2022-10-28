@@ -157,7 +157,7 @@
       <template v-slot:body>
         <ModalBody v-if="data.formData">
           <v-form v-model="data.valid">
-            <span>Select Receipt Type</span>
+            <span>Select Payment Voucher Type</span>
             <v-radio-group v-model="data.voucherType" row @change="resetData">
               <v-radio label="NORMAL VOUCHER" :value="normalType"></v-radio>
               <v-radio label="DEPOSIT VOUCHER" :value="depositType"></v-radio>
