@@ -96,7 +96,7 @@ export const useSupplier = (): any => {
     itemtodelete: "",
     searchTerm: "",
     focus: false,
-    supplierTypes: ["Contractor", "Employee", "Others"],
+    supplierTypes: ["Contractor/Supplier", "Employee", "Others"],
     phoneRules: [
       (v: string) => !!v || "Phone number is required",
       (v: string) =>
@@ -114,6 +114,7 @@ export const useSupplier = (): any => {
       (v: string) => !!v || "Number is required",
       (v: string) =>
         (v && v.length <= 10) || "Number must be less than 10 characters",
+      
     ],
     nameRules: [(v: string) => !!v || "Name is required"],
     typeRules: [(v: string) => !!v || "Type is required"],
@@ -262,6 +263,21 @@ export const useSupplier = (): any => {
     });
   };
 
+  const checkNumberValidate = () => {
+    return(v: string) =>{
+      if (!v) {
+        return !!v || "Number is required"
+      }else if(v && v.length <= 10){
+        const res = search({ check_number: v })
+        .then((response: AxiosResponse) => {
+          return response.data.data.data;
+        });
+        console.log(res);
+        return(v && v.length <= 10) || "Number must be less than 10 characters"
+      }
+    }
+  };
+
   return {
     data,
     openDialog,
@@ -276,5 +292,6 @@ export const useSupplier = (): any => {
     setActivation,
     filterSupplier,
     resetSearchText,
+    checkNumberValidate,
   };
 };

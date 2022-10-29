@@ -126,7 +126,7 @@
                   md="4"
                   sm="12"
                   class="mt-n8"
-                  v-if="data.formData.supplier_type === 'Contractor'"
+                  v-if="data.formData.supplier_type === 'Contractor/Supplier'"
                 >
                   <v-text-field
                     outlined
@@ -148,7 +148,7 @@
                 >
                   <v-text-field
                     v-model="data.formData.check_number"
-                    :rules="data.checkRules"
+                    :rules="[checkNumberValidate()]"
                     v-bind:focus="data.focus"
                     v-on:focus="data.focus = false"
                     label="Check Number"
@@ -285,6 +285,7 @@ export default defineComponent({
       setActivation,
       filterSupplier,
       resetSearchText,
+      checkNumberValidate,
     } = useSupplier();
 
     return {
@@ -301,6 +302,7 @@ export default defineComponent({
       setActivation,
       filterSupplier,
       resetSearchText,
+      checkNumberValidate,
     };
   },
 });
