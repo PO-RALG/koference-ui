@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/middleware";
 
 const API = "/api/v1/reports";
 const API2 = "localhost:8000/api/v1/reports";
+const APINEWREPORT =
+  "http://localhost:8080/jasperserver/rest_v2/reports/reports/Madeni/Msingi_Ngazi_ya_Afisa_Madeni_Orodha_ya_Madai_ya_Watumishi_wanaodai.pdf";
 
 const getReports = async (payload) => {
   return axios.get(API, { params: payload });
@@ -28,34 +30,26 @@ const serializeParams = (params: any) => {
   return str.join("&");
 };
 
-const printReport = async (reportID: number, payload?: any) => {
-  // const currentUser = await getCurrentUser();
-  // const token = currentUser.token;
-  // const query = serializeParams(payload);
-
-  // const url = `${API}/${reportID}/print?${query}&token=${token}`;
-
-  // return window.open(url);
-  return axios.get("/orodha_ya_madeni", async function (req, res) {
-    const url =
-      "http://localhost:8080/jasperserver/rest_v2/reports/reports/Madeni/Msingi_Ngazi_ya_Afisa_Madeni_Orodha_ya_Madai_ya_Watumishi_wanaodai.pdf";
-    cost = params = {
-      paramEmail: "",
-    };
-    const file = await axios.get(url, {
+const printReportJasper = async () => {
+  const params = {
+    paramEmail: "",
+  };
+  const file = await axios
+    .get(APINEWREPORT, {
       params: params,
       responseType: "stream",
       auth: {
         username: "jasperadmin",
         password: "jasperadmin",
       },
+    })
+    .then((response) => {
+      console.log("ressssss", response);
     });
-    res.writeHead(200, { "Content-Type": "application/pdf" });
-    file.data.pipe(res);
-  });
+  // window.open("data:application/pdf," + encodeURI(res));
 };
 
-const printReportx = async (reportID: number, payload?: any) => {
+const printReport = async (reportID: number, payload?: any) => {
   const currentUser = await getCurrentUser();
   const token = currentUser.token;
   const query = serializeParams(payload);
@@ -106,5 +100,6 @@ export {
   fetchReportParams,
   getParams,
   printReport,
+  printReportJasper,
   updateQuery,
 };

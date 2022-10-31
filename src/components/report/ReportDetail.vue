@@ -93,16 +93,15 @@ import { defineComponent } from "vue";
 import { useReportDetail } from "./composables/use-report-detail";
 export default defineComponent({
   setup(props, context) {
-    const { data, reportParams, print, isFacility } = useReportDetail(
-      props,
-      context
-    );
+    const { data, reportParams, print, printFromServer, isFacility } =
+      useReportDetail(props, context);
 
     return {
       data,
       reportParams,
       isFacility,
       print,
+      printFromServer,
     };
   },
 });
