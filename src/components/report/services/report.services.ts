@@ -2,7 +2,6 @@ import axios from "axios";
 import { getCurrentUser } from "@/middleware";
 
 const API = "/api/v1/reports";
-const API2 = "localhost:8000/api/v1/reports";
 const APINEWREPORT =
   "https://ffars.tamisemi.go.tz/jasperserver/rest_v2/reports/Reports/journal_voucher.pdf?journal_voucher_id=17";
 
