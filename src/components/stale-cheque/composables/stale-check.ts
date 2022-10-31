@@ -36,7 +36,7 @@ export const useStaleCheque = (): Record<string, unknown> => {
       },
       {
         text: "Amount [ TZS ]",
-        align: "start",
+        align: "right",
         sortable: false,
         value: "amount",
       },

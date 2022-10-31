@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/middleware";
 const API = "/api/v1/reports";
 const API2 = "localhost:8000/api/v1/reports";
 const APINEWREPORT =
-  "http://localhost:8080/jasperserver/rest_v2/reports/reports/Madeni/Msingi_Ngazi_ya_Afisa_Madeni_Orodha_ya_Madai_ya_Watumishi_wanaodai.pdf";
+  "https://ffars.tamisemi.go.tz/jasperserver/rest_v2/reports/Reports/journal_voucher.pdf?journal_voucher_id=17";
 
 const getReports = async (payload) => {
   return axios.get(API, { params: payload });
@@ -34,18 +34,22 @@ const printReportJasper = async () => {
   const params = {
     paramEmail: "",
   };
+
   const file = await axios
     .get(APINEWREPORT, {
       params: params,
       responseType: "stream",
       auth: {
         username: "jasperadmin",
-        password: "jasperadmin",
+        password: "jasperIsPrintingReports",
       },
     })
-    .then((response) => {
-      console.log("ressssss", response);
+    .then(function (response) {
+      console.log(response.data);
     });
+  // .then((response) => {
+  //   console.log("ressssss", response);
+  // });
   // window.open("data:application/pdf," + encodeURI(res));
 };
 
