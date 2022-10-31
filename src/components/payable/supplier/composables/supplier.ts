@@ -22,6 +22,7 @@ export const useSupplier = (): any => {
     node: null,
     response: {},
     modalTitle: "",
+    fieldResponse: {},
     headers: [
       {
         text: "Name",
@@ -268,12 +269,18 @@ export const useSupplier = (): any => {
       if (!v) {
         return !!v || "Number is required"
       }else if(v && v.length <= 10){
-        const res = search({ check_number: v })
+        search({check_number:v})
         .then((response: AxiosResponse) => {
-          return response.data.data.data;
+          data.fieldResponse =  response.data.data;
+          console.log(data.fieldResponse)
+          if (v === '121212') {
+            return(v && v !== '121212') || "Check number exist"
+          }
         });
-        console.log(res);
+        
+        console.log(data.fieldResponse);
         return(v && v.length <= 10) || "Number must be less than 10 characters"
+        
       }
     }
   };
