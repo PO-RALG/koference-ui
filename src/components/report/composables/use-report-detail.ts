@@ -200,7 +200,24 @@ export const useReportDetail = (props, { root }) => {
   );
 
   const print = () => {
-    printReport(data.currentReport.id, data.formData);
+    // printReport(data.currentReport.id, data.formData);
+    get("/orodha_ya_madeni", async function (req, res) {
+      const url =
+        "http://localhost:8080/jasperserver/rest_v2/reports/reports/Madeni/Msingi_Ngazi_ya_Afisa_Madeni_Orodha_ya_Madai_ya_Watumishi_wanaodai.pdf";
+      cost = params = {
+        paramEmail: "",
+      };
+      const file = await axios.get(url, {
+        params: params,
+        responseType: "stream",
+        auth: {
+          username: "jasperadmin",
+          password: "jasperadmin",
+        },
+      });
+      res.writeHead(200, { "Content-Type": "application/pdf" });
+      file.data.pipe(res);
+    });
   };
 
   return {
