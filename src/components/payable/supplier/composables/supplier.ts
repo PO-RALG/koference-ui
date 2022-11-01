@@ -271,8 +271,8 @@ export const useSupplier = (): any => {
       }else if(v && v.length <= 10){
         search({check_number:v})
         .then((response: AxiosResponse) => {
-          data.fieldResponse =  response.data.data;
-          console.log(data.fieldResponse)
+          response.data.data;
+          toa(response.data.data)
           if (v === '121212') {
             return(v && v !== '121212') || "Check number exist"
           }
@@ -284,6 +284,12 @@ export const useSupplier = (): any => {
       }
     }
   };
+  const toa =  async (params:any) => {
+    const x = await params
+    data.fieldResponse = x
+    // console.log(x)
+    return x
+  }
 
   return {
     data,
