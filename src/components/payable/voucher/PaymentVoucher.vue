@@ -89,7 +89,7 @@
 
         <template v-slot:[`item.approve`]="{ item }">
           <span
-            v-if="item && item.approve && !item.approve.facility_approved"
+            v-if="item && item.approve && !item.approve.council_approved"
             >{{ "Waiting for Approval" }}</span
           >
           <span v-else>{{ "Approved" }}</span>
