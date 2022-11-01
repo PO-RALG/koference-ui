@@ -3,6 +3,7 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
+      <v-btn color="primary" @click="printActivityCosting()"> Print </v-btn>
     </v-card-actions>
     <v-card>
       <v-data-table
@@ -197,6 +198,7 @@ export default defineComponent({
       searchItemByFYear,
       resetSearchText,
       filterActivity,
+      printActivityCosting,
     } = useActivityCosting();
 
     return {
@@ -213,6 +215,7 @@ export default defineComponent({
       searchItemByFYear,
       resetSearchText,
       filterActivity,
+      printActivityCosting,
     };
   },
 });

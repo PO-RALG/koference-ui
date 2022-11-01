@@ -200,16 +200,16 @@ export const useInvoice = (): Record<string, unknown> => {
     search: "",
   });
 
-  onMounted(async () => {
+  onMounted(() => {
     data.loading = true;
-
-    const response: AxiosResponse = await get({ per_page: 10 });
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
       data.loading = false;
+    });
 
     allgfscodes({ per_page: 20000 }).then((response: AxiosResponse) => {
       data.bankName = response.data.data.data;
@@ -333,9 +333,8 @@ export const useInvoice = (): Record<string, unknown> => {
   const newInvoiceItem: any = computed(() => {
     return data && data.invoiceData && data.invoiceData
       ? data.invoiceData.invoice_items.map((data, index) => ({
-        .data,
-        dex: ++index,
-      )
+          index: ++index,
+        }))
       : "";
   });
 
@@ -343,221 +342,221 @@ export const useInvoice = (): Record<string, unknown> => {
 
   const sumDebts = computed(() => {
     return {
-      sumamount: invoicedAmount.value.reduce(functionsum, totalAmount) {
-      turn sum + Number(totalAmount.amount);
-     0),
-    mamountReceived: invoicedAmount.value.reduce(function
-      m,
-      talAmount
-    {
-    rn sum + Number(totalAmount.received_amount);
-  
-  
-  mountPending: invoicedAmount.value.reduce(function
-    
-    lAmount
-  
-    rn sum + Number(totalAmount.amount - totalAmount.received_amount);
-  
-  
-
+      sumamount: invoicedAmount.value.reduce(function (sum, totalAmount) {
+        return sum + Number(totalAmount.amount);
+      }, 0),
+      sumamountReceived: invoicedAmount.value.reduce(function (
+        sum,
+        totalAmount
+      ) {
+        return sum + Number(totalAmount.received_amount);
+      },
+      0),
+      sumamountPending: invoicedAmount.value.reduce(function (
+        sum,
+        totalAmount
+      ) {
+        return sum + Number(totalAmount.amount - totalAmount.received_amount);
+      },
+      0),
+    };
   });
 
-nst cancelConfirmDialog = () => {
-  ta.formData = {} as Invoice;
-  ta.deletemodal = false;
+  const cancelConfirmDialog = () => {
+    data.formData = {} as Invoice;
+    data.deletemodal = false;
+  };
 
+  const remove = () => {
+    destroy(data.itemTodelete).then(() => {
+      reloadData();
+      data.deletemodal = false;
+    });
+  };
 
-nst remove = () => {
-  stroy(data.itemTodelete).then(() => {
-    loadData();
-    ta.deletemodal = false;
-  ;
+  const save = () => {
+    const items = data.invoice_items.map((entry) => ({
+      ...entry,
+      amount: stringToCurrency(entry.amount),
+    }));
 
+    data.formData.items = items;
+    if (data.formData.id) {
+      updateInvoiceItemDefinition(data.formData);
+    } else {
+      createInvoice(data.formData);
+    }
+  };
 
-nst save = () => {
-  nst items = data.invoice_items.map((entry) => ({
-    .entry,
-    ount: stringToCurrency(entry.amount),
-  );
+  const openDialog = (formData?: any) => {
+    if (formData.id) {
+      data.formData = formData;
+      data.modalTitle = "Update";
+    } else {
+      data.formData = {} as Invoice;
+      data.modalTitle = "Create";
+    }
+    data.modal = !data.modal;
+  };
 
-  ta.formData.items = items;
-   (data.formData.id) {
-    dateInvoiceItemDefinition(data.formData);
-  else {
-    eateInvoice(data.formData);
-  
+  const updateInvoiceItemDefinition = (data: any) => {
+    update(data).then(() => {
+      reloadData();
+      cancelDialog();
+    });
+  };
 
+  const createReceipt = () => {
+    const invoiceItems = data.invoicereceip.items.filter(
+      (item) => item.cleared !== true
+    );
+    data.invoicereceip.items = invoiceItems;
+    receiptcreate(data.invoicereceip).then(() => {
+      data.invoicereceipt = false;
+      reloadData();
+      data.invoicereceip = {
+        invoice_id: "",
+        date: "",
+        description: "",
+        customer_id: "",
+        bank_account_id: "",
+        bank_reference_number: "",
+        invoice_number: "",
+        items: [],
+      };
+    });
+  };
 
-nst openDialog = (formData?: any) => {
-   (formData.id) {
-    ta.formData = formData;
-    ta.modalTitle = "Update";
-  else {
-    ta.formData = {} as Invoice;
-    ta.modalTitle = "Create";
-  
-  ta.modal = !data.modal;
+  const createInvoice = (data: any) => {
+    create(data).then(() => {
+      reloadData();
+      cancelDialog();
+    });
+  };
 
+  const getData = (params: any) => {
+    data.response = params;
+    get(params).then((response: AxiosResponse) => {
+      data.response = response.data.data;
+      data.items = response.data.data.data;
+    });
+  };
 
-nst updateInvoiceItemDefinition = (data: any) => {
-  date(data).then(() => {
-    loadData();
-    ncelDialog();
-  ;
+  const addRow = () => {
+    data.invoice_items.push({
+      invoice_item_definition_id: "",
+      amount: "",
+    });
+  };
 
+  const checkDublicate = (value, index) => {
+    const obj = data.invoice_items.filter(
+      (o) => o.invoice_item_definition_id === value
+    );
+    if (obj.length < 2) {
+      // addRow();
+    } else {
+      data.invoice_items.splice(index, 10000);
+    }
+  };
 
-nst createReceipt = () => {
-  nst invoiceItems = data.invoicereceip.items.filter(
-    tem) => item.cleared !== true
-  
-  ta.invoicereceip.items = invoiceItems;
-  ceiptcreate(data.invoicereceip).then(() => {
-    ta.invoicereceipt = false;
-    loadData();
-    ta.invoicereceip = {
-      voice_id: "",
-      te: "",
-      scription: "",
-      stomer_id: "",
-      nk_account_id: "",
-      nk_reference_number: "",
-      voice_number: "",
-      ems: [],
-    
-  ;
+  const removeRow = (index: number) => {
+    data.invoice_items.splice(index, 1);
+  };
 
+  const previewInvoice = (invoice: any) => {
+    data.invoiceData = invoice;
+    data.invoicedetails = true;
+  };
 
-nst createInvoice = (data: any) => {
-  eate(data).then(() => {
-    loadData();
-    ncelDialog();
-  ;
+  const newInvoiceItems = computed(() => {
+    if (data.invoicereceip) {
+      return data.invoicereceip.items.map((item) => {
+        item.cleared = item.invoicedAmount == item.received ? true : false;
+        return item;
+      });
+    }
+  });
 
+  const searchCustomer = (item: string) => {
+    if (item) {
+      const regSearchTerm = item ? item : data.searchTerm;
+      regSearch({
+        active: true,
+        regSearch: regSearchTerm,
+      }).then((response: AxiosResponse) => {
+        data.customers = response.data.data.data;
+      });
+    } else {
+      loadCustomer();
+    }
+  };
 
-nst getData = (params: any) => {
-  ta.response = params;
-  t(params).then((response: AxiosResponse) => {
-    ta.response = response.data.data;
-    ta.items = response.data.data.data;
-  ;
+  const print = (id: number) => {
+    printInvoice(id);
+  };
 
+  const filterInvoice = () => {
+    if (data.searchTerm.length >= 3) {
+      get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+    if (data.searchTerm.length === 0) {
+      get({ per_page: 10 }).then((response: AxiosResponse) => {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+      });
+    }
+  };
 
-nst addRow = () => {
-  ta.invoice_items.push({
-    voice_item_definition_id: "",
-    ount: "",
-  ;
+  const resetSearchText = () => {
+    data.searchTerm = "";
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = response.data.data.data;
+    });
+  };
 
-
-nst checkDublicate = (value, index) => {
-  nst obj = data.invoice_items.filter(
-    ) => o.invoice_item_definition_id === value
-  
-   (obj.length < 2) {
-     addRow();
-  else {
-    ta.invoice_items.splice(index, 10000);
-  
-
-
-nst removeRow = (index: number) => {
-  ta.invoice_items.splice(index, 1);
-
-
-nst previewInvoice = (invoice: any) => {
-  ta.invoiceData = invoice;
-  ta.invoicedetails = true;
-
-
-nst newInvoiceItems = computed(() => {
-   (data.invoicereceip) {
-    turn data.invoicereceip.items.map((item) => {
-      em.cleared = item.invoicedAmount == item.received ? true : false;
-      turn item;
-    ;
-  
-;
-
-nst searchCustomer = (item: string) => {
-   (item) {
-    nst regSearchTerm = item ? item : data.searchTerm;
-    gSearch({
-      tive: true,
-      gSearch: regSearchTerm,
-    .then((response: AxiosResponse) => {
-      ta.customers = response.data.data.data;
-    ;
-  else {
-    adCustomer();
-  
-
-
-nst print = (id: number) => {
-  intInvoice(id);
-
-
-nst filterInvoice = () => {
-   (data.searchTerm.length >= 3) {
-    t({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
-      nst { from, to, total, current_page, per_page, last_page } =
-        sponse.data.data;
-      ta.response = { from, to, total, current_page, per_page, last_page };
-      ta.items = response.data.data.data;
-    ;
-  
-   (data.searchTerm.length === 0) {
-    t({ per_page: 10 }).then((response: AxiosResponse) => {
-      nst { from, to, total, current_page, per_page, last_page } =
-        sponse.data.data;
-      ta.response = { from, to, total, current_page, per_page, last_page };
-      ta.items = response.data.data.data;
-    ;
-  
-
-
-nst resetSearchText = () => {
-  ta.searchTerm = "";
-  t({ per_page: 10 }).then((response: AxiosResponse) => {
-    nst { from, to, total, current_page, per_page, last_page } =
-      sponse.data.data;
-    ta.response = { from, to, total, current_page, per_page, last_page };
-    ta.items = response.data.data.data;
-  ;
-
-
-turn {
-  ta,
-  tData,
-  eateReceipt,
-  dRow,
-  moveRow,
-  enDialog,
-  ncelDialog,
-  verseInvoice,
-  tInvoiceItemdefinition,
-  dateInvoiceItemDefinition,
-  ve,
-  loadData,
-  move,
-  ncelConfirmDialog,
-  archCategory,
-  eviewInvoice,
-  ncelInvoiceDialog,
-  ncelInvoiceReceipt,
-  enInvoiceReceipt,
-  ADERS,
-  CEIPTHEADERS,
-  nkName,
-  ADERS_INVOICE_DETAILS,
-  wInvoiceItems,
-  wInvoiceItem,
-  mDebts,
-  eckDublicate,
-  archCustomer,
-  anderSearched,
-  int,
-  lterInvoice,
-  setSearchText,
-
+  return {
+    data,
+    getData,
+    createReceipt,
+    addRow,
+    removeRow,
+    openDialog,
+    cancelDialog,
+    reverseInvoice,
+    getInvoiceItemdefinition,
+    updateInvoiceItemDefinition,
+    save,
+    reloadData,
+    remove,
+    cancelConfirmDialog,
+    searchCategory,
+    previewInvoice,
+    cancelInvoiceDialog,
+    cancelInvoiceReceipt,
+    openInvoiceReceipt,
+    HEADERS,
+    RECEIPTHEADERS,
+    bankName,
+    HEADERS_INVOICE_DETAILS,
+    newInvoiceItems,
+    newInvoiceItem,
+    sumDebts,
+    checkDublicate,
+    searchCustomer,
+    reanderSearched,
+    print,
+    filterInvoice,
+    resetSearchText,
+  };
 };
