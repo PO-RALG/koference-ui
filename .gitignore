@@ -31,3 +31,4 @@ pnpm-debug.log*
 *.tar.gz
 /src/components/test
 nyati.yaml
+components.d.ts
