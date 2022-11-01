@@ -28,10 +28,10 @@ const destroy = async (payload: any) => {
 
 const printPdf = (id: number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
-  // const url = `${
-  //   import.meta.env.VITE_APP_SERVER_URL
-  // }/api/v1/activity-costings/1/print?token=${user.token}`;
-  const url = `/api/v1/activity-costings/1/print?token=${user.token}`;
+  const url = `${
+    import.meta.env.VITE_APP_SERVER_URL
+  }/api/v1/activity-costings/1/print?token=${user.token}`;
+  // const url = `/api/v1/activity-costings/1/print?token=${user.token}`;
   return window.open(url);
 };
 
