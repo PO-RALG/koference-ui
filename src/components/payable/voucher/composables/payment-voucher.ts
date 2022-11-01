@@ -1,26 +1,27 @@
-import { reactive, onMounted, computed } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import { AxiosResponse } from "axios";
 
 import {
-  get,
-  find,
-  create,
-  destroy,
-  printPdf,
-  fundByActivity,
-  getWorkflow,
-  fundByActivityFundSource,
   activitiesByFundSource,
   approvePVFacilityService,
+  create,
+  destroy,
+  find,
+  fundByActivity,
+  fundByActivityFundSource,
+  get,
+  getWorkflow,
+  printPdf,
+  requestVoucherApproval,
 } from "../services/payment-voucher.services";
 import stringToCurrency from "@/filters/money-to-number";
 
 import { get as getFundSources } from "@/components/coa/funding-source/services/funding-sources";
 import {
-  PaymentVoucher,
   Account,
-  VOUCHER_TYPE,
   Payable,
+  PaymentVoucher,
+  VOUCHER_TYPE,
 } from "../types/PaymentVoucher";
 import { get as getSupplier } from "@/components/payable/supplier/services/supplier.services";
 import { get as getActivity } from "@/components/planning/activity/services/activity.service";
@@ -41,7 +42,9 @@ export const usePaymentVoucher = (): any => {
   const data = reactive({
     title: "Payment Vouchers",
     selectedGfsCodes: null,
+    approvalRequestDialog: false,
     valid: false,
+    approveButton: false,
     isOpen: false,
     node: null,
     response: {},
@@ -137,11 +140,6 @@ export const usePaymentVoucher = (): any => {
 
   onMounted(() => {
     getTableData();
-
-    // getWorkflow(data.params).then((response: AxiosResponse) => {
-    //   const sendJson = JSON.stringify(response.data);
-    //   localStorage.setItem("WORK_FLOW", sendJson);
-    // });
   });
 
   const filterVoucher = () => {
@@ -187,16 +185,28 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
-  const getTableData = () => {
+  const setApprovalStatus = (item: Record<string, any>) => {
+    const { ends_on_facility, facility_approved, council_approved } = item;
+    if (!!ends_on_facility && !!facility_approved) {
+      return true;
+    } else if (!!ends_on_facility && !!facility_approved) {
+      return false;
+    } else {
+      return !!council_approved;
+    }
+  };
+
+  const getTableData = async () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
       // data.items = response.data.data.data;
-      data.items = response.data.data.data.map((approve: any) => ({
-        ...approve,
-        approve: approve.approves.find(
+      data.items = response.data.data.data.map((entry: any) => ({
+        ...entry,
+        approve: entry.approves.find(
           (flow) => flow.workflow == "PAYMENT_VOUCHER"
         ),
+        isApproved: setApprovalStatus(entry.approves[0]),
       }));
       data.itemsToFilter = response.data.data.data;
       data.response = {
@@ -255,11 +265,12 @@ export const usePaymentVoucher = (): any => {
     let currentFlowable = null;
     const approves = data.formData.approves;
 
-    approves.forEach(function (flowable) {
+    approves.forEach((flowable) => {
       if (flowable.facility_appoved == null) {
         currentFlowable = flowable;
       }
     });
+
     if (currentFlowable == null) {
       return false;
     }
@@ -289,6 +300,11 @@ export const usePaymentVoucher = (): any => {
     data.deletemodal = false;
   };
 
+  const cancelApprovalRequestDialog = () => {
+    data.approvalRequestDialog = false;
+    data.formData = {} as PaymentVoucher;
+  };
+
   const remove = () => {
     destroy(data.itemtodelete).then(() => {
       data.deletemodal = false;
@@ -296,7 +312,7 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
-  const save = () => {
+  const save = async () => {
     const payableData = [];
     const payableItems = data.payables;
     for (let i = 0; i < payableItems.length; i++) {
@@ -326,6 +342,7 @@ export const usePaymentVoucher = (): any => {
     data.gfsCodes = [];
     data.modal = !data.modal;
   };
+
   const loadDepositAccounts = async () => {
     const params = {
       gl_account_type: "DEPOSIT",
@@ -581,6 +598,18 @@ export const usePaymentVoucher = (): any => {
     return data.voucherType == VOUCHER_TYPE.DEPOSIT;
   });
 
+  const submitApprovalRequest = async () => {
+    const id: number = data.formData.id;
+    await requestVoucherApproval(id);
+    data.approvalRequestDialog = false;
+    await getTableData();
+  };
+
+  const requestApproval = (voucher) => {
+    data.formData = voucher;
+    data.approvalRequestDialog = true;
+  };
+
   const normalType = VOUCHER_TYPE.NORMAL;
   const mmamaType = VOUCHER_TYPE.MMAMA;
   const depositType = RECEIPT_TYPE.DEPOSIT;
@@ -593,6 +622,7 @@ export const usePaymentVoucher = (): any => {
     save,
     remove,
     cancelConfirmDialog,
+    cancelApprovalRequestDialog,
     getData,
     searchSuppliers,
     addPayable,
@@ -624,5 +654,7 @@ export const usePaymentVoucher = (): any => {
     cancelGenericConfirmDialog,
     approvePVFacility,
     approvePVFacilityComplete,
+    requestApproval,
+    submitApprovalRequest,
   };
 };
