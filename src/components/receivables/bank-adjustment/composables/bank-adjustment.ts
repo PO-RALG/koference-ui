@@ -121,7 +121,7 @@ export const useBankAdjustment = (): any => {
 
   const approveBAFacility = (model: any) => {
     data.formData2 = model;
-    data.modalTitle = "Accept to Approve this Bank Adjustment";
+    data.modalTitle = "Accept to Verify this Bank Adjustment";
     data.genericDialogAction = approveBAFacilityComplete;
     data.genericConfirmModel = true;
   };

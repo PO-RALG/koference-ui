@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const get = async (params: any) => {
-  return await axios.get("/api/v1/activity-costings",  {params});
+  return await axios.get("/api/v1/activity-costings", { params });
 };
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/activity-costings/`, {
@@ -26,4 +26,13 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/activity-costings/` + payload);
 };
 
-export { get, find, create, update, destroy, search };
+const printPdf = (id: number) => {
+  const user = JSON.parse(localStorage.getItem("FFARS_USER"));
+  // const url = `${
+  //   import.meta.env.VITE_APP_SERVER_URL
+  // }/api/v1/activity-costings/1/print?token=${user.token}`;
+  const url = `/api/v1/activity-costings/1/print?token=${user.token}`;
+  return window.open(url);
+};
+
+export { get, find, create, update, destroy, search, printPdf };

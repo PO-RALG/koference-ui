@@ -24,9 +24,28 @@
         <template v-slot:[`item.approve`]="{ item }">
           <span
             v-if="item && item.approve && !item.approve.facility_approved"
-            >{{ "Waiting for Approval" }}</span
+            >{{ "Waiting for Verification" }}</span
           >
-          <span v-else>{{ "Approved" }}</span>
+          <span
+            v-if="
+              item &&
+              item.approve &&
+              item.approve.facility_approved &&
+              !item.approve.council_approved
+            "
+            >{{ "Waiting for Approval from Council" }}</span
+          >
+          <span
+            v-if="
+              item &&
+              item.approve &&
+              item.approve.facility_approved &&
+              item.approve.council_approved
+            "
+            >{{ "Approved" }}</span
+          >
+
+          <!-- <span v-else>{{ "Approved" }}</span> -->
         </template>
         <template v-slot:[`item.date`]="{ item }">
           <span>{{ item.date | format("DD/MM/YYYY") }}</span>
@@ -63,7 +82,7 @@
             text
           >
             <v-icon>mdi-check-decagram</v-icon>
-            APPROVE
+            Verify
           </v-btn>
         </template>
         <template v-slot:footer>

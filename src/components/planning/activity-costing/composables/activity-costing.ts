@@ -7,6 +7,7 @@ import {
   update,
   destroy,
   search,
+  printPdf,
 } from "../services/activity-costing.service";
 import { ActivityCosting } from "../types/ActivityCosting";
 import { get as FinancialYears } from "../../../setup/financial-year/services/financialyear.service";
@@ -232,8 +233,13 @@ export const useActivityCosting = (): any => {
     }
   };
 
+  const printActivityCosting = () => {
+    printPdf();
+  };
+
   return {
     data,
+    printActivityCosting,
     openDialog,
     cancelDialog,
     openConfirmDialog,
