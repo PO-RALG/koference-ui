@@ -206,7 +206,7 @@ export const usePaymentVoucher = (): any => {
         approve: entry.approves.find(
           (flow) => flow.workflow == "PAYMENT_VOUCHER"
         ),
-        isApproved: setApprovalStatus(entry.approves[0]),
+        isApproved: entry.approves.length? setApprovalStatus(entry.approves[0]) : false,
       }));
       data.itemsToFilter = response.data.data.data;
       data.response = {
@@ -367,7 +367,6 @@ export const usePaymentVoucher = (): any => {
   };
 
   const getSupplierData = (voucher: any) => {
-    console.log("voucherType", voucher);
     if (voucher == 4) {
       data.suppliers = [];
 
