@@ -151,9 +151,11 @@
                     :rules="[checkNumberValidate()]"
                     v-bind:focus="data.focus"
                     v-on:focus="data.focus = false"
+                    @input="uniqueCheckNumber(data.formData.check_number)"
                     label="Check Number"
                     outlined
                     v-mask="'##########'"
+                    :error-messages="data.checkNumberError"
                   />
                 </v-col>
                 <v-col
@@ -168,6 +170,8 @@
                     label="ID number"
                     outlined
                     :rules="data.idRules"
+                    @input="uniqueIdNumber(data.formData.id_number)"
+                    :error-messages="data.idNumberError"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12" class="mt-n8">
@@ -286,6 +290,8 @@ export default defineComponent({
       filterSupplier,
       resetSearchText,
       checkNumberValidate,
+      uniqueCheckNumber,
+      uniqueIdNumber,
     } = useSupplier();
 
     return {
@@ -303,6 +309,8 @@ export default defineComponent({
       filterSupplier,
       resetSearchText,
       checkNumberValidate,
+      uniqueCheckNumber,
+      uniqueIdNumber,
     };
   },
 });

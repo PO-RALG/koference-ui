@@ -22,7 +22,8 @@ export const useSupplier = (): any => {
     node: null,
     response: {},
     modalTitle: "",
-    fieldResponse: {},
+    checkNumberError: [],
+    idNumberError: [],
     headers: [
       {
         text: "Name",
@@ -265,31 +266,34 @@ export const useSupplier = (): any => {
   };
 
   const checkNumberValidate = () => {
-    return(v: string) =>{
+    return (v: string) => {
       if (!v) {
-        return !!v || "Number is required"
-      }else if(v && v.length <= 10){
-        search({check_number:v})
-        .then((response: AxiosResponse) => {
-          response.data.data;
-          toa(response.data.data)
-          if (v === '121212') {
-            return(v && v !== '121212') || "Check number exist"
-          }
-        });
-        
-        console.log(data.fieldResponse);
+        return !!v || `Check number is required`;
+      }else if (v && v.length <= 10){
         return(v && v.length <= 10) || "Number must be less than 10 characters"
-        
-      }
+      } 
+    } 
+  };
+
+  const uniqueCheckNumber =  async (input:string) => {
+    if (input.length > 3) {
+      const res=  await search({check_number: input});
+      const result = res.data.data;
+      data.checkNumberError = result.data.length > 0 ? ["Check number already exist"]:[];
+    }else{
+      data.checkNumberError = [];
     }
   };
-  const toa =  async (params:any) => {
-    const x = await params
-    data.fieldResponse = x
-    // console.log(x)
-    return x
-  }
+
+  const uniqueIdNumber =  async (input:string) => {
+    if (input.length > 3) {
+      const res=  await search({id_number: input});
+      const result = res.data.data;
+      data.idNumberError = result.data.length > 0 ? ["ID number already exist"]:[];
+    }else{
+      data.idNumberError = [];
+    }
+  };
 
   return {
     data,
@@ -306,5 +310,7 @@ export const useSupplier = (): any => {
     filterSupplier,
     resetSearchText,
     checkNumberValidate,
+    uniqueCheckNumber,
+    uniqueIdNumber,
   };
 };
