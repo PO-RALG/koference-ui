@@ -108,7 +108,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useApprovalStatus } from "./composables/use-status";
 
 export default defineComponent({

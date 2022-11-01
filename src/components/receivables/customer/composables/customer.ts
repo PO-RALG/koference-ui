@@ -1,4 +1,4 @@
-import { reactive, onMounted, computed } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "vue";
 import { AxiosResponse } from "axios";
 
 import { Customer } from "../types/Customer";
@@ -23,7 +23,19 @@ export const useCustomer = (): any => {
     searchTerm: "",
     modalTitle: "",
     headers: [
+      {
+        text: "No",
+        align: "start",
+        sortable: false,
+        value: "index",
+      },
       { text: "Name", align: "start", sortable: false, value: "name" },
+      {
+        text: "Customer Code",
+        align: "start",
+        sortable: false,
+        value: "customer_code",
+      },
       { text: "Email", align: "start", sortable: false, value: "email" },
 
       { text: "Address", align: "start", sortable: false, value: "address" },
@@ -69,6 +81,21 @@ export const useCustomer = (): any => {
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
     });
+  });
+
+  const customerFiltered = computed(() => {
+    return data.items
+      .map((data: any) => ({
+        ...data,
+      }))
+      .sort(function (a, b) {
+        if (a > b) return 1;
+        return -1;
+      })
+      .map((item, index) => ({
+        ...item,
+        index: ++index,
+      }));
   });
 
   const filterCustomers = () => {
@@ -312,5 +339,6 @@ export const useCustomer = (): any => {
     cancelRestoreDialog,
     restore,
     trushedNew,
+    customerFiltered,
   };
 };

@@ -3,13 +3,9 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        v-if="can('create', 'User')"
-        color="warning"
-        @click="openTrushedDialog"
-      >
+      <v-btn v-if="can('create', 'User')" color="" @click="openTrushedDialog">
         <v-icon>mdi-delete-empty-outline</v-icon>
-        Restore Trushed Users
+        Restore Trashed Users
       </v-btn>
       <v-btn
         color="primary"
@@ -291,11 +287,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useUser } from "./composables/user";
 import UserForm from "./forms/UserForm.vue";
 
 export default defineComponent({
+  name: "MainUserComponent",
   components: {
     UserForm,
   },

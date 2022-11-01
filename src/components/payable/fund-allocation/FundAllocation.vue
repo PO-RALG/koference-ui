@@ -35,8 +35,11 @@
               </template>
             </v-select>
           </v-col>
-          <v-col cols="6" sm="12" md="1" v-if="data.items.length">
+        </v-card-title>
+        <v-card-title>
+          <v-col cols="6" sm="12" md="3" v-if="data.items.length">
             <v-text-field
+              v-mask="toMoney"
               v-model="data.itemUnallocated.carryover"
               label="Carryover Fund"
               outlined
@@ -45,6 +48,7 @@
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field
+              v-mask="toMoney"
               v-model="data.itemUnallocated.current"
               label="Current Fund"
               disabled
@@ -53,6 +57,7 @@
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field
+              v-mask="toMoney"
               v-model="data.itemUnallocated.totalFund"
               label="Total Fund"
               disabled
@@ -61,28 +66,32 @@
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field
+              v-mask="toMoney"
               v-model="data.allocated"
               label="Total Allocated"
               outlined
               disabled
             ></v-text-field>
           </v-col>
-          <v-col cols="6" sm="12" md="2" v-if="data.items.length">
+          <v-col cols="6" sm="12" md="3" v-if="data.items.length">
             <v-text-field
+              v-mask="toMoney"
               v-model="data.running_balance"
               label="Unallocated Amount"
               disabled
               outlined
             >
               <v-icon
-                v-if="data.running_balance > 0"
+                v-if="removeComma(data.running_balance) > 0"
                 slot="append"
                 color="green"
                 >mdi-check</v-icon
               >
-              <v-icon v-if="data.running_balance < 0" slot="append" color="red"
-                >mdi-close</v-icon
-              >
+              <v-icon 
+                v-if="removeComma(data.running_balance) < 0" 
+                slot="append" 
+                color="red"
+              >mdi-close</v-icon>
             </v-text-field>
           </v-col>
         </v-card-title>
@@ -114,11 +123,11 @@
                   </td>
                   <td class="pt-5">
                     <v-text-field
+                      v-mask="toNegativeMoney"
                       dense
                       outlined
                       :rules="[
-                        maxAllocation(item.budget - item.allocation),
-                        maxAvailable(item.allocation - item.totalExpenditure),
+                        maxAllocation(item.budget ,item.allocation,item.totalExpenditure)
                       ]"
                       v-model="item.allocation_amount"
                       @input="newAllocation(item.allocation_amount)"
@@ -132,7 +141,12 @@
         </v-card-text>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="save" v-if="data.items.length">
+          <v-btn 
+            color="primary" 
+            @click="save" 
+            v-if="data.items.length"
+            :disabled="!data.valid"
+          >
             save
           </v-btn>
         </v-card-actions>
@@ -142,8 +156,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useFundAllocation } from "./composables/fund-allocation";
+import { toMoney } from "@/filters/CurrencyFormatter";
+import { toNegativeMoney } from "@/filters/NegativeCurrencyFormatter";
 
 export default defineComponent({
   name: "FundAllocation",
@@ -155,7 +171,7 @@ export default defineComponent({
       searchBudgets,
       newAllocation,
       maxAllocation,
-      maxAvailable,
+      removeComma,
     } = useFundAllocation();
 
     return {
@@ -165,7 +181,9 @@ export default defineComponent({
       searchBudgets,
       newAllocation,
       maxAllocation,
-      maxAvailable,
+      toMoney,
+      toNegativeMoney,
+      removeComma,
     };
   },
 });

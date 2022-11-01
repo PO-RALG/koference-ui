@@ -3,6 +3,9 @@ import axios from "axios";
 const get = async (params: any) => {
   return await axios.get("/api/v1/payments", { params });
 };
+const getVouchers = async (params: any) => {
+  return await axios.get("/api/v1/vouchers", { params });
+};
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/payments/`, {
     params: {
@@ -31,8 +34,11 @@ const destroy = async (payload: any) => {
 
 const printPdf = (id: number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
+  // const url = `${
+  //   import.meta.env.VITE_APP_SERVER_URL
+  // }/api/v1/payments/${id}/print?token=${user.token}`;
   const url = `/api/v1/payments/${id}/print?token=${user.token}`;
   return window.open(url);
 };
 
-export { get, find, create, update, destroy, search, printPdf };
+export { get, find, create, update, destroy, search, printPdf, getVouchers };

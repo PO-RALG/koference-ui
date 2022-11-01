@@ -16,7 +16,7 @@ import {
   defineComponent,
   onMounted,
   computed,
-} from '@vue/composition-api'
+} from 'vue'
 import store from '@/store'
 import axios from 'axios'
 

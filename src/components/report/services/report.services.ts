@@ -2,7 +2,8 @@ import axios from "axios";
 import { getCurrentUser } from "@/middleware";
 
 const API = "/api/v1/reports";
-const API2 = "localhost:8000/api/v1/reports";
+const APINEWREPORT =
+  "https://ffars.tamisemi.go.tz/jasperserver/rest_v2/reports/Reports/journal_voucher.pdf?journal_voucher_id=17";
 
 const getReports = async (payload) => {
   return axios.get(API, { params: payload });
@@ -26,6 +27,29 @@ const serializeParams = (params: any) => {
     }
   }
   return str.join("&");
+};
+
+const printReportJasper = async () => {
+  const params = {
+    paramEmail: "",
+  };
+
+  const file = await axios
+    .get(APINEWREPORT, {
+      params: params,
+      responseType: "stream",
+      auth: {
+        username: "jasperadmin",
+        password: "jasperIsPrintingReports",
+      },
+    })
+    .then(function (response) {
+      console.log(response.data);
+    });
+  // .then((response) => {
+  //   console.log("ressssss", response);
+  // });
+  // window.open("data:application/pdf," + encodeURI(res));
 };
 
 const printReport = async (reportID: number, payload?: any) => {
@@ -79,5 +103,6 @@ export {
   fetchReportParams,
   getParams,
   printReport,
+  printReportJasper,
   updateQuery,
 };

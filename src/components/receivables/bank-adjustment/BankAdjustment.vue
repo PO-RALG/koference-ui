@@ -3,7 +3,11 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="openDialog(data.formData)">
+      <v-btn
+        v-if="can('create', 'BankAdjustment')"
+        color="primary"
+        @click="openDialog(data.formData)"
+      >
         <v-icon>mdi-plus</v-icon>
         Add Bank Adjustment
       </v-btn>
@@ -37,7 +41,7 @@
           <span>{{ item.amount }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip bottom>
+          <v-tooltip v-if="can('delete', 'BankAdjustment')" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on" @click="reverse(item.id)"
                 >mdi-trash-can-outline</v-icon
@@ -301,7 +305,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useBankAdjustment } from "./composables/bank-adjustment";
 import { toMoney } from "@/filters/CurrencyFormatter";
 

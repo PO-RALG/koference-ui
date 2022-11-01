@@ -1,15 +1,16 @@
-import { reactive, watch, computed, onMounted } from "@vue/composition-api";
+import { computed, onMounted, reactive, watch } from "vue";
 import { AxiosResponse } from "axios";
-import { useRoute } from "vue2-helpers/vue-router";
 import router from "@/router";
 import startCase from "lodash/startCase";
 
 import {
-  findReport,
   fetchReportParams,
+  findReport,
   printReport,
+  printReportJasper,
 } from "../services/report.services";
 import { find } from "@/components/admin-area/admin-area/services/admin-area-services";
+import { useRoute } from "@/helpers/RouterHelper";
 
 export const useReportDetail = (props, { root }) => {
   const route = useRoute();
@@ -51,7 +52,7 @@ export const useReportDetail = (props, { root }) => {
   });
 
   onMounted(() => {
-    data.location_id = root.$route.params.location_id;
+    data.location_id = route.params.location_id;
 
     const user: any = localStorage.getItem("FFARS_USER");
     const userObj = JSON.parse(user);
@@ -63,8 +64,8 @@ export const useReportDetail = (props, { root }) => {
   });
 
   const init = () => {
-    const location_id = root.$route.params.location_id;
-    const report_id = root.$route.query.report_id;
+    const location_id = route.params.location_id;
+    const report_id = route.query.report_id;
     if (report_id) {
       //console.log("report id", report_id);
       find(location_id)
@@ -170,7 +171,6 @@ export const useReportDetail = (props, { root }) => {
           .filter((p: any) => p.name !== "source_path")
           .filter((p: any) => p.name !== "location_id")
           .filter((p: any) => p.name !== "facility_id")
-
           //.filter((p: any) => p.required === 1)
           .map((param: any, idx: number) => ({
             ...param,
@@ -187,7 +187,7 @@ export const useReportDetail = (props, { root }) => {
   });
 
   watch(
-    () => root.$route.query.report_id,
+    () => route.query.report_id,
     async (newReportID) => {
       console.log("report id", newReportID);
       if (newReportID) {
@@ -204,9 +204,14 @@ export const useReportDetail = (props, { root }) => {
     printReport(data.currentReport.id, data.formData);
   };
 
+  const printFromServer = () => {
+    printReportJasper();
+  };
+
   return {
     data,
     print,
+    printFromServer,
     reportParams,
     isFacility,
   };

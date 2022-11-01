@@ -4,6 +4,7 @@ export interface PaymentVoucher {
   supplier_id: number;
   description: string;
   payables: any[];
+  is_mmama: boolean;
   approves: any[];
 }
 export interface Account {

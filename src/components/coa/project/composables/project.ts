@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted } from "vue";
 import {
   get,
   create,

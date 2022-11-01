@@ -134,7 +134,7 @@
 </template>
 
 <script lang="ts">
-import { computed, reactive, defineComponent } from "@vue/composition-api";
+import { computed, reactive, defineComponent } from "vue";
 import store from "@/store";
 
 export default defineComponent({

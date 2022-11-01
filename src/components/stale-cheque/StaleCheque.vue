@@ -143,7 +143,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useStaleCheque } from "./composables/stale-check";
 export default defineComponent({
   name: "ManageInvoice",

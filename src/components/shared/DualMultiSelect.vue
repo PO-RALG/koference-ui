@@ -110,7 +110,7 @@ import {
   PropType,
   onMounted,
   defineComponent,
-} from "@vue/composition-api";
+} from "vue";
 
 import _ from "lodash";
 

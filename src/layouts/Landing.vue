@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "@vue/composition-api";
+import { defineComponent, reactive, onMounted } from "vue";
 import { createNamespacedHelpers } from "vuex-composition-helpers";
 const { useState } = createNamespacedHelpers("Drawer");
 import store from "@/store";
@@ -48,7 +48,6 @@ export default defineComponent({
 
     // methods
     const toggleDrawer = () => {
-      console.log(data.drawer);
       data.drawer
         ? store.dispatch("Drawer/CLOSE")
         : store.dispatch("Drawer/OPEN");

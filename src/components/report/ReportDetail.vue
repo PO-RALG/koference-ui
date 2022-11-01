@@ -89,20 +89,19 @@
 </template>
 
 <script charset="utf-8">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useReportDetail } from "./composables/use-report-detail";
 export default defineComponent({
   setup(props, context) {
-    const { data, reportParams, print, isFacility } = useReportDetail(
-      props,
-      context
-    );
+    const { data, reportParams, print, printFromServer, isFacility } =
+      useReportDetail(props, context);
 
     return {
       data,
       reportParams,
       isFacility,
       print,
+      printFromServer,
     };
   },
 });

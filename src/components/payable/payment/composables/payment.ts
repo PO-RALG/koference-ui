@@ -1,4 +1,4 @@
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "vue";
 import { AxiosResponse } from "axios";
 import moment from "moment";
 
@@ -8,6 +8,7 @@ import {
   destroy,
   find,
   printPdf,
+  getVouchers,
 } from "../services/payment.services";
 import { Payment } from "../types/Payment";
 import { find as findPaymentVoucher } from "@/components/payable/voucher/services/payment-voucher.services";
@@ -106,6 +107,7 @@ export const usePayment = (): any => {
     supplier: [],
     itemTodelete: "",
     itemToApprove: "",
+    vouchers: [],
   });
 
   onMounted(() => {
@@ -240,7 +242,17 @@ export const usePayment = (): any => {
     getBankAccounts({ per_page: 10 }).then((response: AxiosResponse) => {
       data.bankAccounts = response.data.data.data;
     });
+    getVouchers({ per_page: 1000 }).then((response: AxiosResponse) => {
+      data.vouchers = response.data.data.data;
+    });
   };
+
+  const newVouchers = computed(() => {
+    return data.vouchers.filter(
+      (voucher) => parseFloat(voucher.amount_paid) < 1
+      // (voucher) => parseFloat(voucher.amount) > parseFloat(voucher.amount_paid)
+    );
+  });
 
   const getPaymentVoucherData = () => {
     getPaymentVouchers({ per_page: 10 }).then((response: AxiosResponse) => {
@@ -357,7 +369,8 @@ export const usePayment = (): any => {
 
   const mappedVouchers = (vouchers: any) => {
     return vouchers.filter(
-      (voucher) => parseFloat(voucher.amount) > parseFloat(voucher.amount_paid)
+      (voucher) => parseFloat(voucher.amount) > 0
+      // (voucher) => parseFloat(voucher.amount) > parseFloat(voucher.amount_paid)
     );
   };
 
@@ -381,5 +394,6 @@ export const usePayment = (): any => {
     filterPayment,
     resetSearchText,
     mappedVouchers,
+    newVouchers,
   };
 };

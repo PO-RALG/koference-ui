@@ -152,7 +152,7 @@
                   {{ ". All right reserved." }}
                 </small>
                 <small class="white--text">
-                  <strong>{{ " FFARS v 2.0 ." }}</strong>
+                  <strong>{{ " FFARS v2.0 ." }}</strong>
                 </small>
                 <small class="white--text">
                   {{
@@ -174,7 +174,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted } from "vue";
 import { authenticate, setUser, getAppName, setAppName } from "./services";
 import { AxiosResponse } from "axios";
 import router from "@/router";

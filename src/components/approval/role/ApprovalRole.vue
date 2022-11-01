@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useApprovalRole } from "./composables/use-approval-role";
 
 export default defineComponent({

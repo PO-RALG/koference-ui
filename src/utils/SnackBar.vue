@@ -16,7 +16,7 @@
 <script>
 import store from "@/store";
 
-import { defineComponent, watch, reactive } from "@vue/composition-api";
+import { defineComponent, watch, reactive } from "vue";
 export default defineComponent({
   setup() {
     let data = reactive({

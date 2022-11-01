@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import { FundSources } from "../types";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
-import { reactive, onMounted, computed } from "@vue/composition-api";
+import { reactive, onMounted, computed } from "vue";
 import {
   get,
   create,

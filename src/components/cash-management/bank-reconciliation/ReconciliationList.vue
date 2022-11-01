@@ -1,21 +1,22 @@
 <template>
   <div>
-    <v-card-actions class="pa-0">
-      <h2> Bank Reconciliation</h2>
+    <v-card-actions :class="headerPadding">
+      <h2>Bank Reconciliation</h2>
       <v-spacer></v-spacer>
       <v-btn
         color="primary"
         @click="navigateBack()"
+        v-if="can('addBalance', 'Reconciliation')"
       >
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
     </v-card-actions>
-    <v-card class="elevation-0">
+    <v-card :class="cardPadding">
       <v-divider></v-divider>
       <v-data-table
         v-if="data.ENTRIES"
-        class="elevation-2"
+        :class="elevation"
         :headers="data.HEADERS"
         :items="entries"
         hide-default-footer
@@ -23,6 +24,49 @@
       >
         <template v-slot:[`item.confirmed`]="{ item }">
           <span>{{ item.confirmed ? "RECONCILED" : "NOT RECONCILED" }}</span>
+        </template>
+
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-tooltip bottom v-if="can('unlockReport', 'Reconciliation')">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-if="!item.confirmed"
+                medium
+                color="warning"
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-lock-open
+              </v-icon>
+              <v-icon
+                v-else
+                medium
+                color="success"
+                v-bind="attrs"
+                v-on="on"
+                @click="openUnlockDialog(item)"
+              >
+                mdi-lock
+              </v-icon>
+            </template>
+            <span>{{ !item.confirmed ? "" : "UnLock Reconciliation" }}</span>
+          </v-tooltip>
+
+          <v-tooltip bottom v-if="can('reconcileEntries', 'Reconciliation')">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-if="!item.confirmed"
+                medium
+                color="warning"
+                v-bind="attrs"
+                v-on="on"
+                @click="reconcilileReport(item)"
+              >
+                mdi-lock-open
+              </v-icon>
+            </template>
+            <span>{{ !item.confirmed && "Reconcile Report" }}</span>
+          </v-tooltip>
         </template>
 
         <template v-slot:footer>
@@ -34,23 +78,49 @@
         </template>
       </v-data-table>
     </v-card>
+    <ConfirmDialog
+      @rejectFunction="closeUnlockDialog"
+      @acceptFunction="unlock"
+      :message="'Are you sure you want to unlock?'"
+      :isOpen="reconciliationData.isUnlockOpen"
+      :title="`Unlock Report`"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  onMounted,
-  reactive,
-  computed,
-} from "@vue/composition-api";
+import { defineComponent, onMounted, reactive, computed } from "vue";
 import { get } from "./services/bank-reconciliation-service";
 import { AxiosResponse } from "axios";
 import moment from "moment";
 import router from "@/router";
+import { useBankReconciliation } from "./composables/use-reconciliation";
 
 export default defineComponent({
+  props: {
+    headerPadding: {
+      type: String,
+      required: false,
+      default: "pa-0",
+    },
+    cardPadding: {
+      type: String,
+      required: false,
+      default: "pa-0",
+    },
+    elevation: {
+      type: String,
+      required: false,
+      default: "elevation-2",
+    },
+  },
   setup(context) {
+    const {
+      data: reconciliationData,
+      closeUnlockDialog,
+      openUnlockDialog,
+      unlock,
+    } = useBankReconciliation(context);
 
     const data = reactive({
       HEADERS: [
@@ -70,10 +140,12 @@ export default defineComponent({
           value: "adjusted_balance",
         },
         { text: "Status", value: "confirmed", sortable: true },
+        { text: "Actions", value: "actions", sortable: false },
       ],
       response: {},
       ENTRIES: [],
       rows: ["10", "20", "50", "60", "100"],
+      unlockDialogOpen: false,
     });
 
     onMounted(() => {
@@ -88,6 +160,7 @@ export default defineComponent({
     const entries = computed(() => {
       return data.ENTRIES.map((entry) => ({
         ...entry,
+        entry_date: entry.month,
         month: formatDate(entry.month),
       }));
     });
@@ -116,11 +189,26 @@ export default defineComponent({
       router.push({ path: `/bank-reconciliation` });
     };
 
+    const reconcilileReport = (item) => {
+      router.push({
+        path: `/bank-reconciliation`,
+        query: {
+          date: moment(item.entry_date).format("YYYY-MM-DD"),
+          bank_account_id: item.bank_account.id,
+        },
+      });
+    };
+
     return {
       data,
       entries,
       fetchData,
       navigateBack,
+      reconciliationData,
+      closeUnlockDialog,
+      openUnlockDialog,
+      unlock,
+      reconcilileReport,
     };
   },
 });

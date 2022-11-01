@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useGLTransaction } from "./composables/gl-transaction";
 
 export default defineComponent({

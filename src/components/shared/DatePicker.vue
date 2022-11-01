@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { defineComponent, reactive } from "@vue/composition-api";
+import { defineComponent, reactive } from "vue";
 export default defineComponent({
   props: {
     value: {

@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useChangePasswordDialog } from "./composables/change-password";
 
 export default defineComponent({

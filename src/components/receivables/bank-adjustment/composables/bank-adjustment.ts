@@ -1,4 +1,4 @@
-import { computed, onMounted, reactive } from "@vue/composition-api";
+import { computed, onMounted, reactive } from "vue";
 import { AxiosResponse } from "axios";
 
 import { BankAdjustment } from "../types/BankAdjustment";
@@ -167,16 +167,24 @@ export const useBankAdjustment = (): any => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
-      console.log(response);
       data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data;
+      data.items = response.data.data.data.map((approve: any) => ({
+        ...approve,
+        approve: approve.approves.find(
+          (flow) => flow.workflow == "BANK_ADJUSTMENT"
+        ),
+      }));
+      data.itemsToFilter = response.data.data.data;
     });
+
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
     });
+
     getGlAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.glAccounts = response.data.data.data;
     });
+
     getFundingSourceList({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.fundingsources = response.data.data.data;
     });

@@ -1,12 +1,12 @@
-import { reactive, onMounted, computed, set } from "@vue/composition-api";
+import { computed, onMounted, reactive, set } from "vue";
 import { AxiosResponse } from "axios";
 import {
-  get,
   createArea,
-  updateArea,
-  deleteArea,
-  getChildren,
   createAreaFromPlanrep,
+  deleteArea,
+  get,
+  getChildren,
+  updateArea,
 } from "../services/admin-area-services";
 
 import { get as getLevels } from "../../level/services/level-services";

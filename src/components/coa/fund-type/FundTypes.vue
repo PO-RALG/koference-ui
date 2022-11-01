@@ -110,7 +110,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useFundType } from "./composables/fund-type";
 
 export default defineComponent({

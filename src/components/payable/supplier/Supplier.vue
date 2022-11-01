@@ -215,7 +215,7 @@
                     :rules="data.bankAccountNumberRules"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="12" sm="12" class="mt-n8 mb-n8">
+                <v-col cols="12" md="12" sm="12" class="pt-6">
                   <v-checkbox
                     v-model="data.formData.ismmama"
                     label="Check if Supplier is used for M MAMA"
@@ -223,7 +223,6 @@
                 </v-col>
               </v-row>
             </v-container>
-            <!--<pre>{{ data.formData }}</pre>-->
           </v-form>
         </ModalBody>
       </template>
@@ -262,7 +261,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useSupplier } from "./composables/supplier";
 import SimpleMask from "@/components/shared/masks/SimpleMask.vue";
 

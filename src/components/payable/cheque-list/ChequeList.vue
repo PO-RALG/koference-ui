@@ -164,7 +164,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useChequeList } from "./composables/cheque-list";
 
 export default defineComponent({

@@ -126,7 +126,7 @@
                   ></v-text-field>
                 </v-col>
                 <pre></pre>
-                <v-col cols="12" md="6" class="mt-n8 mb-n8">
+                <v-col cols="12" md="12" class="mt-n8">
                   <v-autocomplete
                     v-model="data.formData.funding_source_id"
                     label="Funding Sources"
@@ -139,16 +139,12 @@
                     @change="loadGfsCodes($event)"
                   ></v-autocomplete>
                 </v-col>
-                <v-col cols="12" md="6" class="mt-n8 mb-n8">
+                <v-col cols="12" md="12" class="mt-n8 mb-n8">
                   <v-autocomplete
                     v-model="data.formData.gfs_code_id"
                     label="Gfs Codes"
                     outlined
-                    :items="
-                      data.fundsourcesGfscodes[0]
-                        ? data.fundsourcesGfscodes[0].gfs
-                        : []
-                    "
+                    :items="newfundsourceGfscodes ? newfundsourceGfscodes : []"
                     :item-text="'name'"
                     item-value="id"
                     :item-divider="true"
@@ -191,7 +187,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useInvoiceDefinition } from "./composables/invoice-definition";
 
 export default defineComponent({
@@ -216,6 +212,7 @@ export default defineComponent({
       loadGfsCodes,
       filterItemDefinition,
       resetSearchText,
+      newfundsourceGfscodes,
     } = useInvoiceDefinition();
 
     return {
@@ -237,6 +234,7 @@ export default defineComponent({
       loadGfsCodes,
       filterItemDefinition,
       resetSearchText,
+      newfundsourceGfscodes,
     };
   },
 });

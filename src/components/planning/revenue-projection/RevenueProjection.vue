@@ -51,6 +51,9 @@
             </v-row>
           </v-card-title>
         </template>
+        <template v-slot:[`item.amount`]="{ item }">
+          {{ item.amount | toCurrency() }}
+        </template>
         <template v-slot:footer>
           <Paginate
             :params="data.response"
@@ -184,7 +187,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useRevenueProjection } from "./composables/revenue-projection";
 
 export default defineComponent({

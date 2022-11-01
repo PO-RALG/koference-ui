@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { FundTypes } from "../types";
-import { reactive, onMounted } from "@vue/composition-api";
+import { reactive, onMounted } from "vue";
 import { get, create, update, destroy, search } from "../service/fund-types.service";
 
 export const useFundType = (): any => {

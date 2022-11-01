@@ -161,7 +161,7 @@
             <v-radio-group v-model="data.voucherType" row @change="resetData">
               <v-radio label="NORMAL VOUCHER" :value="normalType"></v-radio>
               <v-radio label="DEPOSIT VOUCHER" :value="depositType"></v-radio>
-              <v-radio label="M MAMA VOUCHER" :value="mmamaType"></v-radio>
+              <!-- <v-radio label="M MAMA VOUCHER" :value="mmamaType"></v-radio> -->
             </v-radio-group>
             <v-container>
               <v-row class="pt-5 pl-5 pr-5">
@@ -169,6 +169,7 @@
                   <DatePicker
                     :label="'Date'"
                     v-model="data.formData.date"
+                    :max="data.maxDate"
                     required
                   />
                 </v-col>
@@ -880,7 +881,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { usePaymentVoucher } from "./composables/payment-voucher";
 import { toMoney } from "@/filters/CurrencyFormatter";
 

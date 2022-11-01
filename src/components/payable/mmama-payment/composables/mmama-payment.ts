@@ -1,4 +1,4 @@
-import { reactive, onMounted, ref } from "@vue/composition-api";
+import { reactive, onMounted, ref } from "vue";
 import { AxiosResponse } from "axios";
 
 import {
@@ -16,7 +16,7 @@ export const useMmamaPayment = (): any => {
   let financialYearData: FinancialYear;
 
   const data = reactive({
-    title: "M Mama Payments",
+    title: "M Mama Financial Report",
     modalTitle: "",
     headers: [
       {

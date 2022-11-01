@@ -15,17 +15,32 @@
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
-            <v-col cols="6" sm="12" md="4" class="pa-0">
+            <v-col cols="6" sm="12" md="3" class="pa-5">
               <v-autocomplete
-                label="Filter by Activity code"
-                @change="searchItem($event)"
-                :items="data.itemsToFilter"
-                :item-text="'activity.code'"
+                outlined
+                prepend-inner-icon="mdi-filter-outline"
+                label="Filter Financial Year"
+                @change="searchItemByFYear($event)"
+                @click:clear="resetSearchText()"
+                :items="data.financialYearToFilter"
+                :item-text="'name'"
                 :item-divider="true"
                 return-object
                 required
                 clearable
               ></v-autocomplete>
+            </v-col>
+            <v-col cols="6" sm="12" md="3" class="pa-0">
+              <v-text-field
+                prepend-inner-icon="mdi-filter-outline"
+                outlined
+                label="Filter By Activity Code"
+                @keyup="filterActivity()"
+                :items="data.itemsToFilter"
+                v-model="data.searchTerm"
+                @click:clear="resetSearchText()"
+                clearable
+              ></v-text-field>
             </v-col>
           </v-card-title>
         </template>
@@ -162,7 +177,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useActivityCosting } from "./composables/activity-costing";
 
 export default defineComponent({
@@ -179,6 +194,9 @@ export default defineComponent({
       cancelConfirmDialog,
       searchItem,
       getData,
+      searchItemByFYear,
+      resetSearchText,
+      filterActivity,
     } = useActivityCosting();
 
     return {
@@ -192,6 +210,9 @@ export default defineComponent({
       cancelConfirmDialog,
       searchItem,
       getData,
+      searchItemByFYear,
+      resetSearchText,
+      filterActivity,
     };
   },
 });

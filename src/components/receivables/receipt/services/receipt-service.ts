@@ -38,8 +38,10 @@ const viewinvoice = async (payload: any) => {
   return await axios.get(`${API}/${payload.id}`, payload);
 };
 
-const destroy = async (payload: any) => {
-  return await axios.delete(`${API}/${payload}`);
+const destroy = async <T>(id: number, date: T) => {
+  return await axios.delete(`${API}/${id}`, {
+    data: { date },
+  });
 };
 
 const regSearch = async (payload: any) => {
@@ -48,6 +50,9 @@ const regSearch = async (payload: any) => {
 
 const printReceipt = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
+  // const url = `${
+  //   import.meta.env.VITE_APP_SERVER_URL
+  // }/api/v1/receipts/${id}?token=${user.token}`;
   const url = `/api/v1/receipts/${id}?token=${user.token}`;
   return window.open(url);
 };
@@ -57,15 +62,15 @@ const getGlAccounts = async (params: any): Promise<any> => {
 };
 
 export {
-  get,
-  find,
   create,
-  update,
   destroy,
-  search,
-  viewinvoice,
+  find,
+  get,
+  getFundingSourceList,
+  getGlAccounts,
   printReceipt,
   regSearch,
-  getGlAccounts,
-  getFundingSourceList,
+  search,
+  update,
+  viewinvoice,
 };

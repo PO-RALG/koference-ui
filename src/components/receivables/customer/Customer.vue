@@ -12,7 +12,7 @@
       </v-btn> -->
       <v-btn
         v-if="can('create', 'Customer')"
-        color="warning"
+        color=""
         @click="openTrushedDialog"
       >
         <v-icon>mdi-delete-empty-outline</v-icon>
@@ -30,12 +30,17 @@
     <v-card>
       <v-data-table
         :headers="data.headers"
-        :items="data.items"
+        :items="customerFiltered"
         :single-expand="true"
         class="elevation-1"
         disable-pagination
         hide-default-footer
       >
+        <template v-slot: [`item.index`]="{ item }">
+          <span>
+            {{ item.index }}
+          </span>
+        </template>
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
@@ -309,7 +314,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 
 import { useCustomer } from "./composables/customer";
 
@@ -341,6 +346,7 @@ export default defineComponent({
       cancelRestoreDialog,
       restore,
       trushedNew,
+      customerFiltered,
     } = useCustomer();
 
     return {
@@ -368,6 +374,7 @@ export default defineComponent({
       cancelRestoreDialog,
       restore,
       trushedNew,
+      customerFiltered,
     };
   },
 });

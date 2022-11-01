@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { defineComponent, computed } from "@vue/composition-api";
+import { defineComponent, computed } from "vue";
 import { concat } from "lodash";
 
 export default defineComponent({

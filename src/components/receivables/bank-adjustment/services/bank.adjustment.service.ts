@@ -1,10 +1,16 @@
 import axios from "axios";
 
 const API = "/api/v1/bank-adjustments";
+const APIPENNDING = "/api/v1/bank_adjustment/approval-pending-council";
 const APIAPPROVAL = "/api/v1/bank_adjustment/approval";
 
 const get = async (payload: any) => {
   return await axios.get(`${API}`, {
+    params: payload,
+  });
+};
+const getPendingApproveCouncil = async (payload: any) => {
+  return await axios.get(`${APIPENNDING}`, {
     params: payload,
   });
 };
@@ -25,4 +31,11 @@ const approveBAFacilityService = async (payload: any) => {
   return await axios.post(`${APIAPPROVAL}`, payload);
 };
 
-export { get, find, create, destroy, approveBAFacilityService };
+export {
+  get,
+  find,
+  create,
+  destroy,
+  approveBAFacilityService,
+  getPendingApproveCouncil,
+};

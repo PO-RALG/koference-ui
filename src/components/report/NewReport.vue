@@ -228,13 +228,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue";
 import { useNewReport } from "./composables/use-new-report";
 
 import brace from "brace";
 import { Ace as AceEditor, Split as SplitEditor } from "vue2-brace-editor";
-import "brace/mode/sql";
-import "brace/theme/github";
+// import "brace/mode/sql";
+// import "brace/theme/github";
 
 export default defineComponent({
   name: "NewReport",
