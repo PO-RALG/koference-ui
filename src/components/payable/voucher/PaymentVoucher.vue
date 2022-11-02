@@ -88,10 +88,7 @@
         </template>
 
         <template v-slot:[`item.approve`]="{ item }">
-          <span
-            v-if="item && item.approve && !item.approve.facility_approved"
-            >{{ "Waiting for Approval" }}</span
-          >
+          <span v-if="!item.isApproved">{{ "Waiting for Approval" }}</span>
           <span v-else>{{ "Approved" }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
@@ -139,6 +136,21 @@
               </v-btn>
             </template>
             <span>Reverse Payment Voucher</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                v-if="!item.approves.length"
+                @click="requestApproval(item)"
+                :disabled="cant('requestApproval', 'Voucher')"
+              >
+                mdi-lock-reset
+              </v-icon>
+            </template>
+            <span>Request Approval</span>
           </v-tooltip>
         </template>
         <template v-slot:footer>
@@ -308,8 +320,9 @@
                             <br />
                             <span>
                               {{
-                                (account.allocation - account.totalExpenditure)
-                                  | toCurrency()
+                                (account.allocation -
+                                  account.totalExpenditure) |
+                                  toCurrency()
                               }}
                             </span>
                           </td>
@@ -467,8 +480,9 @@
                             <br />
                             <span>
                               {{
-                                (account.allocation - account.totalExpenditure)
-                                  | toCurrency()
+                                (account.allocation -
+                                  account.totalExpenditure) |
+                                  toCurrency()
                               }}
                             </span>
                           </td>
@@ -595,6 +609,25 @@
             Cancel
           </v-btn>
           <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+
+    <Modal :modal="data.approvalRequestDialog" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Request Voucher Approval `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> Are you sure you want to request approval? </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelApprovalRequestDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="submitApprovalRequest"
+            >Yes</v-btn
+          >
         </ModalFooter>
       </template>
     </Modal>
@@ -929,6 +962,9 @@ export default defineComponent({
       cancelGenericConfirmDialog,
       approvePVFacility,
       approvePVFacilityComplete,
+      requestApproval,
+      cancelApprovalRequestDialog,
+      submitApprovalRequest,
     } = usePaymentVoucher();
 
     return {
@@ -973,6 +1009,9 @@ export default defineComponent({
       cancelGenericConfirmDialog,
       approvePVFacility,
       approvePVFacilityComplete,
+      requestApproval,
+      cancelApprovalRequestDialog,
+      submitApprovalRequest,
     };
   },
 });

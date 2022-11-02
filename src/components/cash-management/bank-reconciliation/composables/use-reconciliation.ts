@@ -126,7 +126,7 @@ export const useBankReconciliation = ({ root }): any => {
     if (params.bank_account_id && params.date) {
       const query = {
         ...params,
-        per_page: 10,
+        per_page: 10000,
       };
       getEntries(query)
         .then((response: AxiosResponse) => {

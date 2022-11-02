@@ -28,6 +28,10 @@ const create = async (payload: any) => {
   return await axios.post(`/api/v1/vouchers`, payload);
 };
 
+const requestVoucherApproval = async (id: number) => {
+  return await axios.post(`/api/v1/vouchers/${id}/request-approval`);
+};
+
 const update = async (payload: any) => {
   return await axios.put(`/api/v1/vouchers/` + payload.id, payload);
 };
@@ -35,7 +39,6 @@ const update = async (payload: any) => {
 const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/vouchers/` + payload);
 };
-
 
 const fundByActivity = async (id: string | number) => {
   return await axios.get(`/api/v1/budgets/${id}/funds`);
@@ -72,6 +75,7 @@ export {
   get,
   getWorkflow,
   printPdf,
+  requestVoucherApproval,
   search,
   update,
 };
