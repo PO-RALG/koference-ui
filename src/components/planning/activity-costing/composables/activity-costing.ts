@@ -200,6 +200,7 @@ export const useActivityCosting = (): any => {
       data.items = response.data.data.data;
     });
   };
+
   const filterActivity = () => {
     if (data.searchTerm.length >= 3) {
       get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {

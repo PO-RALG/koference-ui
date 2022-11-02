@@ -320,9 +320,8 @@
                             <br />
                             <span>
                               {{
-                                (account.allocation -
-                                  account.totalExpenditure) |
-                                  toCurrency()
+                                (account.allocation - account.totalExpenditure)
+                                  | toCurrency()
                               }}
                             </span>
                           </td>
@@ -480,9 +479,8 @@
                             <br />
                             <span>
                               {{
-                                (account.allocation -
-                                  account.totalExpenditure) |
-                                  toCurrency()
+                                (account.allocation - account.totalExpenditure)
+                                  | toCurrency()
                               }}
                             </span>
                           </td>
