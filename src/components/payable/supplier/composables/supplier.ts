@@ -24,6 +24,7 @@ export const useSupplier = (): any => {
     modalTitle: "",
     checkNumberError: [],
     idNumberError: [],
+    bankAccNumberError:[],
     headers: [
       {
         text: "Name",
@@ -276,22 +277,44 @@ export const useSupplier = (): any => {
   };
 
   const uniqueCheckNumber =  async (input:string) => {
-    if (input.length > 3) {
+    if (input.length > 3 && data.modalTitle === "Create") {
       const res=  await search({check_number: input});
       const result = res.data.data;
-      data.checkNumberError = result.data.length > 0 ? ["Check number already exist"]:[];
+      if ((result.data.length > 0) && (result.data.find(x =>x.check_number ===input) !== undefined)) {
+        data.checkNumberError = ["Check number already exist"];
+      }else{
+        data.checkNumberError = [];
+      }
     }else{
       data.checkNumberError = [];
     }
   };
 
   const uniqueIdNumber =  async (input:string) => {
-    if (input.length > 3) {
+    if (input.length > 3 && data.modalTitle === "Create") {
       const res=  await search({id_number: input});
       const result = res.data.data;
-      data.idNumberError = result.data.length > 0 ? ["ID number already exist"]:[];
+      if ((result.data.length > 0) && (result.data.find(x =>x.id_number ===input) !== undefined)) {
+        data.idNumberError = ["ID number already exist"];
+      }else{
+        data.idNumberError = [];
+      }
     }else{
       data.idNumberError = [];
+    }
+  };
+
+  const uniqueBankAccNumber =  async (input:string) => {
+    if (input.length > 3 && data.modalTitle === "Create") {
+      const res=  await search({bank_account_number: input});
+      const result = res.data.data;
+      if ((result.data.length > 0) && (result.data.find(x =>x.bank_account_number ===input) !== undefined)) {
+        data.bankAccNumberError = ["Account number already exist"];
+      }else{
+        data.bankAccNumberError = [];
+      }
+    }else{
+      data.bankAccNumberError = [];
     }
   };
 
@@ -312,5 +335,6 @@ export const useSupplier = (): any => {
     checkNumberValidate,
     uniqueCheckNumber,
     uniqueIdNumber,
+    uniqueBankAccNumber,
   };
 };

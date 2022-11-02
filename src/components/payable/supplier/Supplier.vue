@@ -217,6 +217,8 @@
                     label="Bank Account Number"
                     outlined
                     :rules="data.bankAccountNumberRules"
+                    @input="uniqueBankAccNumber(data.formData.bank_account_number)"
+                    :error-messages="data.bankAccNumberError"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12" sm="12" class="pt-6">
@@ -292,6 +294,7 @@ export default defineComponent({
       checkNumberValidate,
       uniqueCheckNumber,
       uniqueIdNumber,
+      uniqueBankAccNumber,
     } = useSupplier();
 
     return {
@@ -311,6 +314,7 @@ export default defineComponent({
       checkNumberValidate,
       uniqueCheckNumber,
       uniqueIdNumber,
+      uniqueBankAccNumber,
     };
   },
 });
