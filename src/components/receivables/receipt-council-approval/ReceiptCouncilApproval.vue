@@ -101,6 +101,22 @@
             </template>
             <span>Print</span>
           </v-tooltip>
+          <v-btn
+            v-if="
+              canApproveFacility(
+                item,
+                'DEPOSIT_RECEIPT',
+                'approveCouncil',
+                'Receipt'
+              )
+            "
+            @click="approveReceiptFacility(item)"
+            color="primary"
+            text
+          >
+            <v-icon>mdi-check-decagram</v-icon>
+            Verify
+          </v-btn>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -528,7 +544,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useReceipt } from "./composables/receipt";
+import { useReceipt } from "./composables/receipt-council-approval";
 import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({

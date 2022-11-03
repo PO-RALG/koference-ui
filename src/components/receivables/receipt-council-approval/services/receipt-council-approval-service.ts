@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "/api/v1/receipts";
+const API = "/api/v1/receipt/approval-pending-council";
 const APIFUNDINGSOURCES = "/api/v1/funding-sources";
 const APIAPPROVAL = "/api/v1/receipt/approval";
 

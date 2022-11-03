@@ -206,7 +206,9 @@ export const usePaymentVoucher = (): any => {
         approve: entry.approves.find(
           (flow) => flow.workflow == "PAYMENT_VOUCHER"
         ),
-        isApproved: entry.approves.length? setApprovalStatus(entry.approves[0]) : false,
+        isApproved: entry.approves.length
+          ? setApprovalStatus(entry.approves[0])
+          : false,
       }));
       data.itemsToFilter = response.data.data.data;
       data.response = {
@@ -276,6 +278,7 @@ export const usePaymentVoucher = (): any => {
     }
     const approveData = {
       approval: currentFlowable,
+      approved: true,
     };
 
     approvePVFacilityService(approveData).then(() => {
