@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = "/api/v1/receipt/approval-pending-council";
 const APIFUNDINGSOURCES = "/api/v1/funding-sources";
-const APIAPPROVAL = "/api/v1/receipt/approval";
+const APIAPPROVAL = "/api/v1/receipt/approvalCouncil";
 
 const get = async (payload: any) => {
   return await axios.get(`${API}`, {
