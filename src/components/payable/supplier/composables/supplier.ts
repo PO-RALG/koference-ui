@@ -22,6 +22,9 @@ export const useSupplier = (): any => {
     node: null,
     response: {},
     modalTitle: "",
+    checkNumberError: [],
+    idNumberError: [],
+    bankAccNumberError:[],
     headers: [
       {
         text: "Name",
@@ -114,6 +117,7 @@ export const useSupplier = (): any => {
       (v: string) => !!v || "Number is required",
       (v: string) =>
         (v && v.length <= 10) || "Number must be less than 10 characters",
+      
     ],
     nameRules: [(v: string) => !!v || "Name is required"],
     typeRules: [(v: string) => !!v || "Type is required"],
@@ -262,6 +266,58 @@ export const useSupplier = (): any => {
     });
   };
 
+  const checkNumberValidate = () => {
+    return (v: string) => {
+      if (!v) {
+        return !!v || `Check number is required`;
+      }else if (v && v.length <= 10){
+        return(v && v.length <= 10) || "Number must be less than 10 characters"
+      } 
+    } 
+  };
+
+  const uniqueCheckNumber =  async (input:string) => {
+    if (input.length > 3 && data.modalTitle === "Create") {
+      const res=  await search({check_number: input});
+      const result = res.data.data;
+      if ((result.data.length > 0) && (result.data.find(x =>x.check_number ===input) !== undefined)) {
+        data.checkNumberError = ["Check number already exist"];
+      }else{
+        data.checkNumberError = [];
+      }
+    }else{
+      data.checkNumberError = [];
+    }
+  };
+
+  const uniqueIdNumber =  async (input:string) => {
+    if (input.length > 3 && data.modalTitle === "Create") {
+      const res=  await search({id_number: input});
+      const result = res.data.data;
+      if ((result.data.length > 0) && (result.data.find(x =>x.id_number ===input) !== undefined)) {
+        data.idNumberError = ["ID number already exist"];
+      }else{
+        data.idNumberError = [];
+      }
+    }else{
+      data.idNumberError = [];
+    }
+  };
+
+  const uniqueBankAccNumber =  async (input:string) => {
+    if (input.length > 3 && data.modalTitle === "Create") {
+      const res=  await search({bank_account_number: input});
+      const result = res.data.data;
+      if ((result.data.length > 0) && (result.data.find(x =>x.bank_account_number ===input) !== undefined)) {
+        data.bankAccNumberError = ["Account number already exist"];
+      }else{
+        data.bankAccNumberError = [];
+      }
+    }else{
+      data.bankAccNumberError = [];
+    }
+  };
+
   return {
     data,
     openDialog,
@@ -276,5 +332,9 @@ export const useSupplier = (): any => {
     setActivation,
     filterSupplier,
     resetSearchText,
+    checkNumberValidate,
+    uniqueCheckNumber,
+    uniqueIdNumber,
+    uniqueBankAccNumber,
   };
 };
