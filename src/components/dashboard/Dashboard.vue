@@ -7,6 +7,7 @@
             <v-col cols="12" md="4">
               <v-select
                 :items="data.entries"
+                :disabled="isLowLevelUser"
                 label="Select Admin Area"
                 outlined
                 v-model="data.formData.locaction_id"
@@ -50,6 +51,7 @@
             </v-col>
             <v-col cols="12" md="4">
               <v-select
+                :disabled="isLowLevelUser"
                 :items="data.facilities"
                 label="Select Facility"
                 outlined

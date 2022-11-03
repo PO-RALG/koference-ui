@@ -116,10 +116,18 @@ Vue.mixin({
 
     isDemo(): boolean {
       const site = store.getters["Auth/getSiteName"];
-      return (site && site.name === "demo") ? true : false;
+      return site && site.name === "demo" ? true : false;
     },
     stringToCurrency(value: string): number {
       return Number(value.replace(/[^0-9.-]+/g, ""));
+    },
+
+    isLowLevelUser(): boolean {
+      const user = store.getters["Auth/getCurrentUser"];
+      const isLowLevel =
+        user.location.level.code === "VILLAGE_MTAA" ||
+        user.location.level.code === "FACILITY";
+      return !!isLowLevel;
     },
   },
 });
