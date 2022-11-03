@@ -232,17 +232,19 @@ export const useReceipt = (): any => {
     data.loading = true;
 
     const res = await get({ per_page: 10 });
-    const { from, to, total, current_page, per_page, last_page } =
-      res.data.data;
+    if (res.data.data) {
+      const { from, to, total, current_page, per_page, last_page } =
+        res.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = res.data.data.data.map((approve: any) => ({
+        ...approve,
+        approve: approve.approves.find(
+          (flow) => flow.workflow == "DEPOSIT_RECEIPT"
+        ),
+      }));
+      data.itemsToFilter = res.data.data.data;
+    }
 
-    data.response = { from, to, total, current_page, per_page, last_page };
-    data.items = res.data.data.data.map((approve: any) => ({
-      ...approve,
-      approve: approve.approves.find(
-        (flow) => flow.workflow == "DEPOSIT_RECEIPT"
-      ),
-    }));
-    data.itemsToFilter = res.data.data.data;
     data.loading = false;
   };
 
