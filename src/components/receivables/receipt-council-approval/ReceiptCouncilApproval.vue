@@ -103,10 +103,10 @@
           </v-tooltip>
           <v-btn
             v-if="
-              canApproveFacility(
+              canApproveCouncil(
                 item,
                 'DEPOSIT_RECEIPT',
-                'approveCouncil',
+                'approvalPendingCouncil',
                 'Receipt'
               )
             "
@@ -115,7 +115,7 @@
             text
           >
             <v-icon>mdi-check-decagram</v-icon>
-            Verify
+            Approve
           </v-btn>
         </template>
         <template v-slot:footer>
@@ -127,6 +127,26 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <Modal :modal="data.genericConfirmModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> {{ data.modalTitle }}</ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
+
     <Modal :modal="data.modal" :width="1250">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Receipt`" />
@@ -584,6 +604,7 @@ export default defineComponent({
       cashType,
       depositType,
       approveReceiptFacility,
+      cancelGenericConfirmDialog,
     } = useReceipt();
 
     return {
@@ -621,6 +642,7 @@ export default defineComponent({
       cashType,
       depositType,
       approveReceiptFacility,
+      cancelGenericConfirmDialog,
     };
   },
 });
