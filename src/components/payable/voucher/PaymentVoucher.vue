@@ -6,7 +6,7 @@
       <v-btn
         color="primary"
         @click="openDialog"
-        :disabled="cant('create', 'Voucher')"
+        :disabled="cant('createVoucher', 'Voucher')"
       >
         <v-icon>mdi-plus</v-icon>
         Add New
@@ -88,10 +88,7 @@
         </template>
 
         <template v-slot:[`item.approve`]="{ item }">
-          <span
-            v-if="item && item.approve && !item.approve.facility_approved"
-            >{{ "Waiting for Approval" }}</span
-          >
+          <span v-if="!item.isApproved">{{ "Waiting for Approval" }}</span>
           <span v-else>{{ "Approved" }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
@@ -140,6 +137,21 @@
             </template>
             <span>Reverse Payment Voucher</span>
           </v-tooltip>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                v-if="!item.approves.length"
+                @click="requestApproval(item)"
+                :disabled="cant('requestApproval', 'Voucher')"
+              >
+                mdi-lock-reset
+              </v-icon>
+            </template>
+            <span>Request Approval</span>
+          </v-tooltip>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -161,7 +173,7 @@
             <v-radio-group v-model="data.voucherType" row @change="resetData">
               <v-radio label="NORMAL VOUCHER" :value="normalType"></v-radio>
               <v-radio label="DEPOSIT VOUCHER" :value="depositType"></v-radio>
-              <v-radio label="M MAMA VOUCHER" :value="mmamaType"></v-radio>
+              <!-- <v-radio label="M MAMA VOUCHER" :value="mmamaType"></v-radio> -->
             </v-radio-group>
             <v-container>
               <v-row class="pt-5 pl-5 pr-5">
@@ -599,6 +611,25 @@
       </template>
     </Modal>
 
+    <Modal :modal="data.approvalRequestDialog" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Request Voucher Approval `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> Are you sure you want to request approval? </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelApprovalRequestDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="submitApprovalRequest"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
+
     <Modal :modal="data.genericConfirmModel" :width="600">
       <template v-slot:header>
         <ModalHeader :title="data.modalTitle" />
@@ -929,6 +960,9 @@ export default defineComponent({
       cancelGenericConfirmDialog,
       approvePVFacility,
       approvePVFacilityComplete,
+      requestApproval,
+      cancelApprovalRequestDialog,
+      submitApprovalRequest,
     } = usePaymentVoucher();
 
     return {
@@ -973,6 +1007,9 @@ export default defineComponent({
       cancelGenericConfirmDialog,
       approvePVFacility,
       approvePVFacilityComplete,
+      requestApproval,
+      cancelApprovalRequestDialog,
+      submitApprovalRequest,
     };
   },
 });

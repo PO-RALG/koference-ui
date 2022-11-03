@@ -76,7 +76,6 @@
             </v-flex>
           </v-layout>
         </v-form>
-        <!--<pre>{{ data.formData }}</pre>-->
       </v-card-text>
       <v-card-actions class="mr-5 mt-n4 pb-5">
         <v-spacer></v-spacer>
@@ -93,16 +92,15 @@ import { defineComponent } from "vue";
 import { useReportDetail } from "./composables/use-report-detail";
 export default defineComponent({
   setup(props, context) {
-    const { data, reportParams, print, isFacility } = useReportDetail(
-      props,
-      context
-    );
+    const { data, reportParams, print, printFromServer, isFacility } =
+      useReportDetail(props, context);
 
     return {
       data,
       reportParams,
       isFacility,
       print,
+      printFromServer,
     };
   },
 });

@@ -1,8 +1,11 @@
 import axios from "axios";
 import { getCurrentUser } from "@/middleware";
 
+const REPORTSERVERUSER = import.meta.env.VITE_APP_REPORT_USER_NAME;
+const REPORTSERVERPASSWORD = import.meta.env.VITE_APP_REPORT_PASSWORD;
 const API = "/api/v1/reports";
-const API2 = "localhost:8000/api/v1/reports";
+const REPORTSERVER = import.meta.env.VITE_APP_REPORT_SERVER_URL;
+const APINEWREPORT = "jasperserver/rest_v2";
 
 const getReports = async (payload) => {
   return axios.get(API, { params: payload });
@@ -26,6 +29,32 @@ const serializeParams = (params: any) => {
     }
   }
   return str.join("&");
+};
+
+const printReportJasper = async () => {
+  const params = {
+    journal_voucher_id: 17,
+  };
+
+  await axios
+    .get(
+      `${REPORTSERVER}/${APINEWREPORT}/reports/Reports/journal_voucher.pdf`,
+      {
+        params: params,
+        responseType: "stream",
+        auth: {
+          username: REPORTSERVERUSER,
+          password: REPORTSERVERPASSWORD,
+        },
+      }
+    )
+    .then(function (response) {
+      console.log(response.data);
+    });
+  // .then((response) => {
+  //   console.log("ressssss", response);
+  // });
+  // window.open("data:application/pdf," + encodeURI(res));
 };
 
 const printReport = async (reportID: number, payload?: any) => {
@@ -79,5 +108,6 @@ export {
   fetchReportParams,
   getParams,
   printReport,
+  printReportJasper,
   updateQuery,
 };

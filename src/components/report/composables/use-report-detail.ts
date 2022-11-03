@@ -7,6 +7,7 @@ import {
   fetchReportParams,
   findReport,
   printReport,
+  printReportJasper,
 } from "../services/report.services";
 import { find } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { useRoute } from "@/helpers/RouterHelper";
@@ -203,9 +204,14 @@ export const useReportDetail = (props, { root }) => {
     printReport(data.currentReport.id, data.formData);
   };
 
+  const printFromServer = () => {
+    printReportJasper();
+  };
+
   return {
     data,
     print,
+    printFromServer,
     reportParams,
     isFacility,
   };
