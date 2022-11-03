@@ -9,7 +9,8 @@
                 :items="data.entries"
                 label="Select Admin Area"
                 outlined
-                v-model="data.formData.admin_hierarchy_id"
+                v-model="data.formData.locaction_id"
+                @change="filterDashboard"
                 :item-text="'displayName'"
                 item-value="id"
               >
@@ -34,11 +35,13 @@
               <fetcher :api="'/api/v1/financial-years'">
                 <div slot-scope="{ json: entries, loading }">
                   <div v-if="loading">Loading...</div>
-                  <BaseSelect
+                  <v-select
                     v-else
                     :items="entries"
                     :item-text="'name'"
                     label="Financial Year"
+                    @change="filterDashboard"
+                    item-value="id"
                     outlined
                     v-model="data.formData.financial_year_id"
                   />
@@ -52,6 +55,7 @@
                 outlined
                 v-model="data.formData.facility_id"
                 :item-text="'displayName'"
+                @change="filterDashboard"
                 item-value="id"
               >
                 <template v-slot:prepend-item>
@@ -101,10 +105,12 @@ import EqualHeights from "@/components/shared/equal-heights/EqualHeights.vue";
 import MoneyCard from "@/components/dashboard/components/MoneyCard.vue";
 import { get as getAdminAreas } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
+import { get } from "@/components/dashboard/services";
+import { setTitle } from "@/middleware";
 
 interface FormFilter {
   financial_year_id: string;
-  admin_hierarchy_id: string;
+  locaction_id: string;
   facility_id: string;
 }
 
@@ -125,7 +131,7 @@ interface Facility {
   location?: Record<string, any>;
 }
 
-interface CardData {
+interface DashboardData {
   id: number;
   title: string;
   amount: number;
@@ -140,13 +146,13 @@ export default defineComponent({
   setup() {
     const formData: FormFilter = {
       financial_year_id: "",
-      admin_hierarchy_id: "",
+      locaction_id: "",
       facility_id: "",
     };
 
     const entries: Array<AdminArea> = [];
     const facilities: Array<Facility> = [];
-    const cardData: Array<CardData> = [];
+    const cardData: Array<DashboardData> = [];
 
     const data = reactive({
       formData,
@@ -160,34 +166,35 @@ export default defineComponent({
     onMounted(() => {
       loadAdminAreas();
       loadFacilities();
-      data.cardData = [
-        {
-          id: 1,
-          title: "OPENING BALANCE",
-          amount: 12323200.58,
-        },
-        {
-          id: 2,
-          title: "FUND RECEIVED",
-          amount: 10000000000,
-        },
-        {
-          id: 3,
-          title: "TOTAL FUNDS",
-          amount: 2322302328232.48,
-        },
-        {
-          id: 4,
-          title: "EXPENDITURE",
-          amount: 23223023,
-        },
-        {
-          id: 5,
-          title: "FUND BALANCE",
-          amount: 23000000,
-        },
-      ];
+      loadDashboards();
+      data.cardData = [];
     });
+
+    interface Dashboard {
+      balance: string;
+      opening: string;
+      payment: string;
+      received: string;
+      total_fund: string;
+    }
+
+    const mapDashboards = (obj: Dashboard): Array<DashboardData> => {
+      const results = [];
+      Object.entries(obj).map((entry, idx) => {
+        results.push({
+          id: idx + 1,
+          title: entry[0].split("_").join(" ").toUpperCase(),
+          amount: parseInt(entry[1]),
+        });
+      });
+      return results;
+    };
+
+    const loadDashboards = async () => {
+      const response = await get({});
+      const _mappedDashboards = mapDashboards(response.data[0]);
+      data.cardData = _mappedDashboards;
+    };
 
     const mapAreas = <T extends AdminArea>(
       areas: Array<T>
@@ -209,6 +216,14 @@ export default defineComponent({
         code: facility.code,
         displayName: `${facility.name} (${facility.facility_type.name}) - ${facility.location.name}`,
       }));
+    };
+
+    const filterDashboard = async () => {
+      const params = { ...data.formData };
+      console.log("filter", params);
+      const response = await get(params);
+      const _mappedDashboards = mapDashboards(response.data[0]);
+      data.cardData = _mappedDashboards;
     };
 
     const loadFacilities = async () => {
@@ -241,6 +256,7 @@ export default defineComponent({
       data,
       searchAdminAreas,
       searchFacilities,
+      filterDashboard,
     };
   },
 });
