@@ -2,8 +2,6 @@ import axios from "axios";
 
 const API = "/api/v1/dashboard/summary";
 
-const get = async (payload: any) => {
-  return await axios.get(`${API}`, { params: payload });
+export const get = async (params: any) => {
+  return await axios.get(`${API}`, { params });
 };
-
-export { get };

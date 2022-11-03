@@ -53,7 +53,7 @@
                 :items="data.facilities"
                 label="Select Facility"
                 outlined
-                v-model="data.formData.facility_id"
+                v-model="data.formData.fac_id"
                 :item-text="'displayName'"
                 @change="filterDashboard"
                 item-value="id"
@@ -106,12 +106,11 @@ import MoneyCard from "@/components/dashboard/components/MoneyCard.vue";
 import { get as getAdminAreas } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
 import { get } from "@/components/dashboard/services";
-import { setTitle } from "@/middleware";
 
 interface FormFilter {
   financial_year_id: string;
   locaction_id: string;
-  facility_id: string;
+  fac_id: string;
 }
 
 interface AdminArea {
@@ -146,8 +145,8 @@ export default defineComponent({
   setup() {
     const formData: FormFilter = {
       financial_year_id: "",
+      fac_id: "",
       locaction_id: "",
-      facility_id: "",
     };
 
     const entries: Array<AdminArea> = [];
@@ -220,7 +219,6 @@ export default defineComponent({
 
     const filterDashboard = async () => {
       const params = { ...data.formData };
-      console.log("filter", params);
       const response = await get(params);
       const _mappedDashboards = mapDashboards(response.data[0]);
       data.cardData = _mappedDashboards;
