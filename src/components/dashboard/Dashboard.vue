@@ -54,7 +54,11 @@
               >
               </v-select>
             </v-col>
-            <v-col v-if="!isLowLevelUser()" cols="12" :md="showSmallColumns ? 4 : 3">
+            <v-col
+              v-if="!isLowLevelUser()"
+              cols="12"
+              :md="showSmallColumns ? 4 : 3"
+            >
               <fetcher :api="'/api/v1/financial-years'">
                 <div slot-scope="{ json: entries, loading }">
                   <div v-if="loading">Loading...</div>
@@ -216,7 +220,6 @@ export default defineComponent({
 
     onMounted(() => {
       loadAdminAreas();
-      loadFacilities();
       loadDashboards();
       data.cardData = [];
     });
@@ -285,19 +288,28 @@ export default defineComponent({
         await getCouncils(data.formData.region_id);
       }
 
+      if (!isRegion) {
+        const res = await getFacilities({
+          location_id: data.formData.council_id,
+        });
+        const _mappedFacilties = mapFacilities(res.data.data.data);
+        data.facilities = _mappedFacilties;
+      }
+
       const _mappedDashboards = mapDashboards(response.data[0]);
       data.cardData = _mappedDashboards;
     };
 
-    const loadFacilities = async () => {
-      const response = await getFacilities({ per_page: 10 });
-      const _mappedFacilties = mapFacilities(response.data.data.data);
-      data.facilities = _mappedFacilties;
-    };
 
     const loadAdminAreas = async () => {
       const response = await getChildren();
+      const res = await getFacilities({
+        per_page: 10,
+        location_id: response.data.data.id,
+      });
       const _mappedAreas = mapAreas(response.data.data.children);
+      const _mappedFacilties = mapFacilities(res.data.data.data);
+      data.facilities = _mappedFacilties;
       data.entries = _mappedAreas;
     };
 
@@ -326,7 +338,12 @@ export default defineComponent({
 
     const searchFacilities = async (val: string) => {
       const searchTerm = val ? val : data.searchTerm;
-      const response = await getFacilities({ regSearch: searchTerm });
+      const response = await getFacilities({
+        regSearch: searchTerm,
+        location_id: data.formData.council_id
+          ? data.formData.council_id
+          : data.formData.region_id,
+      });
       const _mappedFacilties = mapFacilities(response.data.data.data);
       data.facilities = _mappedFacilties;
     };
