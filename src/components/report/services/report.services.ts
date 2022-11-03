@@ -1,9 +1,11 @@
 import axios from "axios";
 import { getCurrentUser } from "@/middleware";
 
+const REPORTSERVERUSER = import.meta.env.VITE_APP_REPORT_USER_NAME;
+const REPORTSERVERPASSWORD = import.meta.env.VITE_APP_REPORT_PASSWORD;
 const API = "/api/v1/reports";
-const APINEWREPORT =
-  "https://ffars.tamisemi.go.tz/jasperserver/rest_v2/reports/Reports/journal_voucher.pdf?journal_voucher_id=17";
+const REPORTSERVER = import.meta.env.VITE_APP_REPORT_SERVER_URL;
+const APINEWREPORT = "jasperserver/rest_v2";
 
 const getReports = async (payload) => {
   return axios.get(API, { params: payload });
@@ -31,18 +33,21 @@ const serializeParams = (params: any) => {
 
 const printReportJasper = async () => {
   const params = {
-    paramEmail: "",
+    journal_voucher_id: 17,
   };
 
-  const file = await axios
-    .get(APINEWREPORT, {
-      params: params,
-      responseType: "stream",
-      auth: {
-        username: "jasperadmin",
-        password: "jasperIsPrintingReports",
-      },
-    })
+  await axios
+    .get(
+      `${REPORTSERVER}/${APINEWREPORT}/reports/Reports/journal_voucher.pdf`,
+      {
+        params: params,
+        responseType: "stream",
+        auth: {
+          username: REPORTSERVERUSER,
+          password: REPORTSERVERPASSWORD,
+        },
+      }
+    )
     .then(function (response) {
       console.log(response.data);
     });

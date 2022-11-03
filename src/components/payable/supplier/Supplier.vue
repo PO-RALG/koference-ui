@@ -126,7 +126,7 @@
                   md="4"
                   sm="12"
                   class="mt-n8"
-                  v-if="data.formData.supplier_type === 'Contractor'"
+                  v-if="data.formData.supplier_type === 'Contractor/Supplier'"
                 >
                   <v-text-field
                     outlined
@@ -148,12 +148,14 @@
                 >
                   <v-text-field
                     v-model="data.formData.check_number"
-                    :rules="data.checkRules"
+                    :rules="[checkNumberValidate()]"
                     v-bind:focus="data.focus"
                     v-on:focus="data.focus = false"
+                    @input="uniqueCheckNumber(data.formData.check_number)"
                     label="Check Number"
                     outlined
                     v-mask="'##########'"
+                    :error-messages="data.checkNumberError"
                   />
                 </v-col>
                 <v-col
@@ -168,6 +170,8 @@
                     label="ID number"
                     outlined
                     :rules="data.idRules"
+                    @input="uniqueIdNumber(data.formData.id_number)"
+                    :error-messages="data.idNumberError"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="12" class="mt-n8">
@@ -213,6 +217,8 @@
                     label="Bank Account Number"
                     outlined
                     :rules="data.bankAccountNumberRules"
+                    @input="uniqueBankAccNumber(data.formData.bank_account_number)"
+                    :error-messages="data.bankAccNumberError"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12" sm="12" class="pt-6">
@@ -285,6 +291,10 @@ export default defineComponent({
       setActivation,
       filterSupplier,
       resetSearchText,
+      checkNumberValidate,
+      uniqueCheckNumber,
+      uniqueIdNumber,
+      uniqueBankAccNumber,
     } = useSupplier();
 
     return {
@@ -301,6 +311,10 @@ export default defineComponent({
       setActivation,
       filterSupplier,
       resetSearchText,
+      checkNumberValidate,
+      uniqueCheckNumber,
+      uniqueIdNumber,
+      uniqueBankAccNumber,
     };
   },
 });
