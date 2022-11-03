@@ -99,7 +99,6 @@
 import { defineComponent, reactive, onMounted } from "vue";
 import EqualHeights from "@/components/shared/equal-heights/EqualHeights.vue";
 import MoneyCard from "@/components/dashboard/components/MoneyCard.vue";
-import BarChart from "@/components/dashboard/components/BarChart";
 import { get as getAdminAreas } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
 
@@ -136,7 +135,6 @@ export default defineComponent({
   components: {
     EqualHeights,
     MoneyCard,
-    BarChart,
   },
 
   setup() {
