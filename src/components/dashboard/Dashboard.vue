@@ -46,19 +46,30 @@
               </fetcher>
             </v-col>
             <v-col cols="12" md="4">
-              <fetcher :api="'/api/v1/financial-years'">
-                <div slot-scope="{ json: entries, loading }">
-                  <div v-if="loading">Loading...</div>
-                  <BaseSelect
-                    v-else
-                    :items="entries"
-                    :item-text="'name'"
-                    label="Facility"
-                    outlined
-                    v-model="data.formData.financial_year_id"
-                  />
-                </div>
-              </fetcher>
+              <v-select
+                :items="data.facilities"
+                label="Select Facility"
+                outlined
+                v-model="data.formData.facility_id"
+                :item-text="'displayName'"
+                item-value="id"
+              >
+                <template v-slot:prepend-item>
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-text-field
+                        outlined
+                        dense
+                        placeholder="Search Facilities..."
+                        @input="searchFacilities"
+                        height="60"
+                        hide-details=""
+                      ></v-text-field>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider></v-divider>
+                </template>
+              </v-select>
             </v-col>
           </v-row>
         </v-container>
@@ -70,16 +81,13 @@
           <v-col
             cols="12"
             md="6"
-            lg="3"
+            :style="$vuetify.breakpoint.lgAndUp ? ' flex: 1 0 20%;' : ''"
             sm="12"
             class="border-right"
             v-for="entry in data.cardData"
+            :key="entry.id"
           >
-            <MoneyCard
-              key="{entry.title}"
-              :title="entry.title"
-              :amount="entry.amount"
-            />
+            <MoneyCard :title="entry.title" :amount="entry.amount" />
           </v-col>
         </v-row>
       </v-container>
@@ -91,7 +99,9 @@
 import { defineComponent, reactive, onMounted } from "vue";
 import EqualHeights from "@/components/shared/equal-heights/EqualHeights.vue";
 import MoneyCard from "@/components/dashboard/components/MoneyCard.vue";
+import BarChart from "@/components/dashboard/components/BarChart";
 import { get as getAdminAreas } from "@/components/admin-area/admin-area/services/admin-area-services";
+import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
 
 interface FormFilter {
   financial_year_id: string;
@@ -107,7 +117,17 @@ interface AdminArea {
   level?: Record<string, any>;
 }
 
+interface Facility {
+  id: string;
+  name: string;
+  code: string;
+  facility_type?: Record<string, any>;
+  displayName: string;
+  location?: Record<string, any>;
+}
+
 interface CardData {
+  id: number;
   title: string;
   amount: number;
 }
@@ -116,6 +136,7 @@ export default defineComponent({
   components: {
     EqualHeights,
     MoneyCard,
+    BarChart,
   },
 
   setup() {
@@ -126,6 +147,7 @@ export default defineComponent({
     };
 
     const entries: Array<AdminArea> = [];
+    const facilities: Array<Facility> = [];
     const cardData: Array<CardData> = [];
 
     const data = reactive({
@@ -133,26 +155,37 @@ export default defineComponent({
       valid: false,
       cardData,
       entries,
+      facilities,
       searchTerm: "",
     });
 
     onMounted(() => {
       loadAdminAreas();
+      loadFacilities();
       data.cardData = [
         {
+          id: 1,
           title: "OPENING BALANCE",
           amount: 12323200.58,
         },
         {
+          id: 2,
           title: "FUND RECEIVED",
           amount: 10000000000,
         },
         {
+          id: 3,
           title: "TOTAL FUNDS",
           amount: 2322302328232.48,
         },
         {
-          title: "FUND RECEIVED",
+          id: 4,
+          title: "EXPENDITURE",
+          amount: 23223023,
+        },
+        {
+          id: 5,
+          title: "FUND BALANCE",
           amount: 23000000,
         },
       ];
@@ -169,6 +202,23 @@ export default defineComponent({
       }));
     };
 
+    const mapFacilities = <T extends Facility>(
+      facilities: Array<T>
+    ): Array<Facility> => {
+      return facilities.map((facility: T) => ({
+        id: facility.id,
+        name: facility.name,
+        code: facility.code,
+        displayName: `${facility.name} (${facility.facility_type.name}) - ${facility.location.name}`,
+      }));
+    };
+
+    const loadFacilities = async () => {
+      const response = await getFacilities({ per_page: 10 });
+      const _mappedFacilties = mapFacilities(response.data.data.data);
+      data.facilities = _mappedFacilties;
+    };
+
     const loadAdminAreas = async () => {
       const response = await getAdminAreas({ per_page: 10 });
       const _mappedAreas = mapAreas(response.data.data.data);
@@ -182,9 +232,17 @@ export default defineComponent({
       data.entries = _mappedAreas;
     };
 
+    const searchFacilities = async (val: string) => {
+      const searchTerm = val ? val : data.searchTerm;
+      const response = await getFacilities({ regSearch: searchTerm });
+      const _mappedFacilties = mapFacilities(response.data.data.data);
+      data.facilities = _mappedFacilties;
+    };
+
     return {
       data,
       searchAdminAreas,
+      searchFacilities,
     };
   },
 });
