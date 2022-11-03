@@ -13,7 +13,7 @@ import {
   regSearch as receiptSearch,
   search,
   approveReceiptFacilityService,
-} from "../services/receipt-service";
+} from "../services/receipt-council-approval-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import {
@@ -102,7 +102,7 @@ export const useReceipt = (): any => {
   ];
 
   const data = reactive({
-    title: "Manage Receipts",
+    title: "Manage Approval Deposit Receipt",
     isInvoice: "NO",
     selectedUser: null,
     selectedInvoice: null,

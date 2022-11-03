@@ -96,7 +96,7 @@ export const useSupplier = (): any => {
     itemtodelete: "",
     searchTerm: "",
     focus: false,
-    supplierTypes: ["Contractor", "Employee", "Others"],
+    supplierTypes: ["Contractor/Supplier", "Employee", "Others"],
     phoneRules: [
       (v: string) => !!v || "Phone number is required",
       (v: string) =>

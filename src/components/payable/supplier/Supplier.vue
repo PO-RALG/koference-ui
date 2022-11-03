@@ -215,12 +215,10 @@
                     :rules="data.bankAccountNumberRules"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="12" sm="12" class="pt-6">
-                  <v-checkbox
-                    v-model="data.formData.ismmama"
-                    label="Check if Supplier is used for M MAMA"
-                  ></v-checkbox>
-                </v-col>
+                <!-- <v-col cols="12" md="12" sm="12" class="pt-6">
+                  <label for="">Tick if is M MAMA Supplier</label>
+                  <v-checkbox v-model="data.formData.ismmama"></v-checkbox>
+                </v-col> -->
               </v-row>
             </v-container>
           </v-form>

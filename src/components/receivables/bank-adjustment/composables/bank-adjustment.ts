@@ -146,6 +146,7 @@ export const useBankAdjustment = (): any => {
     }
     const approveData = {
       approval: currentFlowable,
+      approved: true,
     };
 
     approveBAFacilityService(approveData).then(() => {
