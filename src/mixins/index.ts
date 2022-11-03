@@ -1,8 +1,6 @@
 import Vue from "vue";
 import store from "@/store";
-import _, { flow, forEach } from "lodash";
-import Customer from "@/components/receivables/customer/Customer.vue";
-import app from "@/App.vue";
+import _ from "lodash";
 
 Vue.mixin({
   methods: {
@@ -44,7 +42,7 @@ Vue.mixin({
       let currentFlowable = null;
       const approves = model.approves;
 
-      approves.forEach(function (flowable) {
+      approves.forEach(function(flowable) {
         if (flowable.facility_approved == null) {
           currentFlowable = flowable;
         }
@@ -85,7 +83,7 @@ Vue.mixin({
       let currentFlowable = null;
       const approves = model.approves;
 
-      approves.forEach(function (flowable) {
+      approves.forEach(function(flowable) {
         if (flowable.council_approved == null) {
           currentFlowable = flowable;
         }
@@ -120,6 +118,14 @@ Vue.mixin({
     },
     stringToCurrency(value: string): number {
       return Number(value.replace(/[^0-9.-]+/g, ""));
+    },
+
+    isLowLevelUser(): boolean {
+      const user = store.getters["Auth/getCurrentUser"];
+      const isLowLevel =
+        user.location.level.code === "VILLAGE_MTAA" ||
+        user.location.level.code === "FACILITY";
+      return !!isLowLevel;
     },
   },
 });
