@@ -54,7 +54,24 @@
               >
               </v-select>
             </v-col>
-            <v-col cols="12" :md="showSmallColumns ? 4 : 3">
+            <v-col v-if="!isLowLevelUser()" cols="12" :md="showSmallColumns ? 4 : 3">
+              <fetcher :api="'/api/v1/financial-years'">
+                <div slot-scope="{ json: entries, loading }">
+                  <div v-if="loading">Loading...</div>
+                  <v-select
+                    v-else
+                    :items="entries"
+                    :item-text="'name'"
+                    label="Financial Year"
+                    @change="filterDashboard"
+                    item-value="id"
+                    outlined
+                    v-model="data.formData.financial_year_id"
+                  />
+                </div>
+              </fetcher>
+            </v-col>
+            <v-col v-else cols="12" :md="12">
               <fetcher :api="'/api/v1/financial-years'">
                 <div slot-scope="{ json: entries, loading }">
                   <div v-if="loading">Loading...</div>
