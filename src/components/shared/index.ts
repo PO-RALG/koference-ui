@@ -22,3 +22,4 @@ Vue.component("BaseSelect", () => import("./form/BaseSelect.vue"));
 Vue.component("BaseCheckbox", () => import("./form/Checkbox.vue"));
 Vue.component("Loader", () => import("./Loader.vue"));
 Vue.component("AppLocationHeader", () => import("./AppLocationHeader.vue"));
+Vue.component("EqualHeights", () => import("./equal-heights/EqualHeights.vue"));
