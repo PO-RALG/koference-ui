@@ -4,10 +4,9 @@
       <v-form ref="form" v-model="data.valid">
         <v-container>
           <v-row>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="4" v-if="!isLowLevelUser()">
               <v-select
                 :items="data.entries"
-                :disabled="isLowLevelUser"
                 label="Select Admin Area"
                 outlined
                 v-model="data.formData.locaction_id"
@@ -49,9 +48,8 @@
                 </div>
               </fetcher>
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="4" v-if="!isLowLevelUser()">
               <v-select
-                :disabled="isLowLevelUser"
                 :items="data.facilities"
                 label="Select Facility"
                 outlined
