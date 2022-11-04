@@ -4,13 +4,17 @@
       <v-form ref="form" v-model="data.valid">
         <v-container>
           <v-row>
-            <v-col cols="12" md="4" v-if="!isLowLevelUser()">
+            <v-col
+              cols="12"
+              :md="showSmallColumns ? 4 : 3"
+              v-if="!isLowLevelUser()"
+            >
               <v-select
                 :items="data.entries"
-                label="Select Admin Area"
+                label="Select Region"
                 outlined
-                v-model="data.formData.locaction_id"
-                @change="filterDashboard"
+                v-model="data.formData.region_id"
+                @change="filterDashboard(true)"
                 :item-text="'displayName'"
                 item-value="id"
               >
@@ -24,6 +28,8 @@
                         @input="searchAdminAreas"
                         height="60"
                         hide-details=""
+                        @click:clear="resetSearchText()"
+                        clearable
                       ></v-text-field>
                     </v-list-item-content>
                   </v-list-item>
@@ -31,7 +37,28 @@
                 </template>
               </v-select>
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col
+              cols="12"
+              md="3"
+              :md="showSmallColumns ? 4 : 3"
+              v-if="!isLowLevelUser() && data.councils.length > 0"
+            >
+              <v-select
+                :items="data.councils"
+                label="Select Council"
+                outlined
+                v-model="data.formData.council_id"
+                @change="filterDashboard(false)"
+                :item-text="'displayName'"
+                item-value="id"
+              >
+              </v-select>
+            </v-col>
+            <v-col
+              v-if="!isLowLevelUser()"
+              cols="12"
+              :md="showSmallColumns ? 4 : 3"
+            >
               <fetcher :api="'/api/v1/financial-years'">
                 <div slot-scope="{ json: entries, loading }">
                   <div v-if="loading">Loading...</div>
@@ -48,12 +75,33 @@
                 </div>
               </fetcher>
             </v-col>
-            <v-col cols="12" md="4" v-if="!isLowLevelUser()">
+            <v-col v-else cols="12" :md="12">
+              <fetcher :api="'/api/v1/financial-years'">
+                <div slot-scope="{ json: entries, loading }">
+                  <div v-if="loading">Loading...</div>
+                  <v-select
+                    v-else
+                    :items="entries"
+                    :item-text="'name'"
+                    label="Financial Year"
+                    @change="filterDashboard"
+                    item-value="id"
+                    outlined
+                    v-model="data.formData.financial_year_id"
+                  />
+                </div>
+              </fetcher>
+            </v-col>
+            <v-col
+              cols="12"
+              :md="showSmallColumns ? 4 : 3"
+              v-if="!isLowLevelUser()"
+            >
               <v-select
                 :items="data.facilities"
                 label="Select Facility"
                 outlined
-                v-model="data.formData.facility_id"
+                v-model="data.formData.fac_id"
                 :item-text="'displayName'"
                 @change="filterDashboard"
                 item-value="id"
@@ -100,18 +148,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from "vue";
+import { defineComponent, reactive, onMounted, computed } from "vue";
 import EqualHeights from "@/components/shared/equal-heights/EqualHeights.vue";
 import MoneyCard from "@/components/dashboard/components/MoneyCard.vue";
-import { get as getAdminAreas } from "@/components/admin-area/admin-area/services/admin-area-services";
+import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
 import { get } from "@/components/dashboard/services";
-import { setTitle } from "@/middleware";
 
 interface FormFilter {
   financial_year_id: string;
-  locaction_id: string;
-  facility_id: string;
+  location_id: string;
+  region_id: string;
+  council_id: string;
+  fac_id: string;
 }
 
 interface AdminArea {
@@ -146,26 +195,31 @@ export default defineComponent({
   setup() {
     const formData: FormFilter = {
       financial_year_id: "",
-      locaction_id: "",
-      facility_id: "",
+      location_id: "",
+      fac_id: "",
+      region_id: "",
+      council_id: "",
     };
 
     const entries: Array<AdminArea> = [];
+    const councils: Array<AdminArea> = [];
     const facilities: Array<Facility> = [];
     const cardData: Array<DashboardData> = [];
+    const regionIsCurrentSelection: boolean = false;
 
     const data = reactive({
       formData,
       valid: false,
       cardData,
       entries,
+      councils,
       facilities,
+      regionIsCurrentSelection,
       searchTerm: "",
     });
 
     onMounted(() => {
       loadAdminAreas();
-      loadFacilities();
       loadDashboards();
       data.cardData = [];
     });
@@ -200,10 +254,10 @@ export default defineComponent({
       areas: Array<T>
     ): Array<AdminArea> => {
       return areas.map((area: T) => ({
-        displayName: `${area.name} (${area.level.name})`,
+        displayName: `${area.name}`,
         id: area.id,
         name: area.name,
-        code: area.level.name,
+        code: area.code,
       }));
     };
 
@@ -218,45 +272,105 @@ export default defineComponent({
       }));
     };
 
-    const filterDashboard = async () => {
-      const params = { ...data.formData };
-      console.log("filter", params);
+    const setLocationId = () => {
+      if (
+        !!data.formData.region_id &&
+        !!data.formData.council_id &&
+        !data.regionIsCurrentSelection
+      ) {
+        return data.formData.council_id;
+      } else {
+        return data.formData.region_id;
+      }
+    };
+
+    const filterDashboard = async (isRegion: boolean = true) => {
+      data.regionIsCurrentSelection = isRegion;
+
+      const params = {
+        ...data.formData,
+        location_id: isRegion ? data.formData.region_id : setLocationId(),
+      };
+
       const response = await get(params);
+
+      if (!data.formData.council_id || isRegion) {
+        await getCouncils(data.formData.region_id);
+      }
+
+      if (!isRegion) {
+        const res = await getFacilities({
+          location_id: data.formData.council_id,
+        });
+        const _mappedFacilties = mapFacilities(res.data.data.data);
+        data.facilities = _mappedFacilties;
+      }
+
       const _mappedDashboards = mapDashboards(response.data[0]);
       data.cardData = _mappedDashboards;
     };
 
-    const loadFacilities = async () => {
-      const response = await getFacilities({ per_page: 10 });
-      const _mappedFacilties = mapFacilities(response.data.data.data);
+    const loadAdminAreas = async () => {
+      const response = await getChildren();
+      const res = await getFacilities({
+        per_page: 10,
+        location_id: response.data.data.id,
+      });
+      const _mappedAreas = mapAreas(response.data.data.children);
+      const _mappedFacilties = mapFacilities(res.data.data.data);
       data.facilities = _mappedFacilties;
+      data.entries = _mappedAreas;
     };
 
-    const loadAdminAreas = async () => {
-      const response = await getAdminAreas({ per_page: 10 });
-      const _mappedAreas = mapAreas(response.data.data.data);
+    const getCouncils = async (regionId: string) => {
+      const response = await getChildren(regionId);
+      const _mappedAreas = mapAreas(response.data.data.children);
+      data.councils = _mappedAreas;
+    };
+
+    const resetSearchText = async () => {
+      data.searchTerm = "";
+      const response = await getChildren();
+      const _mappedAreas = mapAreas(response.data.data.children);
       data.entries = _mappedAreas;
     };
 
     const searchAdminAreas = async (val: string) => {
       const searchTerm = val ? val : data.searchTerm;
-      const response = await getAdminAreas({ regSearch: searchTerm });
-      const _mappedAreas = mapAreas(response.data.data.data);
+      const response = data.entries.filter((entry: AdminArea) =>
+        entry.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      const _mappedAreas = mapAreas(response);
       data.entries = _mappedAreas;
     };
 
     const searchFacilities = async (val: string) => {
       const searchTerm = val ? val : data.searchTerm;
-      const response = await getFacilities({ regSearch: searchTerm });
+      const response = await getFacilities({
+        regSearch: searchTerm,
+        location_id: data.formData.council_id
+          ? data.formData.council_id
+          : data.formData.region_id,
+      });
       const _mappedFacilties = mapFacilities(response.data.data.data);
       data.facilities = _mappedFacilties;
     };
+
+    const showSmallColumns = computed(() => {
+      const val =
+        !data.formData.region_id ||
+        (!data.formData.council_id && !data.formData.region_id);
+      return !!val;
+    });
 
     return {
       data,
       searchAdminAreas,
       searchFacilities,
       filterDashboard,
+      resetSearchText,
+      showSmallColumns,
     };
   },
 });

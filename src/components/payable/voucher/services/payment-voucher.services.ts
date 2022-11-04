@@ -32,12 +32,18 @@ const requestVoucherApproval = async (id: number) => {
   return await axios.post(`/api/v1/vouchers/${id}/request-approval`);
 };
 
+const rejectPVService = async (payload: any) => {
+  return await axios.post(`/api/v1/payment_voucher/approval`, payload);
+};
+
 const update = async (payload: any) => {
   return await axios.put(`/api/v1/vouchers/` + payload.id, payload);
 };
 
-const destroy = async (payload: any) => {
-  return await axios.delete(`/api/v1/vouchers/` + payload);
+const destroy = async <T>(id: number, date: T) => {
+  return await axios.delete(`/api/v1/vouchers/${id}`, {
+    data: { date },
+  });
 };
 
 const fundByActivity = async (id: string | number) => {
@@ -78,4 +84,5 @@ export {
   requestVoucherApproval,
   search,
   update,
+  rejectPVService,
 };

@@ -12,6 +12,7 @@ import {
   get,
   getWorkflow,
   printPdf,
+  rejectPVService,
   requestVoucherApproval,
 } from "../services/payment-voucher.services";
 import stringToCurrency from "@/filters/money-to-number";
@@ -40,6 +41,8 @@ export const usePaymentVoucher = (): any => {
   const fundSourceItem = {} as FundSources;
 
   const data = reactive({
+    reverseFormDate: "",
+    formDataPVRejectionComment: "",
     title: "Payment Vouchers",
     selectedGfsCodes: null,
     approvalRequestDialog: false,
@@ -111,6 +114,7 @@ export const usePaymentVoucher = (): any => {
     modal: false,
     deletemodal: false,
     genericConfirmModel: false,
+    genericConfirmRejectModel: false,
     items: dataItems,
     itemsToFilter: [],
     formData: paymentVoucherData,
@@ -136,6 +140,8 @@ export const usePaymentVoucher = (): any => {
     voucherType: VOUCHER_TYPE.NORMAL,
     depositAccounts: [],
     selectedActivity: null,
+    rejectedReason: {},
+    rejectedReasonDialogModel: false,
   });
 
   onMounted(() => {
@@ -209,6 +215,13 @@ export const usePaymentVoucher = (): any => {
         isApproved: entry.approves.length
           ? setApprovalStatus(entry.approves[0])
           : false,
+        isRejected: entry.approves.length
+          ? entry.approves.map(
+              (flow) =>
+                flow.facility_approved == false &&
+                flow.rejection_reason! != null
+            )
+          : false,
       }));
       data.itemsToFilter = response.data.data.data;
       data.response = {
@@ -250,6 +263,44 @@ export const usePaymentVoucher = (): any => {
     data.itemtodelete = deleteId;
   };
 
+  const rejectVoucher = (model: any) => {
+    data.formData = model;
+    data.modalTitle =
+      "Enter Rejection Comment and Click OK to Reject this Payment Voucher";
+    data.genericDialogAction = rejectPVFacilityComplete;
+    data.genericConfirmRejectModel = true;
+  };
+
+  const rejectPVFacilityComplete = () => {
+    if (
+      typeof data.formData.approves == "undefined" ||
+      data.formData.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData.approves;
+
+    approves.forEach((flowable) => {
+      if (flowable.facility_appoved !== null) {
+        currentFlowable = flowable;
+      }
+    });
+
+    if (currentFlowable == null) {
+      return false;
+    }
+    const rejectData = {
+      approval: currentFlowable,
+      approved: false,
+      rejection_reason: data.formDataPVRejectionComment,
+    };
+    rejectPVService(rejectData).then(() => {
+      data.genericConfirmRejectModel = false;
+      getTableData();
+    });
+  };
+
   const approvePVFacility = (model: any) => {
     data.formData = model;
     data.modalTitle = "Accept to Approve this Payment Voucher";
@@ -289,6 +340,8 @@ export const usePaymentVoucher = (): any => {
 
   const cancelGenericConfirmDialog = () => {
     data.genericConfirmModel = false;
+    data.genericConfirmRejectModel = false;
+    data.rejectedReasonDialogModel = false;
   };
 
   const cancelDialog = () => {
@@ -309,7 +362,11 @@ export const usePaymentVoucher = (): any => {
   };
 
   const remove = () => {
-    destroy(data.itemtodelete).then(() => {
+    const payload = {
+      id: data.itemtodelete,
+      date: data.reverseFormDate,
+    };
+    destroy(data.itemtodelete, data.reverseFormDate).then(() => {
       data.deletemodal = false;
       getTableData();
     });
@@ -604,7 +661,18 @@ export const usePaymentVoucher = (): any => {
     const id: number = data.formData.id;
     await requestVoucherApproval(id);
     data.approvalRequestDialog = false;
-    await getTableData();
+    getTableData();
+  };
+
+  const viewComment = (item: any) => {
+    console.log("Data", item);
+    data.rejectedReason = item.approves[0].rejection_reason;
+    data.rejectedReasonDialogModel = true;
+
+    // if (data.length > 0) {
+    //   data.rejectedReason = data;
+    //   data.rejectedReasonDialogModel = true;
+    // }
   };
 
   const requestApproval = (voucher) => {
@@ -618,6 +686,7 @@ export const usePaymentVoucher = (): any => {
 
   return {
     data,
+    rejectVoucher,
     openDialog,
     cancelDialog,
     openConfirmDialog,
@@ -658,5 +727,6 @@ export const usePaymentVoucher = (): any => {
     approvePVFacilityComplete,
     requestApproval,
     submitApprovalRequest,
+    viewComment,
   };
 };
