@@ -157,7 +157,7 @@ import { get } from "@/components/dashboard/services";
 
 interface FormFilter {
   financial_year_id: string;
-  locaction_id: string;
+  location_id: string;
   region_id: string;
   council_id: string;
   fac_id: string;
@@ -195,7 +195,7 @@ export default defineComponent({
   setup() {
     const formData: FormFilter = {
       financial_year_id: "",
-      locaction_id: "",
+      location_id: "",
       fac_id: "",
       region_id: "",
       council_id: "",
@@ -272,14 +272,24 @@ export default defineComponent({
       }));
     };
 
+    const setLocationId = () => {
+      if (
+        !!data.formData.region_id &&
+        !!data.formData.council_id &&
+        !data.regionIsCurrentSelection
+      ) {
+        return data.formData.council_id;
+      } else {
+      return data.formData.region_id;
+      }
+    };
+
     const filterDashboard = async (isRegion: boolean = true) => {
       data.regionIsCurrentSelection = isRegion;
 
       const params = {
         ...data.formData,
-        locaction_id: isRegion
-          ? data.formData.region_id
-          : data.formData.council_id,
+        location_id: isRegion ? data.formData.region_id : setLocationId(),
       };
 
       const response = await get(params);
@@ -299,7 +309,6 @@ export default defineComponent({
       const _mappedDashboards = mapDashboards(response.data[0]);
       data.cardData = _mappedDashboards;
     };
-
 
     const loadAdminAreas = async () => {
       const response = await getChildren();
