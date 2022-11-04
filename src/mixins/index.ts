@@ -122,10 +122,13 @@ Vue.mixin({
 
     isLowLevelUser(): boolean {
       const user = store.getters["Auth/getCurrentUser"];
+      if(user && user.location) {
       const isLowLevel =
         user.location.level.code === "VILLAGE_MTAA" ||
         user.location.level.code === "FACILITY";
-      return !!isLowLevel;
+        return !!isLowLevel;
+      }
+      return false;
     },
   },
 });

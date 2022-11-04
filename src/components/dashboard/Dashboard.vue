@@ -157,7 +157,11 @@ import { get } from "@/components/dashboard/services";
 
 interface FormFilter {
   financial_year_id: string;
+<<<<<<< HEAD
   location_id: string;
+=======
+  locaction_id: string;
+>>>>>>> origin/develop
   region_id: string;
   council_id: string;
   fac_id: string;
@@ -195,7 +199,11 @@ export default defineComponent({
   setup() {
     const formData: FormFilter = {
       financial_year_id: "",
+<<<<<<< HEAD
       location_id: "",
+=======
+      locaction_id: "",
+>>>>>>> origin/develop
       fac_id: "",
       region_id: "",
       council_id: "",
@@ -272,6 +280,7 @@ export default defineComponent({
       }));
     };
 
+<<<<<<< HEAD
     const setLocationId = () => {
       if (
         !!data.formData.region_id &&
@@ -284,12 +293,20 @@ export default defineComponent({
       }
     };
 
+=======
+>>>>>>> origin/develop
     const filterDashboard = async (isRegion: boolean = true) => {
       data.regionIsCurrentSelection = isRegion;
 
       const params = {
         ...data.formData,
+<<<<<<< HEAD
         location_id: isRegion ? data.formData.region_id : setLocationId(),
+=======
+        locaction_id: isRegion
+          ? data.formData.region_id
+          : data.formData.council_id,
+>>>>>>> origin/develop
       };
 
       const response = await get(params);
