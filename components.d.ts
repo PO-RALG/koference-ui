@@ -94,6 +94,7 @@ declare module '@vue/runtime-core' {
     Report: typeof import('./src/components/report/Report.vue')['default']
     ReportDetail: typeof import('./src/components/report/ReportDetail.vue')['default']
     ReportTreeBrowser: typeof import('./src/components/shared/report-tree/ReportTreeBrowser.vue')['default']
+    RevenueAccount: typeof import('./src/components/receivables/revenue-account/RevenueAccount.vue')['default']
     RevenueProjection: typeof import('./src/components/planning/revenue-projection/RevenueProjection.vue')['default']
     Role: typeof import('./src/components/role/Role.vue')['default']
     RolePermission: typeof import('./src/components/role/RolePermission.vue')['default']
