@@ -14,6 +14,7 @@ import {
   printPdf,
   rejectPVService,
   requestVoucherApproval,
+  approveReversalPVFacilityService,
 } from "../services/payment-voucher.services";
 import stringToCurrency from "@/filters/money-to-number";
 
@@ -43,6 +44,7 @@ export const usePaymentVoucher = (): any => {
   const data = reactive({
     reverseFormDate: "",
     formDataPVRejectionComment: "",
+    formDataPVReversalComment: "",
     title: "Payment Vouchers",
     selectedGfsCodes: null,
     approvalRequestDialog: false,
@@ -53,6 +55,7 @@ export const usePaymentVoucher = (): any => {
     response: {},
     modalTitle: "",
     maxDate: moment(new Date()).format("YYYY-MM-DD"),
+    minDate: null,
     headers: [
       {
         text: "Reference Number",
@@ -114,6 +117,7 @@ export const usePaymentVoucher = (): any => {
     modal: false,
     deletemodal: false,
     genericConfirmModel: false,
+    genericDeleteConfirmModel: false,
     genericConfirmRejectModel: false,
     items: dataItems,
     itemsToFilter: [],
@@ -222,6 +226,20 @@ export const usePaymentVoucher = (): any => {
                 flow.rejection_reason! != null
             )
           : false,
+        isRequestedToReverse: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved == null &&
+                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        isReversedApproved: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved &&
+                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
       }));
       data.itemsToFilter = response.data.data.data;
       data.response = {
@@ -258,9 +276,10 @@ export const usePaymentVoucher = (): any => {
     }
   };
 
-  const openConfirmDialog = (deleteId: string) => {
+  const openConfirmDialog = (itrm: any) => {
     data.deletemodal = !data.modal;
-    data.itemtodelete = deleteId;
+    data.itemtodelete = itrm.id;
+    data.minDate = moment(itrm.created_at).format("YYYY-MM-DD");
   };
 
   const rejectVoucher = (model: any) => {
@@ -338,10 +357,47 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  const approveReversalPVFacility = (model: any) => {
+    data.formData = model;
+    data.modalTitle = "Accept to Approve Reversal this Payment Voucher";
+    data.genericDialogAction = approveRejectionPVFacilityComplete;
+    data.genericDeleteConfirmModel = true;
+  };
+  const approveRejectionPVFacilityComplete = () => {
+    if (
+      typeof data.formData.approves == "undefined" ||
+      data.formData.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData.approves;
+
+    approves.forEach((flowable) => {
+      if (flowable.facility_appoved == null) {
+        currentFlowable = flowable;
+      }
+    });
+
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+      approved: true,
+    };
+
+    approveReversalPVFacilityService(approveData).then(() => {
+      data.genericDeleteConfirmModel = false;
+      getTableData();
+    });
+  };
+
   const cancelGenericConfirmDialog = () => {
     data.genericConfirmModel = false;
     data.genericConfirmRejectModel = false;
     data.rejectedReasonDialogModel = false;
+    data.genericDeleteConfirmModel = false;
   };
 
   const cancelDialog = () => {
@@ -365,8 +421,10 @@ export const usePaymentVoucher = (): any => {
     const payload = {
       id: data.itemtodelete,
       date: data.reverseFormDate,
+      rejection_reason: data.formDataPVReversalComment,
     };
-    destroy(data.itemtodelete, data.reverseFormDate).then(() => {
+
+    destroy(payload).then(() => {
       data.deletemodal = false;
       getTableData();
     });
@@ -724,6 +782,7 @@ export const usePaymentVoucher = (): any => {
     resetData,
     cancelGenericConfirmDialog,
     approvePVFacility,
+    approveReversalPVFacility,
     approvePVFacilityComplete,
     requestApproval,
     submitApprovalRequest,
