@@ -122,7 +122,7 @@
                 v-on="on"
                 @click="openConfirmDialog(item)"
               >
-                mdi-book-arrow-left-outline
+                mdi-file-rotate-left-outline
               </v-icon>
             </template>
             <span>Send Reverse Request</span>
