@@ -23,6 +23,11 @@
         <template v-slot:[`item.description`]="{ item }">
           <span>{{ item.description }}</span>
         </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon v-text="Update" class="mr-2" @click="generate(item)">
+            mdi-refresh
+          </v-icon>
+        </template>
         <template v-slot:footer>
           <Paginate
             :params="data.response"
