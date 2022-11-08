@@ -162,6 +162,7 @@
                   <v-file-input
                     @change="selectedFile($event)"
                     show-size
+                    success="true"
                     label="File input"
                   ></v-file-input>
                 </v-col>

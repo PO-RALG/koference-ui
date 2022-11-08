@@ -116,15 +116,13 @@
               <v-icon
                 v-if="
                   item.isRequestedToReverse.length === 0 &&
-                  !item.isReversedApproved.length &&
-                  !item.isApproved &&
                   can('delete', 'Voucher')
                 "
                 v-bind="attrs"
                 v-on="on"
                 @click="openConfirmDialog(item)"
               >
-                mdi-arrow-u-left-right-bold
+                mdi-book-arrow-left-outline
               </v-icon>
             </template>
             <span>Send Reverse Request</span>
