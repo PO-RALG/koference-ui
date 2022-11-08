@@ -6,7 +6,7 @@
       <v-btn
         color="primary"
         @click="openDialog"
-        :disabled="cant('create', 'Voucher')"
+        v-if="can('createVoucher', 'Voucher')"
       >
         <v-icon>mdi-plus</v-icon>
         Add New
@@ -38,7 +38,7 @@
         class="elevation-1"
         disable-pagination
       >
-        <template v-slot:top>
+        <template v-slot:right>
           <v-card-title>
             <v-spacer></v-spacer>
             <v-col cols="6" sm="12" md="4" class="pa-0">
@@ -88,24 +88,50 @@
         </template>
 
         <template v-slot:[`item.approve`]="{ item }">
-          <span
-            v-if="item && item.approve && !item.approve.council_approved"
-            >{{ "Waiting for Approval" }}</span
-          >
-          <span v-else>{{ "Approved" }}</span>
+          <span v-if="item.isRejected[0]"
+            >{{ "Rejected" }}
+            <v-tooltip right>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  @click="viewComment(item)"
+                  v-bind="attrs"
+                  color="red"
+                  v-on="on"
+                  class="mr-2"
+                >
+                  mdi-information-variant
+                </v-icon>
+              </template>
+              <small class="">Click to see rejection comment</small>
+            </v-tooltip>
+          </span>
+          <span v-if="item.isApproved">{{ "Approved" }}</span>
+          <span v-if="!item.isApproved && !item.isRejected[0]">{{
+            "Waiting for Approval"
+          }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip bottom>
+          <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                v-if="
+                  item.isRequestedToReverse.length === 0 &&
+                  can('delete', 'Voucher')
+                "
                 v-bind="attrs"
                 v-on="on"
-                @click="openConfirmDialog(item.id)"
-                :disabled="cant('delete', 'Voucher')"
+                @click="openConfirmDialog(item)"
               >
-                mdi-arrow-u-left-top-bold
+                mdi-book-arrow-left-outline
               </v-icon>
-              <v-btn
+            </template>
+            <span>Send Reverse Request</span>
+          </v-tooltip>
+
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="green"
                 v-if="
                   canApproveFacility(
                     item,
@@ -114,31 +140,77 @@
                     'Voucher'
                   )
                 "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
                 @click="approvePVFacility(item)"
-                color="primary"
-                text
               >
-                <v-icon>mdi-check-decagram</v-icon>
-                APPROVE
-              </v-btn>
-              <v-btn
+                mdi-check-decagram
+              </v-icon>
+            </template>
+            <span>Approve Voucher</span>
+          </v-tooltip>
+
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="red"
                 v-if="
                   canApproveFacility(
                     item,
-                    'PAYMENT_VOUCHER_REVERSE',
+                    'REVERSAL_OF_PAYMENT_VOUCHER',
+                    'reverseApproval',
+                    'Voucher'
+                  )
+                "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="approveReversalPVFacility(item)"
+              >
+                mdi-check-decagram
+              </v-icon>
+            </template>
+            <span>Approve reversal</span>
+          </v-tooltip>
+
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="red"
+                v-if="
+                  canApproveFacility(
+                    item,
+                    'PAYMENT_VOUCHER',
                     'approve',
                     'Voucher'
                   )
                 "
-                @click="approvePVFacility(item)"
-                color="primary"
-                text
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="rejectVoucher(item)"
               >
-                <v-icon>mdi-check-decagram</v-icon>
-                APPROVE REVERSE
-              </v-btn>
+                mdi-cancel
+              </v-icon>
             </template>
-            <span>Reverse Payment Voucher</span>
+            <span>Reject Approve</span>
+          </v-tooltip>
+
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                v-if="!item.approves.length"
+                @click="requestApproval(item)"
+                :disabled="cant('requestApproval', 'Voucher')"
+              >
+                mdi-lock-reset
+              </v-icon>
+            </template>
+            <span>Request Approval</span>
           </v-tooltip>
         </template>
         <template v-slot:footer>
@@ -161,7 +233,7 @@
             <v-radio-group v-model="data.voucherType" row @change="resetData">
               <v-radio label="NORMAL VOUCHER" :value="normalType"></v-radio>
               <v-radio label="DEPOSIT VOUCHER" :value="depositType"></v-radio>
-              <!-- <v-radio label="M MAMA VOUCHER" :value="mmamaType"></v-radio> -->
+              <v-radio label="M MAMA VOUCHER" :value="mmamaType"></v-radio>
             </v-radio-group>
             <v-container>
               <v-row class="pt-5 pl-5 pr-5">
@@ -587,7 +659,36 @@
         <ModalHeader :title="`Reverse Payment Voucher `" />
       </template>
       <template v-slot:body>
-        <ModalBody> Are you sure you want to reverse? </ModalBody>
+        <ModalBody>
+          <v-col class="pt-6 pl-3 pr-6" cols="12" md="12">
+            Are you sure you want to reverse?
+          </v-col>
+
+          <v-form>
+            <v-container>
+              <v-row>
+                <v-col class="pt-6 pl-6 pr-6" cols="12" md="12">
+                  <DatePicker
+                    :label="'Cancellation Date'"
+                    v-model="data.reverseFormDate"
+                    required
+                    :max="data.maxDate"
+                    :min="data.minDate"
+                  />
+                </v-col>
+
+                <v-col cols="12" md="12">
+                  <v-text-field
+                    v-model="data.formDataPVReversalComment"
+                    label="Reversal Comment"
+                    outlined
+                    required
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
@@ -599,12 +700,103 @@
       </template>
     </Modal>
 
+    <Modal :modal="data.approvalRequestDialog" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Request Voucher Approval `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> Are you sure you want to request approval? </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelApprovalRequestDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="submitApprovalRequest"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
+
     <Modal :modal="data.genericConfirmModel" :width="600">
       <template v-slot:header>
         <ModalHeader :title="data.modalTitle" />
       </template>
       <template v-slot:body>
         <ModalBody> {{ data.modalTitle }}</ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
+
+    <Modal :modal="data.genericDeleteConfirmModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> {{ data.modalTitle }}</ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
+
+    <Modal :modal="data.rejectedReasonDialogModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Rejection Reason `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> {{ data.rejectedReason }}</ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Close
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+
+    <Modal :modal="data.genericConfirmRejectModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader title="Reject Payment Voucher" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-col class="pt-0 pl-1 pr-6" cols="12" md="12">
+            {{ data.modalTitle }}
+          </v-col>
+          <v-form>
+            <v-container>
+              <v-row>
+                <v-col cols="12" md="12">
+                  <v-text-field
+                    v-model="data.formDataPVRejectionComment"
+                    label="Rejection Comment"
+                    outlined
+                    required
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
@@ -928,10 +1120,17 @@ export default defineComponent({
       resetData,
       cancelGenericConfirmDialog,
       approvePVFacility,
+      approveReversalPVFacility,
+      rejectVoucher,
       approvePVFacilityComplete,
+      requestApproval,
+      cancelApprovalRequestDialog,
+      submitApprovalRequest,
+      viewComment,
     } = usePaymentVoucher();
 
     return {
+      rejectVoucher,
       isMmama,
       mmamaType,
       toMoney,
@@ -972,7 +1171,12 @@ export default defineComponent({
       resetData,
       cancelGenericConfirmDialog,
       approvePVFacility,
+      approveReversalPVFacility,
       approvePVFacilityComplete,
+      requestApproval,
+      cancelApprovalRequestDialog,
+      submitApprovalRequest,
+      viewComment,
     };
   },
 });
@@ -996,7 +1200,7 @@ export default defineComponent({
 
     tr {
       border-right: 1px solid #ccc;
-      border-bottom: 1px solid #ccc;
+      border-right: 1px solid #ccc;
     }
 
     td {

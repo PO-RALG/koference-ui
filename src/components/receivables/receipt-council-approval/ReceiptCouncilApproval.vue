@@ -101,6 +101,22 @@
             </template>
             <span>Print</span>
           </v-tooltip>
+          <v-btn
+            v-if="
+              canApproveCouncil(
+                item,
+                'DEPOSIT_RECEIPT',
+                'approvalPendingCouncil',
+                'Receipt'
+              )
+            "
+            @click="approveReceiptFacility(item)"
+            color="primary"
+            text
+          >
+            <v-icon>mdi-check-decagram</v-icon>
+            Approve
+          </v-btn>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -111,6 +127,26 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <Modal :modal="data.genericConfirmModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> {{ data.modalTitle }}</ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
+
     <Modal :modal="data.modal" :width="1250">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Receipt`" />
@@ -528,7 +564,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useReceipt } from "./composables/receipt";
+import { useReceipt } from "./composables/receipt-council-approval";
 import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({
@@ -568,6 +604,7 @@ export default defineComponent({
       cashType,
       depositType,
       approveReceiptFacility,
+      cancelGenericConfirmDialog,
     } = useReceipt();
 
     return {
@@ -605,6 +642,7 @@ export default defineComponent({
       cashType,
       depositType,
       approveReceiptFacility,
+      cancelGenericConfirmDialog,
     };
   },
 });

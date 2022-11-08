@@ -113,10 +113,10 @@
                     <br />
                     {{ item.gfsCode.name }}
                   </td>
-                  <td class="">{{ item.budget | toCurrency() }}</td>
-                  <td class="">{{ item.allocation | toCurrency() }}</td>
-                  <td class="">{{ item.totalExpenditure | toCurrency() }}</td>
-                  <td class="">
+                  <td class="text-end">{{ item.budget | toCurrency() }}</td>
+                  <td class="text-end">{{ item.allocation | toCurrency() }}</td>
+                  <td class="text-end">{{ item.totalExpenditure | toCurrency() }}</td>
+                  <td class="text-end">
                     {{
                       (item.allocation - item.totalExpenditure) | toCurrency()
                     }}

@@ -155,6 +155,7 @@ export const useBankAdjustmentCouncilApprove = (): any => {
     }
     const approveData = {
       approval: currentFlowable,
+      approved: true,
     };
     approveBACouncilService(approveData).then(() => {
       data.genericConfirmModel = false;

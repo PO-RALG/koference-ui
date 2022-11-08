@@ -69,10 +69,10 @@
                 @click="openRequestReversalDialog(item.id)"
                 :disabled="cant('delete', 'Payment')"
               >
-                mdi-arrow-u-left-top-bold
+                mdi-book-arrow-left-outline
               </v-icon>
             </template>
-            <span>Reverse Payment</span>
+            <span>Send Reverse Request</span>
           </v-tooltip>
         </template>
         <template v-slot:footer>

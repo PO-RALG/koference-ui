@@ -7,6 +7,7 @@ import {
   update,
   destroy,
   search,
+  printPdf,
 } from "../services/activity-costing.service";
 import { ActivityCosting } from "../types/ActivityCosting";
 import { get as FinancialYears } from "../../../setup/financial-year/services/financialyear.service";
@@ -199,6 +200,7 @@ export const useActivityCosting = (): any => {
       data.items = response.data.data.data;
     });
   };
+
   const filterActivity = () => {
     if (data.searchTerm.length >= 3) {
       get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
@@ -232,8 +234,13 @@ export const useActivityCosting = (): any => {
     }
   };
 
+  const printActivityCosting = () => {
+    printPdf();
+  };
+
   return {
     data,
+    printActivityCosting,
     openDialog,
     cancelDialog,
     openConfirmDialog,

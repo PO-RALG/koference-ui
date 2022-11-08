@@ -13,7 +13,7 @@ import {
   regSearch as receiptSearch,
   search,
   approveReceiptFacilityService,
-} from "../services/receipt-service";
+} from "../services/receipt-council-approval-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
 import {
@@ -102,7 +102,7 @@ export const useReceipt = (): any => {
   ];
 
   const data = reactive({
-    title: "Manage Receipts",
+    title: "Manage Approval Deposit Receipt",
     isInvoice: "NO",
     selectedUser: null,
     selectedInvoice: null,
@@ -116,12 +116,14 @@ export const useReceipt = (): any => {
         sortable: false,
         value: "receipt_number",
       },
+
       { text: "Date", value: "date", sortable: true },
+
       {
-        text: "Amount",
-        align: "right",
+        text: "Bank Account",
+        align: "start",
         sortable: false,
-        value: "totalAmt",
+        value: "bank_account",
       },
 
       {
@@ -137,11 +139,12 @@ export const useReceipt = (): any => {
         sortable: false,
         value: "description",
       },
+
       {
-        text: "Bank Account",
-        align: "start",
+        text: "Amount",
+        align: "right",
         sortable: false,
-        value: "bank_account",
+        value: "totalAmt",
       },
       {
         text: "Actions",
@@ -229,21 +232,20 @@ export const useReceipt = (): any => {
     data.loading = true;
 
     const res = await get({ per_page: 10 });
-    const { from, to, total, current_page, per_page, last_page } =
-      res.data.data;
+    if (res.data.data) {
+      const { from, to, total, current_page, per_page, last_page } =
+        res.data.data;
+      data.response = { from, to, total, current_page, per_page, last_page };
+      data.items = res.data.data.data.map((approve: any) => ({
+        ...approve,
+        approve: approve.approves.find(
+          (flow) => flow.workflow == "DEPOSIT_RECEIPT"
+        ),
+      }));
+      data.itemsToFilter = res.data.data.data;
+    }
 
-    data.response = { from, to, total, current_page, per_page, last_page };
-    data.items = res.data.data.data.map((approve: any) => ({
-      ...approve,
-      approve: approve.approves.find(
-        (flow) => flow.workflow == "DEPOSIT_RECEIPT"
-      ),
-    }));
-    data.itemsToFilter = res.data.data.data;
     data.loading = false;
-
-    const response = await getCustomers({ per_page: 2000, active: true });
-    data.customers = response.data.data.data;
   };
 
   const searchCategory = async (categoryName: any) => {
@@ -263,6 +265,10 @@ export const useReceipt = (): any => {
       response.data.data;
     data.response = { from, to, total, current_page, per_page, last_page };
     data.items = response.data.data.data;
+  };
+
+  const cancelGenericConfirmDialog = () => {
+    data.genericConfirmModel = false;
   };
 
   const cancelDialog = () => {
@@ -434,7 +440,7 @@ export const useReceipt = (): any => {
           ...item,
           index: ++index,
           newData: item,
-          bankAccount: `${item.bank_account.bank} ${item.bank_account.name} (${item.bank_account.number})`,
+          bankAccount: "2344444",
         }))
       : [];
   });
@@ -575,7 +581,7 @@ export const useReceipt = (): any => {
 
   const approveReceiptFacility = (model: any) => {
     data.formData2 = model;
-    data.modalTitle = "Accept to Verify this Receipt";
+    data.modalTitle = "Accept to Approve this Receipt";
     data.genericDialogAction = approveReceiptFacilityComplete;
     data.genericConfirmModel = true;
   };
@@ -600,6 +606,7 @@ export const useReceipt = (): any => {
     }
     const approveData = {
       approval: currentFlowable,
+      approved: true,
     };
 
     approveReceiptFacilityService(approveData).then(() => {
@@ -651,5 +658,6 @@ export const useReceipt = (): any => {
     cashType,
     depositType,
     approveReceiptFacility,
+    cancelGenericConfirmDialog,
   };
 };

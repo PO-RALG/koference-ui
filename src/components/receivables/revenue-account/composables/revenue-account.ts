@@ -1,6 +1,10 @@
 import { onMounted, reactive } from "vue";
 import { AxiosResponse } from "axios";
-import { create, get } from "../services/revenue.account.service";
+import {
+  create,
+  get,
+  generate as regenerate,
+} from "../services/revenue.account.service";
 import { getFundingSourceList } from "@/components/receivables/receipt/services/receipt-service";
 import { get as getGfsCodes } from "@/components/coa/gfs-code/service/gfs.service";
 import { get as getSubBudgetClasses } from "@/components/coa/sub-budget-class/services/sub-budget-classes.service";
@@ -83,14 +87,21 @@ export const useRevenueAccounts = (): any => {
   };
 
   const save = () => {
-    console.log("Form Data", data.formData);
+    //console.log("Form Data", data.formData);
     createRevenueAccounts(data.formData);
   };
 
   const createRevenueAccounts = (data: any) => {
     create(data).then((response) => {
-      console.log("Added Revenue Accounts", response.data.data);
+      //console.log("Added Revenue Accounts", response.data.data);
       cancelDialog();
+      getData([]);
+    });
+  };
+  const generate = (id: string | number) => {
+    const data = {};
+    regenerate(id, data).then((response) => {
+      console.log("Added Revenue Accounts", response.data.data);
       getData([]);
     });
   };

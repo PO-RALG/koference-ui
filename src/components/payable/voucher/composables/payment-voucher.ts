@@ -1,26 +1,29 @@
-import { reactive, onMounted, computed } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import { AxiosResponse } from "axios";
 
 import {
-  get,
-  find,
-  create,
-  destroy,
-  printPdf,
-  fundByActivity,
-  getWorkflow,
-  fundByActivityFundSource,
   activitiesByFundSource,
   approvePVFacilityService,
+  create,
+  destroy,
+  find,
+  fundByActivity,
+  fundByActivityFundSource,
+  get,
+  getWorkflow,
+  printPdf,
+  rejectPVService,
+  requestVoucherApproval,
+  approveReversalPVFacilityService,
 } from "../services/payment-voucher.services";
 import stringToCurrency from "@/filters/money-to-number";
 
 import { get as getFundSources } from "@/components/coa/funding-source/services/funding-sources";
 import {
-  PaymentVoucher,
   Account,
-  VOUCHER_TYPE,
   Payable,
+  PaymentVoucher,
+  VOUCHER_TYPE,
 } from "../types/PaymentVoucher";
 import { get as getSupplier } from "@/components/payable/supplier/services/supplier.services";
 import { get as getActivity } from "@/components/planning/activity/services/activity.service";
@@ -39,14 +42,20 @@ export const usePaymentVoucher = (): any => {
   const fundSourceItem = {} as FundSources;
 
   const data = reactive({
+    reverseFormDate: "",
+    formDataPVRejectionComment: "",
+    formDataPVReversalComment: "",
     title: "Payment Vouchers",
     selectedGfsCodes: null,
+    approvalRequestDialog: false,
     valid: false,
+    approveButton: false,
     isOpen: false,
     node: null,
     response: {},
     modalTitle: "",
     maxDate: moment(new Date()).format("YYYY-MM-DD"),
+    minDate: null,
     headers: [
       {
         text: "Reference Number",
@@ -108,6 +117,8 @@ export const usePaymentVoucher = (): any => {
     modal: false,
     deletemodal: false,
     genericConfirmModel: false,
+    genericDeleteConfirmModel: false,
+    genericConfirmRejectModel: false,
     items: dataItems,
     itemsToFilter: [],
     formData: paymentVoucherData,
@@ -133,15 +144,12 @@ export const usePaymentVoucher = (): any => {
     voucherType: VOUCHER_TYPE.NORMAL,
     depositAccounts: [],
     selectedActivity: null,
+    rejectedReason: {},
+    rejectedReasonDialogModel: false,
   });
 
   onMounted(() => {
     getTableData();
-
-    // getWorkflow(data.params).then((response: AxiosResponse) => {
-    //   const sendJson = JSON.stringify(response.data);
-    //   localStorage.setItem("WORK_FLOW", sendJson);
-    // });
   });
 
   const filterVoucher = () => {
@@ -187,16 +195,51 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
-  const getTableData = () => {
+  const setApprovalStatus = (item: Record<string, any>) => {
+    const { ends_on_facility, facility_approved, council_approved } = item;
+    if (!!ends_on_facility && !!facility_approved) {
+      return true;
+    } else if (!!ends_on_facility && !!facility_approved) {
+      return false;
+    } else {
+      return !!council_approved;
+    }
+  };
+
+  const getTableData = async () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
       // data.items = response.data.data.data;
-      data.items = response.data.data.data.map((approve: any) => ({
-        ...approve,
-        approve: approve.approves.find(
+      data.items = response.data.data.data.map((entry: any) => ({
+        ...entry,
+        approve: entry.approves.find(
           (flow) => flow.workflow == "PAYMENT_VOUCHER"
         ),
+        isApproved: entry.approves.length
+          ? setApprovalStatus(entry.approves[0])
+          : false,
+        isRejected: entry.approves.length
+          ? entry.approves.map(
+              (flow) =>
+                flow.facility_approved == false &&
+                flow.rejection_reason! != null
+            )
+          : false,
+        isRequestedToReverse: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved == null &&
+                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        isReversedApproved: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved &&
+                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
       }));
       data.itemsToFilter = response.data.data.data;
       data.response = {
@@ -233,9 +276,48 @@ export const usePaymentVoucher = (): any => {
     }
   };
 
-  const openConfirmDialog = (deleteId: string) => {
+  const openConfirmDialog = (itrm: any) => {
     data.deletemodal = !data.modal;
-    data.itemtodelete = deleteId;
+    data.itemtodelete = itrm.id;
+    data.minDate = moment(itrm.created_at).format("YYYY-MM-DD");
+  };
+
+  const rejectVoucher = (model: any) => {
+    data.formData = model;
+    data.modalTitle =
+      "Enter Rejection Comment and Click OK to Reject this Payment Voucher";
+    data.genericDialogAction = rejectPVFacilityComplete;
+    data.genericConfirmRejectModel = true;
+  };
+
+  const rejectPVFacilityComplete = () => {
+    if (
+      typeof data.formData.approves == "undefined" ||
+      data.formData.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData.approves;
+
+    approves.forEach((flowable) => {
+      if (flowable.facility_appoved !== null) {
+        currentFlowable = flowable;
+      }
+    });
+
+    if (currentFlowable == null) {
+      return false;
+    }
+    const rejectData = {
+      approval: currentFlowable,
+      approved: false,
+      rejection_reason: data.formDataPVRejectionComment,
+    };
+    rejectPVService(rejectData).then(() => {
+      data.genericConfirmRejectModel = false;
+      getTableData();
+    });
   };
 
   const approvePVFacility = (model: any) => {
@@ -255,16 +337,18 @@ export const usePaymentVoucher = (): any => {
     let currentFlowable = null;
     const approves = data.formData.approves;
 
-    approves.forEach(function (flowable) {
+    approves.forEach((flowable) => {
       if (flowable.facility_appoved == null) {
         currentFlowable = flowable;
       }
     });
+
     if (currentFlowable == null) {
       return false;
     }
     const approveData = {
       approval: currentFlowable,
+      approved: true,
     };
 
     approvePVFacilityService(approveData).then(() => {
@@ -273,8 +357,47 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  const approveReversalPVFacility = (model: any) => {
+    data.formData = model;
+    data.modalTitle = "Accept to Approve Reversal this Payment Voucher";
+    data.genericDialogAction = approveRejectionPVFacilityComplete;
+    data.genericDeleteConfirmModel = true;
+  };
+  const approveRejectionPVFacilityComplete = () => {
+    if (
+      typeof data.formData.approves == "undefined" ||
+      data.formData.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData.approves;
+
+    approves.forEach((flowable) => {
+      if (flowable.facility_appoved == null) {
+        currentFlowable = flowable;
+      }
+    });
+
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+      approved: true,
+    };
+
+    approveReversalPVFacilityService(approveData).then(() => {
+      data.genericDeleteConfirmModel = false;
+      getTableData();
+    });
+  };
+
   const cancelGenericConfirmDialog = () => {
     data.genericConfirmModel = false;
+    data.genericConfirmRejectModel = false;
+    data.rejectedReasonDialogModel = false;
+    data.genericDeleteConfirmModel = false;
   };
 
   const cancelDialog = () => {
@@ -289,14 +412,25 @@ export const usePaymentVoucher = (): any => {
     data.deletemodal = false;
   };
 
+  const cancelApprovalRequestDialog = () => {
+    data.approvalRequestDialog = false;
+    data.formData = {} as PaymentVoucher;
+  };
+
   const remove = () => {
-    destroy(data.itemtodelete).then(() => {
+    const payload = {
+      id: data.itemtodelete,
+      date: data.reverseFormDate,
+      rejection_reason: data.formDataPVReversalComment,
+    };
+
+    destroy(payload).then(() => {
       data.deletemodal = false;
       getTableData();
     });
   };
 
-  const save = () => {
+  const save = async () => {
     const payableData = [];
     const payableItems = data.payables;
     for (let i = 0; i < payableItems.length; i++) {
@@ -326,6 +460,7 @@ export const usePaymentVoucher = (): any => {
     data.gfsCodes = [];
     data.modal = !data.modal;
   };
+
   const loadDepositAccounts = async () => {
     const params = {
       gl_account_type: "DEPOSIT",
@@ -350,7 +485,6 @@ export const usePaymentVoucher = (): any => {
   };
 
   const getSupplierData = (voucher: any) => {
-    console.log("voucherType", voucher);
     if (voucher == 4) {
       data.suppliers = [];
 
@@ -581,18 +715,43 @@ export const usePaymentVoucher = (): any => {
     return data.voucherType == VOUCHER_TYPE.DEPOSIT;
   });
 
+  const submitApprovalRequest = async () => {
+    const id: number = data.formData.id;
+    await requestVoucherApproval(id);
+    data.approvalRequestDialog = false;
+    getTableData();
+  };
+
+  const viewComment = (item: any) => {
+    console.log("Data", item);
+    data.rejectedReason = item.approves[0].rejection_reason;
+    data.rejectedReasonDialogModel = true;
+
+    // if (data.length > 0) {
+    //   data.rejectedReason = data;
+    //   data.rejectedReasonDialogModel = true;
+    // }
+  };
+
+  const requestApproval = (voucher) => {
+    data.formData = voucher;
+    data.approvalRequestDialog = true;
+  };
+
   const normalType = VOUCHER_TYPE.NORMAL;
   const mmamaType = VOUCHER_TYPE.MMAMA;
   const depositType = RECEIPT_TYPE.DEPOSIT;
 
   return {
     data,
+    rejectVoucher,
     openDialog,
     cancelDialog,
     openConfirmDialog,
     save,
     remove,
     cancelConfirmDialog,
+    cancelApprovalRequestDialog,
     getData,
     searchSuppliers,
     addPayable,
@@ -623,6 +782,10 @@ export const usePaymentVoucher = (): any => {
     resetData,
     cancelGenericConfirmDialog,
     approvePVFacility,
+    approveReversalPVFacility,
     approvePVFacilityComplete,
+    requestApproval,
+    submitApprovalRequest,
+    viewComment,
   };
 };

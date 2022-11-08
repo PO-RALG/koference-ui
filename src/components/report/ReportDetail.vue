@@ -76,7 +76,6 @@
             </v-flex>
           </v-layout>
         </v-form>
-        <!--<pre>{{ data.formData }}</pre>-->
       </v-card-text>
       <v-card-actions class="mr-5 mt-n4 pb-5">
         <v-spacer></v-spacer>

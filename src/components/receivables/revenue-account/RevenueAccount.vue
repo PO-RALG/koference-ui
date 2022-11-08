@@ -24,7 +24,7 @@
           <span>{{ item.description }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon v-text="Update" class="mr-2" @click="generate(item)">
+          <v-icon v-text="Update" class="mr-2" @click="generate(item.id)">
             mdi-refresh
           </v-icon>
         </template>
@@ -250,6 +250,7 @@ export default defineComponent({
       filterGfs,
       filterSubBudgetClasses,
       filterFacilityTypes,
+      generate,
     } = useRevenueAccounts();
 
     return {
@@ -262,6 +263,7 @@ export default defineComponent({
       filterGfs,
       filterSubBudgetClasses,
       filterFacilityTypes,
+      generate,
     };
   },
 });

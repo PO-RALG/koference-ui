@@ -15,9 +15,12 @@ const find = async (id: string | number) => {
 const create = async (payload: any) => {
   return await axios.post(`${API}`, payload);
 };
+const generate = async (id: string | number, payload: any) => {
+  return await axios.post(`${API}/${id}`, payload);
+};
 
 const destroy = async (id: string | number) => {
   return await axios.delete(`${API}/${id}`);
 };
 
-export { get, find, create, destroy };
+export { get, find, create, destroy, generate };

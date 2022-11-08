@@ -242,10 +242,7 @@ export const useDocument = (): any => {
     });
   };
   const selectedFile = (event: any) => {
-    console.log("even contain nothing");
-    console.log(event);
-    console.log(event.target.files[0]);
-    data.file = event.target.files[0];
+    data.file = event;
   };
 
   // watching a getter
