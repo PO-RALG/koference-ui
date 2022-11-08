@@ -161,5 +161,6 @@ export const useRevenueAccounts = (): any => {
     filterGfs,
     filterSubBudgetClasses,
     filterFacilityTypes,
+    generate,
   };
 };
