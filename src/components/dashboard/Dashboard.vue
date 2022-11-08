@@ -334,7 +334,11 @@ export default defineComponent({
 
       const params = {
         ...data.formData,
-        location_id: data.isCouncil? data.user.location.id :  isRegion ? data.formData.region_id : setLocationId(),
+        location_id: data.isCouncil
+          ? data.user.location.id
+          : isRegion
+          ? data.formData.region_id
+          : setLocationId(),
       };
 
       const response = await get(params);

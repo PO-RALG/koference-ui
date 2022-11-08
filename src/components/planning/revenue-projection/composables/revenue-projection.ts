@@ -26,7 +26,7 @@ export const useRevenueProjection = (): any => {
     modalTitle: "",
     headers: [
       {
-        text: "Account",
+        text: "GL Account",
         align: "start",
         sortable: false,
         value: "account.code",
@@ -38,7 +38,7 @@ export const useRevenueProjection = (): any => {
         value: "funding_source_code",
       },
       {
-        text: "GFS",
+        text: "Description",
         align: "start",
         sortable: false,
         value: "gfs_code.name",

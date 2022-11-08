@@ -7,6 +7,9 @@ const getWorkflow = async (params: any) => {
 const approvePVFacilityService = async (payload: any) => {
   return await axios.post(`/api/v1/payment_voucher/approval`, payload);
 };
+const approveReversalPVFacilityService = async (payload: any) => {
+  return await axios.post(`/api/v1/payment_voucher-reversal/approval`, payload);
+};
 
 const get = async (params: any) => {
   return await axios.get("/api/v1/vouchers", { params });
@@ -32,12 +35,18 @@ const requestVoucherApproval = async (id: number) => {
   return await axios.post(`/api/v1/vouchers/${id}/request-approval`);
 };
 
+const rejectPVService = async (payload: any) => {
+  return await axios.post(`/api/v1/payment_voucher/approval`, payload);
+};
+
 const update = async (payload: any) => {
   return await axios.put(`/api/v1/vouchers/` + payload.id, payload);
 };
 
-const destroy = async (payload: any) => {
-  return await axios.delete(`/api/v1/vouchers/` + payload);
+const destroy = async <T>(paymoad: any) => {
+  return await axios.delete(`/api/v1/vouchers/${paymoad.id}`, {
+    data: paymoad,
+  });
 };
 
 const fundByActivity = async (id: string | number) => {
@@ -78,4 +87,6 @@ export {
   requestVoucherApproval,
   search,
   update,
+  rejectPVService,
+  approveReversalPVFacilityService,
 };

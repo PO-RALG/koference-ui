@@ -57,7 +57,7 @@ export const useBankAdjustment = (): any => {
         value: "amount",
       },
       {
-        text: "Approve Status",
+        text: "Status",
         align: "start",
         sortable: false,
         value: "approve",

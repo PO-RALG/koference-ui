@@ -1,10 +1,4 @@
-import {
-  reactive,
-  watch,
-  onMounted,
-  computed,
-  ref,
-} from "vue";
+import { reactive, watch, onMounted, computed, ref } from "vue";
 import { AxiosResponse } from "axios";
 
 import { Document } from "../types/Document";
@@ -167,7 +161,7 @@ export const useDocument = (): any => {
   };
 
   const downloadFile = (id: any) => {
-    const path: any = `/api/v1/document-download/${id}` ;
+    const path: any = `/api/v1/document-download/${id}`;
     window.open(path, "_blank");
   };
 
@@ -248,8 +242,7 @@ export const useDocument = (): any => {
     });
   };
   const selectedFile = (event: any) => {
-    console.log(event.target.files[0]);
-    data.file = event.target.files[0];
+    data.file = event;
   };
 
   // watching a getter

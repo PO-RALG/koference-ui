@@ -248,10 +248,18 @@ export const usePayment = (): any => {
   };
 
   const newVouchers = computed(() => {
-    return data.vouchers.filter(
-      (voucher) => parseFloat(voucher.amount_paid) < 1
-      // (voucher) => parseFloat(voucher.amount) > parseFloat(voucher.amount_paid)
-    );
+    return data.vouchers
+      .filter(
+        (voucher) => parseFloat(voucher.amount_paid) < 1
+        // (voucher) => parseFloat(voucher.amount) > parseFloat(voucher.amount_paid)
+      )
+      .filter((x) =>
+        x.approves.find(
+          (flow) =>
+            flow.facility_approved &&
+            flow.workflow! != "REVERSAL_OF_PAYMENT_VOUCHER"
+        )
+      );
   });
 
   const getPaymentVoucherData = () => {

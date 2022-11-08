@@ -55,7 +55,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
-                disabled="can('create', 'Document')"
+                :disabled="can('create', 'Document')"
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
@@ -70,7 +70,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
-                disabled="can('delete', 'Document')"
+                :disabled="can('delete', 'Document')"
                 v-bind="attrs"
                 v-on="on"
                 @click="deleteDocumentCategory(item.id)"
@@ -154,11 +154,12 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12" class="mb-n8">
-                  <input
-                    type="file"
-                    name="import_file"
+                  <v-file-input
                     @change="selectedFile($event)"
-                  />
+                    show-size
+                    success="true"
+                    label="File input"
+                  ></v-file-input>
                 </v-col>
               </v-row>
             </v-container>

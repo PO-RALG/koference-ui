@@ -205,7 +205,7 @@ export const useReportDetail = (props, { root }) => {
   };
 
   const printFromServer = () => {
-    printReportJasper();
+    printReportJasper(data.currentReport.name, data.formData);
   };
 
   return {

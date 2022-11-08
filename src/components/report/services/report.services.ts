@@ -31,23 +31,20 @@ const serializeParams = (params: any) => {
   return str.join("&");
 };
 
-const printReportJasper = async () => {
+const printReportJasper = async (reportName: number, payload?: any) => {
   const params = {
     journal_voucher_id: 17,
   };
 
   await axios
-    .get(
-      `${REPORTSERVER}/${APINEWREPORT}/reports/Reports/journal_voucher.pdf`,
-      {
-        params: params,
-        responseType: "stream",
-        auth: {
-          username: REPORTSERVERUSER,
-          password: REPORTSERVERPASSWORD,
-        },
-      }
-    )
+    .get(`${REPORTSERVER}/${APINEWREPORT}/reports/Reports/${reportName}.pdf`, {
+      params: params,
+      responseType: "stream",
+      auth: {
+        username: REPORTSERVERUSER,
+        password: REPORTSERVERPASSWORD,
+      },
+    })
     .then(function (response) {
       console.log(response.data);
     });
