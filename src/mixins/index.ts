@@ -130,5 +130,15 @@ Vue.mixin({
       }
       return false;
     },
+
+    isCouncilUser(): boolean {
+      const user = store.getters["Auth/getCurrentUser"];
+      if(user && user.location) {
+      const _isCouncilUser =
+        user.location.level.code === "COUNCIL"
+        return !!_isCouncilUser;
+      }
+      return false;
+    },
   },
 });

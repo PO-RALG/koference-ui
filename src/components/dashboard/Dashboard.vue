@@ -15,6 +15,7 @@
                 outlined
                 v-model="data.formData.region_id"
                 @change="filterDashboard(true)"
+                :disabled="data.isCouncil"
                 :item-text="'displayName'"
                 item-value="id"
               >
@@ -41,7 +42,7 @@
               cols="12"
               md="3"
               :md="showSmallColumns ? 4 : 3"
-              v-if="!isLowLevelUser() && data.councils.length > 0"
+              v-if="!isLowLevelUser() && !data.isCouncil"
             >
               <v-select
                 :items="data.councils"
@@ -154,6 +155,7 @@ import MoneyCard from "@/components/dashboard/components/MoneyCard.vue";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
 import { get } from "@/components/dashboard/services";
+import store from "@/store";
 
 interface FormFilter {
   financial_year_id: string;
@@ -161,6 +163,25 @@ interface FormFilter {
   region_id: string;
   council_id: string;
   fac_id: string;
+}
+
+interface Location {
+  code: string;
+  description: string;
+  id: number;
+  level: Level;
+}
+
+interface Level {
+  id: number;
+  code: string;
+  name: string;
+  position: number;
+}
+
+interface User {
+  id: number;
+  location: Location;
 }
 
 interface AdminArea {
@@ -206,6 +227,21 @@ export default defineComponent({
     const facilities: Array<Facility> = [];
     const cardData: Array<DashboardData> = [];
     const regionIsCurrentSelection: boolean = false;
+    const isCouncil: boolean = false;
+    const user: User = {
+      id: null,
+      location: {
+        id: null,
+        description: "",
+        code: "",
+        level: {
+          name: "",
+          id: null,
+          code: "",
+          position: null,
+        },
+      },
+    };
 
     const data = reactive({
       formData,
@@ -213,8 +249,10 @@ export default defineComponent({
       cardData,
       entries,
       councils,
+      user,
       facilities,
       regionIsCurrentSelection,
+      isCouncil,
       searchTerm: "",
     });
 
@@ -232,13 +270,20 @@ export default defineComponent({
       total_fund: string;
     }
 
+    const setUpUser = async () => {
+      const user = store.getters["Auth/getCurrentUser"];
+      data.user = {
+        ...user,
+      };
+    };
+
     const mapDashboards = (obj: Dashboard): Array<DashboardData> => {
       const results = [];
       Object.entries(obj).map((entry, idx) => {
         results.push({
           id: idx + 1,
           title: entry[0].split("_").join(" ").toUpperCase(),
-          amount: parseInt(entry[1]),
+          amount: entry[1] ? parseInt(entry[1]) : 0,
         });
       });
       return results;
@@ -280,7 +325,7 @@ export default defineComponent({
       ) {
         return data.formData.council_id;
       } else {
-      return data.formData.region_id;
+        return data.formData.region_id;
       }
     };
 
@@ -289,7 +334,7 @@ export default defineComponent({
 
       const params = {
         ...data.formData,
-        location_id: isRegion ? data.formData.region_id : setLocationId(),
+        location_id: data.isCouncil? data.user.location.id :  isRegion ? data.formData.region_id : setLocationId(),
       };
 
       const response = await get(params);
@@ -311,7 +356,11 @@ export default defineComponent({
     };
 
     const loadAdminAreas = async () => {
-      const response = await getChildren();
+      await setUpUser();
+      const locationId = data && data.user && data.user.location.id;
+      const response = await getChildren(locationId);
+      data.isCouncil = response.data.data.level_id === 3;
+      console.log("location", response.data.data);
       const res = await getFacilities({
         per_page: 10,
         location_id: response.data.data.id,
