@@ -106,7 +106,6 @@ export const usePaymentVoucher = (): any => {
         align: "start",
         sortable: false,
         value: "approve",
-        // value: "approve.facility_approved",
       },
       {
         text: "Actions",

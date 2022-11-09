@@ -102,7 +102,7 @@ export const useReceipt = (): any => {
   ];
 
   const data = reactive({
-    title: "Manage Approval Deposit Receipt",
+    title: "Deposit Receipt",
     isInvoice: "NO",
     selectedUser: null,
     selectedInvoice: null,
@@ -212,6 +212,17 @@ export const useReceipt = (): any => {
     init();
   });
 
+  const setApprovalStatus = (item: Record<string, any>) => {
+    const { ends_on_facility, facility_approved, council_approved } = item;
+    if (facility_approved) {
+      return true;
+    } else if (!!ends_on_facility && !!facility_approved) {
+      return false;
+    } else {
+      return !!council_approved;
+    }
+  };
+
   const init = async () => {
     data.receipt = {
       id: null,
@@ -241,6 +252,9 @@ export const useReceipt = (): any => {
         approve: approve.approves.find(
           (flow) => flow.workflow == "DEPOSIT_RECEIPT"
         ),
+        isApproved: approve.approves.length
+          ? setApprovalStatus(approve.approves[0])
+          : false,
       }));
       data.itemsToFilter = res.data.data.data;
     }
@@ -579,7 +593,7 @@ export const useReceipt = (): any => {
     }
   };
 
-  const approveReceiptFacility = (model: any) => {
+  const approveReceiptCouncil = (model: any) => {
     data.formData2 = model;
     data.modalTitle = "Accept to Approve this Receipt";
     data.genericDialogAction = approveReceiptFacilityComplete;
@@ -601,6 +615,7 @@ export const useReceipt = (): any => {
         currentFlowable = flowable;
       }
     });
+
     if (currentFlowable == null) {
       return false;
     }
@@ -657,7 +672,7 @@ export const useReceipt = (): any => {
     invoiceType,
     cashType,
     depositType,
-    approveReceiptFacility,
+    approveReceiptCouncil,
     cancelGenericConfirmDialog,
   };
 };

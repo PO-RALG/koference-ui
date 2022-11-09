@@ -24,7 +24,7 @@ export const useBankAdjustmentCouncilApprove = (): any => {
   const bankAdjustmentData2 = {} as BankAdjustmentPayload;
 
   const data = reactive({
-    title: "Council Bank Adjustment Approval",
+    title: "Bank Adjustment",
     modalTitle: "Add Bank Adjustment",
     itemsx: [
       { header: "Today" },

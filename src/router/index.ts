@@ -42,6 +42,7 @@ import { creditorRoutes } from "@/components/payable/creditor";
 import { chequeListRoutes } from "@/components/payable/cheque-list";
 //import { testRoutes } from "@/components/test";
 import { bankReconciliationRoutes } from "@/components/cash-management/bank-reconciliation";
+import { approvalCouncilRoutes } from "@/components/cash-management/approval-council";
 import { receiptRoutes } from "@/components/receivables/receipt";
 import { approveReceiptRoutes } from "@/components/receivables/approvereversereceipt";
 import { voucherApprovalRoutes } from "@/components/payable/voucherapproval";
@@ -141,6 +142,7 @@ const routes: Array<RouteConfig> = [
       ...mmamaPaymentRoutes,
       ...bankAdjustmentCouncilApprovalRoutes,
       ...receiptCouncilApprovalRoutes,
+      ...approvalCouncilRoutes,
       ...notFoundRoute,
     ],
   },

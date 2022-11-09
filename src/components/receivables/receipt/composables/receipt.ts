@@ -144,6 +144,12 @@ export const useReceipt = (): any => {
         value: "bank_account",
       },
       {
+        text: "Approve Status",
+        align: "start",
+        sortable: false,
+        value: "approve",
+      },
+      {
         text: "Actions",
         align: "center",
         sortable: false,
@@ -208,7 +214,22 @@ export const useReceipt = (): any => {
   onMounted(() => {
     init();
   });
-
+  const setApprovalStatus = (item: Record<string, any>) => {
+    const { council_approved, workflow } = item;
+    if (council_approved && workflow == "DEPOSIT_RECEIPT") {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const setApprovalStatusx = (item: Record<string, any>) => {
+    const { council_approved, workflow } = item;
+    if (council_approved == null && workflow == "DEPOSIT_RECEIPT") {
+      return true;
+    } else {
+      return false;
+    }
+  };
   const init = async () => {
     data.receipt = {
       id: null,
@@ -238,6 +259,12 @@ export const useReceipt = (): any => {
       approve: approve.approves.find(
         (flow) => flow.workflow == "DEPOSIT_RECEIPT"
       ),
+      isApproved: approve.approves.length
+        ? setApprovalStatus(approve.approves[0])
+        : false,
+      isApprovedx: approve.approves.length
+        ? setApprovalStatusx(approve.approves[0])
+        : false,
     }));
     data.itemsToFilter = res.data.data.data;
     data.loading = false;
@@ -255,6 +282,42 @@ export const useReceipt = (): any => {
     } else {
       reloadData();
     }
+  };
+
+  const approveReversalFacility = (model: any) => {
+    data.formData2 = model;
+    data.modalTitle = "Accept to Approve Reversal this Payment Voucher";
+    data.genericDialogAction = approveRejectionPVFacilityComplete;
+    data.genericConfirmModel = true;
+  };
+  const approveRejectionPVFacilityComplete = () => {
+    if (
+      typeof data.formData2.approves == "undefined" ||
+      data.formData2.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData2.approves;
+
+    approves.forEach((flowable) => {
+      if (flowable.facility_appoved == null) {
+        currentFlowable = flowable;
+      }
+    });
+
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+      approved: true,
+    };
+
+    approveReceiptFacilityService(approveData).then(() => {
+      data.genericConfirmModel = false;
+      reloadData();
+    });
   };
 
   const reloadData = async () => {
@@ -651,5 +714,6 @@ export const useReceipt = (): any => {
     cashType,
     depositType,
     approveReceiptFacility,
+    approveReversalFacility,
   };
 };

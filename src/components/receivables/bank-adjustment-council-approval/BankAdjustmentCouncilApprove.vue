@@ -1,19 +1,15 @@
 <template>
   <div class="customers">
-    <v-card-actions class="pa-0">
+    <v-card-actions class="pl-4">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <!-- <v-btn color="primary" @click="openDialog(data.formData)">
-        <v-icon>mdi-plus</v-icon>
-        Add Bank Adjustment
-      </v-btn> -->
     </v-card-actions>
     <v-card>
       <v-data-table
         :headers="data.headers"
         :items="data.items"
         :single-expand="true"
-        class="elevation-1"
+        class="elevation-1 pa-2"
         disable-pagination
         hide-default-footer
       >
@@ -364,7 +360,7 @@ import { useBankAdjustmentCouncilApprove } from "./composables/bank-adjustment-c
 import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({
-  name: "BankAdjustment",
+  name: "BankAdjustmentCouncilApprove",
   setup() {
     const {
       data,
