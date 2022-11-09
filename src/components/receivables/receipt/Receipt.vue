@@ -86,7 +86,17 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip
-            v-if="!item.isRequestedToReverseWhileFacilityApproved[0]"
+            v-if="
+              !item.isRequestedToReverseWhileFacilityApproved[0] &&
+              !canApproveFacility(
+                item,
+                'REVERSAL_OF_RECEIPT',
+                'approve',
+                'Receipt'
+              ) &&
+              !item.isApprovedFacility &&
+              !item.isApprovedCouncil
+            "
             top
           >
             <template v-slot:activator="{ on, attrs }">
