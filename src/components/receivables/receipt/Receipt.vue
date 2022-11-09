@@ -111,7 +111,7 @@
                 mdi-arrow-u-left-top-bold
               </v-icon>
             </template>
-            <span>Reverse</span>
+            <span>Send Reverse Request</span>
           </v-tooltip>
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
