@@ -242,7 +242,6 @@ export const useDocument = (): any => {
     });
   };
   const selectedFile = (event: any) => {
-    console.log("mmmmmmmmmmmm", event);
     data.file = event;
   };
 

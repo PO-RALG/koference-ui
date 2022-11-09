@@ -58,9 +58,9 @@ import { cashbookRoutes } from "@/components/cash-management/cashbook-report";
 import { voucherReversalApprovalRoutes } from "@/components/payable/voucherreversalapproval";
 import { mmamaPaymentRoutes } from "@/components/payable/mmama-payment";
 import { bankAdjustmentCouncilApprovalRoutes } from "@/components/receivables/bank-adjustment-council-approval";
+import { revenueAccountRoutes } from "@/components/receivables/revenue-account/";
 import { receiptCouncilApprovalRoutes } from "@/components/receivables/receipt-council-approval";
-
-// import route middlewares
+//import route middlewares
 import { auth, setHeaders, setTitle, validateToken } from "@/middleware";
 import budgetRoutes from "@/components/coa/budget/routes/budget-routes";
 
@@ -141,6 +141,7 @@ const routes: Array<RouteConfig> = [
       ...voucherReversalApprovalRoutes,
       ...mmamaPaymentRoutes,
       ...bankAdjustmentCouncilApprovalRoutes,
+      ...revenueAccountRoutes,
       ...receiptCouncilApprovalRoutes,
       ...approvalCouncilRoutes,
       ...notFoundRoute,

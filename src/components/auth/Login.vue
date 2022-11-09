@@ -18,7 +18,7 @@
       <v-icon x-large color="white"> mdi-hand-pointing-right </v-icon>
       <a href="http://197.149.179.125/" target="_blank">
         <span class="white--text">
-          <em>Bofya hapa kuingia katika toleo la zamani (FFARS v 1.0) </em>
+          <em>Bofya hapa kuingia katika toleo la kwanza (FFARS v1.0) </em>
         </span>
       </a>
     </v-snackbar>
@@ -152,7 +152,7 @@
                   {{ ". All right reserved." }}
                 </small>
                 <small class="white--text">
-                  <strong>{{ " FFARS v 2.0 ." }}</strong>
+                  <strong>{{ " FFARS v2.0 ." }}</strong>
                 </small>
                 <small class="white--text">
                   {{

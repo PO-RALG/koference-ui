@@ -154,11 +154,6 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12" class="mb-n8">
-                  <!-- <input
-                    type="file"
-                    name="import_file"
-                    @change="selectedFile($event)"
-                  /> -->
                   <v-file-input
                     @change="selectedFile($event)"
                     show-size
