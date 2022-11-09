@@ -109,16 +109,25 @@ export const useBankAdjustmentCouncilApprove = (): any => {
   onMounted(() => {
     getPendingApproveCouncil({ per_page: 10 }).then(
       (response: AxiosResponse) => {
-        const { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data.map((approve: any) => ({
-          ...approve,
-          approve: approve.approves.find(
-            (flow) => flow.workflow == "BANK_ADJUSTMENT"
-          ),
-        }));
-        data.itemsToFilter = response.data.data.data;
+        if (response.data.length > 0) {
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
+          data.items = response.data.data.data.map((approve: any) => ({
+            ...approve,
+            approve: approve.approves.find(
+              (flow) => flow.workflow == "BANK_ADJUSTMENT"
+            ),
+          }));
+          data.itemsToFilter = response.data.data.data;
+        }
       }
     );
   });

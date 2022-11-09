@@ -86,9 +86,9 @@
 
                   <v-list-item-title> {{ "BANK NAME" }}</v-list-item-title>
                   <v-list-item-subtitle>
-                    {{ data.formData2.bank_account.bank }} {{ " - " }}
+                    {{ data.formData2.bank_account?.bank }} {{ " - " }}
                     {{
-                      data.formData2.bank_account.branch
+                      data.formData2.bank_account?.branch
                     }}</v-list-item-subtitle
                   >
                   <v-divider></v-divider>

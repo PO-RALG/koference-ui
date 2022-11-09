@@ -70,25 +70,36 @@
           {{ (item.amount - item.received_amount) | toCurrency() }}
         </template>
         <template v-slot:[`item.approve`]="{ item }">
-          <span v-if="item.isApproved">{{ "Approved" }}</span>
-          <span v-if="!item.isApproved && item.isApprovedx">{{
-            "Waiting for Approval"
+          <span v-if="item.isApprovedFacility && item.isApprovedCouncil">{{
+            "Reversal Approved "
           }}</span>
+          <span
+            v-if="
+              item.isReversalApprovedFacility && !item.isReversalApprovedCouncil
+            "
+            >{{ "Waiting for Reversal Approval from Council" }}</span
+          >
+          <span
+            v-if="!item.isApprovedFacility && item.isRequestedToReverse[0]"
+            >{{ "Waiting for Reversal Verification from Admin" }}</span
+          >
         </template>
-
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip top>
+          <v-tooltip
+            v-if="!item.isRequestedToReverseWhileFacilityApproved[0]"
+            top
+          >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
+              <v-icon
+                color="grey"
+                v-if="can('delete', 'Receipt')"
                 v-bind="attrs"
                 v-on="on"
-                v-if="can('delete', 'Receipt')"
+                class="mr-2"
                 @click="reverseReceipt(item.id)"
-                text
-                color="grey"
               >
-                <v-icon>mdi-arrow-u-left-top-bold</v-icon>
-              </v-btn>
+                mdi-arrow-u-left-top-bold
+              </v-icon>
             </template>
             <span>Reverse</span>
           </v-tooltip>
@@ -112,7 +123,7 @@
                 mdi-check-decagram
               </v-icon>
             </template>
-            <span>Approve Reversal</span>
+            <span>Verify Reversal</span>
           </v-tooltip>
 
           <v-tooltip top>
@@ -562,7 +573,7 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
-          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
             Cancel
           </v-btn>
           <v-btn color="green darken-1" text @click="data.genericDialogAction"

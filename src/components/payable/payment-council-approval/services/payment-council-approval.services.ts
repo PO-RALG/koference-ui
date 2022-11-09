@@ -1,18 +1,20 @@
 import axios from "axios";
 
 const get = async (params: any) => {
-  return await axios.get("/api/v1/payments", { params });
+  return await axios.get("/api/v1/payment_reversal/approval-pending-council", {
+    params,
+  });
 };
 const getVouchers = async (params: any) => {
   return await axios.get("/api/v1/vouchers", { params });
 };
 
 const approveReversalPFacilityService = async (payload: any) => {
-  return await axios.post(`/api/v1/payment_reversal/approval`, payload);
+  return await axios.post(`/api/v1/payment_reversal/approval-council`, payload);
 };
 
 const search = async (payload: any) => {
-  return await axios.get(`/api/v1/payments/`, {
+  return await axios.get(`/api/v1/payment_reversal/approval-pending-council/`, {
     params: {
       search: JSON.stringify(payload),
     },
@@ -24,26 +26,35 @@ const find = async (id: string | number) => {
 };
 
 const create = async (payload: any) => {
-  return await axios.post(`/api/v1/payments`, payload);
+  return await axios.post(
+    `/api/v1/payment_reversal/approval-pending-council`,
+    payload
+  );
 };
 
 const update = async (payload: any) => {
-  return await axios.put(`/api/v1/payments/` + payload.id, payload);
+  return await axios.put(
+    `/api/v1/payment_reversal/approval-pending-council/` + payload.id,
+    payload
+  );
 };
 
 const destroy = async (payload: any) => {
-  return await axios.delete(`/api/v1/payments/${payload.id}`, {
-    data: { date: payload.date },
-  });
+  return await axios.delete(
+    `/api/v1/payment_reversal/approval-pending-council/${payload.id}`,
+    {
+      data: { date: payload.date },
+    }
+  );
 };
 
 const printPdf = (id: number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
-  // const url = `${
-  //   import.meta.env.VITE_APP_SERVER_URL
-  // }/api/v1/payments/${id}/print?token=${user.token}`;
+  const url2 = `${
+    import.meta.env.VITE_APP_SERVER_URL
+  }/api/v1/payments/${id}/print?token=${user.token}`;
   const url = `/api/v1/payments/${id}/print?token=${user.token}`;
-  return window.open(url);
+  return window.open(url2);
 };
 
 export {
