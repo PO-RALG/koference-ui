@@ -379,7 +379,7 @@ export const useReceipt = (): any => {
 
   const approveReversalFacility = (model: any) => {
     data.formData2 = model;
-    data.modalTitle = "Accept to Approve Reversal this Payment Voucher";
+    data.modalTitle = "Accept to Verify of Reversal this Recept";
     data.genericDialogAction = approveRejectionPVFacilityComplete;
     data.genericConfirmModel = true;
   };

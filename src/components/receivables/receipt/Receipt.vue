@@ -71,8 +71,17 @@
         </template>
         <template v-slot:[`item.approve`]="{ item }">
           <span v-if="item.isApprovedFacility && item.isApprovedCouncil">{{
-            "Reversal Approved "
+            "Deposit Approved "
           }}</span>
+          <span v-if="item.isApprovedFacility && !item.isApprovedCouncil">{{
+            "Waiting for Deposit Approval from Council "
+          }}</span>
+          <span
+            v-if="
+              item.isReversalApprovedFacility && item.isReversalApprovedCouncil
+            "
+            >{{ "Reversal Approved " }}</span
+          >
           <span
             v-if="
               item.isReversalApprovedFacility && !item.isReversalApprovedCouncil
@@ -87,15 +96,12 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip
             v-if="
-              !item.isRequestedToReverseWhileFacilityApproved[0] &&
               !canApproveFacility(
                 item,
                 'REVERSAL_OF_RECEIPT',
                 'approve',
                 'Receipt'
-              ) &&
-              !item.isApprovedFacility &&
-              !item.isApprovedCouncil
+              )
             "
             top
           >
