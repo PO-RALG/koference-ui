@@ -154,7 +154,7 @@ import EqualHeights from "@/components/shared/equal-heights/EqualHeights.vue";
 import MoneyCard from "@/components/dashboard/components/MoneyCard.vue";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
-import { get } from "@/components/dashboard/services";
+import { byMonth, get } from "@/components/dashboard/services";
 import store from "@/store";
 
 interface FormFilter {
@@ -291,6 +291,8 @@ export default defineComponent({
 
     const loadDashboards = async () => {
       const response = await get({});
+      const _byMonthResponse = await byMonth({});
+      console.log(_byMonthResponse.data);
       const _mappedDashboards = mapDashboards(response.data[0]);
       data.cardData = _mappedDashboards;
     };
@@ -364,7 +366,6 @@ export default defineComponent({
       const locationId = data && data.user && data.user.location.id;
       const response = await getChildren(locationId);
       data.isCouncil = response.data.data.level_id === 3;
-      console.log("location", response.data.data);
       const res = await getFacilities({
         per_page: 10,
         location_id: response.data.data.id,
