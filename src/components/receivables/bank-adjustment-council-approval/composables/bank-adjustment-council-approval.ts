@@ -109,7 +109,8 @@ export const useBankAdjustmentCouncilApprove = (): any => {
   onMounted(() => {
     getPendingApproveCouncil({ per_page: 10 }).then(
       (response: AxiosResponse) => {
-        if (response.data.length > 0) {
+        console.log("response.data.data", response.data.data);
+        if (response.data.data) {
           const { from, to, total, current_page, per_page, last_page } =
             response.data.data;
           data.response = {

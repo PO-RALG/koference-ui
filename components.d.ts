@@ -67,6 +67,7 @@ declare module '@vue/runtime-core' {
     InfoDialog: typeof import('./src/components/shared/info-dialog/InfoDialog.vue')['default']
     Input: typeof import('./src/components/shared/form/Input.vue')['default']
     Invoice: typeof import('./src/components/receivables/invoice/Invoice.vue')['default']
+    InvoiceCouncilApproval: typeof import('./src/components/receivables/invoice-council-approval/InvoiceCouncilApproval.vue')['default']
     InvoiceItemDefinition: typeof import('./src/components/receivables/invoice-item-definition/InvoiceItemDefinition.vue')['default']
     JournalVoucher: typeof import('./src/components/general-ledger/journal-voucher/JournalVoucher.vue')['default']
     Level: typeof import('./src/components/admin-area/level/Level.vue')['default']

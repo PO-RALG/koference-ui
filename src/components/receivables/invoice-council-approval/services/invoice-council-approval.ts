@@ -1,8 +1,8 @@
 import axios from "axios";
-const APIAPPROVAL = "/api/v1/invoice_reversal/approval";
+const APIAPPROVAL = "/api/v1/invoice_reversal/approval-council";
 
 const get = async (payload: any) => {
-  return await axios.get("/api/v1/invoices", {
+  return await axios.get("/api/v1/invoice_reversal/approval-pending-council", {
     params: payload,
   });
 };
@@ -55,7 +55,7 @@ const printInvoice = (id: string | number) => {
   return window.open(url);
 };
 
-const approveReversalInvoiceFacilityService = async (payload: any) => {
+const approveReversalInvoiceCouncilService = async (payload: any) => {
   return await axios.post(`${APIAPPROVAL}`, payload);
 };
 
@@ -70,5 +70,5 @@ export {
   receiptcreate,
   regSearch,
   printInvoice,
-  approveReversalInvoiceFacilityService,
+  approveReversalInvoiceCouncilService,
 };

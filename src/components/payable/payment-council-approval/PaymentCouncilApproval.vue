@@ -9,7 +9,7 @@
         :headers="data.headers"
         :items="data.items"
         hide-default-footer
-        class="elevation-1"
+        class="elevation-1 pa-2"
         disable-pagination
       >
         <template v-slot:top>

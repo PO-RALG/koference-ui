@@ -267,7 +267,15 @@ export const useReceipt = (): any => {
       const response = await search({
         receipt_number: categoryName.receipt_number,
       });
-      data.items = response.data.data.data;
+      data.items = response.data.data.data.map((approve: any) => ({
+        ...approve,
+        approve: approve.approves.find(
+          (flow) => flow.workflow == "DEPOSIT_RECEIPT"
+        ),
+        isApproved: approve.approves.length
+          ? setApprovalStatus(approve.approves[0])
+          : false,
+      }));
     } else {
       reloadData();
     }
@@ -278,7 +286,15 @@ export const useReceipt = (): any => {
     const { from, to, total, current_page, per_page, last_page } =
       response.data.data;
     data.response = { from, to, total, current_page, per_page, last_page };
-    data.items = response.data.data.data;
+    data.items = response.data.data.data.map((approve: any) => ({
+      ...approve,
+      approve: approve.approves.find(
+        (flow) => flow.workflow == "DEPOSIT_RECEIPT"
+      ),
+      isApproved: approve.approves.length
+        ? setApprovalStatus(approve.approves[0])
+        : false,
+    }));
   };
 
   const cancelGenericConfirmDialog = () => {
@@ -463,7 +479,15 @@ export const useReceipt = (): any => {
     data.response = params;
     const response = await get(params);
     data.response = response.data.data;
-    data.items = response.data.data.data;
+    data.items = response.data.data.data.map((approve: any) => ({
+      ...approve,
+      approve: approve.approves.find(
+        (flow) => flow.workflow == "DEPOSIT_RECEIPT"
+      ),
+      isApproved: approve.approves.length
+        ? setApprovalStatus(approve.approves[0])
+        : false,
+    }));
   };
 
   const addRow = () => {
@@ -533,14 +557,30 @@ export const useReceipt = (): any => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data;
+      data.items = response.data.data.data.map((approve: any) => ({
+        ...approve,
+        approve: approve.approves.find(
+          (flow) => flow.workflow == "DEPOSIT_RECEIPT"
+        ),
+        isApproved: approve.approves.length
+          ? setApprovalStatus(approve.approves[0])
+          : false,
+      }));
     }
     if (data.searchTerm.length === 0) {
       const response = await get({ per_page: 10 });
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data;
+      data.items = response.data.data.data.map((approve: any) => ({
+        ...approve,
+        approve: approve.approves.find(
+          (flow) => flow.workflow == "DEPOSIT_RECEIPT"
+        ),
+        isApproved: approve.approves.length
+          ? setApprovalStatus(approve.approves[0])
+          : false,
+      }));
     }
   };
 
@@ -577,7 +617,15 @@ export const useReceipt = (): any => {
     const { from, to, total, current_page, per_page, last_page } =
       response.data.data;
     data.response = { from, to, total, current_page, per_page, last_page };
-    data.items = response.data.data.data;
+    data.items = response.data.data.data.map((approve: any) => ({
+      ...approve,
+      approve: approve.approves.find(
+        (flow) => flow.workflow == "DEPOSIT_RECEIPT"
+      ),
+      isApproved: approve.approves.length
+        ? setApprovalStatus(approve.approves[0])
+        : false,
+    }));
   };
 
   const reanderSearched = async (categoryName: any) => {

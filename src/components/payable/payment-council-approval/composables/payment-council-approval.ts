@@ -138,7 +138,24 @@ export const usePayment = (): any => {
           per_page,
           last_page,
         };
-        data.items = response.data.data.data;
+        data.items = response.data.data.data.map((entry: any) => ({
+          ...entry,
+          approve: entry.approves.find(
+            (flow) => flow.workflow == "REVERSAL_OF_PAYMENT"
+          ),
+
+          isApprovedFacility: entry.approves.length
+            ? setApprovalStatus(entry.approves[0])
+            : false,
+
+          isRequestedToReverse: entry.approves.length
+            ? entry.approves.filter(
+                (flow) =>
+                  flow.facility_approved == null &&
+                  flow.workflow! == "REVERSAL_OF_PAYMENT"
+              )
+            : false,
+        }));
       });
     }
     if (data.searchTerm.length === 0 || data.searchTerm === null) {
@@ -153,7 +170,24 @@ export const usePayment = (): any => {
           per_page,
           last_page,
         };
-        data.items = response.data.data.data;
+        data.items = response.data.data.data.map((entry: any) => ({
+          ...entry,
+          approve: entry.approves.find(
+            (flow) => flow.workflow == "REVERSAL_OF_PAYMENT"
+          ),
+
+          isApprovedFacility: entry.approves.length
+            ? setApprovalStatus(entry.approves[0])
+            : false,
+
+          isRequestedToReverse: entry.approves.length
+            ? entry.approves.filter(
+                (flow) =>
+                  flow.facility_approved == null &&
+                  flow.workflow! == "REVERSAL_OF_PAYMENT"
+              )
+            : false,
+        }));
       });
     }
   };
@@ -198,28 +232,31 @@ export const usePayment = (): any => {
 
   const getTableData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.items = response.data.data.data.map((entry: any) => ({
-        ...entry,
-        approve: entry.approves.find(
-          (flow) => flow.workflow == "REVERSAL_OF_PAYMENT"
-        ),
+      console.log("response.data.data", response.data.data);
+      if (response.data && response.data.data != null) {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.items = response.data.data.data.map((entry: any) => ({
+          ...entry,
+          approve: entry.approves.find(
+            (flow) => flow.workflow == "REVERSAL_OF_PAYMENT"
+          ),
 
-        isApprovedFacility: entry.approves.length
-          ? setApprovalStatus(entry.approves[0])
-          : false,
+          isApprovedFacility: entry.approves.length
+            ? setApprovalStatus(entry.approves[0])
+            : false,
 
-        isRequestedToReverse: entry.approves.length
-          ? entry.approves.filter(
-              (flow) =>
-                flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_PAYMENT"
-            )
-          : false,
-      }));
-      data.itemsToFilter = response.data.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
+          isRequestedToReverse: entry.approves.length
+            ? entry.approves.filter(
+                (flow) =>
+                  flow.facility_approved == null &&
+                  flow.workflow! == "REVERSAL_OF_PAYMENT"
+              )
+            : false,
+        }));
+        data.itemsToFilter = response.data.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+      }
     });
   };
 
@@ -232,6 +269,10 @@ export const usePayment = (): any => {
         approve: entry.approves.find(
           (flow) => flow.workflow == "REVERSAL_OF_PAYMENT"
         ),
+
+        isApprovedFacility: entry.approves.length
+          ? setApprovalStatus(entry.approves[0])
+          : false,
 
         isRequestedToReverse: entry.approves.length
           ? entry.approves.filter(

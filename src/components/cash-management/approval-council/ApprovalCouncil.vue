@@ -24,16 +24,15 @@
             <PaymentCouncilApproval />
           </v-card>
         </v-tab-item>
-        <!-- <v-tab>Journal Voucher</v-tab>
+        <v-tab>Invoice Reversal</v-tab>
         <v-tab-item>
           <v-card color="basil" flat>
+            <ManageInvoiceCouncilApproval />
           </v-card>
         </v-tab-item>
-
-        <v-tab>Invoice</v-tab>
+        <!-- <v-tab>Journal Voucher</v-tab>
         <v-tab-item>
-          <v-card color="basil" flat>
-          </v-card>
+          <v-card color="basil" flat> </v-card>
         </v-tab-item> -->
       </v-tabs>
     </v-card>
@@ -46,12 +45,14 @@ import { useCouncilApproval } from "./composables/approval-council";
 import BankAdjustmentCouncilApprove from "@/components/receivables/bank-adjustment-council-approval/BankAdjustmentCouncilApprove.vue";
 import ManageReceiptCouncilApproval from "@/components/receivables/receipt-council-approval/ReceiptCouncilApproval.vue";
 import PaymentCouncilApproval from "@/components/payable/payment-council-approval/PaymentCouncilApproval.vue";
+import ManageInvoiceCouncilApproval from "@/components/receivables/invoice-council-approval/InvoiceCouncilApproval.vue";
 
 export default defineComponent({
   components: {
     BankAdjustmentCouncilApprove,
     ManageReceiptCouncilApproval,
     PaymentCouncilApproval,
+    ManageInvoiceCouncilApproval,
   },
   name: "ApprovalCouncilManagement",
   setup() {
