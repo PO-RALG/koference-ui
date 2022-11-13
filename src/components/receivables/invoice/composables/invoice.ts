@@ -298,7 +298,10 @@ export const useInvoice = (): Record<string, unknown> => {
     const approves = data.formData2.approves;
 
     approves.forEach((flowable) => {
-      if (flowable.facility_appoved == null) {
+      if (
+        flowable.facility_appoved == null &&
+        flowable.workflow == "REVERSAL_OF_INVOICE"
+      ) {
         currentFlowable = flowable;
       }
     });

@@ -256,6 +256,8 @@ export const usePayment = (): any => {
         }));
         data.itemsToFilter = response.data.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
+      } else {
+        data.items = [];
       }
     });
   };

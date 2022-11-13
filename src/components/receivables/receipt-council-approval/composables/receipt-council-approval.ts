@@ -257,6 +257,8 @@ export const useReceipt = (): any => {
           : false,
       }));
       data.itemsToFilter = res.data.data.data;
+    } else {
+      data.items = [];
     }
 
     data.loading = false;
@@ -277,7 +279,7 @@ export const useReceipt = (): any => {
           : false,
       }));
     } else {
-      reloadData();
+      init();
     }
   };
 
@@ -340,7 +342,7 @@ export const useReceipt = (): any => {
 
   const remove = async () => {
     await destroy(data.itemTodelete, data.reverseForm.date);
-    await reloadData();
+    await init();
     data.deletemodal = false;
   };
 
@@ -634,10 +636,10 @@ export const useReceipt = (): any => {
       const response = await receiptSearch({ regSearch: categoryName });
       data.itemsToFilter = response.data.data.data;
     } else if (categoryName ? categoryName.length == 0 : "") {
-      await reloadData();
+      await init();
       data.search = "";
     } else {
-      await reloadData();
+      await init();
     }
   };
 
@@ -659,7 +661,10 @@ export const useReceipt = (): any => {
     const approves = data.formData2.approves;
 
     approves.forEach(function (flowable) {
-      if (flowable.facility_appoved == null) {
+      if (
+        flowable.facility_appoved == null &&
+        flowable.workflow == "REVERSAL_OF_RECEIPT"
+      ) {
         currentFlowable = flowable;
       }
     });
@@ -674,7 +679,7 @@ export const useReceipt = (): any => {
 
     approveReceiptFacilityService(approveData).then(() => {
       data.genericConfirmModel = false;
-      reloadData();
+      init();
     });
   };
 

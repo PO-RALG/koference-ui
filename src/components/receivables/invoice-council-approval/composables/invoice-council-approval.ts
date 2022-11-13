@@ -224,6 +224,8 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
         data.response = { from, to, total, current_page, per_page, last_page };
         data.items = response.data.data.data;
         data.itemsToFilter = response.data.data.data;
+      } else {
+        data.items = [];
       }
       data.loading = false;
     });
@@ -302,10 +304,22 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data;
+      if (response.data && response.data.data != null) {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+        data.itemsToFilter = response.data.data.data;
+      } else {
+        data.items = [];
+      }
     });
   };
 

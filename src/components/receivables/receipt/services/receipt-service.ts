@@ -3,6 +3,7 @@ import axios from "axios";
 const API = "/api/v1/receipts";
 const APIFUNDINGSOURCES = "/api/v1/funding-sources";
 const APIAPPROVAL = "/api/v1/receipt/approval";
+const APIAPPROVALREVERSAL = "/api/v1/receipt-reversal/approval";
 
 const get = async (payload: any) => {
   return await axios.get(`${API}`, {
@@ -65,6 +66,9 @@ const getGlAccounts = async (params: any): Promise<any> => {
 const approveReceiptFacilityService = async (payload: any) => {
   return await axios.post(`${APIAPPROVAL}`, payload);
 };
+const approveReceiptReversalFacilityService = async (payload: any) => {
+  return await axios.post(`${APIAPPROVALREVERSAL}`, payload);
+};
 
 export {
   create,
@@ -79,4 +83,5 @@ export {
   update,
   viewinvoice,
   approveReceiptFacilityService,
+  approveReceiptReversalFacilityService,
 };

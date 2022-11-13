@@ -12,6 +12,7 @@ import {
   printReceipt,
   regSearch as receiptSearch,
   search,
+  approveReceiptReversalFacilityService,
   approveReceiptFacilityService,
 } from "../services/receipt-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
@@ -394,7 +395,10 @@ export const useReceipt = (): any => {
     const approves = data.formData2.approves;
 
     approves.forEach((flowable) => {
-      if (flowable.facility_appoved == null) {
+      if (
+        flowable.facility_appoved == null &&
+        flowable.workflow == "REVERSAL_OF_RECEIPT"
+      ) {
         currentFlowable = flowable;
       }
     });
@@ -406,8 +410,8 @@ export const useReceipt = (): any => {
       approval: currentFlowable,
       approved: true,
     };
-
-    approveReceiptFacilityService(approveData).then(() => {
+    console.log("xxxxxxxxxxxxx", approveData);
+    approveReceiptReversalFacilityService(approveData).then(() => {
       data.genericConfirmModel = false;
       reloadData();
     });

@@ -128,6 +128,8 @@ export const useBankAdjustmentCouncilApprove = (): any => {
             ),
           }));
           data.itemsToFilter = response.data.data.data;
+        } else {
+          data.items = [];
         }
       }
     );
@@ -185,15 +187,28 @@ export const useBankAdjustmentCouncilApprove = (): any => {
   const reloadData = () => {
     getPendingApproveCouncil({ per_page: 10 }).then(
       (response: AxiosResponse) => {
-        const { from, to, total, current_page, per_page, last_page } =
-          response.data.data;
-        data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data.map((approve: any) => ({
-          ...approve,
-          approve: approve.approves.find(
-            (flow) => flow.workflow == "BANK_ADJUSTMENT"
-          ),
-        }));
+        response.data.data;
+        if (response.data.data) {
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
+          data.items = response.data.data.data.map((approve: any) => ({
+            ...approve,
+            approve: approve.approves.find(
+              (flow) => flow.workflow == "BANK_ADJUSTMENT"
+            ),
+          }));
+          data.itemsToFilter = response.data.data.data;
+        } else {
+          data.items = [];
+        }
         data.itemsToFilter = response.data.data.data;
       }
     );
