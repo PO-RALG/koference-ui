@@ -87,11 +87,12 @@
                 color="green"
                 >mdi-check</v-icon
               >
-              <v-icon 
-                v-if="removeComma(data.running_balance) < 0" 
-                slot="append" 
+              <v-icon
+                v-if="removeComma(data.running_balance) < 0"
+                slot="append"
                 color="red"
-              >mdi-close</v-icon>
+                >mdi-close</v-icon
+              >
             </v-text-field>
           </v-col>
         </v-card-title>
@@ -115,7 +116,9 @@
                   </td>
                   <td class="text-end">{{ item.budget | toCurrency() }}</td>
                   <td class="text-end">{{ item.allocation | toCurrency() }}</td>
-                  <td class="text-end">{{ item.totalExpenditure | toCurrency() }}</td>
+                  <td class="text-end">
+                    {{ item.totalExpenditure | toCurrency() }}
+                  </td>
                   <td class="text-end">
                     {{
                       (item.allocation - item.totalExpenditure) | toCurrency()
@@ -127,7 +130,11 @@
                       dense
                       outlined
                       :rules="[
-                        maxAllocation(item.budget ,item.allocation,item.totalExpenditure)
+                        maxAllocation(
+                          item.budget,
+                          item.allocation,
+                          item.totalExpenditure
+                        ),
                       ]"
                       v-model="item.allocation_amount"
                       @input="newAllocation(item.allocation_amount)"
@@ -141,9 +148,9 @@
         </v-card-text>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn 
-            color="primary" 
-            @click="save" 
+          <v-btn
+            color="primary"
+            @click="save"
             v-if="data.items.length"
             :disabled="!data.valid"
           >

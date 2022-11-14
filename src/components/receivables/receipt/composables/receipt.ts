@@ -416,7 +416,6 @@ export const useReceipt = (): any => {
       approval: currentFlowable,
       approved: true,
     };
-    console.log("xxxxxxxxxxxxx", approveData);
     approveReceiptReversalFacilityService(approveData).then(() => {
       data.genericConfirmModel = false;
       reloadData();
