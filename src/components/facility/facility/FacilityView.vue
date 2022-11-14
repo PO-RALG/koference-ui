@@ -41,6 +41,16 @@
             />
           </v-card>
         </v-tab-item>
+        <v-tab @change="loadActivityCostings">Activity Costing</v-tab>
+        <v-tab-item>
+          <v-card flat
+            ><ActivityCosting
+              :headerPadding="'pa-5'"
+              :cardPadding="'pb-8'"
+              :elevation="'elevation-0'"
+            />
+          </v-card>
+        </v-tab-item>
       </v-tabs>
     </v-card>
   </div>
@@ -51,6 +61,7 @@ import { defineComponent, reactive, onMounted, computed } from "vue";
 import BankAccount from "@/components/facility/facility/components/BankAccount.vue";
 import OpeningBalance from "@/components/receivables/opening-balance/OpeningBalance.vue";
 import ReconciliationList from "@/components/cash-management/bank-reconciliation/ReconciliationList.vue";
+import ActivityCosting from "@/components/planning/activity-costing/ActivityCosting.vue";
 import { useBank } from "@/components/setup/bank-account/composables/bank";
 import { find as findFacility } from "@/components/facility/facility/services/facility.service";
 import router from "@/router";
@@ -79,6 +90,8 @@ export default defineComponent({
     const loadBankAccounts = () => {};
 
     const loadBankReconciliations = () => {};
+
+    const loadActivityCostings = () => {};
 
     const openConfirmDialog = (id: any) => {
       accountData.itemTodelete = id;
@@ -153,6 +166,7 @@ export default defineComponent({
       loadBankReconciliations,
       facilityDescription,
       openConfirmDialog,
+  loadActivityCostings,
     };
   },
 });

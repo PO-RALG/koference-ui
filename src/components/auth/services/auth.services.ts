@@ -12,13 +12,32 @@ const changePassword = async (payload: any) => {
 
 const setUser = async (payload: any) => {
   // rename menu to menu_groups and menu's menu to children
-  const data = payload.menu.map(({ menu, ...item }) => ({ ...item, children: menu }));
+  const data = payload.menu.map(({ menu, ...item }) => ({
+    ...item,
+    children: menu,
+  }));
 
   const sorted = _.sortBy(data, "position");
 
-  payload.menu_groups = sorted;
+  const newMenuGroup = [
+    {
+      id: 0,
+      name: "Dashboard",
+      state: "/",
+      url: "/",
+      icon: "mdi-home",
+      code: "10024",
+      created_by: null,
+    },
+    ...sorted,
+  ];
+
+  payload.menu_groups = newMenuGroup;
   // delete menu
   delete payload.menu;
+
+  console.log("payload", payload);
+
   const user = JSON.stringify(payload);
   store.dispatch("Auth/LOGIN", user);
 };
@@ -41,10 +60,10 @@ const getAppRoutes = async () => {
 
 export {
   authenticate,
-  setUser,
-  setLoginError,
+  changePassword,
   getAppName,
   getAppRoutes,
   setAppName,
-  changePassword,
+  setLoginError,
+  setUser,
 };
