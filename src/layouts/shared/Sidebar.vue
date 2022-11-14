@@ -49,11 +49,19 @@ export default defineComponent({
     };
 
     const navigateToState = (state: string) => {
-      router.push({ path: `/${state}` }).catch((error) => {
-        if (error.name !== "NavigationDuplicated") {
-          throw error;
-        }
-      });
+      if (state === '/') {
+        router.push({ path: "/" }).catch((error) => {
+          if (error.name !== "NavigationDuplicated") {
+            throw error;
+          }
+        });
+      } else {
+        router.push({ path: `/${state}` }).catch((error) => {
+          if (error.name !== "NavigationDuplicated") {
+            throw error;
+          }
+        });
+      }
     };
 
     return {
