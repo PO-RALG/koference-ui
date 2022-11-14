@@ -63,7 +63,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const goTomenu = (menu) => {
+    const goTomenu = (menu: any) => {
       if (menu && menu.id) {
         emit("navigate", menu.state);
       } else {

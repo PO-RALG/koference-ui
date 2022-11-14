@@ -48,8 +48,8 @@ export default defineComponent({
       emit("sidebarToggle");
     };
 
-    const navigateToState = (state: string) => {
-      if (state === '/') {
+    const navigateToState = (state: any) => {
+      if (state && typeof state == "object") {
         router.push({ path: "/" }).catch((error) => {
           if (error.name !== "NavigationDuplicated") {
             throw error;
