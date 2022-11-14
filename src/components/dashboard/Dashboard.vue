@@ -145,6 +145,31 @@
         </v-row>
       </v-container>
     </v-card>
+
+    <v-card
+      elevation="0"
+      class="top-card mt-5"
+      style="border-bottom: 1px solid #ccc"
+    >
+      <v-container>
+        <v-row>
+          <v-col cols="12" md="6" sm="12" class="border-right">
+            <BarChart
+              :chartData="data.currentSource"
+              :height="500"
+              :width="400"
+            />
+          </v-col>
+          <v-col cols="12" md="6" sm="12" class="border-right">
+            <BarChart
+              :chartData="data.receivedVsPayments"
+              :height="500"
+              :width="400"
+            />
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
   </div>
 </template>
 
@@ -154,8 +179,15 @@ import EqualHeights from "@/components/shared/equal-heights/EqualHeights.vue";
 import MoneyCard from "@/components/dashboard/components/MoneyCard.vue";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
-import { get } from "@/components/dashboard/services";
+import {
+  byMonth,
+  get,
+  getByCurrentSource,
+  getCarryoverByFundSource,
+} from "@/components/dashboard/services";
 import store from "@/store";
+import BarChart from "@/components/dashboard/components/charts/BarChart.vue";
+import capitalize from "@/helpers/FormatHelper";
 
 interface FormFilter {
   financial_year_id: string;
@@ -207,10 +239,31 @@ interface DashboardData {
   amount: number;
 }
 
+interface CurrentSource {
+  description: string;
+  code: string;
+  fund_received: string;
+}
+
+interface ChartOptions {
+  label: string;
+  backgroundColor: Array<string>;
+  borderColor: Array<string>;
+  pointBorderColor: string;
+  borderWidth: number;
+  data: Array<string>;
+}
+
+interface BarChartData {
+  labels: Array<string>;
+  datasets: Array<ChartOptions>;
+}
+
 export default defineComponent({
   components: {
     EqualHeights,
     MoneyCard,
+    BarChart,
   },
 
   setup() {
@@ -226,6 +279,9 @@ export default defineComponent({
     const councils: Array<AdminArea> = [];
     const facilities: Array<Facility> = [];
     const cardData: Array<DashboardData> = [];
+    let currentSource: BarChartData;
+    let receivedVsPayments: any;
+    const graphs = [1, 2, 3];
     const regionIsCurrentSelection: boolean = false;
     const isCouncil: boolean = false;
     const user: User = {
@@ -249,11 +305,14 @@ export default defineComponent({
       cardData,
       entries,
       councils,
+      graphs,
       user,
       facilities,
       regionIsCurrentSelection,
+      receivedVsPayments,
       isCouncil,
       searchTerm: "",
+      currentSource,
     });
 
     onMounted(() => {
@@ -291,8 +350,119 @@ export default defineComponent({
 
     const loadDashboards = async () => {
       const response = await get({});
+      const _byMonthResponse = await byMonth({});
+      const _byMonthMapped = mapByMonth(_byMonthResponse.data);
+      const _carryoverBySourceResponse = await getCarryoverByFundSource({});
+      const currResp = await getByCurrentSource({});
+      console.log(_byMonthResponse.data);
+      console.log("carryover by source:", _carryoverBySourceResponse.data);
+      const _mappedCurrentSource = mapCurrentSource(currResp.data);
       const _mappedDashboards = mapDashboards(response.data[0]);
+
       data.cardData = _mappedDashboards;
+      data.currentSource = _mappedCurrentSource;
+      data.receivedVsPayments = _byMonthMapped;
+    };
+
+    const mapByMonth = (results: Array<any>) => {
+      const labels = results.map((r) => capitalize(r.month));
+      const _fundsReceived = results.map((r) => r.fund_received);
+      const _payments = results.map((r) => r.payments);
+      const fundsReceived = {
+        label: "Funds Received",
+        borderWidth: 1,
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(153, 102, 255, 0.2)",
+          "rgba(255, 159, 64, 0.2)",
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(153, 102, 255, 0.2)",
+          "rgba(255, 159, 64, 0.2)",
+        ],
+        borderColor: [
+          "rgba(255,99,132,1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+          "rgba(255,99,132,1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+        ],
+        pointBorderColor: "#2554FF",
+        data: _fundsReceived,
+        yAxisID: "y-axis-funds",
+      };
+
+      const payments = {
+        label: "Payments Made",
+        backgroundColor: "rgba(99, 132, 0, 0.6)",
+        borderColor: "rgba(99, 132, 0, 1)",
+        data: _payments,
+      };
+
+      const dataOptions = {
+        labels,
+        datasets: [fundsReceived, payments],
+      };
+
+      return dataOptions;
+    };
+
+    const mapCurrentSource = (results: Array<CurrentSource>): BarChartData => {
+      const labels = results.map((result) => result.description);
+      const data = results.map((result) => result.fund_received);
+
+      const dataOptions: BarChartData = {
+        labels,
+        datasets: [
+          {
+            label: "Ammounts by current source",
+            borderWidth: 1,
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(255, 159, 64, 0.2)",
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(255, 159, 64, 0.2)",
+            ],
+            borderColor: [
+              "rgba(255,99,132,1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)",
+              "rgba(255,99,132,1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)",
+            ],
+            pointBorderColor: "#2554FF",
+            data: [...data],
+          },
+        ],
+      };
+      return dataOptions;
     };
 
     const mapAreas = <T extends AdminArea>(
@@ -364,7 +534,6 @@ export default defineComponent({
       const locationId = data && data.user && data.user.location.id;
       const response = await getChildren(locationId);
       data.isCouncil = response.data.data.level_id === 3;
-      console.log("location", response.data.data);
       const res = await getFacilities({
         per_page: 10,
         location_id: response.data.data.id,

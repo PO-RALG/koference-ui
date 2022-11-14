@@ -1,49 +1,61 @@
 import { AxiosResponse } from "axios";
 import { StaleCheque } from "../types";
-import { reactive, onMounted, ref, computed } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { get, regSearch as InvoiceSearch } from "../services/stale-cheque";
 
 export const useStaleCheque = (): Record<string, unknown> => {
   const dataItems: Array<StaleCheque> = [];
   let StaleChequeType: StaleCheque;
 
+  interface Header {
+    text: string;
+    align?: string;
+    sortable: boolean;
+    value: string;
+    width?: number;
+  }
+
+  const title: string = "Manage Stale Cheque";
+  let modalTitle: string;
+  const rows: Array<string> = ["10", "20", "50", "100"];
+  const headers: Array<Header> = [
+    {
+      text: "Voucher Number",
+      align: "start",
+      sortable: false,
+      value: "voucher_number",
+    },
+    { text: "StaleCheck Date", value: "date", sortable: true },
+
+    {
+      text: "Description",
+      align: "start",
+      sortable: false,
+      value: "description",
+      width: 600,
+    },
+    {
+      text: "Bank",
+      align: "start",
+      sortable: false,
+      value: "bank_account",
+    },
+    {
+      text: "Amount [ TZS ]",
+      align: "right",
+      sortable: false,
+      value: "amount",
+    },
+  ];
+
   const data = reactive({
     formData: StaleChequeType,
-
-    title: "Manage Stale Cheque",
-    modalTitle: "",
-    headers: [
-      {
-        text: "Voucher Number",
-        align: "start",
-        sortable: false,
-        value: "voucher_number",
-      },
-      { text: "StaleCheck Date", value: "date", sortable: true },
-
-      {
-        text: "Description",
-        align: "start",
-        sortable: false,
-        value: "description",
-        width: 600,
-      },
-      {
-        text: "Bank",
-        align: "start",
-        sortable: false,
-        value: "bank_account",
-      },
-      {
-        text: "Amount [ TZS ]",
-        align: "right",
-        sortable: false,
-        value: "amount",
-      },
-    ],
+    title,
+    headers,
+    modalTitle,
     items: dataItems,
     itemsToFilter: [],
-    rows: ["10", "20", "50", "100"],
+    rows,
     itemTodelete: "",
     response: {},
     loading: false,

@@ -48,12 +48,20 @@ export default defineComponent({
       emit("sidebarToggle");
     };
 
-    const navigateToState = (state: string) => {
-      router.push({ path: `/${state}` }).catch((error) => {
-        if (error.name !== "NavigationDuplicated") {
-          throw error;
-        }
-      });
+    const navigateToState = (state: any) => {
+      if (state && typeof state == "object") {
+        router.push({ path: "/" }).catch((error) => {
+          if (error.name !== "NavigationDuplicated") {
+            throw error;
+          }
+        });
+      } else {
+        router.push({ path: `/${state}` }).catch((error) => {
+          if (error.name !== "NavigationDuplicated") {
+            throw error;
+          }
+        });
+      }
     };
 
     return {

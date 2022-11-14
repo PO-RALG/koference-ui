@@ -32,3 +32,6 @@ pnpm-debug.log*
 /src/components/test
 nyati.yaml
 components.d.ts
+
+.tool-versions
+components.d.ts

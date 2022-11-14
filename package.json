@@ -14,6 +14,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.172",
     "axios": "^0.21.1",
+    "chart.js": "^3.9.1",
     "core-js": "^3.6.5",
     "dayjs": "^1.11.1",
     "jspdf": "^2.3.1",
@@ -24,6 +25,7 @@
     "v-mask": "^2.3.0",
     "vue": "^2.7.3",
     "vue-axios": "^3.2.5",
+    "vue-chartjs": "^4.1.2",
     "vue-class-component": "^7.2.3",
     "vue-currency-input": "^2.1.2",
     "vue-jwt-decode": "^0.1.0",

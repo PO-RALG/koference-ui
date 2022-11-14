@@ -35,11 +35,7 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
-        <v-list-item
-          v-else
-          :key="menu.title"
-          @click="$emit('navigate', child.state)"
-        >
+        <v-list-item v-else :key="menu.title" @click="goTomenu(menu)">
           <v-list-item-action>
             <v-icon>{{ menu.icon }}</v-icon>
           </v-list-item-action>
@@ -53,7 +49,7 @@
   </v-list>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -65,6 +61,19 @@ export default defineComponent({
     navigate: {
       type: Function,
     },
+  },
+  setup(props, { emit }) {
+    const goTomenu = (menu: any) => {
+      if (menu && menu.id) {
+        emit("navigate", menu.state);
+      } else {
+        emit("navigate", menu);
+      }
+    };
+
+    return {
+      goTomenu,
+    };
   },
 });
 </script>

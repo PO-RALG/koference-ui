@@ -1,16 +1,17 @@
 <template>
   <div class="Activity Costing">
-    <v-card-actions class="pa-0">
+    <v-card-actions :class="headerPadding">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn color="primary" @click="printActivityCosting()"> Print </v-btn>
     </v-card-actions>
-    <v-card>
+    <v-card :class="cardPadding">
+      <v-divider></v-divider>
       <v-data-table
         :headers="data.headers"
         :items="data.items"
         hide-default-footer
-        class="elevation-1"
+        :class="elevation"
         disable-pagination
       >
         <template v-slot:top>
@@ -183,6 +184,23 @@ import { useActivityCosting } from "./composables/activity-costing";
 
 export default defineComponent({
   name: "ActivityCosting",
+  props: {
+    headerPadding: {
+      type: String,
+      required: false,
+      default: "pa-0",
+    },
+    cardPadding: {
+      type: String,
+      required: false,
+      default: "pa-0",
+    },
+    elevation: {
+      type: String,
+      required: false,
+      default: "elevation-2",
+    },
+  },
   setup() {
     const {
       data,
