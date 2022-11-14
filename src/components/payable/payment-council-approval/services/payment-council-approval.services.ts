@@ -9,7 +9,7 @@ const getVouchers = async (params: any) => {
   return await axios.get("/api/v1/vouchers", { params });
 };
 
-const approveReversalPFacilityService = async (payload: any) => {
+const approveReversalPCouncilService = async (payload: any) => {
   return await axios.post(`/api/v1/payment_reversal/approval-council`, payload);
 };
 
@@ -61,7 +61,7 @@ export {
   get,
   find,
   create,
-  approveReversalPFacilityService,
+  approveReversalPCouncilService,
   update,
   destroy,
   search,
