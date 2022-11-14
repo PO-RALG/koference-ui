@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/middleware";
 
 const REPORTSERVERUSER = import.meta.env.VITE_APP_REPORT_USER_NAME;
 const REPORTSERVERPASSWORD = import.meta.env.VITE_APP_REPORT_PASSWORD;
+const APIREPORTPARAMS = "/api/v1/reports";
 const API = "/api/v1/reports";
 const REPORTSERVER = import.meta.env.VITE_APP_REPORT_SERVER_URL;
 const APINEWREPORT = "jasperserver/rest_v2";
@@ -16,7 +17,7 @@ const findReport = async (id) => {
 };
 
 const getParams = async (id) => {
-  return axios.get(`${API}/${id}/parameters`);
+  return axios.get(`${APIREPORTPARAMS}/${id}/parameters`);
 };
 
 const serializeParams = (params: any) => {
@@ -35,10 +36,10 @@ const printReportJasper = async (reportName: number, payload?: any) => {
   const params = {
     journal_voucher_id: 17,
   };
-
+  //ffars.tamisemi.go.tz/jasperserver/rest_v2/reports/facility/Journal_Voucher.pdf?journal_voucher_id=17
   await axios
-    .get(`${REPORTSERVER}/${APINEWREPORT}/reports/Reports/${reportName}.pdf`, {
-      params: params,
+    .get(`${REPORTSERVER}/${APINEWREPORT}/reports/facility/${reportName}.pdf`, {
+      params: payload,
       responseType: "stream",
       auth: {
         username: REPORTSERVERUSER,
@@ -87,7 +88,7 @@ const fetchReportTree = async ({ location_id, facility_id }) => {
 };
 
 const fetchReportParams = async (id) => {
-  const END_POINT = `${API}/${id}/parameters`;
+  const END_POINT = `${APIREPORTPARAMS}/${id}/parameters`;
   return axios.get(END_POINT);
 };
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card-actions class="pa-0">
+    <v-card-actions class="pa-4">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
@@ -17,7 +17,7 @@
         :headers="data.headers"
         :items="newreceiptItem"
         :single-expand="true"
-        class="elevation-1"
+        class="elevation-1 pa-2"
         disable-pagination
         hide-default-footer
         :loading="data.loading"
@@ -89,34 +89,59 @@
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-btn @click="print(item.id)" text color="grey">
-                <v-icon
-                  v-if="can('delete', 'Receipt')"
-                  v-bind="attrs"
-                  v-on="on"
-                  class="mr-2"
-                >
+                <v-icon v-bind="attrs" v-on="on" class="mr-2">
                   mdi-printer
                 </v-icon>
               </v-btn>
             </template>
             <span>Print</span>
           </v-tooltip>
-          <v-btn
-            v-if="
-              canApproveCouncil(
-                item,
-                'DEPOSIT_RECEIPT',
-                'approvalPendingCouncil',
-                'Receipt'
-              )
-            "
-            @click="approveReceiptFacility(item)"
-            color="primary"
-            text
-          >
-            <v-icon>mdi-check-decagram</v-icon>
-            Approve
-          </v-btn>
+
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="primary"
+                v-if="
+                  canApproveCouncil(
+                    item,
+                    'DEPOSIT_RECEIPT',
+                    'approvalPendingCouncil',
+                    'Receipt'
+                  )
+                "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="approveReceiptCouncil(item)"
+              >
+                mdi-check-decagram
+              </v-icon>
+            </template>
+            <span>Approve Receipt</span>
+          </v-tooltip>
+
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="red"
+                v-if="
+                  canApproveCouncil(
+                    item,
+                    'REVERSAL_OF_RECEIPT',
+                    'reverseApproval',
+                    'Receipt'
+                  )
+                "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="approveReceiptCouncil(item)"
+              >
+                mdi-check-decagram
+              </v-icon>
+            </template>
+            <span>Approve reversal</span>
+          </v-tooltip>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -568,7 +593,7 @@ import { useReceipt } from "./composables/receipt-council-approval";
 import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({
-  name: "ManageReceipt",
+  name: "ManageReceiptCouncilApproval",
   setup() {
     const {
       data,
@@ -603,7 +628,7 @@ export default defineComponent({
       invoiceType,
       cashType,
       depositType,
-      approveReceiptFacility,
+      approveReceiptCouncil,
       cancelGenericConfirmDialog,
     } = useReceipt();
 
@@ -641,7 +666,7 @@ export default defineComponent({
       invoiceType,
       cashType,
       depositType,
-      approveReceiptFacility,
+      approveReceiptCouncil,
       cancelGenericConfirmDialog,
     };
   },

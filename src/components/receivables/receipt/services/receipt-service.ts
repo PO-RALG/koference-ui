@@ -3,6 +3,7 @@ import axios from "axios";
 const API = "/api/v1/receipts";
 const APIFUNDINGSOURCES = "/api/v1/funding-sources";
 const APIAPPROVAL = "/api/v1/receipt/approval";
+const APIAPPROVALREVERSAL = "/api/v1/receipt-reversal/approval";
 
 const get = async (payload: any) => {
   return await axios.get(`${API}`, {
@@ -51,9 +52,9 @@ const regSearch = async (payload: any) => {
 
 const printReceipt = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
-  // const url = `${
-  //   import.meta.env.VITE_APP_SERVER_URL
-  // }/api/v1/receipts/${id}?token=${user.token}`;
+  const urltest = `${
+    import.meta.env.VITE_APP_SERVER_URL
+  }/api/v1/receipts/${id}?token=${user.token}`;
   const url = `/api/v1/receipts/${id}?token=${user.token}`;
   return window.open(url);
 };
@@ -64,6 +65,9 @@ const getGlAccounts = async (params: any): Promise<any> => {
 
 const approveReceiptFacilityService = async (payload: any) => {
   return await axios.post(`${APIAPPROVAL}`, payload);
+};
+const approveReceiptReversalFacilityService = async (payload: any) => {
+  return await axios.post(`${APIAPPROVALREVERSAL}`, payload);
 };
 
 export {
@@ -79,4 +83,5 @@ export {
   update,
   viewinvoice,
   approveReceiptFacilityService,
+  approveReceiptReversalFacilityService,
 };

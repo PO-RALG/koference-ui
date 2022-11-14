@@ -26,6 +26,7 @@ export const useReportDetail = (props, { root }) => {
     { name: "START_GFS", api: "api/v1/gfs-codes" },
     { name: "GL_ACCOUNT", api: "api/v1/gl-accounts" },
     { name: "BANK_ACCOUNT", api: "api/v1/bank-accounts" },
+    { name: "JOURNAL_VOUCHER", api: "api/v1/journal-vouchers" },
   ];
 
   const data = reactive({
@@ -95,6 +96,7 @@ export const useReportDetail = (props, { root }) => {
     nameArray.pop();
     const result = nameArray.join("_").replace(/\s/g, "").toUpperCase();
     const requiresAPI = requireApiCall(name);
+    console.log("results", result);
     const API = requiresAPI
       ? API_MAP.find((api: any) => api.name === result).api
       : null;

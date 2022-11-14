@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card-actions class="pa-0">
+    <v-card-actions class="pa-4">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
       <v-btn
@@ -25,7 +25,7 @@
         :headers="data.headers"
         :items="data.items"
         :single-expand="true"
-        class="elevation-1"
+        class="elevation-1 pa-2"
         disable-pagination
         hide-default-footer
         :loading="data.loading"
@@ -71,18 +71,6 @@
         <template v-slot:[`item.pending`]="{ item }">
           {{ (item.amount - item.received_amount) | toCurrency() }}
         </template>
-        <template v-slot:[`item.approve`]="{ item }">
-          <span v-if="item.isApprovedFacility && item.isApprovedCouncil">{{
-            "Reversal Approved "
-          }}</span>
-          <span v-if="item.isApprovedFacility && !item.isApprovedCouncil">{{
-            "Waiting for Reversal Approval from Council"
-          }}</span>
-          <span
-            v-if="!item.isApprovedFacility && item.isRequestedToReverse[0]"
-            >{{ "Waiting for Reversal Verification from Admin" }}</span
-          >
-        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
@@ -104,22 +92,22 @@
               <v-icon
                 color="green"
                 v-if="
-                  canApproveFacility(
+                  canApproveCouncil(
                     item,
                     'REVERSAL_OF_INVOICE',
-                    'reverseApproval',
+                    'reverseApprovalCouncil',
                     'Invoice'
                   )
                 "
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
-                @click="approveReversalFacility(item)"
+                @click="approveReversalCouncil(item)"
               >
                 mdi-check-decagram
               </v-icon>
             </template>
-            <span>Verify Reversal</span>
+            <span>Approve Reversal</span>
           </v-tooltip>
         </template>
 
@@ -280,7 +268,6 @@
                         </td>
                       </tr>
                     </template>
-
                     <template v-slot:[`item.icon`]="{ item }">
                       <v-icon class="mr-2">{{ item.icon }}</v-icon>
                     </template>
@@ -344,7 +331,6 @@
                 ><v-icon>mdi-close</v-icon> Close</v-btn
               >
               <v-btn
-                v-show="can('delete', 'Invoice')"
                 color="green darken-1"
                 text
                 @click="print(data.invoiceData.id)"
@@ -680,10 +666,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useInvoice } from "./composables/invoice";
+import { useInvoiceCouncilApproval } from "./composables/invoice-council-approval";
 import { toMoney } from "@/filters/CurrencyFormatter";
 export default defineComponent({
-  name: "ManageInvoice",
+  name: "ManageInvoiceCouncilApproval",
   setup() {
     const {
       data,
@@ -718,8 +704,8 @@ export default defineComponent({
       print,
       filterInvoice,
       resetSearchText,
-      approveReversalFacility,
-    } = useInvoice();
+      approveReversalCouncil,
+    } = useInvoiceCouncilApproval();
     return {
       data,
       getData,
@@ -754,7 +740,7 @@ export default defineComponent({
       toMoney,
       filterInvoice,
       resetSearchText,
-      approveReversalFacility,
+      approveReversalCouncil,
     };
   },
 });

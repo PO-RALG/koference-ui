@@ -1,23 +1,15 @@
 <template>
   <div class="Payment">
-    <v-card-actions class="pa-0">
+    <v-card-actions class="pa-4">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        color="primary"
-        @click="openDialog"
-        :disabled="cant('create', 'Payment')"
-      >
-        <v-icon>mdi-plus</v-icon>
-        Add New
-      </v-btn>
     </v-card-actions>
     <v-card>
       <v-data-table
         :headers="data.headers"
         :items="data.items"
         hide-default-footer
-        class="elevation-1"
+        class="elevation-1 pa-2"
         disable-pagination
       >
         <template v-slot:top>
@@ -42,7 +34,7 @@
         </template>
         <template v-slot:[`item.bank_account`]="{ item }">
           <span>
-            {{ item.bank_account.number }}({{ item.bank_account.name }})
+            {{ item.bank_account?.number }}({{ item.bank_account?.name }})
           </span>
         </template>
         <template v-slot:[`item.voucher`]="{ item }">
@@ -53,7 +45,7 @@
               light
               @click="previewPayment(item.id)"
             >
-              {{ item.voucher.reference_no }}
+              {{ item.voucher?.reference_no }}
             </v-list-item>
           </span>
         </template>
@@ -62,15 +54,12 @@
         </template>
 
         <template v-slot:[`item.approve`]="{ item }">
-          <span v-if="item.isApprovedFacility && item.isApprovedCouncil">{{
-            "Reversal Approved "
-          }}</span>
-          <span v-if="item.isApprovedFacility && !item.isApprovedCouncil">{{
+          <span v-if="item.isApprovedFacility">{{
             "Waiting for Reversal Approval from Council"
           }}</span>
           <span
             v-if="!item.isApprovedFacility && item.isRequestedToReverse[0]"
-            >{{ "Waiting for Reversal Verification from Admin" }}</span
+            >{{ "Waiting for Reversal Approval from Admin" }}</span
           >
         </template>
 
@@ -97,22 +86,22 @@
               <v-icon
                 color="red"
                 v-if="
-                  canApproveFacility(
+                  canApproveCouncil(
                     item,
                     'REVERSAL_OF_PAYMENT',
-                    'reverseApproval',
+                    'reverseApprovalCouncil',
                     'Payment'
                   )
                 "
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
-                @click="approveReversalPFacility(item)"
+                @click="approveReversalPCouncil(item)"
               >
                 mdi-check-decagram
               </v-icon>
             </template>
-            <span>Verify reversal</span>
+            <span>Approve reversal</span>
           </v-tooltip>
         </template>
         <template v-slot:footer>
@@ -303,6 +292,7 @@
               Cancel
             </v-btn>
             <v-btn
+              v-if="can('create', 'Payment')"
               color="green darken-1"
               text
               @click="printPayment(data.pvDetails.id)"
@@ -426,7 +416,7 @@
                           ", " +
                           data.pvDetails.bank_account.branch +
                           ", " +
-                          data.pvDetails.bank_account.number
+                          data.pvDetails.bank_account?.number
                         : ""
                     }}<br />
                   </td>
@@ -598,10 +588,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { usePayment } from "./composables/payment";
+import { usePayment } from "./composables/payment-council-approval";
 
 export default defineComponent({
-  name: "Payment",
+  name: "PaymentCouncilApproval",
   setup() {
     const {
       data,
@@ -628,6 +618,7 @@ export default defineComponent({
       newVouchers,
       approveReversalPFacility,
       cancelGenericConfirmDialog,
+      approveReversalPCouncil,
     } = usePayment();
 
     return {
@@ -655,6 +646,7 @@ export default defineComponent({
       newVouchers,
       approveReversalPFacility,
       cancelGenericConfirmDialog,
+      approveReversalPCouncil,
     };
   },
 });

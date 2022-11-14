@@ -106,7 +106,6 @@ export const usePaymentVoucher = (): any => {
         align: "start",
         sortable: false,
         value: "approve",
-        // value: "approve.facility_approved",
       },
       {
         text: "Actions",
@@ -257,7 +256,36 @@ export const usePaymentVoucher = (): any => {
     data.response = params;
     get(params).then((response: AxiosResponse) => {
       data.response = response.data.data;
-      data.items = response.data.data.data;
+      data.items = response.data.data.data.map((entry: any) => ({
+        ...entry,
+        approve: entry.approves.find(
+          (flow) => flow.workflow == "PAYMENT_VOUCHER"
+        ),
+        isApproved: entry.approves.length
+          ? setApprovalStatus(entry.approves[0])
+          : false,
+        isRejected: entry.approves.length
+          ? entry.approves.map(
+              (flow) =>
+                flow.facility_approved == false &&
+                flow.rejection_reason! != null
+            )
+          : false,
+        isRequestedToReverse: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved == null &&
+                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        isReversedApproved: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved &&
+                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+      }));
     });
   };
 

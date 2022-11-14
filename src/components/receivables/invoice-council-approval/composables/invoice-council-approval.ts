@@ -9,8 +9,8 @@ import {
   regSearch as InvoiceSearch,
   receiptcreate,
   printInvoice,
-  approveReversalInvoiceFacilityService,
-} from "../services/invoice";
+  approveReversalInvoiceCouncilService,
+} from "../services/invoice-council-approval";
 import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
 import {
   customers,
@@ -21,7 +21,7 @@ import { itemdefinitions } from "@/components/receivables/invoice-item-definitio
 import moment from "moment";
 import stringToCurrency from "@/filters/money-to-number";
 
-export const useInvoice = (): Record<string, unknown> => {
+export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
   const dataItems: Array<Invoice> = [];
   let invoiceData: Invoice;
   const invoiceData2 = {} as Invoice2;
@@ -134,7 +134,7 @@ export const useInvoice = (): Record<string, unknown> => {
       items: [],
     },
     maxDate: moment(new Date()).format("YYYY-MM-DD"),
-    title: "Manage Invoice",
+    title: "Invoice Reversal",
     modalTitle: "",
     headers: [
       {
@@ -174,12 +174,6 @@ export const useInvoice = (): Record<string, unknown> => {
         align: "start",
         sortable: false,
         value: "pending",
-      },
-      {
-        text: "Approve Status",
-        align: "start",
-        sortable: false,
-        value: "approve",
       },
       {
         text: "Actions",
@@ -224,70 +218,36 @@ export const useInvoice = (): Record<string, unknown> => {
   onMounted(() => {
     data.loading = true;
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data.map((entry: any) => ({
-        ...entry,
-        approve: entry.approves.find(
-          (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
-        ),
-
-        isApprovedFacility: entry.approves.length
-          ? setApprovalStatus(entry.approves[0])
-          : false,
-
-        isApprovedCouncil: entry.approves.length
-          ? setApprovalStatusCouncil(entry.approves[0])
-          : false,
-
-        isRequestedToReverse: entry.approves.length
-          ? entry.approves.filter(
-              (flow) =>
-                flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_INVOICE"
-            )
-          : false,
-      }));
-      data.itemsToFilter = response.data.data.data;
+      if (response.data && response.data.data != null) {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = { from, to, total, current_page, per_page, last_page };
+        data.items = response.data.data.data;
+        data.itemsToFilter = response.data.data.data;
+      } else {
+        data.items = [];
+      }
       data.loading = false;
     });
 
-    allgfscodes({ per_page: 20000 }).then((response: AxiosResponse) => {
-      data.bankName = response.data.data.data;
-    });
+    // allgfscodes({ per_page: 20000 }).then((response: AxiosResponse) => {
+    //   data.bankName = response.data.data.data;
+    // });
 
-    loadCustomer();
+    // loadCustomer();
 
-    itemdefinitions({ per_page: 20000 }).then((response: AxiosResponse) => {
-      data.itemdefinitions = response.data.data.data;
-    });
+    // itemdefinitions({ per_page: 20000 }).then((response: AxiosResponse) => {
+    //   data.itemdefinitions = response.data.data.data;
+    // });
   });
 
-  const setApprovalStatus = (item: Record<string, any>) => {
-    const { ends_on_facility, facility_approved, council_approved } = item;
-    if (facility_approved) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-  const setApprovalStatusCouncil = (item: Record<string, any>) => {
-    const { ends_on_facility, facility_approved, council_approved } = item;
-    if (council_approved) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const approveReversalFacility = (model: any) => {
+  const approveReversalCouncil = (model: any) => {
     data.formData2 = model;
-    data.modalTitle = "Accept to Verify of Reversal this Invoice";
-    data.genericDialogAction = approveRejectionInvoiceFacilityComplete;
+    data.modalTitle = "Accept to Approve Reversal of this Invoice";
+    data.genericDialogAction = approveRejectionInvoiceCouncilComplete;
     data.genericConfirmModel = true;
   };
-  const approveRejectionInvoiceFacilityComplete = () => {
+  const approveRejectionInvoiceCouncilComplete = () => {
     if (
       typeof data.formData2.approves == "undefined" ||
       data.formData2.approves.length === 0
@@ -298,10 +258,7 @@ export const useInvoice = (): Record<string, unknown> => {
     const approves = data.formData2.approves;
 
     approves.forEach((flowable) => {
-      if (
-        flowable.facility_appoved == null &&
-        flowable.workflow == "REVERSAL_OF_INVOICE"
-      ) {
+      if (flowable.facility_appoved == null) {
         currentFlowable = flowable;
       }
     });
@@ -314,7 +271,7 @@ export const useInvoice = (): Record<string, unknown> => {
       approved: true,
     };
 
-    approveReversalInvoiceFacilityService(approveData).then(() => {
+    approveReversalInvoiceCouncilService(approveData).then(() => {
       data.genericConfirmModel = false;
       reloadData();
     });
@@ -339,28 +296,7 @@ export const useInvoice = (): Record<string, unknown> => {
     if (categoryName != null) {
       InvoiceSearch({ regSearch: categoryName.invoice_number }).then(
         (response: AxiosResponse) => {
-          data.items = response.data.data.data.map((entry: any) => ({
-            ...entry,
-            approve: entry.approves.find(
-              (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
-            ),
-
-            isApprovedFacility: entry.approves.length
-              ? setApprovalStatus(entry.approves[0])
-              : false,
-
-            isApprovedCouncil: entry.approves.length
-              ? setApprovalStatusCouncil(entry.approves[0])
-              : false,
-
-            isRequestedToReverse: entry.approves.length
-              ? entry.approves.filter(
-                  (flow) =>
-                    flow.facility_approved == null &&
-                    flow.workflow! == "REVERSAL_OF_INVOICE"
-                )
-              : false,
-          }));
+          data.items = response.data.data.data;
         }
       );
     }
@@ -368,31 +304,22 @@ export const useInvoice = (): Record<string, unknown> => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data.map((entry: any) => ({
-        ...entry,
-        approve: entry.approves.find(
-          (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
-        ),
-
-        isApprovedFacility: entry.approves.length
-          ? setApprovalStatus(entry.approves[0])
-          : false,
-
-        isApprovedCouncil: entry.approves.length
-          ? setApprovalStatusCouncil(entry.approves[0])
-          : false,
-
-        isRequestedToReverse: entry.approves.length
-          ? entry.approves.filter(
-              (flow) =>
-                flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_INVOICE"
-            )
-          : false,
-      }));
+      if (response.data && response.data.data != null) {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data;
+        data.itemsToFilter = response.data.data.data;
+      } else {
+        data.items = [];
+      }
     });
   };
 
@@ -577,28 +504,7 @@ export const useInvoice = (): Record<string, unknown> => {
     data.response = params;
     get(params).then((response: AxiosResponse) => {
       data.response = response.data.data;
-      data.items = response.data.data.data.map((entry: any) => ({
-        ...entry,
-        approve: entry.approves.find(
-          (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
-        ),
-
-        isApprovedFacility: entry.approves.length
-          ? setApprovalStatus(entry.approves[0])
-          : false,
-
-        isApprovedCouncil: entry.approves.length
-          ? setApprovalStatusCouncil(entry.approves[0])
-          : false,
-
-        isRequestedToReverse: entry.approves.length
-          ? entry.approves.filter(
-              (flow) =>
-                flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_INVOICE"
-            )
-          : false,
-      }));
+      data.items = response.data.data.data;
     });
   };
 
@@ -662,28 +568,7 @@ export const useInvoice = (): Record<string, unknown> => {
         const { from, to, total, current_page, per_page, last_page } =
           response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data.map((entry: any) => ({
-          ...entry,
-          approve: entry.approves.find(
-            (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
-          ),
-
-          isApprovedFacility: entry.approves.length
-            ? setApprovalStatus(entry.approves[0])
-            : false,
-
-          isApprovedCouncil: entry.approves.length
-            ? setApprovalStatusCouncil(entry.approves[0])
-            : false,
-
-          isRequestedToReverse: entry.approves.length
-            ? entry.approves.filter(
-                (flow) =>
-                  flow.facility_approved == null &&
-                  flow.workflow! == "REVERSAL_OF_INVOICE"
-              )
-            : false,
-        }));
+        data.items = response.data.data.data;
       });
     }
     if (data.searchTerm.length === 0) {
@@ -691,28 +576,7 @@ export const useInvoice = (): Record<string, unknown> => {
         const { from, to, total, current_page, per_page, last_page } =
           response.data.data;
         data.response = { from, to, total, current_page, per_page, last_page };
-        data.items = response.data.data.data.map((entry: any) => ({
-          ...entry,
-          approve: entry.approves.find(
-            (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
-          ),
-
-          isApprovedFacility: entry.approves.length
-            ? setApprovalStatus(entry.approves[0])
-            : false,
-
-          isApprovedCouncil: entry.approves.length
-            ? setApprovalStatusCouncil(entry.approves[0])
-            : false,
-
-          isRequestedToReverse: entry.approves.length
-            ? entry.approves.filter(
-                (flow) =>
-                  flow.facility_approved == null &&
-                  flow.workflow! == "REVERSAL_OF_INVOICE"
-              )
-            : false,
-        }));
+        data.items = response.data.data.data;
       });
     }
   };
@@ -723,28 +587,7 @@ export const useInvoice = (): Record<string, unknown> => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
       data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data.map((entry: any) => ({
-        ...entry,
-        approve: entry.approves.find(
-          (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
-        ),
-
-        isApprovedFacility: entry.approves.length
-          ? setApprovalStatus(entry.approves[0])
-          : false,
-
-        isApprovedCouncil: entry.approves.length
-          ? setApprovalStatusCouncil(entry.approves[0])
-          : false,
-
-        isRequestedToReverse: entry.approves.length
-          ? entry.approves.filter(
-              (flow) =>
-                flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_INVOICE"
-            )
-          : false,
-      }));
+      data.items = response.data.data.data;
     });
   };
 
@@ -781,6 +624,6 @@ export const useInvoice = (): Record<string, unknown> => {
     print,
     filterInvoice,
     resetSearchText,
-    approveReversalFacility,
+    approveReversalCouncil,
   };
 };

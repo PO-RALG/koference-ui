@@ -69,21 +69,77 @@
         <template v-slot:[`item.pending`]="{ item }">
           {{ (item.amount - item.received_amount) | toCurrency() }}
         </template>
+        <template v-slot:[`item.approve`]="{ item }">
+          <span v-if="item.isApprovedFacility && item.isApprovedCouncil">{{
+            "Deposit Approved "
+          }}</span>
+          <span v-if="item.isApprovedFacility && !item.isApprovedCouncil">{{
+            "Waiting for Deposit Approval from Council "
+          }}</span>
+          <span
+            v-if="
+              item.isReversalApprovedFacility && item.isReversalApprovedCouncil
+            "
+            >{{ "Reversal Approved " }}</span
+          >
+          <span
+            v-if="
+              item.isReversalApprovedFacility && !item.isReversalApprovedCouncil
+            "
+            >{{ "Waiting for Reversal Approval from Council" }}</span
+          >
+          <span
+            v-if="!item.isApprovedFacility && item.isRequestedToReverse[0]"
+            >{{ "Waiting for Reversal Verification from Admin" }}</span
+          >
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip top>
+          <v-tooltip
+            v-if="
+              !canApproveFacility(
+                item,
+                'REVERSAL_OF_RECEIPT',
+                'approve',
+                'Receipt'
+              )
+            "
+            top
+          >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
+              <v-icon
+                color="grey"
+                v-if="can('delete', 'Receipt')"
                 v-bind="attrs"
                 v-on="on"
-                v-if="can('delete', 'Receipt')"
+                class="mr-2"
                 @click="reverseReceipt(item.id)"
-                text
-                color="grey"
               >
-                <v-icon>mdi-arrow-u-left-top-bold</v-icon>
-              </v-btn>
+                mdi-arrow-u-left-top-bold
+              </v-icon>
             </template>
-            <span>Reverse</span>
+            <span>Send Reverse Request</span>
+          </v-tooltip>
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="green"
+                v-if="
+                  canApproveFacility(
+                    item,
+                    'REVERSAL_OF_RECEIPT',
+                    'approve',
+                    'Receipt'
+                  )
+                "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="approveReversalFacility(item)"
+              >
+                mdi-check-decagram
+              </v-icon>
+            </template>
+            <span>Verify Reversal</span>
           </v-tooltip>
 
           <v-tooltip top>
@@ -523,6 +579,25 @@
         </ModalFooter>
       </template>
     </Modal>
+
+    <Modal :modal="data.genericConfirmModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> {{ data.modalTitle }}</ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -568,6 +643,7 @@ export default defineComponent({
       cashType,
       depositType,
       approveReceiptFacility,
+      approveReversalFacility,
     } = useReceipt();
 
     return {
@@ -605,6 +681,7 @@ export default defineComponent({
       cashType,
       depositType,
       approveReceiptFacility,
+      approveReversalFacility,
     };
   },
 });

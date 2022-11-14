@@ -414,7 +414,7 @@
             </v-btn>
             <!-- {{ data.pvDetails.approves }} -->
             <v-btn
-              v-if="canApproveFacility(data.pvDetails,'approve', 'Voucher')"
+              v-if="canApproveFacility(data.pvDetails, 'approve', 'Voucher')"
               @click="approvePV(data.pvDetails.id)"
               color="primary"
               text
@@ -679,7 +679,7 @@ import { usePaymentVoucher } from "./composables/payment-voucher-approval";
 import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({
-  name: "PaymentVoucher",
+  name: "VoucherCouncilApproval",
   setup() {
     const {
       data,
