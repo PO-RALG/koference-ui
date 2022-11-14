@@ -70,32 +70,39 @@
           {{ (item.amount - item.received_amount) | toCurrency() }}
         </template>
         <template v-slot:[`item.approve`]="{ item }">
-          <span v-if="item.isApprovedFacility && item.isApprovedCouncil">{{
-            "Deposit Approved "
-          }}</span>
+          <span
+            v-if="
+              item.isApprovedFacility &&
+              item.isApprovedCouncil &&
+              !item.isReversalApprovedFacility?.council_approved
+            "
+            >{{ "Deposit Approved " }}</span
+          >
           <span v-if="item.isApprovedFacility && !item.isApprovedCouncil">{{
             "Waiting for Deposit Approval from Council "
           }}</span>
+          <span v-if="item.isReversalApprovedFacility?.council_approved">{{
+            "Reversal Approved "
+          }}</span>
           <span
             v-if="
-              item.isReversalApprovedFacility && item.isReversalApprovedCouncil
-            "
-            >{{ "Reversal Approved " }}</span
-          >
-          <span
-            v-if="
-              item.isReversalApprovedFacility && !item.isReversalApprovedCouncil
+              item.isReversalApprovedFacility &&
+              !item.isReversalApprovedCouncil &&
+              !item.isReversalApprovedFacility?.council_approved
             "
             >{{ "Waiting for Reversal Approval from Council" }}</span
           >
           <span
-            v-if="!item.isApprovedFacility && item.isRequestedToReverse[0]"
-            >{{ "Waiting for Reversal Verification from Admin" }}</span
+            v-if="item.isApprovedFacility && item.isRequestedToReverse[0]"
+            >{{ "Reversal Verification Request Send to Admin" }}</span
           >
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip
             v-if="
+              item.isApprovedCouncil &&
+              !item.isReversalApprovedCouncil &&
+              !item.isRequestedToReverseWhileFacilityApproved.length &&
               !canApproveFacility(
                 item,
                 'REVERSAL_OF_RECEIPT',
