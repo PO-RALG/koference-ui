@@ -13,6 +13,7 @@ import {
   regSearch as receiptSearch,
   search,
   approveReceiptFacilityService,
+  approveReceiptFacilittyService,
 } from "../services/receipt-council-approval-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
@@ -717,7 +718,7 @@ export const useReceipt = (): any => {
       approved: true,
     };
 
-    approveReceiptFacilityService(approveData).then(() => {
+    approveReceiptFacilittyService(approveData).then(() => {
       data.genericConfirmModel = false;
       init();
     });

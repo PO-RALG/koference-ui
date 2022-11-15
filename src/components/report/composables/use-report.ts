@@ -9,7 +9,6 @@ import {
   get as fetchLocationTree,
   getChildren,
 } from "@/components/admin-area/admin-area/services/admin-area-services";
-
 import { AxiosResponse } from "axios";
 import { useRoute } from "@/helpers/RouterHelper";
 

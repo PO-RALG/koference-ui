@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const get = async (params: any) => {
-  return await axios.get("/api/v1/vouchers", { params });
+  return await axios.get("/api/v1/payment_voucher/approval-pending-council", {
+    params,
+  });
 };
 const search = async (payload: any) => {
   return await axios.get(`/api/v1/vouchers/`, {
@@ -45,10 +47,17 @@ const activitiesByFundSource = async (id: number | string) => {
   return await axios.get(`/api/v1/budgets/${id}/get-activities`);
 };
 
+const approveReversalPVCouncilService = async (payload: any) => {
+  return await axios.post(
+    `/api/v1/payment_voucher-reversal/approvalCouncil`,
+    payload
+  );
+};
+
 const printPdf = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
   const url = `/api/v1/vouchers/${id}/print?token=${user.token}`;
- return window.open(url);
+  return window.open(url);
 };
 
 export {
@@ -63,4 +72,5 @@ export {
   printPdf,
   activitiesByFundSource,
   approvePVFacility,
+  approveReversalPVCouncilService,
 };

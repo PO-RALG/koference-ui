@@ -8,11 +8,15 @@ import {
   fetchReportTree,
   findReport,
   updateQuery,
+  allreportFilters,
 } from "../services/report.services";
 
 export const useNewReport = () => {
   const data = reactive({
-    formData: {},
+    reportFilters: [],
+    formData: null,
+    selectedFilters: [],
+    // formData: {},
     code: "",
     query: null,
     editQuery: false,
@@ -27,7 +31,12 @@ export const useNewReport = () => {
       { text: "Order", value: "order" },
       { text: "Name", value: "name" },
       { text: "Parent", value: "parent" },
-      { text: "Template URL", align: "start", sortable: false, value: "template_uri" },
+      {
+        text: "Template URL",
+        align: "start",
+        sortable: false,
+        value: "template_uri",
+      },
       { text: "Level", value: "level" },
       { text: "Actions", value: "actions", sortable: false },
     ],
@@ -52,6 +61,33 @@ export const useNewReport = () => {
     rows: ["5", "10", "20", "50", "100"],
   });
 
+  const upsert = (array, item) => {
+    const idx = array.findIndex((_item: any) => _item.id === item.id);
+    if (idx > -1) {
+      array.splice(idx, 1);
+    } else {
+      array.push(item);
+    }
+    return array;
+  };
+  const loadReportFilters = () => {
+    allreportFilters({ size: 1000 }).then((response: any) => {
+      console.log("all filters", response.data.data.data);
+      // data.reportFilters = response.data.data.data[0].gfs_codes;
+    });
+  };
+
+  const onChangeList = ({ source, destination }): void => {
+    const filtersIds = destination.map((s) => s.id);
+
+    destination.forEach((item) => {
+      data.reportFilters = upsert(source, item);
+    });
+    console.log("item", filtersIds);
+
+    data.formData.filter = filtersIds;
+  };
+
   const deleteItem = (item: number | string) => {
     const payload = item;
     deleteReport(payload).then((response: AxiosResponse) => {
@@ -65,8 +101,17 @@ export const useNewReport = () => {
 
   const init = () => {
     getReports(data.params).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
-      data.params = { from, to, total, current_page, per_page, last_page, asc: "order" };
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.params = {
+        from,
+        to,
+        total,
+        current_page,
+        per_page,
+        last_page,
+        asc: "order",
+      };
       data.entries = response.data.data.data;
     });
   };
@@ -77,14 +122,24 @@ export const useNewReport = () => {
       asc: "order",
     };
     getReports(query).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
-      data.params = { from, to, total, current_page, per_page, last_page, asc: "order" };
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.params = {
+        from,
+        to,
+        total,
+        current_page,
+        per_page,
+        last_page,
+        asc: "order",
+      };
       console.log(data.params);
       data.entries = response.data.data.data;
     });
   };
 
   const openDialog = (formData?: any) => {
+    loadReportFilters();
     if (formData.id) {
       data.formData = formData;
       data.modalTitle = "Update";
@@ -180,7 +235,7 @@ export const useNewReport = () => {
     const payload = {
       id: data.selectedReport.id,
       query: data.query,
-    }
+    };
     console.log(payload);
     updateQuery(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
@@ -226,5 +281,7 @@ export const useNewReport = () => {
     saveReportQuery,
     reportTitle,
     onChange,
+    onChangeList,
+    loadReportFilters,
   };
 };

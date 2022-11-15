@@ -13,7 +13,7 @@ import {
 
 export const useFundSource = (): any => {
   const dataItems: Array<FundSources> = [];
-  let financialYearData: FundSources;
+  let fundSourceData: FundSources;
 
   const data = reactive({
     title: "Manage Funding Sources",
@@ -43,7 +43,7 @@ export const useFundSource = (): any => {
     deletemodal: false,
     items: dataItems,
     itemsToFilter: [],
-    formData: financialYearData,
+    formData: fundSourceData,
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},

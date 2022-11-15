@@ -4,6 +4,7 @@ export interface PaymentVoucher {
   supplier_id: number;
   description: string;
   payables: any[];
+  approves: any[];
 }
 export interface Account {
   id: number;
@@ -15,12 +16,11 @@ export interface Account {
   balance: number;
 }
 
-export  enum VOUCHER_TYPE {
+export enum VOUCHER_TYPE {
   "NORMAL" = 1,
-  "DEPOSIT" = 3
+  "DEPOSIT" = 3,
 }
 export interface Payable {
-  gl_account_id:number
-  amount:number
+  gl_account_id: number;
+  amount: number;
 }
-

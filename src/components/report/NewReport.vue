@@ -154,6 +154,17 @@
                     <template v-slot:item="{ item }">{{ item.name }}</template>
                   </v-select>
                 </v-col>
+
+                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+                  <DualMultiSelect
+                    :source="data.reportFilters"
+                    :destination="data.selectedFilters"
+                    v-model="data.formData.filter"
+                    :label="'name'"
+                    :modelName="'filters'"
+                    @onChangeList="onChangeList"
+                  />
+                </v-col>
               </v-row>
             </v-container>
           </v-form>
@@ -257,6 +268,7 @@ export default defineComponent({
       saveReportQuery,
       reportTitle,
       onChange,
+      onChangeList,
     } = useNewReport();
 
     return {
@@ -273,6 +285,7 @@ export default defineComponent({
       saveReportQuery,
       reportTitle,
       onChange,
+      onChangeList,
     };
   },
 });

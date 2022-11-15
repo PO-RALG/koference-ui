@@ -1,16 +1,8 @@
 <template>
   <div class="Payment Voucher">
-    <v-card-actions class="pa-0">
+    <v-card-actions class="pa-4">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn
-        class="ma-2 d-none d-sm-flex white--text"
-        color="primary"
-        router-link
-        to="/payment-vouchers"
-        tag="button"
-        ><v-icon>mdi-arrow-left-circle</v-icon>Back
-      </v-btn>
     </v-card-actions>
     <v-card>
       <v-data-table
@@ -69,7 +61,7 @@
           </span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip bottom>
+          <!-- <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 v-bind="attrs"
@@ -81,6 +73,28 @@
               </v-icon>
             </template>
             <span>Delete</span>
+          </v-tooltip> -->
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="red"
+                v-if="
+                  canApproveReversalPVCouncil(
+                    item,
+                    'REVERSAL_OF_PAYMENT_VOUCHER',
+                    'reverseApprovalCouncil',
+                    'Voucher'
+                  )
+                "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="approveReversalPVFacility(item)"
+              >
+                mdi-check-decagram
+              </v-icon>
+            </template>
+            <span>Approve reversal</span>
           </v-tooltip>
         </template>
         <template v-slot:footer>
@@ -670,6 +684,24 @@
         </ModalFooter>
       </template>
     </Modal>
+    <Modal :modal="data.genericDeleteConfirmModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> {{ data.modalTitle }}</ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -719,9 +751,12 @@ export default defineComponent({
       resetData,
       approvePV,
       approvePaymet,
+      approveReversalPVFacility,
+      cancelGenericConfirmDialog,
     } = usePaymentVoucher();
 
     return {
+      approveReversalPVFacility,
       toMoney,
       data,
       openDialog,
@@ -760,6 +795,7 @@ export default defineComponent({
       resetData,
       approvePV,
       approvePaymet,
+      cancelGenericConfirmDialog,
     };
   },
 });

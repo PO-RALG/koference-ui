@@ -95,6 +95,9 @@ const fetchReportParams = async (id) => {
 const updateQuery = async (payload) => {
   return await axios.put(`${API}/${payload.id}/write-query`, payload);
 };
+const allreportFilters = async (payload) => {
+  return await axios.get(`${API}/1/report-filters`, payload);
+};
 
 export {
   getReports,
@@ -108,4 +111,5 @@ export {
   printReport,
   printReportJasper,
   updateQuery,
+  allreportFilters,
 };
