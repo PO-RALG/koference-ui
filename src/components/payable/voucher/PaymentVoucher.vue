@@ -233,7 +233,7 @@
             <v-radio-group v-model="data.voucherType" row @change="resetData">
               <v-radio label="NORMAL VOUCHER" :value="normalType"></v-radio>
               <v-radio label="DEPOSIT VOUCHER" :value="depositType"></v-radio>
-              <v-radio label="M MAMA VOUCHER" :value="mmamaType"></v-radio>
+              <!-- <v-radio label="M MAMA VOUCHER" :value="mmamaType"></v-radio> -->
             </v-radio-group>
             <v-container>
               <v-row class="pt-5 pl-5 pr-5">
