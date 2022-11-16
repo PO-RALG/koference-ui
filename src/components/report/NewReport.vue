@@ -159,7 +159,7 @@
                   <DualMultiSelect
                     :source="data.reportFilters"
                     :destination="data.selectedFilters"
-                    v-model="data.formData.filter"
+                    v-model="data.formData.report_parameters"
                     :label="'name'"
                     :modelName="'filters'"
                     @onChangeList="onChangeList"
@@ -269,6 +269,7 @@ export default defineComponent({
       reportTitle,
       onChange,
       onChangeList,
+      selectedFilters,
     } = useNewReport();
 
     return {
@@ -286,6 +287,7 @@ export default defineComponent({
       reportTitle,
       onChange,
       onChangeList,
+      selectedFilters,
     };
   },
 });

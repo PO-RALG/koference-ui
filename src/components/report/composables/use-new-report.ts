@@ -72,8 +72,8 @@ export const useNewReport = () => {
   };
   const loadReportFilters = () => {
     allreportFilters({ size: 1000 }).then((response: any) => {
-      console.log("all filters", response.data.data.data);
-      // data.reportFilters = response.data.data.data[0].gfs_codes;
+      // console.log("all filters", response.data.data);
+      data.reportFilters = response.data.data;
     });
   };
 
@@ -81,12 +81,16 @@ export const useNewReport = () => {
     const filtersIds = destination.map((s) => s.id);
 
     destination.forEach((item) => {
+      console.log("item", filtersIds);
       data.reportFilters = upsert(source, item);
     });
-    console.log("item", filtersIds);
+    // console.log("item", filtersIds);
 
-    data.formData.filter = filtersIds;
+    data.formData.report_parameters = filtersIds;
   };
+  const selectedFilters = computed(() => {
+    return data.formData.report_parameters || [];
+  });
 
   const deleteItem = (item: number | string) => {
     const payload = item;
@@ -140,6 +144,7 @@ export const useNewReport = () => {
 
   const openDialog = (formData?: any) => {
     loadReportFilters();
+    data.selectedFilters = formData.report_parameters;
     if (formData.id) {
       data.formData = formData;
       data.modalTitle = "Update";
@@ -283,5 +288,6 @@ export const useNewReport = () => {
     onChange,
     onChangeList,
     loadReportFilters,
+    selectedFilters,
   };
 };

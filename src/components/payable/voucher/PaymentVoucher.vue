@@ -107,7 +107,7 @@
           </span>
           <span v-if="item.isApproved">{{ "Approved" }}</span>
           <span v-if="!item.isApproved && !item.isRejected[0]">{{
-            "Waiting for Reversal Approval"
+            "Waiting for  Approval"
           }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
