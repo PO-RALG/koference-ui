@@ -105,10 +105,25 @@
               <small class="">Click to see rejection comment</small>
             </v-tooltip>
           </span>
-          <span v-if="item.isApproved">{{ "Approved" }}</span>
-          <span v-if="!item.isApproved && !item.isRejected[0]">{{
-            "Waiting for  Approval"
+          <span v-if="item.isApproved && !item.isReversedApproved.length">{{
+            "Approved"
           }}</span>
+          <!-- {{ item.isReversedApproved.length }} -->
+          <span v-if="item.isApproved && item.isReversedApproved.length">{{
+            "Waiting for Reversal Approval from Council"
+          }}</span>
+          <span
+            v-if="
+              !item.isApproved &&
+              !item.isRejected[0] &&
+              item.isRequestedToReverse.length === 0
+            "
+            >{{ "Waiting for  Approval  from Admin" }}</span
+          >
+          <span
+            v-if="item.isApproved && item.isRequestedToReverse.length > 0"
+            >{{ " Waiting for  Reversal Approval  from Admin" }}</span
+          >
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip right>
