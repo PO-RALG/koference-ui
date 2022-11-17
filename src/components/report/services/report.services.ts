@@ -37,7 +37,7 @@ const printReportJasper = async (reportName: any, payload?: any) => {
 
   await axios
     .get(
-      `${REPORTSERVER}/${APINEWREPORT}/reports/facility/${reportName}.${payload.format}?facility_id=${payload.facility_id}`,
+      `/${APINEWREPORT}/reports/facility/${reportName}.${payload.format}?facility_id=${payload.facility_id}`,
       {
         params: payload,
         responseType: "stream",
