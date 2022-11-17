@@ -42,8 +42,8 @@ const printReportJasper = async (reportName: any, payload?: any) => {
         params: payload,
         responseType: "stream",
         auth: {
-          username: REPORTSERVERUSER,
-          password: REPORTSERVERPASSWORD,
+          username: "jasperadmin",
+          password: "jasperIsPrintingReports",
         },
       }
     )
