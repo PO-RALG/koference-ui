@@ -46,7 +46,7 @@ const printReportJasper = async (reportName: any, payload?: any) => {
       },
     }
   );
-  window.open("data:application/pdf," + encodeURI(dataz));
+  return window.open("data:application/pdf," + encodeURI(dataz));
   // .then((response) => {
   //   console.log("ressssss", response);
   // });
