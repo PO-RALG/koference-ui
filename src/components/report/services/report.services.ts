@@ -35,7 +35,7 @@ const serializeParams = (params: any) => {
 const printReportJasper = async (reportName: any, payload?: any) => {
   console.log("gervas", payload);
 
-  await axios
+  const file: any = await axios
     .get(
       `/${APINEWREPORT}/reports/facility/${reportName}.${payload.format}?facility_id=${payload.facility_id}`,
       {
@@ -47,8 +47,9 @@ const printReportJasper = async (reportName: any, payload?: any) => {
         },
       }
     )
-    .then(function (response) {
-      console.log(response);
+    .then(function (response: any) {
+      response.writeHead(200, { "Content-Type": "application/pdf" });
+      file.data.pipe(response);
     });
   // .then((response) => {
   //   console.log("ressssss", response);
