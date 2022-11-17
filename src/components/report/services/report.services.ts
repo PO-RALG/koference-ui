@@ -35,21 +35,18 @@ const serializeParams = (params: any) => {
 const printReportJasper = async (reportName: any, payload?: any) => {
   console.log("gervas", payload);
 
-  await axios
-    .get(
-      `/${APINEWREPORT}/reports/facility/${reportName}.${payload.format}?facility_id=${payload.facility_id}`,
-      {
-        params: payload,
-        responseType: "stream",
-        auth: {
-          username: "jasperadmin",
-          password: "jasperIsPrintingReports",
-        },
-      }
-    )
-    .then(function (response: any) {
-      window.open("data:application/pdf," + encodeURI(response));
-    });
+  const dataz: any = await axios.get(
+    `/${APINEWREPORT}/reports/facility/${reportName}.${payload.format}?facility_id=${payload.facility_id}`,
+    {
+      params: payload,
+      responseType: "stream",
+      auth: {
+        username: "jasperadmin",
+        password: "jasperIsPrintingReports",
+      },
+    }
+  );
+  window.open("data:application/pdf," + encodeURI(dataz));
   // .then((response) => {
   //   console.log("ressssss", response);
   // });
