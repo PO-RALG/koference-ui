@@ -87,7 +87,7 @@
                   can('delete', 'Voucher')
                 "
               >
-                mdi-book-arrow-left-outline
+                mdi-file-rotate-left-outline
               </v-icon>
             </template>
             <span>Send Reverse Request</span>

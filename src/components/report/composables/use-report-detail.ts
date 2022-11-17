@@ -16,7 +16,8 @@ export const useReportDetail = (props, { root }) => {
   const route = useRoute();
 
   const API_MAP = [
-    { name: "FUNDING_SOURCE", api: "api/v1/funding-sources" },
+    { name: "FUND_SOURCE", api: "api/v1/funding-sources" },
+    { name: "FUND_TYPE", api: "api/v1/fund-types" },
     { name: "FINANCIAL_YEAR", api: "api/v1/financial-years" },
     { name: "FACILITY", api: "api/v1/facilities" },
     { name: "FACILITY_TYPE", api: "api/v1/facility-types" },
@@ -27,6 +28,16 @@ export const useReportDetail = (props, { root }) => {
     { name: "GL_ACCOUNT", api: "api/v1/gl-accounts" },
     { name: "BANK_ACCOUNT", api: "api/v1/bank-accounts" },
     { name: "JOURNAL_VOUCHER", api: "api/v1/journal-vouchers" },
+    { name: "SUPPLIER", api: "api/v1/suppliers" },
+    { name: "CUSTOMER", api: "api/v1/customers" },
+    { name: "GFS_CATEGORY", api: "api/v1/gfs_categories" },
+    { name: "IVOICE", api: "api/v1/invoices" },
+    { name: "LEVEL", api: "api/v1/levels" },
+    { name: "OPENING_BALANCE", api: "api/v1/opening-balances" },
+    { name: "PAYMENT", api: "api/v1/payments" },
+    { name: "PAYMENT_VOUCHER", api: "api/v1/payment_vouchers" },
+    { name: "BANK_RECONSILIATION", api: "api/v1/bank-reconciliation" },
+    { name: "SUB_BUDGET_CLASS", api: "api/v1/sub-budget-classes" },
   ];
 
   const data = reactive({
@@ -40,7 +51,7 @@ export const useReportDetail = (props, { root }) => {
       financial_year_id: null,
       facility_id: null,
       facility_type_id: null,
-      location_id: router.currentRoute.params.location_id,
+      // location_id: router.currentRoute.params.location_id,
       gfs_code_id: null,
       end_gfs_id: null,
       start_gfs_id: null,
@@ -54,7 +65,6 @@ export const useReportDetail = (props, { root }) => {
 
   onMounted(() => {
     data.location_id = route.params.location_id;
-
     const user: any = localStorage.getItem("FFARS_USER");
     const userObj = JSON.parse(user);
     if (userObj.facility) {
@@ -191,7 +201,7 @@ export const useReportDetail = (props, { root }) => {
   watch(
     () => route.query.report_id,
     async (newReportID) => {
-      console.log("report id", newReportID);
+      // console.log("report id", newReportID);
       if (newReportID) {
         findReport(newReportID).then((response: AxiosResponse) => {
           data.currentReport = response.data.data;
@@ -207,7 +217,8 @@ export const useReportDetail = (props, { root }) => {
   };
 
   const printFromServer = () => {
-    printReportJasper(data.currentReport.name, data.formData);
+    console.log("reportxxx ", data.currentReport);
+    printReportJasper(data.currentReport.template_uri, data.formData);
   };
 
   return {

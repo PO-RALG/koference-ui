@@ -32,22 +32,23 @@ const serializeParams = (params: any) => {
   return str.join("&");
 };
 
-const printReportJasper = async (reportName: number, payload?: any) => {
-  const params = {
-    journal_voucher_id: 17,
-  };
-  //ffars.tamisemi.go.tz/jasperserver/rest_v2/reports/facility/Journal_Voucher.pdf?journal_voucher_id=17
+const printReportJasper = async (reportName: any, payload?: any) => {
+  console.log("gervas", payload);
+
   await axios
-    .get(`${REPORTSERVER}/${APINEWREPORT}/reports/facility/${reportName}.pdf`, {
-      params: payload,
-      responseType: "stream",
-      auth: {
-        username: REPORTSERVERUSER,
-        password: REPORTSERVERPASSWORD,
-      },
-    })
+    .get(
+      `${REPORTSERVER}/${APINEWREPORT}/reports/facility/${reportName}.${payload.format}?facility_id=${payload.facility_id}`,
+      {
+        params: payload,
+        responseType: "stream",
+        auth: {
+          username: REPORTSERVERUSER,
+          password: REPORTSERVERPASSWORD,
+        },
+      }
+    )
     .then(function (response) {
-      console.log(response.data);
+      console.log(response);
     });
   // .then((response) => {
   //   console.log("ressssss", response);

@@ -35,12 +35,11 @@
               :key="component.id"
               class="mb-5 pl-5 pr-5"
             >
-              <div v-if="!component.needsApiCall">
-                <DatePicker
-                  :label="component.description"
-                  v-model="data.formData[component.name]"
-                />
-              </div>
+              <DatePickerReport
+                v-if="!component.needsApiCall"
+                :label="component.description"
+                v-model="data.formData[component.name]"
+              />
               <fetcher v-else :api="component.api">
                 <div slot-scope="{ json: items, loading }">
                   <div v-if="loading">Loading...</div>
@@ -50,12 +49,15 @@
                     :item-text="'name'"
                     :label="component.description"
                     outlined
+                    prepend-inner-icon="mdi-format-list-bulleted"
                     :required="component.isRequired"
                     v-model="data.formData[component.name]"
                   />
                 </div>
               </fetcher>
+              <v-col cols="12" md="6"> </v-col>
             </v-flex>
+
             <v-flex xs6 class="mb-5 pl-5 pr-5">
               <fetcher
                 v-if="!isFacility"
@@ -79,7 +81,7 @@
       </v-card-text>
       <v-card-actions class="mr-5 mt-n4 pb-5">
         <v-spacer></v-spacer>
-        <v-btn color="primary" :disabled="!data.valid" @click="print"
+        <v-btn color="primary" :disabled="!data.valid" @click="printFromServer"
           >PRINT REPORT</v-btn
         >
       </v-card-actions>

@@ -60,6 +60,8 @@ import { mmamaPaymentRoutes } from "@/components/payable/mmama-payment";
 import { bankAdjustmentCouncilApprovalRoutes } from "@/components/receivables/bank-adjustment-council-approval";
 import { revenueAccountRoutes } from "@/components/receivables/revenue-account/";
 import { receiptCouncilApprovalRoutes } from "@/components/receivables/receipt-council-approval";
+import { reportFilterRoutes } from "@/components/report/report-filters/";
+
 //import route middlewares
 import { auth, setHeaders, setTitle, validateToken } from "@/middleware";
 import budgetRoutes from "@/components/coa/budget/routes/budget-routes";
@@ -144,6 +146,7 @@ const routes: Array<RouteConfig> = [
       ...revenueAccountRoutes,
       ...receiptCouncilApprovalRoutes,
       ...approvalCouncilRoutes,
+      ...reportFilterRoutes,
       ...notFoundRoute,
     ],
   },
