@@ -72,34 +72,45 @@ export const useFundAllocation = (): any => {
     getTableData();
   });
 
-  const removeComma = (data:any)=>{
-    const newData = String(data).replace(/[,]/g,'');
-    return Number(newData);
-  }
-
-  const removeNeg = (data:any)=>{
-    const newData = (String(data).replace(/[-]/g,'')).replace(/[,]/g,'');
+  const removeComma = (data: any) => {
+    const newData = String(data).replace(/[,]/g, "");
     return Number(newData);
   };
 
-  const checkChar = (data:string)=>{
+  const removeNeg = (data: any) => {
+    const newData = String(data).replace(/[-]/g, "").replace(/[,]/g, "");
+    return Number(newData);
+  };
+
+  const checkChar = (data: string) => {
     const inputVal = String(data).includes("-");
     return inputVal;
   };
 
-  const maxAllocation = (budget:any,allocation:any,totalExpenditure:any) => {
-    if ((budget !== null && allocation !== null) ||(allocation !== null && totalExpenditure !== null)) {
-      const unallocated  = removeComma(budget) - removeComma(allocation);
-      const available = removeComma(allocation) - removeComma(totalExpenditure)
+  const maxAllocation = (
+    budget: any,
+    allocation: any,
+    totalExpenditure: any
+  ) => {
+    if (
+      (budget !== null && allocation !== null) ||
+      (allocation !== null && totalExpenditure !== null)
+    ) {
+      const unallocated = removeComma(budget) - removeComma(allocation);
+      const available = removeComma(allocation) - removeComma(totalExpenditure);
       return (v: string) => {
         if (checkChar(v)) {
-          return(removeNeg(v) && removeNeg(v) <= available) ||
-            `Amount must be less or equal to ${available}`;
-        }else{
-          return(removeComma(v) !== null && removeComma(v) <= unallocated) ||
-            `Amount must be less or equal to ${unallocated}`;
-        } 
-      } 
+          return (
+            (removeNeg(v) && removeNeg(v) <= available) ||
+            `Amount must be less or equal to ${available}`
+          );
+        } else {
+          return (
+            (removeComma(v) !== null && removeComma(v) <= unallocated) ||
+            `Amount must be less or equal to ${unallocated}`
+          );
+        }
+      };
     }
   };
 
@@ -141,7 +152,9 @@ export const useFundAllocation = (): any => {
         }
       );
       statistic(data.selectedFund.id).then((response: AxiosResponse) => {
-        data.itemUnallocated.allocated = parseFloat(response.data.data.allocated);
+        data.itemUnallocated.allocated = parseFloat(
+          response.data.data.allocated
+        );
         data.itemUnallocated.carryover = response.data.data.carryover;
         data.itemUnallocated.current = response.data.data.current;
         data.itemUnallocated.totalFund = response.data.data.totalFund;
@@ -180,6 +193,7 @@ export const useFundAllocation = (): any => {
       data.itemUnallocated.totalFund = response.data.data.totalFund;
       data.allocated = parseFloat(response.data.data.allocated);
       data.running_balance = data.itemUnallocated.totalFund - data.allocated;
+      data.running_balance = Number(data.running_balance.toFixed(2));
     });
   };
 
