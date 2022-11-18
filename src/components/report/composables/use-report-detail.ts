@@ -60,7 +60,11 @@ export const useReportDetail = (props, { root }) => {
       start_date: null,
       end_date: null,
     },
-    format: ["pdf", "xlsx", "pptx", "docx", "csv"],
+    // format: ["pdf", "xlsx", "pptx", "docx", "csv"],
+    format: ["pdf"],
+    validate: {
+      format: [(v) => !!v || " This field is mandatory."],
+    },
   });
 
   onMounted(() => {

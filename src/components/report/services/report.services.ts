@@ -32,10 +32,10 @@ const serializeParams = (params: any) => {
   return str.join("&");
 };
 
-const printReportJasper = async (reportName: any, payload?: any) => {
+const printReportJasper = async (reportID: any, payload?: any) => {
   await axios
     .get(
-      `/${APINEWREPORT}/reports/facility/${reportName}.${payload.format}?facility_id=${payload.facility_id}`,
+      `/${APINEWREPORT}/reports/${reportID}.${payload.format}?facility_id=${payload.facility_id}`,
       {
         params: payload,
         responseType: "arraybuffer",

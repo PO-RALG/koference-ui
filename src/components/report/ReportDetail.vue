@@ -19,6 +19,8 @@
                 label="Select Report Format"
                 :items="data.format"
                 outlined
+                required
+                :rules="data.validate.format"
               />
             </v-flex>
             <v-flex xs12 class="mb-5 pl-5 pr-5" v-else>
@@ -27,6 +29,8 @@
                 label="Select Report Format"
                 :items="data.format"
                 outlined
+                required
+                :rules="data.validate.format"
               />
             </v-flex>
             <v-flex
