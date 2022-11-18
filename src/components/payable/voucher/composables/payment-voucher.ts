@@ -366,7 +366,10 @@ export const usePaymentVoucher = (): any => {
     const approves = data.formData.approves;
 
     approves.forEach((flowable) => {
-      if (flowable.facility_appoved == null) {
+      if (
+        flowable.facility_appoved == null &&
+        flowable.workflow == "PAYMENT_VOUCHER"
+      ) {
         currentFlowable = flowable;
       }
     });
@@ -402,7 +405,10 @@ export const usePaymentVoucher = (): any => {
     const approves = data.formData.approves;
 
     approves.forEach((flowable) => {
-      if (flowable.facility_appoved == null) {
+      if (
+        flowable.facility_appoved == null &&
+        flowable.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+      ) {
         currentFlowable = flowable;
       }
     });

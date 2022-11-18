@@ -102,6 +102,11 @@ const allreportFilters = async (payload) => {
   return await axios.get(`${API}/1/report-filters`, payload);
 };
 
+const toggleActive = async (payload: any) => {
+  console.log("payload", payload);
+  return await axios.post(`${API}/${payload.id}/change-status`);
+};
+
 export {
   getReports,
   fetchReportTree,
@@ -115,4 +120,5 @@ export {
   printReportJasper,
   updateQuery,
   allreportFilters,
+  toggleActive,
 };

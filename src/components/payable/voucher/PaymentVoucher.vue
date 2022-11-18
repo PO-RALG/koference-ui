@@ -129,10 +129,7 @@
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
-                v-if="
-                  item.isRequestedToReverse.length === 0 &&
-                  can('delete', 'Voucher')
-                "
+                v-if="item.isApproved && can('delete', 'Voucher')"
                 v-bind="attrs"
                 v-on="on"
                 @click="openConfirmDialog(item)"

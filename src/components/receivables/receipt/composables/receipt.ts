@@ -946,7 +946,10 @@ export const useReceipt = (): any => {
     const approves = data.formData2.approves;
 
     approves.forEach(function (flowable) {
-      if (flowable.facility_appoved == null) {
+      if (
+        flowable.facility_appoved == null &&
+        flowable.workflow == "DEPOSIT_RECEIPT"
+      ) {
         currentFlowable = flowable;
       }
     });

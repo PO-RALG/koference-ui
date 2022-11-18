@@ -9,6 +9,7 @@ import {
   findReport,
   updateQuery,
   allreportFilters,
+  toggleActive,
 } from "../services/report.services";
 
 export const useNewReport = () => {
@@ -38,6 +39,7 @@ export const useNewReport = () => {
         value: "template_uri",
       },
       { text: "Level", value: "level" },
+      { text: "Activations", value: "activations", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
 
@@ -59,8 +61,29 @@ export const useNewReport = () => {
       last_page: null,
     },
     rows: ["5", "10", "20", "50", "100"],
+    status: "",
+    show: false,
+  });
+  const closeActivationDialog = () => {
+    data.item = null;
+    data.show = false;
+    data.status = null;
+    data.report = null;
+    init();
+  };
+
+  const message = computed(() => {
+    return `Are you sure you want to ${data.status} this report?`;
   });
 
+  const toggleStatus = () => {
+    toggleActive(data.report).then((response) => {
+      if (response.status === 200) {
+        closeActivationDialog();
+        init();
+      }
+    });
+  };
   const upsert = (array, item) => {
     const idx = array.findIndex((_item: any) => _item.id === item.id);
     if (idx > -1) {
@@ -70,6 +93,7 @@ export const useNewReport = () => {
     }
     return array;
   };
+
   const loadReportFilters = () => {
     allreportFilters({ size: 1000 }).then((response: any) => {
       // console.log("all filters", response.data.data);
@@ -102,7 +126,12 @@ export const useNewReport = () => {
       }
     });
   };
-
+  const openActivationDialog = (report: any) => {
+    console.log("report.active", report);
+    data.status = report.active ? "Activate" : "De-Activate";
+    data.report = report;
+    data.show = true;
+  };
   const init = () => {
     getReports(data.params).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
@@ -289,5 +318,9 @@ export const useNewReport = () => {
     onChangeList,
     loadReportFilters,
     selectedFilters,
+    openActivationDialog,
+    closeActivationDialog,
+    toggleStatus,
+    message,
   };
 };
