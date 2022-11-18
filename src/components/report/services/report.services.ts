@@ -33,27 +33,6 @@ const serializeParams = (params: any) => {
 };
 
 const printReportJasper = async (reportName: any, payload?: any) => {
-  // console.log("gervas", payload);
-
-  // const url = `https://ffars.tamisemi.go.tz/${APINEWREPORT}/reports/facility/${reportName}.${payload.format}?facility_id=${payload.facility_id}`;
-
-  // return window.open(url);
-
-  // const url: any = await axios
-  //   .get(
-  //     `/${APINEWREPORT}/reports/facility/${reportName}.${payload.format}?facility_id=${payload.facility_id}`,
-  //     {
-  //       params: payload,
-  //       responseType: "stream",
-  //       auth: {
-  //         username: "jasperadmin",
-  //         password: "jasperIsPrintingReports",
-  //       },
-  //     }
-  //   )
-  //   .then((response: any) => {
-  //     return window.open(response);
-  //   });
   await axios
     .get(
       `/${APINEWREPORT}/reports/facility/${reportName}.${payload.format}?facility_id=${payload.facility_id}`,
@@ -72,11 +51,6 @@ const printReportJasper = async (reportName: any, payload?: any) => {
       const fileURL = URL.createObjectURL(file);
       window.open(fileURL);
     });
-  // .then(function (data: any) {
-  //   const file = new Blob([data], { type: "application/pdf" });
-  //   const fileURL = URL.createObjectURL(file);
-  //   window.open(fileURL);
-  // });
 };
 
 const printReport = async (reportID: number, payload?: any) => {

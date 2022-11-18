@@ -173,7 +173,9 @@ export const useNewReport = () => {
 
   const openDialog = (formData?: any) => {
     loadReportFilters();
-    data.selectedFilters = formData.report_parameters;
+    data.selectedFilters = formData.report_parameters
+      ? formData.report_parameters
+      : [];
     if (formData.id) {
       data.formData = formData;
       data.modalTitle = "Update";

@@ -183,7 +183,7 @@
                 mdi-check-decagram
               </v-icon>
             </template>
-            <span>Approve reversal</span>
+            <span>Verify reversal</span>
           </v-tooltip>
 
           <v-tooltip right>
