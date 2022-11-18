@@ -66,11 +66,17 @@ const printReportJasper = async (reportName: any, payload?: any) => {
         },
       }
     )
-    .then(function (data: any) {
-      const file = new Blob([data], { type: "application/pdf" });
+    .then((response: any) => {
+      console.log("file", response);
+      const file = new Blob([response], { type: "application/pdf" });
       const fileURL = URL.createObjectURL(file);
       window.open(fileURL);
     });
+  // .then(function (data: any) {
+  //   const file = new Blob([data], { type: "application/pdf" });
+  //   const fileURL = URL.createObjectURL(file);
+  //   window.open(fileURL);
+  // });
 };
 
 const printReport = async (reportID: number, payload?: any) => {
