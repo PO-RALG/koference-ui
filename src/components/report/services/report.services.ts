@@ -67,8 +67,8 @@ const printReportJasper = async (reportName: any, payload?: any) => {
       }
     )
     .then((response: any) => {
-      console.log("file", response);
-      const file = new Blob([response], { type: "application/pdf" });
+      console.log("file", response.data);
+      const file = new Blob([response.data], { type: "application/pdf" });
       const fileURL = URL.createObjectURL(file);
       window.open(fileURL);
     });
