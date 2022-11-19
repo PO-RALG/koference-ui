@@ -5,7 +5,7 @@ const REPORTSERVERUSER = import.meta.env.VITE_APP_REPORT_USER_NAME;
 const REPORTSERVERPASSWORD = import.meta.env.VITE_APP_REPORT_PASSWORD;
 const APIREPORTPARAMS = "/api/v1/reports";
 const API = "/api/v1/reports";
-const REPORTSERVER = import.meta.env.VITE_APP_REPORT_SERVER_URL;
+// const REPORTSERVER = import.meta.env.VITE_APP_REPORT_SERVER_URL;
 const APINEWREPORT = "jasperserver/rest_v2";
 
 const getReports = async (payload) => {
