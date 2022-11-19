@@ -13,6 +13,7 @@ import {
   regSearch as receiptSearch,
   search,
   approveReceiptFacilityService,
+  approveReceiptFacilittyService,
 } from "../services/receipt-council-approval-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
@@ -645,12 +646,12 @@ export const useReceipt = (): any => {
 
   const approveReceiptCouncil = (model: any) => {
     data.formData2 = model;
-    data.modalTitle = "Accept to Approve this Receipt";
-    data.genericDialogAction = approveReceiptFacilityComplete;
+    data.modalTitle = "Accept to Approve Reversal of this Receipt";
+    data.genericDialogAction = approveReceiptCouncillComplete;
     data.genericConfirmModel = true;
   };
 
-  const approveReceiptFacilityComplete = () => {
+  const approveReceiptCouncillComplete = () => {
     if (
       typeof data.formData2.approves == "undefined" ||
       data.formData2.approves.length === 0
@@ -662,7 +663,7 @@ export const useReceipt = (): any => {
 
     approves.forEach(function (flowable) {
       if (
-        flowable.facility_appoved == null &&
+        flowable.council_appoved == null &&
         flowable.workflow == "REVERSAL_OF_RECEIPT"
       ) {
         currentFlowable = flowable;
@@ -678,6 +679,46 @@ export const useReceipt = (): any => {
     };
 
     approveReceiptFacilityService(approveData).then(() => {
+      data.genericConfirmModel = false;
+      init();
+    });
+  };
+
+  const approveReCouncil = (model: any) => {
+    data.formData2 = model;
+    data.modalTitle = "Accept to Approve this Receipt";
+    data.genericDialogAction = approveReceiptCouncilComplete;
+    data.genericConfirmModel = true;
+  };
+
+  const approveReceiptCouncilComplete = () => {
+    if (
+      typeof data.formData2.approves == "undefined" ||
+      data.formData2.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData2.approves;
+
+    approves.forEach(function (flowable) {
+      if (
+        flowable.council_appoved == null &&
+        flowable.workflow == "DEPOSIT_RECEIPT"
+      ) {
+        currentFlowable = flowable;
+      }
+    });
+
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+      approved: true,
+    };
+
+    approveReceiptFacilittyService(approveData).then(() => {
       data.genericConfirmModel = false;
       init();
     });
@@ -727,5 +768,6 @@ export const useReceipt = (): any => {
     depositType,
     approveReceiptCouncil,
     cancelGenericConfirmDialog,
+    approveReCouncil,
   };
 };

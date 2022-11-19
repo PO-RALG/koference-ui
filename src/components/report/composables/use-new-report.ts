@@ -8,11 +8,16 @@ import {
   fetchReportTree,
   findReport,
   updateQuery,
+  allreportFilters,
+  toggleActive,
 } from "../services/report.services";
 
 export const useNewReport = () => {
   const data = reactive({
-    formData: {},
+    reportFilters: [],
+    formData: null,
+    selectedFilters: [],
+    // formData: {},
     code: "",
     query: null,
     editQuery: false,
@@ -27,8 +32,14 @@ export const useNewReport = () => {
       { text: "Order", value: "order" },
       { text: "Name", value: "name" },
       { text: "Parent", value: "parent" },
-      { text: "Template URL", align: "start", sortable: false, value: "template_uri" },
+      {
+        text: "Template URL",
+        align: "start",
+        sortable: false,
+        value: "template_uri",
+      },
       { text: "Level", value: "level" },
+      { text: "Activations", value: "activations", sortable: false },
       { text: "Actions", value: "actions", sortable: false },
     ],
 
@@ -50,6 +61,59 @@ export const useNewReport = () => {
       last_page: null,
     },
     rows: ["5", "10", "20", "50", "100"],
+    status: "",
+    show: false,
+  });
+  const closeActivationDialog = () => {
+    data.item = null;
+    data.show = false;
+    data.status = null;
+    data.report = null;
+    init();
+  };
+
+  const message = computed(() => {
+    return `Are you sure you want to ${data.status} this report?`;
+  });
+
+  const toggleStatus = () => {
+    toggleActive(data.report).then((response) => {
+      if (response.status === 200) {
+        closeActivationDialog();
+        init();
+      }
+    });
+  };
+  const upsert = (array, item) => {
+    const idx = array.findIndex((_item: any) => _item.id === item.id);
+    if (idx > -1) {
+      array.splice(idx, 1);
+    } else {
+      array.push(item);
+    }
+    return array;
+  };
+
+  const loadReportFilters = () => {
+    allreportFilters({ size: 1000 }).then((response: any) => {
+      // console.log("all filters", response.data.data);
+      data.reportFilters = response.data.data;
+    });
+  };
+
+  const onChangeList = ({ source, destination }): void => {
+    const filtersIds = destination.map((s) => s.id);
+
+    destination.forEach((item) => {
+      console.log("item", filtersIds);
+      data.reportFilters = upsert(source, item);
+    });
+    // console.log("item", filtersIds);
+
+    data.formData.report_parameters = filtersIds;
+  };
+  const selectedFilters = computed(() => {
+    return data.formData.report_parameters || [];
   });
 
   const deleteItem = (item: number | string) => {
@@ -62,11 +126,25 @@ export const useNewReport = () => {
       }
     });
   };
-
+  const openActivationDialog = (report: any) => {
+    console.log("report.active", report);
+    data.status = report.active ? "Activate" : "De-Activate";
+    data.report = report;
+    data.show = true;
+  };
   const init = () => {
     getReports(data.params).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
-      data.params = { from, to, total, current_page, per_page, last_page, asc: "order" };
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.params = {
+        from,
+        to,
+        total,
+        current_page,
+        per_page,
+        last_page,
+        asc: "order",
+      };
       data.entries = response.data.data.data;
     });
   };
@@ -77,14 +155,27 @@ export const useNewReport = () => {
       asc: "order",
     };
     getReports(query).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } = response.data.data;
-      data.params = { from, to, total, current_page, per_page, last_page, asc: "order" };
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      data.params = {
+        from,
+        to,
+        total,
+        current_page,
+        per_page,
+        last_page,
+        asc: "order",
+      };
       console.log(data.params);
       data.entries = response.data.data.data;
     });
   };
 
   const openDialog = (formData?: any) => {
+    loadReportFilters();
+    data.selectedFilters = formData.report_parameters
+      ? formData.report_parameters
+      : [];
     if (formData.id) {
       data.formData = formData;
       data.modalTitle = "Update";
@@ -180,7 +271,7 @@ export const useNewReport = () => {
     const payload = {
       id: data.selectedReport.id,
       query: data.query,
-    }
+    };
     console.log(payload);
     updateQuery(payload).then((response: AxiosResponse) => {
       if (response.status === 200) {
@@ -226,5 +317,12 @@ export const useNewReport = () => {
     saveReportQuery,
     reportTitle,
     onChange,
+    onChangeList,
+    loadReportFilters,
+    selectedFilters,
+    openActivationDialog,
+    closeActivationDialog,
+    toggleStatus,
+    message,
   };
 };

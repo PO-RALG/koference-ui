@@ -7,8 +7,14 @@
         </v-icon>
         {{ node.name }}
       </span>
-      <span v-else @click="nodeClicked()" :class="{ active: isActiveItem }" class="name" :value="node">
-        <v-icon small>mdi-attachment</v-icon>
+      <span
+        v-else
+        @click="nodeClicked()"
+        :class="{ active: isActiveItem }"
+        class="name"
+        :value="node"
+      >
+        <v-icon>mdi-file-document</v-icon>
         {{ node.name }}
       </span>
 
@@ -67,7 +73,14 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const { data, nodeClicked, hasChildren, isActiveItem, level, hasAttachment } = useReportTree(props, context);
+    const {
+      data,
+      nodeClicked,
+      hasChildren,
+      isActiveItem,
+      level,
+      hasAttachment,
+    } = useReportTree(props, context);
     return {
       data,
       nodeClicked,

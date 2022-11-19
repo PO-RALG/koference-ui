@@ -1,54 +1,45 @@
 import { AxiosResponse } from "axios";
-import { FundSources } from "../types";
-import { allgfscodes } from "@/components/coa/gfs-code/service/gfs.service";
-import { reactive, onMounted, computed } from "vue";
+import { GfsCodes } from "../types";
+import { reactive, watch, onMounted, ref } from "vue";
+
 import {
   get,
   create,
   update,
   destroy,
   search,
-  createFundSource,
-} from "../services/funding-sources";
+} from "../service/report-filter.service";
 
-export const useFundSource = (): any => {
-  const dataItems: Array<FundSources> = [];
-  let fundSourceData: FundSources;
+export const useReportFilter = (): any => {
+  const dataItems: Array<GfsCodes> = [];
+  let gfsCategoryData: GfsCodes;
+  const fileToupload = ref("");
+  const imageUrl: any = ref("");
 
   const data = reactive({
-    title: "Manage Funding Sources",
+    title: "Manage Report Filters",
     modalTitle: "",
     headers: [
-      {
-        text: "Description",
-        align: "start",
-        sortable: false,
-        value: "description",
-      },
-      {
-        text: "Funding Sources Code",
-        align: "start",
-        sortable: false,
-        value: "code",
-      },
+      { text: "Name", align: "start", sortable: false, value: "name" },
+      { text: "Code", align: "start", sortable: false, value: "code" },
+      // {
+      //   text: "Category code",
+      //   align: "start",
+      //   sortable: false,
+      //   value: "category.description",
+      // },
 
-      {
-        text: "Actions",
-        align: "center",
-        sortable: false,
-        value: "actions",
-      },
+      { text: "Actions", value: "actions", sortable: false },
     ],
     modal: false,
     deletemodal: false,
     items: dataItems,
     itemsToFilter: [],
-    formData: fundSourceData,
+    formData: gfsCategoryData,
+    documentcategories: [],
     rows: ["10", "20", "50", "100"],
     itemtodelete: "",
     response: {},
-    selectedGfs: [],
-    gfscodes: [],
     searchTerm: "",
   });
 
@@ -56,29 +47,15 @@ export const useFundSource = (): any => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
-      data.response = {
-        from,
-        to,
-        total,
-        current_page,
-        per_page,
-        last_page,
-      };
+      data.response = { from, to, total, current_page, per_page, last_page };
       data.items = response.data.data.data;
       data.itemsToFilter = response.data.data.data;
     });
   });
 
-  const pullSegmentsFromPlanRep = () => {
-    create();
-  };
-
   const searchCategory = (categoryName) => {
-    console.log("argument", categoryName);
-
     if (categoryName != null) {
-      search({ code: categoryName.code }).then((response: any) => {
-        //// data", response);
+      search({ name: categoryName.name }).then((response: any) => {
         data.items = response.data.data.data;
       });
     } else {
@@ -95,26 +72,19 @@ export const useFundSource = (): any => {
     });
   };
 
-  const deleteFundingSource = (deleteId: any) => {
+  const deleteReportFilter = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
     // console.log("delete year", data);
   };
 
-  const getFunfingSources = () => {
-    get(data).then((response) => {
-      console.log("data", response.data);
-    });
-  };
-
   const cancelDialog = () => {
-    data.formData = {} as FundSources;
-    data.selectedGfs = [];
+    data.formData = {} as GfsCodes;
     data.modal = !data.modal;
   };
 
   const cancelConfirmDialog = () => {
-    data.formData = {} as FundSources;
+    data.formData = {} as GfsCodes;
     data.deletemodal = false;
   };
 
@@ -127,47 +97,51 @@ export const useFundSource = (): any => {
 
   const save = () => {
     if (data.formData.id) {
-      updateFunfingSources(data.formData);
+      updateReportFilter(data.formData);
     } else {
-      createFundingSource(data.formData);
+      createReportFilter(data.formData);
     }
-  };
-
-  const loadGfsCodes = () => {
-    allgfscodes({ code: "REVENUE" }).then((response: any) => {
-      console.log("all gfs data", response.data.data.data);
-      data.gfscodes = response.data.data.data[0].gfs_codes;
-    });
   };
 
   const openDialog = (formData?: any) => {
     if (formData.id) {
-      data.selectedGfs = formData.gfs;
       data.formData = formData;
       data.modalTitle = "Update";
     } else {
-      data.formData = {} as FundSources;
+      data.formData = {} as GfsCodes;
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
-    loadGfsCodes();
   };
 
-  const updateFunfingSources = (data: any) => {
+  const updateReportFilter = (data: any) => {
     update(data).then((response) => {
-      console.log("Updated data", response.data);
       reloadData();
       cancelDialog();
     });
   };
 
-  const createFundingSource = (data: any) => {
-    createFundSource(data).then((response) => {
-      console.log("Created data", response.data);
+  const createReportFilter = (data: any) => {
+    create(data).then((response) => {
       reloadData();
       cancelDialog();
     });
   };
+  // watching a getter
+
+  watch(fileToupload, (fileToupload: any) => {
+    if (!(fileToupload instanceof File)) {
+      return;
+    }
+
+    const fileReader = new FileReader();
+
+    fileReader.readAsDataURL(fileToupload);
+
+    fileReader.addEventListener("load", () => {
+      imageUrl.value = fileReader.result;
+    });
+  });
 
   const getData = (params: any) => {
     data.response = params;
@@ -177,32 +151,11 @@ export const useFundSource = (): any => {
     });
   };
 
-  const selectedGFS = computed(() => {
-    return data.selectedGfs;
-  });
-
-  const upsert = (array, item) => {
-    const idx = array.findIndex((_item: any) => _item.id === item.id);
-    if (idx > -1) {
-      array.splice(idx, 1);
-    } else {
-      array.push(item);
-    }
-    return array;
+  const fetch = async () => {
+    await get({ per_page: 1000 });
   };
 
-  const onChangeList = ({ source, destination }): void => {
-    const gfsCodeIds = destination.map((s) => s.id);
-
-    destination.forEach((item) => {
-      data.gfscodes = upsert(source, item);
-    });
-    console.log("item", gfsCodeIds);
-
-    data.formData.gfs = gfsCodeIds;
-  };
-
-  const filterFundSource = () => {
+  const filterReportFilter = () => {
     if (data.searchTerm.length >= 3) {
       get({ regSearch: data.searchTerm }).then((response: AxiosResponse) => {
         const { from, to, total, current_page, per_page, last_page } =
@@ -234,20 +187,18 @@ export const useFundSource = (): any => {
   return {
     data,
     openDialog,
-    getData,
     cancelDialog,
-    deleteFundingSource,
-    getFunfingSources,
-    updateFunfingSources,
+    deleteReportFilter,
+    updateReportFilter,
     save,
     reloadData,
     remove,
     cancelConfirmDialog,
     searchCategory,
-    selectedGFS,
-    onChangeList,
-    pullSegmentsFromPlanRep,
+    imageUrl,
+    getData,
+    fetch,
+    filterReportFilter,
     resetSearchText,
-    filterFundSource,
   };
 };

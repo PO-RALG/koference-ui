@@ -29,6 +29,7 @@
         <router-view :key="this.$route.fullPath"></router-view>
       </v-col>
     </v-row>
+
     <info-dialog
       :isInfoDialogOpen="data.isInfoDialogOpen"
       :infoMessage="data.infoMessage"

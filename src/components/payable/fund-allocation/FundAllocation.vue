@@ -39,7 +39,6 @@
         <v-card-title>
           <v-col cols="6" sm="12" md="3" v-if="data.items.length">
             <v-text-field
-              v-mask="toMoney"
               v-model="data.itemUnallocated.carryover"
               label="Carryover Fund"
               outlined
@@ -48,7 +47,6 @@
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field
-              v-mask="toMoney"
               v-model="data.itemUnallocated.current"
               label="Current Fund"
               disabled
@@ -57,7 +55,6 @@
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field
-              v-mask="toMoney"
               v-model="data.itemUnallocated.totalFund"
               label="Total Fund"
               disabled
@@ -66,7 +63,6 @@
           </v-col>
           <v-col cols="6" sm="12" md="2" v-if="data.items.length">
             <v-text-field
-              v-mask="toMoney"
               v-model="data.allocated"
               label="Total Allocated"
               outlined
@@ -75,7 +71,6 @@
           </v-col>
           <v-col cols="6" sm="12" md="3" v-if="data.items.length">
             <v-text-field
-              v-mask="toMoney"
               v-model="data.running_balance"
               label="Unallocated Amount"
               disabled
@@ -87,11 +82,12 @@
                 color="green"
                 >mdi-check</v-icon
               >
-              <v-icon 
-                v-if="removeComma(data.running_balance) < 0" 
-                slot="append" 
+              <v-icon
+                v-if="removeComma(data.running_balance) < 0"
+                slot="append"
                 color="red"
-              >mdi-close</v-icon>
+                >mdi-close</v-icon
+              >
             </v-text-field>
           </v-col>
         </v-card-title>
@@ -115,7 +111,9 @@
                   </td>
                   <td class="text-end">{{ item.budget | toCurrency() }}</td>
                   <td class="text-end">{{ item.allocation | toCurrency() }}</td>
-                  <td class="text-end">{{ item.totalExpenditure | toCurrency() }}</td>
+                  <td class="text-end">
+                    {{ item.totalExpenditure | toCurrency() }}
+                  </td>
                   <td class="text-end">
                     {{
                       (item.allocation - item.totalExpenditure) | toCurrency()
@@ -127,7 +125,11 @@
                       dense
                       outlined
                       :rules="[
-                        maxAllocation(item.budget ,item.allocation,item.totalExpenditure)
+                        maxAllocation(
+                          item.budget,
+                          item.allocation,
+                          item.totalExpenditure
+                        ),
                       ]"
                       v-model="item.allocation_amount"
                       @input="newAllocation(item.allocation_amount)"
@@ -141,9 +143,9 @@
         </v-card-text>
         <v-card-actions class="pa-4">
           <v-spacer></v-spacer>
-          <v-btn 
-            color="primary" 
-            @click="save" 
+          <v-btn
+            color="primary"
+            @click="save"
             v-if="data.items.length"
             :disabled="!data.valid"
           >

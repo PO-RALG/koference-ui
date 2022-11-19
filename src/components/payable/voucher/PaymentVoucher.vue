@@ -105,19 +105,31 @@
               <small class="">Click to see rejection comment</small>
             </v-tooltip>
           </span>
-          <span v-if="item.isApproved">{{ "Approved" }}</span>
-          <span v-if="!item.isApproved && !item.isRejected[0]">{{
-            "Waiting for Approval"
+          <span v-if="item.isApproved && !item.isReversedApproved.length">{{
+            "Approved"
           }}</span>
+          <!-- {{ item.isReversedApproved.length }} -->
+          <span v-if="item.isApproved && item.isReversedApproved.length">{{
+            "Waiting for Reversal Approval from Council"
+          }}</span>
+          <span
+            v-if="
+              !item.isApproved &&
+              !item.isRejected[0] &&
+              item.isRequestedToReverse.length === 0
+            "
+            >{{ "Waiting for  Approval  from Admin" }}</span
+          >
+          <span
+            v-if="item.isApproved && item.isRequestedToReverse.length > 0"
+            >{{ " Waiting for  Reversal Approval  from Admin" }}</span
+          >
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
-                v-if="
-                  item.isRequestedToReverse.length === 0 &&
-                  can('delete', 'Voucher')
-                "
+                v-if="item.isApproved && can('delete', 'Voucher')"
                 v-bind="attrs"
                 v-on="on"
                 @click="openConfirmDialog(item)"
@@ -171,7 +183,7 @@
                 mdi-check-decagram
               </v-icon>
             </template>
-            <span>Approve reversal</span>
+            <span>Verify reversal</span>
           </v-tooltip>
 
           <v-tooltip right>
@@ -233,7 +245,7 @@
             <v-radio-group v-model="data.voucherType" row @change="resetData">
               <v-radio label="NORMAL VOUCHER" :value="normalType"></v-radio>
               <v-radio label="DEPOSIT VOUCHER" :value="depositType"></v-radio>
-              <v-radio label="M MAMA VOUCHER" :value="mmamaType"></v-radio>
+              <!-- <v-radio label="M MAMA VOUCHER" :value="mmamaType"></v-radio> -->
             </v-radio-group>
             <v-container>
               <v-row class="pt-5 pl-5 pr-5">

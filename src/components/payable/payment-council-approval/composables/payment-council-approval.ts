@@ -9,7 +9,7 @@ import {
   find,
   printPdf,
   getVouchers,
-  approveReversalPFacilityService,
+  approveReversalPCouncilService,
 } from "../services/payment-council-approval.services";
 import { Payment } from "../types/PaymentCouncilApproval";
 import { find as findPaymentVoucher } from "@/components/payable/voucher/services/payment-voucher.services";
@@ -377,11 +377,11 @@ export const usePayment = (): any => {
   const approveReversalPCouncil = (model: any) => {
     data.formData2 = model;
     data.modalTitle = "Accept to Approve Reversal of this Payment";
-    data.genericDialogAction = approveRejectionPCouncilComplete;
+    data.genericDialogAction = approveReversalPCouncilComplete;
     data.genericDeleteConfirmModel = true;
   };
 
-  const approveRejectionPCouncilComplete = () => {
+  const approveReversalPCouncilComplete = () => {
     if (
       typeof data.formData2.approves == "undefined" ||
       data.formData2.approves.length === 0
@@ -392,7 +392,10 @@ export const usePayment = (): any => {
     const approves = data.formData2.approves;
 
     approves.forEach((flowable) => {
-      if (flowable.council_appoved == null) {
+      if (
+        flowable.council_appoved == null &&
+        flowable.workflow == "REVERSAL_OF_PAYMENT"
+      ) {
         currentFlowable = flowable;
       }
     });
@@ -405,7 +408,7 @@ export const usePayment = (): any => {
       approved: true,
     };
 
-    approveReversalPFacilityService(approveData).then(() => {
+    approveReversalPCouncilService(approveData).then(() => {
       data.genericDeleteConfirmModel = false;
       getTableData();
     });

@@ -112,7 +112,7 @@
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
-                @click="approveReceiptCouncil(item)"
+                @click="approveReCouncil(item)"
               >
                 mdi-check-decagram
               </v-icon>
@@ -630,6 +630,7 @@ export default defineComponent({
       depositType,
       approveReceiptCouncil,
       cancelGenericConfirmDialog,
+      approveReCouncil,
     } = useReceipt();
 
     return {
@@ -668,6 +669,7 @@ export default defineComponent({
       depositType,
       approveReceiptCouncil,
       cancelGenericConfirmDialog,
+      approveReCouncil,
     };
   },
 });

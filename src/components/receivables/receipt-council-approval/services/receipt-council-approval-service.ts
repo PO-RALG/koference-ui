@@ -2,7 +2,8 @@ import axios from "axios";
 
 const API = "/api/v1/receipt/approval-pending-council";
 const APIFUNDINGSOURCES = "/api/v1/funding-sources";
-const APIAPPROVAL = "/api/v1/receipt/approvalCouncil";
+const APIAPPROVAL = "/api/v1/receipt-reversal/approval-council";
+const APIAPPROVALL = "/api/v1/receipt/approvalCouncil";
 
 const get = async (payload: any) => {
   return await axios.get(`${API}`, {
@@ -65,6 +66,9 @@ const getGlAccounts = async (params: any): Promise<any> => {
 const approveReceiptFacilityService = async (payload: any) => {
   return await axios.post(`${APIAPPROVAL}`, payload);
 };
+const approveReceiptFacilittyService = async (payload: any) => {
+  return await axios.post(`${APIAPPROVALL}`, payload);
+};
 
 export {
   create,
@@ -79,4 +83,5 @@ export {
   update,
   viewinvoice,
   approveReceiptFacilityService,
+  approveReceiptFacilittyService,
 };

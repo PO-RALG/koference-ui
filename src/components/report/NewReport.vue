@@ -47,7 +47,16 @@
           <span v-if="item.parent"> {{ item.parent.name }} </span>
           <span v-else>-</span>
         </template>
-
+        <template v-slot:[`item.activations`]="{ item }">
+          <v-switch
+            :input-value="item.active"
+            @click.native.stop
+            v-model="item.active"
+            @change="openActivationDialog(item)"
+            value
+          >
+          </v-switch>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon
             v-if="can('writeQuery', 'Report') && item.query"
@@ -79,7 +88,14 @@
         </template>
       </v-data-table>
     </v-card>
-
+    <ConfirmDialog
+      @rejectFunction="closeActivationDialog"
+      @acceptFunction="toggleStatus"
+      :message="message"
+      :data="data.item"
+      :isOpen="data.show"
+      :title="`${data.status} Report`"
+    />
     <Modal :modal="data.modal" :width="760">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Report`" />
@@ -153,6 +169,17 @@
                     }}</template>
                     <template v-slot:item="{ item }">{{ item.name }}</template>
                   </v-select>
+                </v-col>
+
+                <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+                  <DualMultiSelect
+                    :source="data.reportFilters"
+                    :destination="data.selectedFilters"
+                    v-model="data.formData.report_parameters"
+                    :label="'name'"
+                    :modelName="'filters'"
+                    @onChangeList="onChangeList"
+                  />
                 </v-col>
               </v-row>
             </v-container>
@@ -257,6 +284,12 @@ export default defineComponent({
       saveReportQuery,
       reportTitle,
       onChange,
+      onChangeList,
+      selectedFilters,
+      openActivationDialog,
+      closeActivationDialog,
+      toggleStatus,
+      message,
     } = useNewReport();
 
     return {
@@ -273,6 +306,12 @@ export default defineComponent({
       saveReportQuery,
       reportTitle,
       onChange,
+      onChangeList,
+      selectedFilters,
+      openActivationDialog,
+      closeActivationDialog,
+      toggleStatus,
+      message,
     };
   },
 });

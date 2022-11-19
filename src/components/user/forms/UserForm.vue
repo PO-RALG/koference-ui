@@ -141,13 +141,7 @@
   </Modal>
 </template>
 <script>
-import {
-  onMounted,
-  defineComponent,
-  set,
-  computed,
-  reactive,
-} from "vue";
+import { onMounted, defineComponent, set, computed, reactive } from "vue";
 import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
 import { get as getRoles } from "@/components/role/services/role-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";

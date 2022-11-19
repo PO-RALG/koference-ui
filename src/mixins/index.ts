@@ -42,7 +42,7 @@ Vue.mixin({
       let currentFlowable = null;
       const approves = model.approves;
 
-      approves.forEach(function(flowable) {
+      approves.forEach(function (flowable) {
         if (flowable.facility_approved == null) {
           currentFlowable = flowable;
         }
@@ -83,8 +83,51 @@ Vue.mixin({
       let currentFlowable = null;
       const approves = model.approves;
 
-      approves.forEach(function(flowable) {
+      approves.forEach(function (flowable) {
         if (flowable.council_approved == null) {
+          currentFlowable = flowable;
+        }
+      });
+      if (currentFlowable == null) {
+        return false;
+      }
+
+      const workflow = currentFlowable.workflow;
+
+      if (workflow == workflowIn) {
+        const user = store.getters["Auth/getCurrentUser"];
+
+        const found = _.find(user.permissions, {
+          action,
+          resource,
+        });
+        if (user) {
+          const result = !!found;
+          return result;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    },
+    canApproveReversalPVCouncil(
+      model: any,
+      workflowIn: any,
+      action,
+      resource: string
+    ): boolean {
+      if (typeof model.approves == "undefined" || model.approves.length === 0) {
+        return false;
+      }
+      let currentFlowable = null;
+      const approves = model.approves;
+
+      approves.forEach(function (flowable) {
+        if (
+          flowable.council_approved == null &&
+          flowable.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+        ) {
           currentFlowable = flowable;
         }
       });
@@ -122,10 +165,10 @@ Vue.mixin({
 
     isLowLevelUser(): boolean {
       const user = store.getters["Auth/getCurrentUser"];
-      if(user && user.location) {
-      const isLowLevel =
-        user.location.level.code === "VILLAGE_MTAA" ||
-        user.location.level.code === "FACILITY";
+      if (user && user.location) {
+        const isLowLevel =
+          user.location.level.code === "VILLAGE_MTAA" ||
+          user.location.level.code === "FACILITY";
         return !!isLowLevel;
       }
       return false;
@@ -133,9 +176,8 @@ Vue.mixin({
 
     isCouncilUser(): boolean {
       const user = store.getters["Auth/getCurrentUser"];
-      if(user && user.location) {
-      const _isCouncilUser =
-        user.location.level.code === "COUNCIL"
+      if (user && user.location) {
+        const _isCouncilUser = user.location.level.code === "COUNCIL";
         return !!_isCouncilUser;
       }
       return false;
