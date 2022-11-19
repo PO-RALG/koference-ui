@@ -114,6 +114,21 @@
             </template>
             <span>Verify reversal</span>
           </v-tooltip>
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="red"
+                v-if="item.stalled"
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="openMarkStaleDialog(item)"
+              >
+                mdi-check
+              </v-icon>
+            </template>
+            <span>Mark Stale</span>
+          </v-tooltip>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -628,6 +643,7 @@ export default defineComponent({
       newVouchers,
       approveReversalPFacility,
       cancelGenericConfirmDialog,
+      openMarkStaleDialog,
     } = usePayment();
 
     return {
@@ -655,6 +671,7 @@ export default defineComponent({
       newVouchers,
       approveReversalPFacility,
       cancelGenericConfirmDialog,
+      openMarkStaleDialog,
     };
   },
 });

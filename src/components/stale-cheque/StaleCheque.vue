@@ -60,8 +60,8 @@
             {{ item.description | capitalizeFirstLatter }}
           </span>
         </template>
-        <template v-slot:[`item.date`]="{ item }">
-          {{ item.date | format() }}
+        <template v-slot:[`item.payment_date`]="{ item }">
+          {{ item.payment_date | format() }}
         </template>
         <template v-slot:[`item.amount`]="{ item }">
           {{ item.amount | toCurrency() }}
@@ -79,6 +79,16 @@
         </template>
         <template v-slot:[`item.pending`]="{ item }">
           {{ (item.amount - item.received_amount) | toCurrency() }}
+        </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                @click="openMarkStaleDialog(item)"
+                v-bind="attrs" v-on="on" class="mr-2"> mdi-check </v-icon>
+            </template>
+            <span>Mark Stale</span>
+          </v-tooltip>
         </template>
 
         <template v-slot:footer>
@@ -157,6 +167,11 @@ export default defineComponent({
       openDialog,
       save,
     } = useStaleCheque();
+
+    const openMarkStaleDialog = (item) => {
+      console.log(item);
+    }
+
     return {
       data,
       getData,
@@ -165,6 +180,7 @@ export default defineComponent({
       searchCategory,
       cancelDialog,
       save,
+      openMarkStaleDialog,
     };
   },
 });

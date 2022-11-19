@@ -9,8 +9,13 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    params: {
+      type: Object,
+      required: false,
+    },
   },
   setup(props, { slots }) {
+    const _params = props.params ? props.params : { per_page: 50 };
     const data = reactive({
       json: null,
       loading: true,
@@ -18,7 +23,7 @@ export default defineComponent({
 
     onMounted(async () => {
       await axios
-        .get(`${props.api}`, { params: { per_page: 50 } })
+        .get(`${props.api}`, { params: _params })
         .then((response: AxiosResponse) => {
           data.loading = false;
           data.json = response.data.data.data;

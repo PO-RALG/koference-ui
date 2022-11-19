@@ -69,6 +69,7 @@
               >
                 mdi-check
               </v-icon>
+              "no!"
             </template>
             <span>Assign Approval Role</span>
           </v-tooltip>
