@@ -1,15 +1,16 @@
-import { reactive, onMounted, computed } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import { AxiosResponse } from "axios";
 import moment from "moment";
 
 import {
-  get,
+  approveReversalPFacilityService,
   create,
   destroy,
   find,
-  printPdf,
+  get,
   getVouchers,
-  approveReversalPFacilityService,
+  printPdf,
+  stalePayment,
 } from "../services/payment.services";
 import { Payment } from "../types/Payment";
 import { find as findPaymentVoucher } from "@/components/payable/voucher/services/payment-voucher.services";
@@ -17,11 +18,17 @@ import { get as getBankAccounts } from "@/components/setup/bank-account/services
 import { get as getPaymentVouchers } from "@/components/payable/voucher/services/payment-voucher.services";
 import { FundSources } from "@/components/coa/funding-source/types/index";
 
+interface StaleCheckFormData {
+  payment_id: number;
+  date: string;
+}
+
 export const usePayment = (): any => {
   const dataItems: Array<Payment> = [];
   const paymentData = {} as Payment;
   const fundSourceItem = {} as FundSources;
-  const paymentData2 = {} as Payment2;
+  const paymentData2 = {} as Payment;
+  const staleCheckFormData = {} as StaleCheckFormData;
 
   const data = reactive({
     title: "Payments",
@@ -119,12 +126,40 @@ export const usePayment = (): any => {
     vouchers: [],
     genericDialogAction: null,
     genericDeleteConfirmModel: false,
+    isMarkStaleDialogOpen: false,
     formData2: paymentData2,
+    staleCheckFormData,
+    staleItem: null,
   });
 
   onMounted(() => {
     getTableData();
   });
+
+  const openMarkStaleDialog = (item) => {
+    data.staleItem = item;
+    data.isMarkStaleDialogOpen = true;
+  };
+
+  const closeStaleDialog = () => {
+    data.isMarkStaleDialogOpen = false;
+    data.staleCheckFormData = {
+      payment_id: null,
+      date: "",
+    };
+  };
+
+  const markStale = async () => {
+    const payload = {
+      payment_id: data.staleItem.id,
+      date: data.staleCheckFormData.date,
+    };
+    const response = await stalePayment(payload);
+    if (response.status === 200 || response.status === 201) {
+      data.isMarkStaleDialogOpen = false;
+      await getTableData();
+    }
+  };
 
   const setApprovalStatus = (item: Record<string, any>) => {
     const { ends_on_facility, facility_approved, council_approved } = item;
@@ -198,16 +233,16 @@ export const usePayment = (): any => {
 
         isRequestedToReverse: entry.approves.length
           ? entry.approves.filter(
-              (flow) =>
-                flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_PAYMENT"
-            )
+            (flow) =>
+              flow.facility_approved == null &&
+              flow.workflow! == "REVERSAL_OF_PAYMENT"
+          )
           : false,
       }));
     });
   };
 
-  const getTableData = () => {
+  const getTableData = async () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data.data;
@@ -227,10 +262,10 @@ export const usePayment = (): any => {
 
         isRequestedToReverse: entry.approves.length
           ? entry.approves.filter(
-              (flow) =>
-                flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_PAYMENT"
-            )
+            (flow) =>
+              flow.facility_approved == null &&
+              flow.workflow! == "REVERSAL_OF_PAYMENT"
+          )
           : false,
       }));
       data.itemsToFilter = response.data.data.data;
@@ -258,10 +293,10 @@ export const usePayment = (): any => {
 
         isRequestedToReverse: entry.approves.length
           ? entry.approves.filter(
-              (flow) =>
-                flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_PAYMENT"
-            )
+            (flow) =>
+              flow.facility_approved == null &&
+              flow.workflow! == "REVERSAL_OF_PAYMENT"
+          )
           : false,
       }));
     });
@@ -538,5 +573,8 @@ export const usePayment = (): any => {
     newVouchers,
     approveReversalPFacility,
     cancelGenericConfirmDialog,
+    openMarkStaleDialog,
+    markStale,
+    closeStaleDialog,
   };
 };
