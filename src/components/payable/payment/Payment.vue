@@ -608,6 +608,41 @@
         </ModalFooter>
       </template>
     </Modal>
+
+    <Modal :modal="data.isMarkStaleDialogOpen" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="'Mark Stale'" />
+      </template>
+      <template v-slot:body>
+        <ModalBody v-if="data.staleCheckFormData">
+          <v-form ref="form" v-model="data.valid" class="pa-3">
+            <v-container>
+              <v-row>
+                <v-col class="pt-6 pl-6 pr-6" cols="12" md="12">
+                  <DatePicker
+                    :label="'Select Date'"
+                    v-model="data.staleCheckFormData.date"
+                    :max="data.maxDate"
+                    :min="data.minDate"
+                    required
+                  />
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="closeStaleDialog"
+            >Cancel</v-btn
+          >
+          <v-btn color="primary" :disabled="!data.staleCheckFormData.date" text @click="markStale"
+            >Mark Stale</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -644,6 +679,8 @@ export default defineComponent({
       approveReversalPFacility,
       cancelGenericConfirmDialog,
       openMarkStaleDialog,
+      markStale,
+      closeStaleDialog,
     } = usePayment();
 
     return {
@@ -672,6 +709,8 @@ export default defineComponent({
       approveReversalPFacility,
       cancelGenericConfirmDialog,
       openMarkStaleDialog,
+      markStale,
+      closeStaleDialog,
     };
   },
 });

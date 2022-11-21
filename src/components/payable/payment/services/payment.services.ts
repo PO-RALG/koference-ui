@@ -1,8 +1,11 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+
+const STALE_CHECK_API = "/api/v1/stale-cheques";
 
 const get = async (params: any) => {
   return await axios.get("/api/v1/payments", { params });
 };
+
 const getVouchers = async (params: any) => {
   return await axios.get("/api/v1/vouchers", { params });
 };
@@ -46,14 +49,19 @@ const printPdf = (id: number) => {
   return window.open(url);
 };
 
+const stalePayment = async (payload: any): Promise<AxiosResponse> => {
+  return await axios.post(`${STALE_CHECK_API}`, payload);
+}
+
 export {
-  get,
-  find,
-  create,
   approveReversalPFacilityService,
-  update,
+  create,
   destroy,
-  search,
-  printPdf,
+  find,
+  get,
   getVouchers,
+  printPdf,
+  search,
+  update,
+stalePayment,
 };
