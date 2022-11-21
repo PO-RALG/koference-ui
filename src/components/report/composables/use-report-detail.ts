@@ -51,7 +51,7 @@ export const useReportDetail = (props, { root }) => {
       financial_year_id: null,
       facility_id: null,
       facility_type_id: null,
-      // location_id: router.currentRoute.params.location_id,
+      location_id: router.currentRoute.params.location_id,
       gfs_code_id: null,
       end_gfs_id: null,
       start_gfs_id: null,
