@@ -219,10 +219,9 @@ export const usePaymentVoucher = (): any => {
           ? setApprovalStatus(entry.approves[0])
           : false,
         isRejected: entry.approves.length
-          ? entry.approves.map(
+          ? entry.approves.filter(
               (flow) =>
-                flow.facility_approved == false &&
-                flow.rejection_reason != null &&
+                flow.facility_approved === false &&
                 flow.workflow == "PAYMENT_VOUCHER"
             )
           : false,
@@ -273,24 +272,24 @@ export const usePaymentVoucher = (): any => {
           ? setApprovalStatus(entry.approves[0])
           : false,
         isRejected: entry.approves.length
-          ? entry.approves.map(
+          ? entry.approves.filter(
               (flow) =>
-                flow.facility_approved == false &&
-                flow.rejection_reason! != null
+                flow.facility_approved === false &&
+                flow.workflow == "PAYMENT_VOUCHER"
             )
           : false,
         isRequestedToReverse: entry.approves.length
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
             )
           : false,
         isReversedApproved: entry.approves.length
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved &&
-                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
             )
           : false,
       }));
