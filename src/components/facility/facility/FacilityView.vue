@@ -166,7 +166,7 @@ export default defineComponent({
       loadBankReconciliations,
       facilityDescription,
       openConfirmDialog,
-  loadActivityCostings,
+      loadActivityCostings,
     };
   },
 });

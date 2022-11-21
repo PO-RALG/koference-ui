@@ -392,7 +392,10 @@ export const usePayment = (): any => {
     const approves = data.formData2.approves;
 
     approves.forEach((flowable) => {
-      if (flowable.council_appoved == null) {
+      if (
+        flowable.council_appoved == null &&
+        flowable.workflow == "REVERSAL_OF_PAYMENT"
+      ) {
         currentFlowable = flowable;
       }
     });

@@ -663,7 +663,7 @@ export const useReceipt = (): any => {
 
     approves.forEach(function (flowable) {
       if (
-        flowable.facility_appoved == null &&
+        flowable.council_appoved == null &&
         flowable.workflow == "REVERSAL_OF_RECEIPT"
       ) {
         currentFlowable = flowable;

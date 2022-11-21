@@ -19,19 +19,18 @@ export const useStaleCheque = (): Record<string, unknown> => {
   let modalTitle: string;
   const rows: Array<string> = ["10", "20", "50", "100"];
   const headers: Array<Header> = [
+    { text: "Date", value: "payment_date", sortable: true },
     {
-      text: "Voucher Number",
+      text: "Payment Ref #",
       align: "start",
       sortable: false,
-      value: "voucher_number",
+      value: "reference_no",
     },
-    { text: "StaleCheck Date", value: "date", sortable: true },
-
     {
-      text: "Description",
+      text: "Cheaque #",
       align: "start",
       sortable: false,
-      value: "description",
+      value: "cheque",
       width: 600,
     },
     {
@@ -46,6 +45,7 @@ export const useStaleCheque = (): Record<string, unknown> => {
       sortable: false,
       value: "amount",
     },
+    { text: "Actions", value: "actions", sortable: false },
   ];
 
   const data = reactive({
@@ -65,15 +65,17 @@ export const useStaleCheque = (): Record<string, unknown> => {
 
   onMounted(() => {
     data.loading = true;
-    get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data;
-      data.itemsToFilter = response.data.data.data;
-      data.loading = false;
-    });
+    fetchData();
   });
+
+  const fetchData = async () => {
+    const response = await get({ per_page: 10 });
+    const { from, to, total, current_page, per_page, last_page } =
+      response.data.data;
+    data.items = response.data.data.data;
+    data.itemsToFilter = response.data.data.data;
+    data.loading = false;
+  };;
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {

@@ -130,7 +130,9 @@
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 v-if="
-                  item.isRequestedToReverse.length === 0 &&
+                  item.isApproved &&
+                  !item.isRequestedToReverseCouncil.length > 0 &&
+                  !item.isRequestedToReverse.length > 0 &&
                   can('delete', 'Voucher')
                 "
                 v-bind="attrs"
@@ -186,7 +188,7 @@
                 mdi-check-decagram
               </v-icon>
             </template>
-            <span>Approve reversal</span>
+            <span>Verify reversal</span>
           </v-tooltip>
 
           <v-tooltip right>

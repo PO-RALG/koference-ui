@@ -47,7 +47,16 @@
           <span v-if="item.parent"> {{ item.parent.name }} </span>
           <span v-else>-</span>
         </template>
-
+        <template v-slot:[`item.activations`]="{ item }">
+          <v-switch
+            :input-value="item.active"
+            @click.native.stop
+            v-model="item.active"
+            @change="openActivationDialog(item)"
+            value
+          >
+          </v-switch>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon
             v-if="can('writeQuery', 'Report') && item.query"
@@ -79,7 +88,14 @@
         </template>
       </v-data-table>
     </v-card>
-
+    <ConfirmDialog
+      @rejectFunction="closeActivationDialog"
+      @acceptFunction="toggleStatus"
+      :message="message"
+      :data="data.item"
+      :isOpen="data.show"
+      :title="`${data.status} Report`"
+    />
     <Modal :modal="data.modal" :width="760">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Report`" />
@@ -270,6 +286,10 @@ export default defineComponent({
       onChange,
       onChangeList,
       selectedFilters,
+      openActivationDialog,
+      closeActivationDialog,
+      toggleStatus,
+      message,
     } = useNewReport();
 
     return {
@@ -288,6 +308,10 @@ export default defineComponent({
       onChange,
       onChangeList,
       selectedFilters,
+      openActivationDialog,
+      closeActivationDialog,
+      toggleStatus,
+      message,
     };
   },
 });

@@ -222,14 +222,22 @@ export const usePaymentVoucher = (): any => {
           ? entry.approves.map(
               (flow) =>
                 flow.facility_approved == false &&
-                flow.rejection_reason! != null
+                flow.rejection_reason != null &&
+                flow.workflow == "PAYMENT_VOUCHER"
             )
           : false,
         isRequestedToReverse: entry.approves.length
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        isRequestedToReverseCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == null &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
             )
           : false,
         isReversedApproved: entry.approves.length
@@ -366,7 +374,10 @@ export const usePaymentVoucher = (): any => {
     const approves = data.formData.approves;
 
     approves.forEach((flowable) => {
-      if (flowable.facility_appoved == null) {
+      if (
+        flowable.facility_appoved == null &&
+        flowable.workflow == "PAYMENT_VOUCHER"
+      ) {
         currentFlowable = flowable;
       }
     });
@@ -402,7 +413,10 @@ export const usePaymentVoucher = (): any => {
     const approves = data.formData.approves;
 
     approves.forEach((flowable) => {
-      if (flowable.facility_appoved == null) {
+      if (
+        flowable.facility_appoved == null &&
+        flowable.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+      ) {
         currentFlowable = flowable;
       }
     });

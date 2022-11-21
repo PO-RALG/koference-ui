@@ -5,7 +5,7 @@ const REPORTSERVERUSER = import.meta.env.VITE_APP_REPORT_USER_NAME;
 const REPORTSERVERPASSWORD = import.meta.env.VITE_APP_REPORT_PASSWORD;
 const APIREPORTPARAMS = "/api/v1/reports";
 const API = "/api/v1/reports";
-const REPORTSERVER = import.meta.env.VITE_APP_REPORT_SERVER_URL;
+// const REPORTSERVER = import.meta.env.VITE_APP_REPORT_SERVER_URL;
 const APINEWREPORT = "jasperserver/rest_v2";
 
 const getReports = async (payload) => {
@@ -32,27 +32,25 @@ const serializeParams = (params: any) => {
   return str.join("&");
 };
 
-const printReportJasper = async (reportName: number, payload?: any) => {
-  const params = {
-    journal_voucher_id: 17,
-  };
-  //ffars.tamisemi.go.tz/jasperserver/rest_v2/reports/facility/Journal_Voucher.pdf?journal_voucher_id=17
+const printReportJasper = async (reportID: any, payload?: any) => {
   await axios
-    .get(`${REPORTSERVER}/${APINEWREPORT}/reports/facility/${reportName}.pdf`, {
-      params: payload,
-      responseType: "stream",
-      auth: {
-        username: REPORTSERVERUSER,
-        password: REPORTSERVERPASSWORD,
-      },
-    })
-    .then(function (response) {
-      console.log(response.data);
+    .get(
+      `/${APINEWREPORT}/reports/${reportID}.${payload.format}?facility_id=${payload.facility_id}`,
+      {
+        params: payload,
+        responseType: "arraybuffer",
+        auth: {
+          username: REPORTSERVERUSER,
+          password: REPORTSERVERPASSWORD,
+        },
+      }
+    )
+    .then((response: any) => {
+      console.log("file", response.data);
+      const file = new Blob([response.data], { type: "application/pdf" });
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
     });
-  // .then((response) => {
-  //   console.log("ressssss", response);
-  // });
-  // window.open("data:application/pdf," + encodeURI(res));
 };
 
 const printReport = async (reportID: number, payload?: any) => {
@@ -99,6 +97,11 @@ const allreportFilters = async (payload) => {
   return await axios.get(`${API}/1/report-filters`, payload);
 };
 
+const toggleActive = async (payload: any) => {
+  console.log("payload", payload);
+  return await axios.post(`${API}/${payload.id}/change-status`);
+};
+
 export {
   getReports,
   fetchReportTree,
@@ -112,4 +115,5 @@ export {
   printReportJasper,
   updateQuery,
   allreportFilters,
+  toggleActive,
 };
