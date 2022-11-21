@@ -129,7 +129,7 @@ axios.interceptors.response.use(
         color: "error",
         icon: "mdi-error",
         class: "message error--text",
-        error: { errors: "System is down, Contact FFARS Admin" },
+        error: { errors: " Check your network and try again " },
       };
       store.dispatch("Loader/DONE");
       store.dispatch("SnackBar/SHOW", payload);
