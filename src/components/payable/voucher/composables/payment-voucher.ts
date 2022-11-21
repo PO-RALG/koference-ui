@@ -243,7 +243,7 @@ export const usePaymentVoucher = (): any => {
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved &&
-                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
             )
           : false,
       }));
@@ -282,6 +282,13 @@ export const usePaymentVoucher = (): any => {
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved == null &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        isRequestedToReverseCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == null &&
                 flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
             )
           : false,

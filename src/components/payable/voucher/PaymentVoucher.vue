@@ -150,7 +150,7 @@
               <v-icon
                 color="green"
                 v-if="
-                  !item.isRejected &&
+                  !item.isRejected.length > 0 &&
                   canApproveFacility(
                     item,
                     'PAYMENT_VOUCHER',
@@ -174,7 +174,7 @@
               <v-icon
                 color="red"
                 v-if="
-                  !item.isRejected &&
+                  !item.isRejected.length > 0 &&
                   canApproveFacility(
                     item,
                     'REVERSAL_OF_PAYMENT_VOUCHER',
@@ -198,7 +198,7 @@
               <v-icon
                 color="red"
                 v-if="
-                  !item.isRejected &&
+                  !item.isRejected.length > 0 &&
                   canApproveFacility(
                     item,
                     'PAYMENT_VOUCHER',
