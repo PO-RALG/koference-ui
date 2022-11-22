@@ -44,7 +44,7 @@
                 :label="component.description"
                 v-model="data.formData[component.name]"
               />
-              <fetcher v-else :api="component.api">
+              <fetcher v-else :api="component.api" :params="{ per_page: 300 }">
                 <div slot-scope="{ json: items, loading }">
                   <div v-if="loading">Loading...</div>
                   <BaseSelect
@@ -66,6 +66,7 @@
               <fetcher
                 v-if="!isFacility"
                 :api="'/api/v1/facilities?' + 'location_id=' + data.location_id"
+                :params="{ per_page: 300 }"
               >
                 <div slot-scope="{ json: items, loading }">
                   <div v-if="loading">Loading...</div>

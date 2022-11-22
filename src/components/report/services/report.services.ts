@@ -40,8 +40,8 @@ const printReportJasper = async (reportID: any, payload?: any) => {
         params: payload,
         responseType: "arraybuffer",
         auth: {
-          username: "jasperadmin",
-          password: "jasperIsPrintingReports",
+          username: REPORTSERVERUSER,
+          password: REPORTSERVERPASSWORD,
         },
       }
     )

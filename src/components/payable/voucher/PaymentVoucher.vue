@@ -129,7 +129,12 @@
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
-                v-if="item.isApproved && can('delete', 'Voucher')"
+                v-if="
+                  item.isApproved &&
+                  !item.isRequestedToReverseCouncil.length > 0 &&
+                  !item.isRequestedToReverse.length > 0 &&
+                  can('delete', 'Voucher')
+                "
                 v-bind="attrs"
                 v-on="on"
                 @click="openConfirmDialog(item)"
@@ -145,6 +150,7 @@
               <v-icon
                 color="green"
                 v-if="
+                  !item.isRejected.length > 0 &&
                   canApproveFacility(
                     item,
                     'PAYMENT_VOUCHER',
@@ -168,6 +174,7 @@
               <v-icon
                 color="red"
                 v-if="
+                  !item.isRejected.length > 0 &&
                   canApproveFacility(
                     item,
                     'REVERSAL_OF_PAYMENT_VOUCHER',
@@ -191,6 +198,7 @@
               <v-icon
                 color="red"
                 v-if="
+                  !item.isRejected.length > 0 &&
                   canApproveFacility(
                     item,
                     'PAYMENT_VOUCHER',
