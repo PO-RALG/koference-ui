@@ -21,23 +21,23 @@ export const useStaleCheque = (): Record<string, unknown> => {
   const headers: Array<Header> = [
     { text: "Date", value: "payment_date", sortable: true },
     {
-      text: "Payment Ref #",
+      text: "Payment #",
       align: "start",
       sortable: false,
       value: "reference_no",
     },
     {
-      text: "Cheaque #",
+      text: "Payee",
       align: "start",
       sortable: false,
-      value: "cheque",
+      value: "payee",
       width: 600,
     },
     {
-      text: "Bank",
+      text: "Payee",
       align: "start",
       sortable: false,
-      value: "bank_account",
+      value: "payee",
     },
     {
       text: "Amount [ TZS ]",
@@ -45,7 +45,6 @@ export const useStaleCheque = (): Record<string, unknown> => {
       sortable: false,
       value: "amount",
     },
-    { text: "Actions", value: "actions", sortable: false },
   ];
 
   const data = reactive({
@@ -68,14 +67,24 @@ export const useStaleCheque = (): Record<string, unknown> => {
     fetchData();
   });
 
+  const mapPayments = (payments) => {
+    return payments.map((p) => ({
+      ...p,
+      date: p.payment.payment_date,
+      payee: p.payee ? p.payee : "Lucas Gervs",
+      reference_no: p.payment.reference_no,
+    }));
+  };
+
   const fetchData = async () => {
     const response = await get({ per_page: 10 });
     const { from, to, total, current_page, per_page, last_page } =
       response.data.data;
-    data.items = response.data.data.data;
+    data.items = mapPayments(response.data.data.data);
+    console.log(response.data.data.data);
     data.itemsToFilter = response.data.data.data;
     data.loading = false;
-  };;
+  };
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
