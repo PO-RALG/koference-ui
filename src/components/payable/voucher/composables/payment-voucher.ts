@@ -14,6 +14,7 @@ import {
   printPdf,
   rejectPVService,
   requestVoucherApproval,
+  cancelPVFacilityService,
   approveReversalPVFacilityService,
 } from "../services/payment-voucher.services";
 import stringToCurrency from "@/filters/money-to-number";
@@ -397,6 +398,20 @@ export const usePaymentVoucher = (): any => {
     };
 
     approvePVFacilityService(approveData).then(() => {
+      data.genericConfirmModel = false;
+      getTableData();
+    });
+  };
+
+  const cancelPVFacility = (model: any) => {
+    data.formData = model;
+    data.modalTitle = "Accept to Cancel this Payment Voucher";
+    data.genericDialogAction = cancelPVFacilityComplete;
+    data.genericConfirmModel = true;
+  };
+
+  const cancelPVFacilityComplete = () => {
+    cancelPVFacilityService(data.formData.id).then(() => {
       data.genericConfirmModel = false;
       getTableData();
     });
@@ -835,5 +850,6 @@ export const usePaymentVoucher = (): any => {
     requestApproval,
     submitApprovalRequest,
     viewComment,
+    cancelPVFacility,
   };
 };

@@ -174,6 +174,29 @@
               <v-icon
                 color="red"
                 v-if="
+                  canCancelOldVoucher(
+                    item,
+                    'PAYMENT_VOUCHER',
+                    'createVoucher',
+                    'Voucher'
+                  )
+                "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="cancelPVFacility(item)"
+              >
+                mdi-close-box-multiple
+              </v-icon>
+            </template>
+            <span>Cancel Voucher</span>
+          </v-tooltip>
+
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="red"
+                v-if="
                   !item.isRejected.length > 0 &&
                   canApproveFacility(
                     item,
@@ -1147,6 +1170,7 @@ export default defineComponent({
       cancelApprovalRequestDialog,
       submitApprovalRequest,
       viewComment,
+      cancelPVFacility,
     } = usePaymentVoucher();
 
     return {
@@ -1197,6 +1221,7 @@ export default defineComponent({
       cancelApprovalRequestDialog,
       submitApprovalRequest,
       viewComment,
+      cancelPVFacility,
     };
   },
 });
