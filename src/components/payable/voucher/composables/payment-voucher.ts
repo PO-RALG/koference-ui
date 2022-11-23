@@ -405,7 +405,7 @@ export const usePaymentVoucher = (): any => {
 
   const cancelPVFacility = (model: any) => {
     data.formData = model;
-    data.modalTitle = "Accept to Cancel this Payment Voucher";
+    data.modalTitle = "Accept to Cancel this Payment Voucher.";
     data.genericDialogAction = cancelPVFacilityComplete;
     data.genericConfirmModel = true;
   };
