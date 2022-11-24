@@ -269,13 +269,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useSupplier } from "./composables/supplier";
-import SimpleMask from "@/components/shared/masks/SimpleMask.vue";
 
 export default defineComponent({
-  name: "Supplier",
-  components: {
-    SimpleMask,
-  },
+  name: "SupplierData",
+  components: {},
   setup() {
     const {
       data,
