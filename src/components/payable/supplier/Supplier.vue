@@ -223,10 +223,10 @@
                     :error-messages="data.bankAccNumberError"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="12" sm="12" class="pt-6">
+                <!-- <v-col cols="12" md="12" sm="12" class="pt-6">
                   <label for="">Tick if is M MAMA Supplier</label>
                   <v-checkbox v-model="data.formData.ismmama"></v-checkbox>
-                </v-col>
+                </v-col> -->
               </v-row>
             </v-container>
           </v-form>
@@ -269,13 +269,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useSupplier } from "./composables/supplier";
-import SimpleMask from "@/components/shared/masks/SimpleMask.vue";
 
 export default defineComponent({
-  name: "Supplier",
-  components: {
-    SimpleMask,
-  },
+  name: "SupplierData",
+  components: {},
   setup() {
     const {
       data,
