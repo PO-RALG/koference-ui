@@ -12,7 +12,7 @@
             <BankAdjustmentCouncilApprove />
           </v-card>
         </v-tab-item>
-        <v-tab>Deposit Receipt</v-tab>
+        <v-tab>Receipts</v-tab>
         <v-tab-item>
           <v-card color="basil" flat>
             <ManageReceiptCouncilApproval />

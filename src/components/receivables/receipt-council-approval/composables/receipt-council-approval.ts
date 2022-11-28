@@ -159,6 +159,8 @@ export const useReceipt = (): any => {
     invoicedetails: false,
     genericDialogAction: null,
     genericConfirmModel: false,
+    genericrejectConfirmModel: false,
+    formDataReceiptRejectionComment: "",
     items: dataItems,
     itemsToFilter: [],
     receipt: {
@@ -178,7 +180,11 @@ export const useReceipt = (): any => {
       ],
     },
     rows: ["10", "20", "50", "100"],
-
+    validate: {
+      rejectionReason: [
+        (v) => !!v || "Put a reason for jection of this receipt",
+      ],
+    },
     itemTodelete: null,
     response: {},
     accounts: [],
@@ -302,6 +308,7 @@ export const useReceipt = (): any => {
 
   const cancelGenericConfirmDialog = () => {
     data.genericConfirmModel = false;
+    data.genericrejectConfirmModel = false;
   };
 
   const cancelDialog = () => {
@@ -684,6 +691,44 @@ export const useReceipt = (): any => {
     });
   };
 
+  const rejectApproveCouncil = (model: any) => {
+    data.formData2 = model;
+    data.modalTitle = "Reject approval of this Receipt";
+    data.genericDialogAction = rejectReceiptCouncilComplete;
+    data.genericrejectConfirmModel = true;
+  };
+
+  const rejectReceiptCouncilComplete = () => {
+    if (
+      typeof data.formData2.approves == "undefined" ||
+      data.formData2.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData2.approves;
+
+    approves.forEach(function (flowable) {
+      if (flowable.council_appoved == null) {
+        currentFlowable = flowable;
+      }
+    });
+
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+      approved: false,
+      rejection_reason: data.formDataReceiptRejectionComment,
+    };
+
+    approveReceiptFacilittyService(approveData).then(() => {
+      data.genericrejectConfirmModel = false;
+      init();
+    });
+  };
+
   const approveReCouncil = (model: any) => {
     data.formData2 = model;
     data.modalTitle = "Accept to Approve this Receipt";
@@ -769,5 +814,6 @@ export const useReceipt = (): any => {
     approveReceiptCouncil,
     cancelGenericConfirmDialog,
     approveReCouncil,
+    rejectApproveCouncil,
   };
 };

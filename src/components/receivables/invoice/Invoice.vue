@@ -75,8 +75,20 @@
           <span v-if="item.isApprovedFacility && item.isApprovedCouncil">{{
             "Reversal Approved "
           }}</span>
-          <span v-if="item.isApprovedFacility && !item.isApprovedCouncil">{{
-            "Waiting for Reversal Approval from Council"
+          <span
+            v-if="
+              item.isApprovedFacility &&
+              !item.isApprovedCouncil &&
+              !item.isRejectedCouncil &&
+              !item.isApprovedFacility
+            "
+            >{{ "Waiting for Reversal Approval from Council" }}</span
+          >
+          <span v-if="item.isRejectedCouncil && item.isApprovedFacility">{{
+            "Reversal Rejected at Council"
+          }}</span>
+          <span v-if="item.isApprovedFacility && !item.isApprovedFacility">{{
+            "Reversal Rejected at Facility"
           }}</span>
           <span
             v-if="!item.isApprovedFacility && item.isRequestedToReverse[0]"
@@ -88,7 +100,12 @@
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 color="grey"
-                v-if="can('delete', 'Invoice')"
+                v-if="
+                  can(
+                    item.isRequestedToReverse.length > 0 && 'delete',
+                    'Invoice'
+                  )
+                "
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"

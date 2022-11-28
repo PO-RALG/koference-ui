@@ -233,6 +233,21 @@ export const useInvoice = (): Record<string, unknown> => {
           (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
         ),
 
+        isRejectedFacility: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved === false &&
+                flow.workflow == "REVERSAL_OF_INVOICE"
+            )
+          : false,
+        isRejectedCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved === false &&
+                flow.workflow == "REVERSAL_OF_INVOICE"
+            )
+          : false,
+
         isApprovedFacility: entry.approves.length
           ? setApprovalStatus(entry.approves[0])
           : false,
@@ -245,7 +260,7 @@ export const useInvoice = (): Record<string, unknown> => {
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_INVOICE"
+                flow.workflow == "REVERSAL_OF_INVOICE"
             )
           : false,
       }));
@@ -345,6 +360,21 @@ export const useInvoice = (): Record<string, unknown> => {
               (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
             ),
 
+            isRejectedFacility: entry.approves.length
+              ? entry.approves.filter(
+                  (flow) =>
+                    flow.facility_approved === false &&
+                    flow.workflow == "REVERSAL_OF_INVOICE"
+                )
+              : false,
+            isRejectedCouncil: entry.approves.length
+              ? entry.approves.filter(
+                  (flow) =>
+                    flow.council_approved === false &&
+                    flow.workflow == "REVERSAL_OF_INVOICE"
+                )
+              : false,
+
             isApprovedFacility: entry.approves.length
               ? setApprovalStatus(entry.approves[0])
               : false,
@@ -357,7 +387,7 @@ export const useInvoice = (): Record<string, unknown> => {
               ? entry.approves.filter(
                   (flow) =>
                     flow.facility_approved == null &&
-                    flow.workflow! == "REVERSAL_OF_INVOICE"
+                    flow.workflow == "REVERSAL_OF_INVOICE"
                 )
               : false,
           }));
@@ -377,6 +407,21 @@ export const useInvoice = (): Record<string, unknown> => {
           (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
         ),
 
+        isRejectedFacility: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved === false &&
+                flow.workflow == "REVERSAL_OF_INVOICE"
+            )
+          : false,
+        isRejectedCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved === false &&
+                flow.workflow == "REVERSAL_OF_INVOICE"
+            )
+          : false,
+
         isApprovedFacility: entry.approves.length
           ? setApprovalStatus(entry.approves[0])
           : false,
@@ -389,7 +434,7 @@ export const useInvoice = (): Record<string, unknown> => {
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_INVOICE"
+                flow.workflow == "REVERSAL_OF_INVOICE"
             )
           : false,
       }));
@@ -583,6 +628,21 @@ export const useInvoice = (): Record<string, unknown> => {
           (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
         ),
 
+        isRejectedFacility: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved === false &&
+                flow.workflow == "REVERSAL_OF_INVOICE"
+            )
+          : false,
+        isRejectedCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved === false &&
+                flow.workflow == "REVERSAL_OF_INVOICE"
+            )
+          : false,
+
         isApprovedFacility: entry.approves.length
           ? setApprovalStatus(entry.approves[0])
           : false,
@@ -595,7 +655,7 @@ export const useInvoice = (): Record<string, unknown> => {
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_INVOICE"
+                flow.workflow == "REVERSAL_OF_INVOICE"
             )
           : false,
       }));
@@ -630,12 +690,10 @@ export const useInvoice = (): Record<string, unknown> => {
   };
 
   const newInvoiceItems = computed(() => {
-    if (data.invoicereceip) {
-      return data.invoicereceip.items.map((item) => {
-        item.cleared = item.invoicedAmount == item.received ? true : false;
-        return item;
-      });
-    }
+    return data.invoicereceip.items.map((item) => {
+      item.cleared = item.invoicedAmount == item.received ? true : false;
+      return item;
+    });
   });
 
   const searchCustomer = (item: string) => {
@@ -668,6 +726,21 @@ export const useInvoice = (): Record<string, unknown> => {
             (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
           ),
 
+          isRejectedFacility: entry.approves.length
+            ? entry.approves.filter(
+                (flow) =>
+                  flow.facility_approved === false &&
+                  flow.workflow == "REVERSAL_OF_INVOICE"
+              )
+            : false,
+          isRejectedCouncil: entry.approves.length
+            ? entry.approves.filter(
+                (flow) =>
+                  flow.council_approved === false &&
+                  flow.workflow == "REVERSAL_OF_INVOICE"
+              )
+            : false,
+
           isApprovedFacility: entry.approves.length
             ? setApprovalStatus(entry.approves[0])
             : false,
@@ -680,7 +753,7 @@ export const useInvoice = (): Record<string, unknown> => {
             ? entry.approves.filter(
                 (flow) =>
                   flow.facility_approved == null &&
-                  flow.workflow! == "REVERSAL_OF_INVOICE"
+                  flow.workflow == "REVERSAL_OF_INVOICE"
               )
             : false,
         }));
@@ -697,6 +770,21 @@ export const useInvoice = (): Record<string, unknown> => {
             (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
           ),
 
+          isRejectedFacility: entry.approves.length
+            ? entry.approves.filter(
+                (flow) =>
+                  flow.facility_approved === false &&
+                  flow.workflow == "REVERSAL_OF_INVOICE"
+              )
+            : false,
+          isRejectedCouncil: entry.approves.length
+            ? entry.approves.filter(
+                (flow) =>
+                  flow.council_approved === false &&
+                  flow.workflow == "REVERSAL_OF_INVOICE"
+              )
+            : false,
+
           isApprovedFacility: entry.approves.length
             ? setApprovalStatus(entry.approves[0])
             : false,
@@ -709,7 +797,7 @@ export const useInvoice = (): Record<string, unknown> => {
             ? entry.approves.filter(
                 (flow) =>
                   flow.facility_approved == null &&
-                  flow.workflow! == "REVERSAL_OF_INVOICE"
+                  flow.workflow == "REVERSAL_OF_INVOICE"
               )
             : false,
         }));
@@ -729,6 +817,21 @@ export const useInvoice = (): Record<string, unknown> => {
           (flow) => flow.workflow == "REVERSAL_OF_INVOICE"
         ),
 
+        isRejectedFacility: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved === false &&
+                flow.workflow == "REVERSAL_OF_INVOICE"
+            )
+          : false,
+        isRejectedCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved === false &&
+                flow.workflow == "REVERSAL_OF_INVOICE"
+            )
+          : false,
+
         isApprovedFacility: entry.approves.length
           ? setApprovalStatus(entry.approves[0])
           : false,
@@ -741,7 +844,7 @@ export const useInvoice = (): Record<string, unknown> => {
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_INVOICE"
+                flow.workflow == "REVERSAL_OF_INVOICE"
             )
           : false,
       }));

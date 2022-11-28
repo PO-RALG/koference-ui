@@ -703,11 +703,11 @@
       </template>
       <template v-slot:body>
         <ModalBody>
-          <v-col class="pt-6 pl-3 pr-6" cols="12" md="12">
+          <v-col class="pt-0 pl-3 pr-6" cols="12" md="12">
             Are you sure you want to reverse?
           </v-col>
 
-          <v-form>
+          <v-form ref="form" v-model="data.valid">
             <v-container>
               <v-row>
                 <v-col class="pt-6 pl-6 pr-6" cols="12" md="12">
@@ -726,6 +726,7 @@
                     label="Reversal Comment"
                     outlined
                     required
+                    :rules="data.validate.reversalReason"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -738,7 +739,13 @@
           <v-btn color="red darken-1" text @click="cancelConfirmDialog">
             Cancel
           </v-btn>
-          <v-btn color="green darken-1" text @click="remove">Yes</v-btn>
+          <v-btn
+            color="green darken-1"
+            :disabled="!data.valid"
+            text
+            @click="remove"
+            >Yes</v-btn
+          >
         </ModalFooter>
       </template>
     </Modal>
@@ -825,7 +832,7 @@
           <v-col class="pt-0 pl-1 pr-6" cols="12" md="12">
             {{ data.modalTitle }}
           </v-col>
-          <v-form>
+          <v-form ref="form" v-model="data.validRejection">
             <v-container>
               <v-row>
                 <v-col cols="12" md="12">
@@ -834,6 +841,7 @@
                     label="Rejection Comment"
                     outlined
                     required
+                    :rules="data.validate.rejectionReason"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -846,7 +854,11 @@
           <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
             Cancel
           </v-btn>
-          <v-btn color="green darken-1" text @click="data.genericDialogAction"
+          <v-btn
+            color="green darken-1"
+            :disabled="!data.validRejection"
+            text
+            @click="data.genericDialogAction"
             >Yes</v-btn
           >
         </ModalFooter>

@@ -49,7 +49,8 @@ export const usePaymentVoucher = (): any => {
     title: "Payment Vouchers",
     selectedGfsCodes: null,
     approvalRequestDialog: false,
-    valid: false,
+    valid: true,
+    validRejection: true,
     approveButton: false,
     isOpen: false,
     node: null,
@@ -146,6 +147,14 @@ export const usePaymentVoucher = (): any => {
     selectedActivity: null,
     rejectedReason: {},
     rejectedReasonDialogModel: false,
+    validate: {
+      reversalReason: [
+        (v) => !!v || "Put a reason for reversal of this voucher",
+      ],
+      rejectionReason: [
+        (v) => !!v || "Put a reason for rejection of this voucher",
+      ],
+    },
   });
 
   onMounted(() => {

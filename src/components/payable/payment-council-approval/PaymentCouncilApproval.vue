@@ -103,6 +103,29 @@
             </template>
             <span>Approve reversal</span>
           </v-tooltip>
+
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="red"
+                v-if="
+                  canApproveCouncil(
+                    item,
+                    'REVERSAL_OF_PAYMENT',
+                    'reverseApprovalCouncil',
+                    'Payment'
+                  )
+                "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="rejectReversalPCouncil(item)"
+              >
+                mdi-cancel
+              </v-icon>
+            </template>
+            <span>Reject</span>
+          </v-tooltip>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -564,7 +587,46 @@
         </ModalFooter>
       </template>
     </Modal>
-
+    <Modal :modal="data.genericrejectConfirmModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-form ref="form" v-model="data.valid">
+            <v-container>
+              <v-row>
+                <v-col cols="12" md="12">
+                  {{ data.modalTitle }}
+                </v-col>
+                <v-col cols="12" md="12">
+                  <v-text-field
+                    v-model="data.formDataReceiptRejectionComment"
+                    label="Rejection Comment"
+                    outlined
+                    required
+                    :rules="data.validate.rejectionReason"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container> </v-form
+        ></ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            :disabled="!data.valid"
+            text
+            @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
     <Modal :modal="data.genericDeleteConfirmModel" :width="600">
       <template v-slot:header>
         <ModalHeader :title="data.modalTitle" />
@@ -619,6 +681,7 @@ export default defineComponent({
       approveReversalPFacility,
       cancelGenericConfirmDialog,
       approveReversalPCouncil,
+      rejectReversalPCouncil,
     } = usePayment();
 
     return {
@@ -647,6 +710,7 @@ export default defineComponent({
       approveReversalPFacility,
       cancelGenericConfirmDialog,
       approveReversalPCouncil,
+      rejectReversalPCouncil,
     };
   },
 });

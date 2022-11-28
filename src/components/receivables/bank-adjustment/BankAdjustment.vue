@@ -22,8 +22,16 @@
         hide-default-footer
       >
         <template v-slot:[`item.approve`]="{ item }">
+          <span v-if="item && item.isRejectedFacility.length > 0">{{
+            "Rejected by Admin"
+          }}</span>
           <span
-            v-if="item && item.approve && !item.approve.facility_approved"
+            v-if="
+              item &&
+              item.approve &&
+              !item.approve.facility_approved &&
+              item.isRejectedFacility.length == 0
+            "
             >{{ "Waiting for Verification" }}</span
           >
           <span
@@ -60,30 +68,60 @@
           <span>{{ item.amount }}</span>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip v-if="can('delete', 'BankAdjustment')" bottom>
+          <!-- <v-tooltip v-if="can('delete', 'BankAdjustment')" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on" @click="reverse(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
             <span>Reverse</span>
+          </v-tooltip> -->
+
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="green"
+                v-if="
+                  canApproveFacility(
+                    item,
+                    'BANK_ADJUSTMENT',
+                    'approve',
+                    'BankAdjustment'
+                  )
+                "
+                @click="approveBAFacility(item)"
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+              >
+                mdi-check-decagram
+              </v-icon>
+            </template>
+            <span>Verify</span>
           </v-tooltip>
-          <v-btn
-            v-if="
-              canApproveFacility(
-                item,
-                'BANK_ADJUSTMENT',
-                'approve',
-                'BankAdjustment'
-              )
-            "
-            @click="approveBAFacility(item)"
-            color="primary"
-            text
-          >
-            <v-icon>mdi-check-decagram</v-icon>
-            Verify
-          </v-btn>
+
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="red"
+                v-if="
+                  canApproveFacility(
+                    item,
+                    'BANK_ADJUSTMENT',
+                    'approve',
+                    'BankAdjustment'
+                  )
+                "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="rejectApproveBAFacility(item)"
+              >
+                mdi-cancel
+              </v-icon>
+            </template>
+            <span>Reject</span>
+          </v-tooltip>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -346,6 +384,7 @@ export default defineComponent({
       filterGLAccounts,
       approveBAFacility,
       cancelGenericConfirmDialog,
+      rejectApproveBAFacility,
     } = useBankAdjustment();
 
     return {
@@ -364,6 +403,7 @@ export default defineComponent({
       toMoney,
       approveBAFacility,
       cancelGenericConfirmDialog,
+      rejectApproveBAFacility,
     };
   },
 });

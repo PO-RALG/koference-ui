@@ -121,6 +121,14 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
 
   const data = reactive({
     formData2: invoiceData2,
+    formDataReceiptRejectionComment: "",
+    valid: true,
+    validate: {
+      rejectionReason: [
+        (v) => !!v || "Put a reason for jection of this invoice reversal",
+      ],
+    },
+    genericrejectConfirmModel: false,
     genericDialogAction: null,
     genericConfirmModel: false,
     invoicereceip: {
@@ -241,6 +249,46 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
     // });
   });
 
+  const rejectReversalICouncil = (model: any) => {
+    data.formData2 = model;
+    data.modalTitle = "Reject Reversal of this Invoice";
+    data.genericDialogAction = rejectApproveInvoiceCouncilComplete;
+    data.genericrejectConfirmModel = true;
+  };
+  const rejectApproveInvoiceCouncilComplete = () => {
+    if (
+      typeof data.formData2.approves == "undefined" ||
+      data.formData2.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData2.approves;
+
+    approves.forEach((flowable) => {
+      if (
+        flowable.council_appoved == null &&
+        flowable.workflow == "REVERSAL_OF_INVOICE"
+      ) {
+        currentFlowable = flowable;
+      }
+    });
+
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+      approved: false,
+      rejection_reason: data.formDataReceiptRejectionComment,
+    };
+
+    approveReversalInvoiceCouncilService(approveData).then(() => {
+      data.genericrejectConfirmModel = false;
+      reloadData();
+    });
+  };
+
   const approveReversalCouncil = (model: any) => {
     data.formData2 = model;
     data.modalTitle = "Accept to Approve Reversal of this Invoice";
@@ -258,7 +306,10 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
     const approves = data.formData2.approves;
 
     approves.forEach((flowable) => {
-      if (flowable.facility_appoved == null) {
+      if (
+        flowable.council_appoved == null &&
+        flowable.workflow == "REVERSAL_OF_INVOICE"
+      ) {
         currentFlowable = flowable;
       }
     });
@@ -276,6 +327,7 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
       reloadData();
     });
   };
+
   const searchCategory = (categoryName: any) => {
     // console.log("categoryname", categoryName.invoice_number);
     if (categoryName != null && categoryName.length >= 2) {
@@ -625,5 +677,6 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
     filterInvoice,
     resetSearchText,
     approveReversalCouncil,
+    rejectReversalICouncil,
   };
 };

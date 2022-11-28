@@ -48,6 +48,28 @@
             <v-icon>mdi-check-decagram</v-icon>
             APPROVE
           </v-btn>
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="red"
+                v-if="
+                  canApproveCouncil(
+                    item,
+                    'BANK_ADJUSTMENT',
+                    'approvalPendingCouncil',
+                    'BankAdjustment'
+                  )
+                "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="rejectApproveCouncil(item)"
+              >
+                mdi-cancel
+              </v-icon>
+            </template>
+            <span>Reject</span>
+          </v-tooltip>
         </template>
         <template v-slot:footer>
           <Paginate
@@ -58,6 +80,97 @@
         </template>
       </v-data-table>
     </v-card>
+    <Modal :modal="data.genericrejectConfirmModel" :width="800">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-list three-line>
+            <template>
+              <v-subheader>ADJUSTMENT DETAILS</v-subheader>
+
+              <v-divider></v-divider>
+
+              <v-list-item>
+                <v-list-item-avatar>
+                  <v-img>
+                    <v-icon>mdi-information-variant</v-icon>
+                  </v-img>
+                </v-list-item-avatar>
+
+                <v-list-item-content>
+                  <v-list-item-title>{{ "GL ACCOUNT" }}</v-list-item-title>
+                  <v-list-item-subtitle
+                    v-html="data.formData2.gl_account"
+                  ></v-list-item-subtitle>
+                  <v-divider class="pt-5"></v-divider>
+
+                  <v-list-item-title> {{ "BANK NAME" }}</v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ data.formData2.bank_account?.bank }} {{ " - " }}
+                    {{
+                      data.formData2.bank_account?.branch
+                    }}</v-list-item-subtitle
+                  >
+                  <v-divider></v-divider>
+                  <v-simple-table class="pt-5">
+                    <template v-slot:default>
+                      <thead>
+                        <tr>
+                          <th class="text-left">Fund Source</th>
+                          <th class="text-left">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="item in data.formData2.items" :key="item.id">
+                          <td>{{ item.funding_source.description }}</td>
+                          <td>{{ item.amount }}</td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+
+                  <v-form ref="form" v-model="data.valid">
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" md="12">
+                          <v-text-field
+                            v-model="data.formDataBARejectionComment"
+                            label="Rejection Comment"
+                            outlined
+                            required
+                            :rules="data.validate.rejectionReason"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-form>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-list>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="cancelGenericConfirmDialog"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="red darken-1"
+            :disabled="!data.valid"
+            text
+            @click="data.genericDialogAction"
+            >Reject</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
     <Modal :modal="data.genericConfirmModel" :width="800">
       <template v-slot:header>
         <ModalHeader :title="data.modalTitle" />
@@ -377,6 +490,7 @@ export default defineComponent({
       filterGLAccounts,
       approveBACouncil,
       cancelGenericConfirmDialog,
+      rejectApproveCouncil,
     } = useBankAdjustmentCouncilApprove();
 
     return {
@@ -395,6 +509,7 @@ export default defineComponent({
       toMoney,
       approveBACouncil,
       cancelGenericConfirmDialog,
+      rejectApproveCouncil,
     };
   },
 });
