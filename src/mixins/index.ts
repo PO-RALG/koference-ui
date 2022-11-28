@@ -87,7 +87,7 @@ Vue.mixin({
         if (
           flowable.facility_approved == false &&
           flowable.workflow == "PAYMENT_VOUCHER" &&
-          model.created_at < "2022-11-15 16:00"
+          model.created_at <= "2022-11-16"
         ) {
           currentFlowable = flowable;
         }
