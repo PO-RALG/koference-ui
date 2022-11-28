@@ -89,7 +89,7 @@
 
         <template v-slot:[`item.approve`]="{ item }">
           <span v-if="item.isRejected[0]"
-            >{{ "Rejected" }}
+            >{{ "Deposit Receipt Rejected" }}
             <v-tooltip right>
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
@@ -105,13 +105,59 @@
               <small class="">Click to see rejection comment</small>
             </v-tooltip>
           </span>
-          <span v-if="item.isApproved && !item.isReversedApproved.length">{{
-            "Approved"
-          }}</span>
+
+          <span v-if="item.rejectedReversalFacility.length > 0"
+            >{{ "Reversal Rejected by Admin" }}
+            <v-tooltip right>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  @click="viewCommentRejection(item)"
+                  v-bind="attrs"
+                  color="red"
+                  v-on="on"
+                  class="mr-2"
+                >
+                  mdi-information-variant
+                </v-icon>
+              </template>
+              <small class="">Click to see rejection comment</small>
+            </v-tooltip>
+          </span>
+          <span v-if="item.rejectedReversalCouncil.length > 0"
+            >{{ "Reversal Rejected at Council" }}
+            <v-tooltip right>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  @click="viewCommentRejection(item)"
+                  v-bind="attrs"
+                  color="red"
+                  v-on="on"
+                  class="mr-2"
+                >
+                  mdi-information-variant
+                </v-icon>
+              </template>
+              <small class="">Click to see rejection comment</small>
+            </v-tooltip>
+          </span>
+          <span
+            v-if="
+              !item.rejectedReversalCouncil.length > 0 &&
+              !item.rejectedReversalFacility.length > 0 &&
+              item.isApproved &&
+              !item.isReversedApproved.length > 0
+            "
+            >{{ "Approved" }}</span
+          >
           <!-- {{ item.isReversedApproved.length }} -->
-          <span v-if="item.isApproved && item.isReversedApproved.length">{{
-            "Waiting for Reversal Approval from Council"
-          }}</span>
+          <span
+            v-if="
+              item.isApproved &&
+              item.isReversedApproved.length > 0 &&
+              item.rejectedReversalCouncil.length == 0
+            "
+            >{{ "Waiting for Reversal Approval from Council" }}</span
+          >
           <span
             v-if="
               !item.isApproved &&
@@ -133,6 +179,7 @@
                   item.isApproved &&
                   !item.isRequestedToReverseCouncil.length > 0 &&
                   !item.isRequestedToReverse.length > 0 &&
+                  !item.rejectedReversalCouncil.length > 0 &&
                   can('delete', 'Voucher')
                 "
                 v-bind="attrs"
@@ -214,6 +261,29 @@
               </v-icon>
             </template>
             <span>Verify reversal</span>
+          </v-tooltip>
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="red"
+                v-if="
+                  !item.isRejected.length > 0 &&
+                  canApproveFacility(
+                    item,
+                    'REVERSAL_OF_PAYMENT_VOUCHER',
+                    'reverseApproval',
+                    'Voucher'
+                  )
+                "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="rejectReversalPVFacility(item)"
+              >
+                mdi-cancel
+              </v-icon>
+            </template>
+            <span>Reject</span>
           </v-tooltip>
 
           <v-tooltip right>
@@ -865,6 +935,46 @@
       </template>
     </Modal>
 
+    <Modal :modal="data.genericrejectConfirmModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-form ref="form" v-model="data.valid">
+            <v-container>
+              <v-row>
+                <v-col cols="12" md="12">
+                  {{ data.modalTitle }}
+                </v-col>
+                <v-col cols="12" md="12">
+                  <v-text-field
+                    v-model="data.formDataReceiptRejectionComment"
+                    label="Rejection Comment"
+                    outlined
+                    required
+                    :rules="data.validate.rejectionReason"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container> </v-form
+        ></ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            :disabled="!data.valid"
+            text
+            @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
     <Modal :fullScreen="true" :modal="data.paymentVoucherModal" :width="1260">
       <template v-slot:header>
         <ModalHeader :title="`Voucher`" />
@@ -1176,12 +1286,14 @@ export default defineComponent({
       cancelGenericConfirmDialog,
       approvePVFacility,
       approveReversalPVFacility,
+      rejectReversalPVFacility,
       rejectVoucher,
       approvePVFacilityComplete,
       requestApproval,
       cancelApprovalRequestDialog,
       submitApprovalRequest,
       viewComment,
+      viewCommentRejection,
       cancelPVFacility,
     } = usePaymentVoucher();
 
@@ -1228,11 +1340,13 @@ export default defineComponent({
       cancelGenericConfirmDialog,
       approvePVFacility,
       approveReversalPVFacility,
+      rejectReversalPVFacility,
       approvePVFacilityComplete,
       requestApproval,
       cancelApprovalRequestDialog,
       submitApprovalRequest,
       viewComment,
+      viewCommentRejection,
       cancelPVFacility,
     };
   },

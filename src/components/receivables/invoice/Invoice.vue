@@ -79,14 +79,20 @@
             v-if="
               item.isApprovedFacility &&
               !item.isApprovedCouncil &&
-              !item.isRejectedCouncil &&
-              !item.isApprovedFacility
+              item.isRejectedCouncil.length == 0
             "
             >{{ "Waiting for Reversal Approval from Council" }}</span
           >
-          <span v-if="item.isRejectedCouncil && item.isApprovedFacility">{{
-            "Reversal Rejected at Council"
-          }}</span>
+          <span
+            v-if="
+              item.isRejectedFacility.length > 0 && !item.isApprovedFacility
+            "
+            >{{ "Reversal Rejected by Admin" }}</span
+          >
+          <span
+            v-if="item.isRejectedCouncil.length > 0 && item.isApprovedFacility"
+            >{{ "Reversal Rejected at Council" }}</span
+          >
           <span v-if="item.isApprovedFacility && !item.isApprovedFacility">{{
             "Reversal Rejected at Facility"
           }}</span>
@@ -100,12 +106,7 @@
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 color="grey"
-                v-if="
-                  can(
-                    item.isRequestedToReverse.length > 0 && 'delete',
-                    'Invoice'
-                  )
-                "
+                v-if="can(!item.isRequestedToReverse && 'delete', 'Invoice')"
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
@@ -137,6 +138,28 @@
               </v-icon>
             </template>
             <span>Verify Reversal</span>
+          </v-tooltip>
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="red"
+                v-if="
+                  canApproveFacility(
+                    item,
+                    'REVERSAL_OF_INVOICE',
+                    'reverseApproval',
+                    'Invoice'
+                  )
+                "
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="rejectReversalFacility(item)"
+              >
+                mdi-cancel
+              </v-icon>
+            </template>
+            <span>Reject</span>
           </v-tooltip>
         </template>
 
@@ -692,6 +715,47 @@
         </ModalFooter>
       </template>
     </Modal>
+
+    <Modal :modal="data.genericrejectConfirmModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          <v-form ref="form" v-model="data.valid">
+            <v-container>
+              <v-row>
+                <v-col cols="12" md="12">
+                  {{ data.modalTitle }}
+                </v-col>
+                <v-col cols="12" md="12">
+                  <v-text-field
+                    v-model="data.formDataReceiptRejectionComment"
+                    label="Rejection Comment"
+                    outlined
+                    required
+                    :rules="data.validate.rejectionReason"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container> </v-form
+        ></ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            :disabled="!data.valid"
+            text
+            @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -736,6 +800,8 @@ export default defineComponent({
       filterInvoice,
       resetSearchText,
       approveReversalFacility,
+      rejectReversalFacility,
+      cancelGenericConfirmDialog,
     } = useInvoice();
     return {
       data,
@@ -772,6 +838,8 @@ export default defineComponent({
       filterInvoice,
       resetSearchText,
       approveReversalFacility,
+      rejectReversalFacility,
+      cancelGenericConfirmDialog,
     };
   },
 });

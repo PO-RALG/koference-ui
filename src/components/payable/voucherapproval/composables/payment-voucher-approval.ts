@@ -129,11 +129,58 @@ export const usePaymentVoucher = (): any => {
     approveFacility: {},
     genericDialogAction: null,
     genericDeleteConfirmModel: false,
+    genericrejectConfirmModel: false,
+    formDataReceiptRejectionComment: "",
+    validate: {
+      rejectionReason: [
+        (v) => !!v || "Put a reason for jection of this invoice reversal",
+      ],
+    },
   });
 
   onMounted(() => {
     getTableData();
   });
+
+  const rejectReversalPVFacility = (model: any) => {
+    data.formData = model;
+    data.modalTitle = "Reject Reversal of this Payment Voucher";
+    data.genericDialogAction = rejectRejectionPVFacilityComplete;
+    data.genericrejectConfirmModel = true;
+  };
+  const rejectRejectionPVFacilityComplete = () => {
+    if (
+      typeof data.formData.approves == "undefined" ||
+      data.formData.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData.approves;
+
+    approves.forEach((flowable) => {
+      if (
+        flowable.facility_appoved == null &&
+        flowable.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+      ) {
+        currentFlowable = flowable;
+      }
+    });
+
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+      approved: false,
+      rejection_reason: data.formDataReceiptRejectionComment,
+    };
+
+    approveReversalPVCouncilService(approveData).then(() => {
+      data.genericrejectConfirmModel = false;
+      getTableData();
+    });
+  };
 
   const approveReversalPVFacility = (model: any) => {
     data.formData = model;
@@ -269,6 +316,8 @@ export const usePaymentVoucher = (): any => {
   const cancelGenericConfirmDialog = () => {
     data.formData = {} as PaymentVoucher;
     data.genericDeleteConfirmModel = false;
+    data.genericrejectConfirmModel = false;
+    data.formDataReceiptRejectionComment = "";
   };
 
   const cancelConfirmDialog = () => {
@@ -598,5 +647,6 @@ export const usePaymentVoucher = (): any => {
     approvePaymet,
     approveReversalPVFacility,
     cancelGenericConfirmDialog,
+    rejectReversalPVFacility,
   };
 };
