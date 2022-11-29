@@ -15,7 +15,9 @@ import {
 export const useNewReport = () => {
   const data = reactive({
     reportFilters: [],
-    formData: null,
+    formData: {
+      report_parameters: "",
+    },
     selectedFilters: [],
     // formData: {},
     code: "",
@@ -112,6 +114,7 @@ export const useNewReport = () => {
 
     data.formData.report_parameters = filtersIds;
   };
+
   const selectedFilters = computed(() => {
     return data.formData.report_parameters || [];
   });
@@ -173,10 +176,8 @@ export const useNewReport = () => {
 
   const openDialog = (formData?: any) => {
     loadReportFilters();
-    data.selectedFilters = formData.report_parameters
-      ? formData.report_parameters
-      : [];
     if (formData.id) {
+      data.selectedFilters = formData.report_parameters;
       data.formData = formData;
       data.modalTitle = "Update";
     } else {
@@ -187,7 +188,7 @@ export const useNewReport = () => {
 
   const cancelDialog = () => {
     data.modal = false;
-    data.formData = {};
+    data.formData = null;
   };
 
   const update = (data) => {
