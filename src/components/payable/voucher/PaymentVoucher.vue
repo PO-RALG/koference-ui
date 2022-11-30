@@ -89,7 +89,7 @@
 
         <template v-slot:[`item.approve`]="{ item }">
           <span v-if="item.isRejected[0]"
-            >{{ "Deposit Receipt Rejected" }}
+            >{{ "Receipt Rejected" }}
             <v-tooltip right>
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
@@ -142,10 +142,10 @@
           </span>
           <span
             v-if="
-              !item.rejectedReversalCouncil.length > 0 &&
-              !item.rejectedReversalFacility.length > 0 &&
+              item.rejectedReversalCouncil.length == 0 &&
+              item.rejectedReversalFacility.length == 0 &&
               item.isApproved &&
-              !item.isReversedApproved.length > 0
+              item.isReversedApproved.length == 0
             "
             >{{ "Approved" }}</span
           >
@@ -154,9 +154,19 @@
             v-if="
               item.isApproved &&
               item.isReversedApproved.length > 0 &&
-              item.rejectedReversalCouncil.length == 0
+              item.rejectedReversalCouncil.length == 0 &&
+              item.approvedReversalCouncil.length == 0
             "
             >{{ "Waiting for Reversal Approval from Council" }}</span
+          >
+          <span
+            v-if="
+              item.isApproved &&
+              item.isReversedApproved.length > 0 &&
+              item.rejectedReversalCouncil.length == 0 &&
+              item.approvedReversalCouncil.length > 0
+            "
+            >{{ "Reversal Approved" }}</span
           >
           <span
             v-if="
@@ -176,11 +186,11 @@
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 v-if="
-                  item.isApproved &&
-                  !item.isRequestedToReverseCouncil.length > 0 &&
-                  !item.isRequestedToReverse.length > 0 &&
-                  !item.rejectedReversalCouncil.length > 0 &&
-                  can('delete', 'Voucher')
+                  (item.isApproved &&
+                    item.isRequestedToReverseCouncil.length == 0 &&
+                    item.isRequestedToReverse.length == 0) ||
+                  (item.rejectedReversalCouncil.length == 0 &&
+                    can('delete', 'Voucher'))
                 "
                 v-bind="attrs"
                 v-on="on"

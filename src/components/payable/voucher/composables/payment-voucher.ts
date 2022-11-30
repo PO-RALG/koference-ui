@@ -272,6 +272,13 @@ export const usePaymentVoucher = (): any => {
                 flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
             )
           : false,
+        approvedReversalCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == true &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
       }));
       data.itemsToFilter = response.data.data.data;
       data.response = {
@@ -336,6 +343,13 @@ export const usePaymentVoucher = (): any => {
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved == false &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        approvedReversalCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == true &&
                 flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
             )
           : false,
