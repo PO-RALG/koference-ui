@@ -89,7 +89,7 @@
 
         <template v-slot:[`item.approve`]="{ item }">
           <span v-if="item.isRejected[0]"
-            >{{ "Receipt Rejected" }}
+            >{{ " Receipt Rejected" }}
             <v-tooltip right>
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
@@ -186,11 +186,12 @@
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 v-if="
-                  (item.isApproved &&
-                    item.isRequestedToReverseCouncil.length == 0 &&
-                    item.isRequestedToReverse.length == 0) ||
-                  (item.rejectedReversalCouncil.length == 0 &&
-                    can('delete', 'Voucher'))
+                  item.isApproved &&
+                  item.isRequestedToReverseCouncil.length == 0 &&
+                  item.isRequestedToReverse.length == 0 &&
+                  item.approvedReversalCouncil.length == 0 &&
+                  item.rejectedReversalCouncil.length == 0 &&
+                  can('delete', 'Voucher')
                 "
                 v-bind="attrs"
                 v-on="on"
