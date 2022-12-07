@@ -1,21 +1,21 @@
 <template>
   <div>
-    <v-select
+    <v-autocomplete
       v-if="required"
       :items="entries"
       :label="requiredLabel"
       :value="value"
       :item-value="itemValue"
       :item-text="itemText"
-      :rules="data.rules.select"
+      :rules="data.rules.autocomplete"
       v-bind="{
         ...$attrs,
       }"
       @change="$emit('input', $event)"
       outlined
     >
-    </v-select>
-    <v-select
+    </v-autocomplete>
+    <v-autocomplete
       v-else
       :items="entries"
       :label="label"
@@ -28,7 +28,7 @@
       @change="$emit('input', $event)"
       outlined
     >
-    </v-select>
+    </v-autocomplete>
   </div>
 </template>
 
@@ -65,7 +65,7 @@ export default defineComponent({
   setup(props) {
     const data = reactive({
       rules: {
-        select: [(v) => !!v || "Item is required"],
+        autocomplete: [(v) => !!v || "Item is required"],
       },
     });
     const entries = computed(() => {

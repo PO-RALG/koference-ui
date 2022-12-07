@@ -101,6 +101,13 @@ export const useBankAdjustment = (): any => {
         approve: approve.approves.find(
           (flow) => flow.workflow == "BANK_ADJUSTMENT"
         ),
+        isRejectedFacility: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                flow.facility_approved === false &&
+                flow.workflow == "BANK_ADJUSTMENT"
+            )
+          : false,
       }));
       data.itemsToFilter = response.data.data.data;
     });
@@ -156,7 +163,7 @@ export const useBankAdjustment = (): any => {
   };
 
   const totalAmount = computed(() => {
-    return data.formData.items.reduce((sum: number, item: any) => {
+    return data.formData?.items.reduce((sum: number, item: any) => {
       console.log("items", item);
       const totalAmount = item.amount ? +stringToCurrency(item.amount) : 0;
 
@@ -174,6 +181,13 @@ export const useBankAdjustment = (): any => {
         approve: approve.approves.find(
           (flow) => flow.workflow == "BANK_ADJUSTMENT"
         ),
+        isRejectedFacility: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                flow.facility_approved === false &&
+                flow.workflow == "BANK_ADJUSTMENT"
+            )
+          : false,
       }));
       data.itemsToFilter = response.data.data.data;
     });
@@ -313,6 +327,44 @@ export const useBankAdjustment = (): any => {
     }
   };
 
+  const rejectApproveBAFacility = (model: any) => {
+    data.formData2 = model;
+    data.modalTitle = "Reject Verification of Bank Adjustment";
+    data.genericDialogAction = rejectBAFacility;
+    data.genericConfirmModel = true;
+  };
+  const rejectBAFacility = () => {
+    if (
+      typeof data.formData2.approves == "undefined" ||
+      data.formData2.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData2.approves;
+
+    approves.forEach((flowable) => {
+      if (
+        flowable.facility_appoved == null &&
+        flowable.workflow == "BANK_ADJUSTMENT"
+      ) {
+        currentFlowable = flowable;
+      }
+    });
+
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+      approved: false,
+    };
+    approveBAFacilityService(approveData).then(() => {
+      data.genericConfirmModel = false;
+      reloadData();
+    });
+  };
+
   return {
     data,
     getData,
@@ -328,5 +380,6 @@ export const useBankAdjustment = (): any => {
     filterGLAccounts,
     approveBAFacility,
     cancelGenericConfirmDialog,
+    rejectApproveBAFacility,
   };
 };

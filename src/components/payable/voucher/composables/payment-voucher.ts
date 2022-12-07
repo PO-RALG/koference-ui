@@ -14,6 +14,7 @@ import {
   printPdf,
   rejectPVService,
   requestVoucherApproval,
+  cancelPVFacilityService,
   approveReversalPVFacilityService,
 } from "../services/payment-voucher.services";
 import stringToCurrency from "@/filters/money-to-number";
@@ -45,10 +46,13 @@ export const usePaymentVoucher = (): any => {
     reverseFormDate: "",
     formDataPVRejectionComment: "",
     formDataPVReversalComment: "",
+    formDataReceiptRejectionComment: "",
     title: "Payment Vouchers",
     selectedGfsCodes: null,
     approvalRequestDialog: false,
-    valid: false,
+    genericrejectConfirmModel: false,
+    valid: true,
+    validRejection: true,
     approveButton: false,
     isOpen: false,
     node: null,
@@ -145,6 +149,14 @@ export const usePaymentVoucher = (): any => {
     selectedActivity: null,
     rejectedReason: {},
     rejectedReasonDialogModel: false,
+    validate: {
+      reversalReason: [
+        (v) => !!v || "Put a reason for reversal of this voucher",
+      ],
+      rejectionReason: [
+        (v) => !!v || "Put a reason for rejection of this voucher",
+      ],
+    },
   });
 
   onMounted(() => {
@@ -219,10 +231,9 @@ export const usePaymentVoucher = (): any => {
           ? setApprovalStatus(entry.approves[0])
           : false,
         isRejected: entry.approves.length
-          ? entry.approves.map(
+          ? entry.approves.filter(
               (flow) =>
-                flow.facility_approved == false &&
-                flow.rejection_reason != null &&
+                flow.facility_approved === false &&
                 flow.workflow == "PAYMENT_VOUCHER"
             )
           : false,
@@ -244,7 +255,28 @@ export const usePaymentVoucher = (): any => {
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved &&
-                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        rejectedReversalCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == false &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        rejectedReversalFacility: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved == false &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        approvedReversalCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == true &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
             )
           : false,
       }));
@@ -273,24 +305,52 @@ export const usePaymentVoucher = (): any => {
           ? setApprovalStatus(entry.approves[0])
           : false,
         isRejected: entry.approves.length
-          ? entry.approves.map(
+          ? entry.approves.filter(
               (flow) =>
-                flow.facility_approved == false &&
-                flow.rejection_reason! != null
+                flow.facility_approved === false &&
+                flow.workflow == "PAYMENT_VOUCHER"
             )
           : false,
         isRequestedToReverse: entry.approves.length
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved == null &&
-                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        isRequestedToReverseCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == null &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
             )
           : false,
         isReversedApproved: entry.approves.length
           ? entry.approves.filter(
               (flow) =>
                 flow.facility_approved &&
-                flow.workflow! == "REVERSAL_OF_PAYMENT_VOUCHER"
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        rejectedReversalCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == false &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        rejectedReversalFacility: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved == false &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        approvedReversalCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == true &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
             )
           : false,
       }));
@@ -396,6 +456,20 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  const cancelPVFacility = (model: any) => {
+    data.formData = model;
+    data.modalTitle = "Accept to Cancel this Payment Voucher.";
+    data.genericDialogAction = cancelPVFacilityComplete;
+    data.genericConfirmModel = true;
+  };
+
+  const cancelPVFacilityComplete = () => {
+    cancelPVFacilityService(data.formData.id).then(() => {
+      data.genericConfirmModel = false;
+      getTableData();
+    });
+  };
+
   const approveReversalPVFacility = (model: any) => {
     data.formData = model;
     data.modalTitle = "Accept to Approve Reversal this Payment Voucher";
@@ -435,11 +509,52 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
+  const rejectReversalPVFacility = (model: any) => {
+    data.formData = model;
+    data.modalTitle = "Reject Reversal of this Payment Voucher";
+    data.genericDialogAction = rejectRejectionPVFacilityComplete;
+    data.genericrejectConfirmModel = true;
+  };
+  const rejectRejectionPVFacilityComplete = () => {
+    if (
+      typeof data.formData.approves == "undefined" ||
+      data.formData.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData.approves;
+
+    approves.forEach((flowable) => {
+      if (
+        flowable.facility_appoved == null &&
+        flowable.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+      ) {
+        currentFlowable = flowable;
+      }
+    });
+
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+      approved: false,
+      rejection_reason: data.formDataReceiptRejectionComment,
+    };
+
+    approveReversalPVFacilityService(approveData).then(() => {
+      data.genericrejectConfirmModel = false;
+      getTableData();
+    });
+  };
+
   const cancelGenericConfirmDialog = () => {
     data.genericConfirmModel = false;
     data.genericConfirmRejectModel = false;
     data.rejectedReasonDialogModel = false;
     data.genericDeleteConfirmModel = false;
+    data.genericrejectConfirmModel = false;
   };
 
   const cancelDialog = () => {
@@ -774,6 +889,18 @@ export const usePaymentVoucher = (): any => {
     //   data.rejectedReasonDialogModel = true;
     // }
   };
+  const viewCommentRejection = (item: any) => {
+    console.log("Data", item);
+    data.rejectedReason = item.approves.find(
+      (approve) => approve.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+    )?.rejection_reason;
+    data.rejectedReasonDialogModel = true;
+
+    // if (data.length > 0) {
+    //   data.rejectedReason = data;
+    //   data.rejectedReasonDialogModel = true;
+    // }
+  };
 
   const requestApproval = (voucher) => {
     data.formData = voucher;
@@ -829,5 +956,8 @@ export const usePaymentVoucher = (): any => {
     requestApproval,
     submitApprovalRequest,
     viewComment,
+    cancelPVFacility,
+    rejectReversalPVFacility,
+    viewCommentRejection,
   };
 };

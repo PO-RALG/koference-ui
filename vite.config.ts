@@ -7,6 +7,7 @@ import { resolve } from "path";
 import dayjs from "dayjs";
 import pkg from "./package.json";
 import { viteSingleFile } from "vite-plugin-singlefile";
+import { VitePluginFonts } from "vite-plugin-fonts";
 
 const OUTPUT_DIR = "dist";
 const root = process.cwd();
@@ -42,6 +43,11 @@ export default ({ mode }) => {
         algorithm: "gzip",
       }),
       viteSingleFile(),
+      VitePluginFonts({
+        google: {
+          families: ["Lato"],
+        },
+      }),
     ],
     server: {
       port: process.env.VITE_APP_PORT || 3000,

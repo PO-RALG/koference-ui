@@ -41,6 +41,7 @@
     "vuex-composition-helpers": "^2.0.3"
   },
   "devDependencies": {
+    "@mdi/font": "^7.0.96",
     "@types/chai": "^4.2.11",
     "@types/jquery": "^3.5.14",
     "@types/lodash": "^4.14.172",
@@ -62,6 +63,7 @@
     "unplugin-vue-components": "^0.22.8",
     "vite": "^3.1.8",
     "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-fonts": "^0.6.0",
     "vite-plugin-singlefile": "^0.12.3",
     "vite-plugin-vuetify": "^1.0.0",
     "vue-cli-plugin-compression": "~2.0.0",

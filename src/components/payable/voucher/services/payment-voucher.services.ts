@@ -43,9 +43,14 @@ const update = async (payload: any) => {
   return await axios.put(`/api/v1/vouchers/` + payload.id, payload);
 };
 
-const destroy = async <T>(paymoad: any) => {
-  return await axios.delete(`/api/v1/vouchers/${paymoad.id}`, {
-    data: paymoad,
+const destroy = async <T>(payload: any) => {
+  return await axios.delete(`/api/v1/vouchers/${payload.id}`, {
+    data: payload,
+  });
+};
+const cancelPVFacilityService = async <T>(payload: any) => {
+  return await axios.delete(`/api/v1/vouchers/${payload}/temp`, {
+    data: payload,
   });
 };
 
@@ -89,4 +94,5 @@ export {
   update,
   rejectPVService,
   approveReversalPVFacilityService,
+  cancelPVFacilityService,
 };

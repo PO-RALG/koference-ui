@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const get = async (payload: any) => {
-  return await axios.get("/api/v1/payments", {
+  return await axios.get("/api/v1/stale-cheques", {
     params: payload,
   });
 };
@@ -54,14 +54,14 @@ const printInvoice = (id: string | number) => {
 };
 
 export {
-  get,
-  find,
   create,
-  update,
   destroy,
-  search,
-  viewinvoice,
+  find,
+  get,
+  printInvoice,
   receiptcreate,
   regSearch,
-  printInvoice,
+  search,
+  update,
+  viewinvoice,
 };

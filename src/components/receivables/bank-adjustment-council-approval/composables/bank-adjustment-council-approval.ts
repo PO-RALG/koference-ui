@@ -25,6 +25,7 @@ export const useBankAdjustmentCouncilApprove = (): any => {
 
   const data = reactive({
     title: "Bank Adjustment",
+    valid: true,
     modalTitle: "Add Bank Adjustment",
     itemsx: [
       { header: "Today" },
@@ -38,7 +39,11 @@ export const useBankAdjustmentCouncilApprove = (): any => {
       },
       { divider: true, inset: true },
     ],
-
+    validate: {
+      rejectionReason: [
+        (v) => !!v || "Put a reason for jection of this adjustment",
+      ],
+    },
     headers: [
       {
         text: "Date",
@@ -104,6 +109,8 @@ export const useBankAdjustmentCouncilApprove = (): any => {
     genericDialogAction: null,
     genericConfirmModel: false,
     previewBAModal: false,
+    genericrejectConfirmModel: false,
+    formDataBARejectionComment: "",
   });
 
   onMounted(() => {
@@ -138,6 +145,43 @@ export const useBankAdjustmentCouncilApprove = (): any => {
   const cancelGenericConfirmDialog = () => {
     data.genericConfirmModel = false;
     data.previewBAModal = false;
+    data.genericrejectConfirmModel = false;
+  };
+
+  const rejectApproveCouncil = (model: any) => {
+    data.formData2 = model;
+    data.modalTitle = "Reject Bank Adjustment";
+    data.genericDialogAction = rejectBACouncilComplete;
+    data.genericrejectConfirmModel = true;
+  };
+
+  const rejectBACouncilComplete = () => {
+    if (
+      typeof data.formData2.approves == "undefined" ||
+      data.formData2.approves.length === 0
+    ) {
+      return false;
+    }
+    let currentFlowable = null;
+    const approves = data.formData2.approves;
+
+    approves.forEach(function (flowable) {
+      if (flowable.facility_appoved == null) {
+        currentFlowable = flowable;
+      }
+    });
+    if (currentFlowable == null) {
+      return false;
+    }
+    const approveData = {
+      approval: currentFlowable,
+      rejection_reason: data.formDataBARejectionComment,
+      approved: false,
+    };
+    approveBACouncilService(approveData).then(() => {
+      data.genericrejectConfirmModel = false;
+      reloadData();
+    });
   };
 
   const approveBACouncil = (model: any) => {
@@ -351,5 +395,6 @@ export const useBankAdjustmentCouncilApprove = (): any => {
     filterGLAccounts,
     approveBACouncil,
     cancelGenericConfirmDialog,
+    rejectApproveCouncil,
   };
 };
