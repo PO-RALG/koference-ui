@@ -345,10 +345,33 @@ export const useBankAdjustmentCouncilApprove = (): any => {
 
   const getData = (params: any) => {
     data.response = params;
-    get(params).then((response: AxiosResponse) => {
-      data.response = response.data;
-      data.items = response.data.data.data;
-    });
+    getPendingApproveCouncil({ per_page: 10 }).then(
+      (response: AxiosResponse) => {
+        console.log("response.data.data", response.data.data);
+        if (response.data.data) {
+          const { from, to, total, current_page, per_page, last_page } =
+            response.data.data;
+          data.response = {
+            from,
+            to,
+            total,
+            current_page,
+            per_page,
+            last_page,
+          };
+          data.items = response.data.data.data.map((approve: any) => ({
+            ...approve,
+            approve: approve.approves.find(
+              (flow) => flow.workflow == "BANK_ADJUSTMENT"
+            ),
+          }));
+          data.itemsToFilter = response.data.data.data;
+        } else {
+          data.items = [];
+        }
+      }
+    );
+
     getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
       data.bankaccounts = response.data.data.data;
     });

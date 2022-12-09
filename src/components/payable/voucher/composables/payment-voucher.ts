@@ -119,6 +119,7 @@ export const usePaymentVoucher = (): any => {
     ],
     modal: false,
     deletemodal: false,
+    isHoldingPpayment: null,
     genericConfirmModel: false,
     genericDeleteConfirmModel: false,
     genericConfirmRejectModel: false,
@@ -372,10 +373,11 @@ export const usePaymentVoucher = (): any => {
     }
   };
 
-  const openConfirmDialog = (itrm: any) => {
+  const openConfirmDialog = (item: any) => {
+    data.isHoldingPpayment = item.payments.length > 0 ? true : false;
     data.deletemodal = !data.modal;
-    data.itemtodelete = itrm.id;
-    data.minDate = moment(itrm.created_at).format("YYYY-MM-DD");
+    data.itemtodelete = item.id;
+    data.minDate = moment(item.created_at).format("YYYY-MM-DD");
   };
 
   const rejectVoucher = (model: any) => {

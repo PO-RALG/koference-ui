@@ -784,12 +784,28 @@
       </template>
       <template v-slot:body>
         <ModalBody>
-          <v-col class="pt-0 pl-3 pr-6" cols="12" md="12">
+          <v-col
+            v-if="data.isHoldingPpayment"
+            class="pt-0 pl-3 pr-6"
+            cols="12"
+            md="12"
+          >
+            <h3 class="red--text">
+              Reverse payment for this voucher first before sending this
+              request!
+            </h3>
+          </v-col>
+          <v-col
+            v-if="!data.isHoldingPpayment"
+            class="pt-0 pl-3 pr-6"
+            cols="12"
+            md="12"
+          >
             Are you sure you want to reverse?
           </v-col>
 
           <v-form ref="form" v-model="data.valid">
-            <v-container>
+            <v-container v-if="!data.isHoldingPpayment">
               <v-row>
                 <v-col class="pt-6 pl-6 pr-6" cols="12" md="12">
                   <DatePicker
@@ -822,7 +838,7 @@
           </v-btn>
           <v-btn
             color="green darken-1"
-            :disabled="!data.valid"
+            :disabled="!data.valid || data.isHoldingPpayment"
             text
             @click="remove"
             >Yes</v-btn
