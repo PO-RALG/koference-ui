@@ -372,16 +372,6 @@ export const useBankAdjustmentCouncilApprove = (): any => {
       }
     );
 
-    getBankAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.bankaccounts = response.data.data.data;
-    });
-    getGlAccounts({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.glAccounts = response.data.data.data;
-    });
-
-    getFundingSourceList({ per_page: 2000 }).then((response: AxiosResponse) => {
-      data.fundingsources = response.data.data.data;
-    });
     data.formData.items = [
       { funding_source_id: 1, amount: 0.0 },
       { funding_source_id: 2, amount: 0.3 },
