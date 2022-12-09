@@ -77,7 +77,7 @@
               outlined
             >
               <v-icon
-                v-if="removeComma(data.running_balance) > 0"
+                v-if="removeComma(data.running_balance) >= 0"
                 slot="append"
                 color="green"
                 >mdi-check</v-icon
