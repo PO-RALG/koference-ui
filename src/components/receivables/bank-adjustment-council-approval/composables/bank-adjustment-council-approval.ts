@@ -345,32 +345,30 @@ export const useBankAdjustmentCouncilApprove = (): any => {
 
   const getData = (params: any) => {
     data.response = params;
-    getPendingApproveCouncil({ per_page: 10 }).then(
-      (response: AxiosResponse) => {
-        console.log("response.data.data", response.data.data);
-        if (response.data.data) {
-          const { from, to, total, current_page, per_page, last_page } =
-            response.data.data;
-          data.response = {
-            from,
-            to,
-            total,
-            current_page,
-            per_page,
-            last_page,
-          };
-          data.items = response.data.data.data.map((approve: any) => ({
-            ...approve,
-            approve: approve.approves.find(
-              (flow) => flow.workflow == "BANK_ADJUSTMENT"
-            ),
-          }));
-          data.itemsToFilter = response.data.data.data;
-        } else {
-          data.items = [];
-        }
+    getPendingApproveCouncil(params).then((response: AxiosResponse) => {
+      console.log("response.data.data", response.data.data);
+      if (response.data.data) {
+        const { from, to, total, current_page, per_page, last_page } =
+          response.data.data;
+        data.response = {
+          from,
+          to,
+          total,
+          current_page,
+          per_page,
+          last_page,
+        };
+        data.items = response.data.data.data.map((approve: any) => ({
+          ...approve,
+          approve: approve.approves.find(
+            (flow) => flow.workflow == "BANK_ADJUSTMENT"
+          ),
+        }));
+        data.itemsToFilter = response.data.data.data;
+      } else {
+        data.items = [];
       }
-    );
+    });
 
     data.formData.items = [
       { funding_source_id: 1, amount: 0.0 },

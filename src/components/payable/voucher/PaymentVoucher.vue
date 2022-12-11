@@ -89,7 +89,7 @@
 
         <template v-slot:[`item.approve`]="{ item }">
           <span v-if="item.isRejected[0]"
-            >{{ " Receipt Rejected" }}
+            >{{ " PV Rejected" }}
             <v-tooltip right>
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
