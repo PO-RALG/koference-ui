@@ -59,9 +59,10 @@ export const useReportDetail = (props, { root }) => {
       bank_account_id: null,
       start_date: null,
       end_date: null,
+      format: null,
     },
     // format: ["pdf", "xlsx", "pptx", "docx", "csv"],
-    format: ["pdf"],
+    format: ["pdf", "xlsx", "pptx"],
     validate: {
       format: [(v) => !!v || " This field is mandatory."],
     },
@@ -221,7 +222,7 @@ export const useReportDetail = (props, { root }) => {
   };
 
   const printFromServer = () => {
-    console.log("reportxxx ", data.currentReport);
+    console.log("reportxxx ", data.formData.format);
     printReportJasper(data.currentReport.template_uri, data.formData);
   };
 
