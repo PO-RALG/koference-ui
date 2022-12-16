@@ -69,8 +69,8 @@ const printReportJasperExcell = async (reportID: any, payload?: any) => {
     )
     .then((response: any) => {
       console.log("file", response.data);
-      const blob: any = new Blob([s2ab(atob(response.data))], {
-        type: "",
+      const blob: any = new Blob([response.data], {
+        type: "octet/stream",
       });
       const href = URL.createObjectURL(blob);
 
