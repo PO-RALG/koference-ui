@@ -69,11 +69,12 @@ const printReportJasperExcell = async (reportID: any, payload?: any) => {
     )
     .then((response: any) => {
       console.log("file", response.data);
-      const file = new Blob([response.data], {
-        type: "application/xlsx",
+      const blob: any = new Blob([s2ab(atob(response.data))], {
+        type: "",
       });
-      const fileURL = URL.createObjectURL(file);
-      window.open(fileURL);
+      // const href = URL.createObjectURL(blob);
+
+      return window.open(blob);
     });
 };
 
@@ -142,3 +143,9 @@ export {
   toggleActive,
   printReportJasperExcell,
 };
+function s2ab(s) {
+  const buf = new ArrayBuffer(s.length);
+  const view = new Uint8Array(buf);
+  for (let i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xff;
+  return buf;
+}
