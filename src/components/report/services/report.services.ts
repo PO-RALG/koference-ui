@@ -48,7 +48,29 @@ const printReportJasper = async (reportID: any, payload?: any) => {
     .then((response: any) => {
       console.log("file", response.data);
       const file = new Blob([response.data], {
-        type: `application/${payload.format}`,
+        type: "application/pdf",
+      });
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
+    });
+};
+const printReportJasperExcell = async (reportID: any, payload?: any) => {
+  await axios
+    .get(
+      `/${APINEWREPORT}/reports/${reportID}.${payload.format}?facility_id=${payload.facility_id}`,
+      {
+        params: payload,
+        responseType: "arraybuffer",
+        auth: {
+          username: REPORTSERVERUSER,
+          password: REPORTSERVERPASSWORD,
+        },
+      }
+    )
+    .then((response: any) => {
+      console.log("file", response.data);
+      const file = new Blob([response.data], {
+        type: "application/xlsx",
       });
       const fileURL = URL.createObjectURL(file);
       window.open(fileURL);
@@ -118,4 +140,5 @@ export {
   updateQuery,
   allreportFilters,
   toggleActive,
+  printReportJasperExcell,
 };

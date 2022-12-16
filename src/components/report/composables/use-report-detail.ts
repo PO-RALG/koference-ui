@@ -7,6 +7,7 @@ import {
   fetchReportParams,
   findReport,
   printReport,
+  printReportJasperExcell,
   printReportJasper,
 } from "../services/report.services";
 import { find } from "@/components/admin-area/admin-area/services/admin-area-services";
@@ -62,7 +63,7 @@ export const useReportDetail = (props, { root }) => {
       format: null,
     },
     // format: ["pdf", "xlsx", "pptx", "docx", "csv"],
-    format: ["pdf", "xlsx", "pptx"],
+    format: ["pdf", "xlsx"],
     validate: {
       format: [(v) => !!v || " This field is mandatory."],
     },
@@ -223,7 +224,11 @@ export const useReportDetail = (props, { root }) => {
 
   const printFromServer = () => {
     console.log("reportxxx ", data.formData.format);
-    printReportJasper(data.currentReport.template_uri, data.formData);
+    if (data.formData.format == "pdf") {
+      printReportJasper(data.currentReport.template_uri, data.formData);
+    } else {
+      printReportJasperExcell(data.currentReport.template_uri, data.formData);
+    }
   };
 
   return {
