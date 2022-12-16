@@ -72,9 +72,9 @@ const printReportJasperExcell = async (reportID: any, payload?: any) => {
       const blob: any = new Blob([s2ab(atob(response.data))], {
         type: "",
       });
-      // const href = URL.createObjectURL(blob);
+      const href = URL.createObjectURL(blob);
 
-      return window.open(blob);
+      return window.open(href);
     });
 };
 
