@@ -69,12 +69,11 @@ const printReportJasperExcell = async (reportID: any, payload?: any) => {
     )
     .then((response: any) => {
       console.log("file", response.data);
-      const blob: any = new Blob([response.data], {
-        type: "octet/stream",
+      const file = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-      const href = URL.createObjectURL(blob);
-
-      return window.open(href);
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
     });
 };
 
