@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card elevation="1" class="mt-10 pt-5 pl-5 pr-5 mb-0 top-card">
+    <!-- <v-card elevation="1" class="mt-10 pt-5 pl-5 pr-5 mb-0 top-card">
       <v-form ref="form" v-model="data.valid">
         <v-container>
           <v-row>
@@ -127,8 +127,8 @@
           </v-row>
         </v-container>
       </v-form>
-    </v-card>
-    <v-card elevation="1" class="top-card">
+    </v-card> -->
+    <!-- <v-card elevation="1" class="top-card">
       <v-container>
         <v-row>
           <v-col
@@ -144,9 +144,9 @@
           </v-col>
         </v-row>
       </v-container>
-    </v-card>
+    </v-card> -->
 
-    <v-card
+    <!-- <v-card
       elevation="0"
       class="top-card mt-5"
       style="border-bottom: 1px solid #ccc"
@@ -169,7 +169,7 @@
           </v-col>
         </v-row>
       </v-container>
-    </v-card>
+    </v-card> -->
   </div>
 </template>
 
@@ -316,9 +316,9 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      loadAdminAreas();
-      loadDashboards();
-      data.cardData = [];
+      // loadAdminAreas();
+      // loadDashboards();
+      // data.cardData = [];
     });
 
     interface Dashboard {
