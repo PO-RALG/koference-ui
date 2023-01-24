@@ -57,7 +57,7 @@ const printReportJasper = async (reportID: any, payload?: any) => {
 const printReportJasperExcell = async (reportID: any, payload?: any) => {
   await axios
     .get(
-      `/${APINEWREPORT}/reports/${reportID}.${payload.format}?facility_id=${payload.facility_id}`,
+      `/${APINEWREPORT}/reports/${reportID}.xlsx}?facility_id=${payload.facility_id}`,
       {
         params: payload,
         responseType: "arraybuffer",
