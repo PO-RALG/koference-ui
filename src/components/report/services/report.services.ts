@@ -55,26 +55,28 @@ const printReportJasper = async (reportID: any, payload?: any) => {
     });
 };
 const printReportJasperExcell = async (reportID: any, payload?: any) => {
-  await axios
-    .get(
-      `/${APINEWREPORT}/reports/${reportID}.xlsx}?facility_id=${payload.facility_id}`,
-      {
-        params: payload,
-        responseType: "arraybuffer",
-        auth: {
-          username: REPORTSERVERUSER,
-          password: REPORTSERVERPASSWORD,
-        },
-      }
-    )
-    .then((response: any) => {
-      console.log("file", response.data);
-      const file = new Blob([response.data], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  if (payload) {
+    await axios
+      .get(
+        `/${APINEWREPORT}/reports/${reportID}.${payload.format}?facility_id=${payload.facility_id}`,
+        {
+          params: payload,
+          responseType: "arraybuffer",
+          auth: {
+            username: REPORTSERVERUSER,
+            password: REPORTSERVERPASSWORD,
+          },
+        }
+      )
+      .then((response: any) => {
+        console.log("this is the file", response);
+        const file = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
       });
-      const fileURL = URL.createObjectURL(file);
-      window.open(fileURL);
-    });
+  }
 };
 
 const printReport = async (reportID: number, payload?: any) => {
