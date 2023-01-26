@@ -54,6 +54,7 @@ const printReportJasper = async (reportID: any, payload?: any) => {
       window.open(fileURL);
     });
 };
+
 const printReportJasperExcell = async (reportID: any, payload?: any) => {
   if (payload) {
     await axios

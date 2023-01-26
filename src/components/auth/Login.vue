@@ -12,7 +12,6 @@
       :top="true"
       color="#1476d7"
       left
-      clearable
       v-model="data.showInfo"
     >
       <v-icon x-large color="white"> mdi-hand-pointing-right </v-icon>
@@ -29,6 +28,7 @@
             <v-row class="mb-0 pa-0" justify="center">
               <v-col md="auto">
                 <v-flex class="col-md12">
+                  <img :src="data.coat" class="login-logo" />
                   <v-row class="mb-0 pa-0" justify="center" no-gutters>
                     <h4 class="white--text">
                       <strong>
@@ -77,9 +77,9 @@
                   <!-- <v-col cols="12" md="4" sm="12"> -->
                   <v-card-text class>
                     <v-row class="mb-0 pa-0" justify="center" no-gutters>
-                      <img :src="data.coat" class="login-logo"
-                    /></v-row>
-                    <h2 class="text-center pa-6 login-header" color="primary">
+                      <img :src="data.ffars_logo" class="ffars-logo" />
+                    </v-row>
+                    <h2 class="text-center pa-3 login-header" color="primary">
                       LOGIN to your account
                     </h2>
                     <v-row class="mb-0 pa-0" justify="center" no-gutters>
@@ -125,7 +125,7 @@
                         </v-btn>
                         <v-spacer></v-spacer>
                         <v-btn
-                          color="primary"
+                          color="#052c57"
                           class="white--text"
                           type="submit"
                           :disabled="!data.valid || data.loading"
@@ -193,6 +193,7 @@ export default Vue.extend({
       errorMessage: "",
       loading: false,
       logo: "/brand.png",
+      ffars_logo: "/ffars_logo.png",
       coat: "/coat_of_arms.svg.png",
       colors: ["primary", "secondary", "yellow darken-2", "red", "orange"],
       slides: [{ src: "/corona.jpeg" }, { src: "/callcenter.jpeg" }],
@@ -249,7 +250,8 @@ export default Vue.extend({
 }
 .body_bg {
   /* background-image: url("@/assets/ffars_background.jpg") !important; */
-  background-color: #054c97;
+  /* background-color: #054c97; */
+  background-color: #052c57;
   background-size: cover !important;
   background-repeat: no-repeat !important;
   background-position: center center !important; /* optional, center the image */
@@ -281,6 +283,11 @@ export default Vue.extend({
   height: 100px;
   width: 100px;
   border: 4px solid #ccc;
+  background-color: white;
+}
+.ffars-logo {
+  height: 60%;
+  width: 80%;
 }
 .login-header {
   font-weight: bold;
