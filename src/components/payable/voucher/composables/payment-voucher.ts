@@ -14,6 +14,7 @@ import {
   printPdf,
   rejectPVService,
   requestVoucherApproval,
+  cancelRejectPVRevesal,
   cancelPVFacilityService,
   approveReversalPVFacilityService,
 } from "../services/payment-voucher.services";
@@ -56,6 +57,8 @@ export const usePaymentVoucher = (): any => {
     approveButton: false,
     isOpen: false,
     node: null,
+    cancelRejectionDialog: false,
+    rejectionDialog: false,
     response: {},
     modalTitle: "",
     maxDate: moment(new Date()).format("YYYY-MM-DD"),
@@ -149,6 +152,7 @@ export const usePaymentVoucher = (): any => {
     depositAccounts: [],
     selectedActivity: null,
     rejectedReason: {},
+    rejectedWorkflowId: null,
     rejectedReasonDialogModel: false,
     validate: {
       reversalReason: [
@@ -557,6 +561,7 @@ export const usePaymentVoucher = (): any => {
     data.rejectedReasonDialogModel = false;
     data.genericDeleteConfirmModel = false;
     data.genericrejectConfirmModel = false;
+    data.cancelRejectionDialog = false;
   };
 
   const cancelDialog = () => {
@@ -573,7 +578,12 @@ export const usePaymentVoucher = (): any => {
 
   const cancelApprovalRequestDialog = () => {
     data.approvalRequestDialog = false;
+    data.rejectionDialog = false;
     data.formData = {} as PaymentVoucher;
+  };
+
+  const cancelRejectionConfirmDialog = () => {
+    data.rejectionDialog = true;
   };
 
   const remove = () => {
@@ -881,6 +891,16 @@ export const usePaymentVoucher = (): any => {
     getTableData();
   };
 
+  const submitCancelRejectionRequest = async () => {
+    const id: number = data.rejectedWorkflowId;
+    console.log("dataxxxx", id);
+    await cancelRejectPVRevesal(id);
+    data.rejectedReasonDialogModel = false;
+    data.cancelRejectionDialog = false;
+    data.rejectionDialog = false;
+    getTableData();
+  };
+
   const viewComment = (item: any) => {
     console.log("Data", item);
     data.rejectedReason = item.approves[0].rejection_reason;
@@ -891,13 +911,19 @@ export const usePaymentVoucher = (): any => {
     //   data.rejectedReasonDialogModel = true;
     // }
   };
-  const viewCommentRejection = (item: any) => {
+
+  const viewCommentRejection = (item: any, canReject: any) => {
     console.log("Data", item);
     data.rejectedReason = item.approves.find(
       (approve) => approve.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
     )?.rejection_reason;
+    data.rejectedWorkflowId = item.approves.find(
+      (approve) => approve.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+    )?.id;
     data.rejectedReasonDialogModel = true;
-
+    if (canReject == "CANREJECT") {
+      data.cancelRejectionDialog = true;
+    }
     // if (data.length > 0) {
     //   data.rejectedReason = data;
     //   data.rejectedReasonDialogModel = true;
@@ -957,9 +983,11 @@ export const usePaymentVoucher = (): any => {
     approvePVFacilityComplete,
     requestApproval,
     submitApprovalRequest,
+    submitCancelRejectionRequest,
     viewComment,
     cancelPVFacility,
     rejectReversalPVFacility,
     viewCommentRejection,
+    cancelRejectionConfirmDialog,
   };
 };

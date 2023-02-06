@@ -35,6 +35,10 @@ const requestVoucherApproval = async (id: number) => {
   return await axios.post(`/api/v1/vouchers/${id}/request-approval`);
 };
 
+const cancelRejectPVRevesal = async (id: number) => {
+  return await axios.get(`/api/v1/work-flows/remove-rejection/${id}`);
+};
+
 const rejectPVService = async (payload: any) => {
   return await axios.post(`/api/v1/payment_voucher/approval`, payload);
 };
@@ -90,6 +94,7 @@ export {
   getWorkflow,
   printPdf,
   requestVoucherApproval,
+  cancelRejectPVRevesal,
   search,
   update,
   rejectPVService,

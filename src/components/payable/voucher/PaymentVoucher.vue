@@ -111,7 +111,7 @@
             <v-tooltip right>
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
-                  @click="viewCommentRejection(item)"
+                  @click="viewCommentRejection(item, 'CANREJECT')"
                   v-bind="attrs"
                   color="red"
                   v-on="on"
@@ -346,6 +346,26 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <Modal :modal="data.approvalRequestDialog" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Request Voucher Approval `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> Are you sure you want to request approval? </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelApprovalRequestDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="submitApprovalRequest"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
+
     <Modal :modal="data.modal" :width="1200">
       <template v-slot:header>
         <ModalHeader :title="`${data.modalTitle} Payment Voucher`" />
@@ -847,7 +867,31 @@
       </template>
     </Modal>
 
-    <Modal :modal="data.approvalRequestDialog" :width="600">
+    <Modal :modal="data.rejectionDialog" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Cancel Rejection `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          Are you sure you want to cancel rejection approval?
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="submitCancelRejectionRequest"
+            >Yes</v-btn
+          >
+          <v-btn color="red darken-1" text @click="cancelApprovalRequestDialog">
+            Cancel
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+
+    <Modal :modal="data.cancelRejectionDialog" :width="600">
       <template v-slot:header>
         <ModalHeader :title="`Request Voucher Approval `" />
       </template>
@@ -913,6 +957,14 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
+          <v-btn
+            v-if="data.cancelRejectionDialog"
+            color="blue darken-1"
+            text
+            @click="cancelRejectionConfirmDialog"
+          >
+            Cancel Rejection Approval
+          </v-btn>
           <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
             Close
           </v-btn>
@@ -1319,13 +1371,16 @@ export default defineComponent({
       requestApproval,
       cancelApprovalRequestDialog,
       submitApprovalRequest,
+      submitCancelRejectionRequest,
       viewComment,
       viewCommentRejection,
       cancelPVFacility,
+      cancelRejectionConfirmDialog,
     } = usePaymentVoucher();
 
     return {
       rejectVoucher,
+      cancelRejectionConfirmDialog,
       isMmama,
       mmamaType,
       toMoney,
@@ -1372,6 +1427,7 @@ export default defineComponent({
       requestApproval,
       cancelApprovalRequestDialog,
       submitApprovalRequest,
+      submitCancelRejectionRequest,
       viewComment,
       viewCommentRejection,
       cancelPVFacility,
