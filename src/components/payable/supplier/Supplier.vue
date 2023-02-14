@@ -223,10 +223,10 @@
                     :error-messages="data.bankAccNumberError"
                   ></v-text-field>
                 </v-col>
-                <!-- <v-col cols="12" md="12" sm="12" class="pt-6">
-                  <label for="">Tick if is M MAMA Supplier</label>
-                  <v-checkbox v-model="data.formData.ismmama"></v-checkbox>
-                </v-col> -->
+                <label class="red--text pt-6 pl-3" for=""
+                  >Tick if is M MAMA Supplier</label
+                >
+                <v-checkbox v-model="data.formData.ismmama"></v-checkbox>
               </v-row>
             </v-container>
           </v-form>

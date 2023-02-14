@@ -90,7 +90,13 @@ export const usePaymentVoucher = (): any => {
         align: "start",
         sortable: false,
         value: "description",
-        width: 450,
+        width: 200,
+      },
+      {
+        text: "Approve Status",
+        align: "start",
+        sortable: false,
+        value: "approve",
       },
       {
         text: "Actions",
@@ -276,13 +282,79 @@ export const usePaymentVoucher = (): any => {
     });
   };
 
-  const getTableData = () => {
-    get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
-      data.items = response.data.data.data;
-      data.itemsToFilter = response.data.data.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
+  const setApprovalStatus = (item: Record<string, any>) => {
+    const { ends_on_facility, facility_approved, council_approved } = item;
+    if (!!ends_on_facility && !!facility_approved) {
+      return true;
+    } else if (!!ends_on_facility && !!facility_approved) {
+      return false;
+    } else {
+      return !!council_approved;
+    }
+  };
+
+  const getTableData = (params: PaymentVoucher) => {
+    data.response = params;
+    get(params).then((response: AxiosResponse) => {
+      data.response = response.data.data;
+      data.items = response.data.data.data.map((entry: any) => ({
+        ...entry,
+        approve: entry.approves.find(
+          (flow) => flow.workflow == "PAYMENT_VOUCHER"
+        ),
+        isApproved: entry.approves.length
+          ? setApprovalStatus(entry.approves[0])
+          : false,
+        isRejected: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved === false &&
+                flow.workflow == "PAYMENT_VOUCHER"
+            )
+          : false,
+        isRequestedToReverse: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved == null &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        isRequestedToReverseCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == null &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        isReversedApproved: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        rejectedReversalCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == false &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        rejectedReversalFacility: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved == false &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        approvedReversalCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == true &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+      }));
     });
   };
 

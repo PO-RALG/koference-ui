@@ -60,6 +60,50 @@
             Not Paid
           </span>
         </template>
+
+        <template v-slot:[`item.approve`]="{ item }">
+          <span
+            v-if="
+              item.rejectedReversalCouncil.length == 0 &&
+              item.rejectedReversalFacility.length == 0 &&
+              item.isApproved &&
+              item.isReversedApproved.length == 0
+            "
+            >{{ "Approved" }}</span
+          >
+          <!-- {{ item.isReversedApproved.length }} -->
+          <span
+            v-if="
+              item.isApproved &&
+              item.isReversedApproved.length > 0 &&
+              item.rejectedReversalCouncil.length == 0 &&
+              item.approvedReversalCouncil.length == 0
+            "
+            >{{ "Waiting for Reversal Approval from Council" }}</span
+          >
+          <span
+            v-if="
+              item.isApproved &&
+              item.isReversedApproved.length > 0 &&
+              item.rejectedReversalCouncil.length == 0 &&
+              item.approvedReversalCouncil.length > 0
+            "
+            >{{ "Reversal Approved" }}</span
+          >
+          <span
+            v-if="
+              !item.isApproved &&
+              !item.isRejected[0] &&
+              item.isRequestedToReverse.length === 0
+            "
+            >{{ "Waiting for  Approval  from Admin" }}</span
+          >
+          <span
+            v-if="item.isApproved && item.isRequestedToReverse.length > 0"
+            >{{ " Waiting for  Reversal Approval  from Admin" }}</span
+          >
+        </template>
+
         <template v-slot:[`item.actions`]="{ item }">
           <!-- <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">

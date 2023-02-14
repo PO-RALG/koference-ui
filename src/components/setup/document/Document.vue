@@ -55,7 +55,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
-                :disabled="can('create', 'Document')"
+                :disabled="cant('create', 'Document')"
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
@@ -70,7 +70,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
-                :disabled="can('delete', 'Document')"
+                :disabled="cant('delete', 'Document')"
                 v-bind="attrs"
                 v-on="on"
                 @click="deleteDocumentCategory(item.id)"
@@ -178,7 +178,7 @@
 
     <Modal :modal="data.deletemodal" :width="320">
       <template v-slot:header>
-        <ModalHeader :title="`Delete Document Category `" />
+        <ModalHeader :title="`Delete Document `" />
       </template>
       <template v-slot:body>
         <ModalBody> Are you sure? </ModalBody>
@@ -221,6 +221,7 @@ export default defineComponent({
       selectedFile,
       downloadFile,
       filterDocument,
+      deleteDocumentCategory,
     } = useDocument();
 
     return {
@@ -242,6 +243,7 @@ export default defineComponent({
       selectedFile,
       downloadFile,
       filterDocument,
+      deleteDocumentCategory,
     };
   },
 });

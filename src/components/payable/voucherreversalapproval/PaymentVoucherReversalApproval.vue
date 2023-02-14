@@ -68,6 +68,7 @@
             Not Paid
           </span>
         </template>
+
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -405,6 +406,7 @@
       <template v-slot:header>
         <ModalHeader :title="`Voucher`" />
       </template>
+
       <template v-slot:body>
         <ModalBody>
           <v-card-actions class="pa-0">
@@ -670,7 +672,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { usePaymentVoucher } from "./composables/payment-voucher-approval";
+import { usePaymentVoucher } from "./composables/payment-voucher-reversal";
 import { toMoney } from "@/filters/CurrencyFormatter";
 
 export default defineComponent({

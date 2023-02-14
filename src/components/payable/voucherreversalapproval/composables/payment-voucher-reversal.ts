@@ -89,11 +89,12 @@ export const usePaymentVoucher = (): any => {
         value: "description",
         width: 450,
       },
-      // {
-      //   text: "Actions",
-      //   value: "actions",
-      //   sortable: false,
-      // },
+      {
+        text: "Approve Status",
+        align: "start",
+        sortable: false,
+        value: "approve",
+      },
     ],
     modal: false,
     deletemodal: false,

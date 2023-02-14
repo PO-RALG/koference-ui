@@ -103,7 +103,7 @@ export const useDocument = (): any => {
     });
   };
 
-  const deleteDocument = (deleteId: any) => {
+  const deleteDocumentCategory = (deleteId: any) => {
     data.deletemodal = !data.modal;
     data.itemtodelete = deleteId;
     // console.log("delete year", data);
@@ -265,7 +265,7 @@ export const useDocument = (): any => {
     data,
     openDialog,
     cancelDialog,
-    deleteDocument,
+    deleteDocumentCategory,
     getDocument,
     updateDocument,
     save,

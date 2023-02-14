@@ -893,7 +893,6 @@ export const usePaymentVoucher = (): any => {
 
   const submitCancelRejectionRequest = async () => {
     const id: number = data.rejectedWorkflowId;
-    console.log("dataxxxx", id);
     await cancelRejectPVRevesal(id);
     data.rejectedReasonDialogModel = false;
     data.cancelRejectionDialog = false;
@@ -902,18 +901,11 @@ export const usePaymentVoucher = (): any => {
   };
 
   const viewComment = (item: any) => {
-    console.log("Data", item);
     data.rejectedReason = item.approves[0].rejection_reason;
     data.rejectedReasonDialogModel = true;
-
-    // if (data.length > 0) {
-    //   data.rejectedReason = data;
-    //   data.rejectedReasonDialogModel = true;
-    // }
   };
 
   const viewCommentRejection = (item: any, canReject: any) => {
-    console.log("Data", item);
     data.rejectedReason = item.approves.find(
       (approve) => approve.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
     )?.rejection_reason;
@@ -924,10 +916,6 @@ export const usePaymentVoucher = (): any => {
     if (canReject == "CANREJECT") {
       data.cancelRejectionDialog = true;
     }
-    // if (data.length > 0) {
-    //   data.rejectedReason = data;
-    //   data.rejectedReasonDialogModel = true;
-    // }
   };
 
   const requestApproval = (voucher) => {
