@@ -52,10 +52,10 @@ const regSearch = async (payload: any) => {
 
 const printReceipt = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
-  const url = `${
-    import.meta.env.VITE_APP_SERVER_URL
-  }/api/v1/receipts/${id}?token=${user.token}`;
-  // const url = `/api/v1/receipts/${id}?token=${user.token}`;
+  // const url = `${
+  //   import.meta.env.VITE_APP_SERVER_URL
+  // }/api/v1/receipts/${id}?token=${user.token}`;
+  const url = `/api/v1/receipts/${id}?token=${user.token}`;
   return window.open(url);
 };
 
