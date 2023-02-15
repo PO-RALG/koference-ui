@@ -383,6 +383,7 @@
               <v-btn color="red darken-1" text @click="cancelInvoiceDialog"
                 ><v-icon>mdi-close</v-icon> Close</v-btn
               >
+
               <v-btn
                 v-show="can('delete', 'Invoice')"
                 color="green darken-1"
@@ -392,6 +393,7 @@
                 <v-icon>mdi-printer</v-icon>
                 Print
               </v-btn>
+
               <v-btn
                 v-show="can('delete', 'Invoice')"
                 @click="reverseInvoice(data.invoiceData.id)"

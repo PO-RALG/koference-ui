@@ -45,7 +45,7 @@
     <!-- login form end -->
     <template v-slot:footer>
       <ModalFooter class="mt-n8">
-        <v-btn color="blue darken-1" :disabled="true" text @click="cancelDialog"
+        <v-btn color="red" class="white--text mr-2 mb-4" @click="cancelDialog"
           >Cancel</v-btn
         >
         <v-btn

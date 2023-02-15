@@ -54,6 +54,7 @@ export const useLoginDialog = (): any => {
 
   const cancelDialog = () => {
     store.dispatch("LoginDialog/DONE");
+    router.push("/login");
   };
 
   return {

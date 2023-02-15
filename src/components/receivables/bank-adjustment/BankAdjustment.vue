@@ -39,10 +39,13 @@
               item &&
               item.approve &&
               item.approve.facility_approved &&
-              !item.approve.council_approved
+              item.approve.council_approved == null
             "
             >{{ "Waiting for Approval from Council" }}</span
           >
+          <span v-if="item && item.approve && !item.approve.council_approved">{{
+            "Rejected at Council"
+          }}</span>
           <span
             v-if="
               item &&
