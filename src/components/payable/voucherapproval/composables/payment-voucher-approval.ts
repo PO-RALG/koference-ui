@@ -74,6 +74,7 @@ export const usePaymentVoucher = (): any => {
         align: "start",
         sortable: false,
         value: "facility",
+        width: "10%",
       },
       {
         text: "Amount",
@@ -98,13 +99,14 @@ export const usePaymentVoucher = (): any => {
         align: "start",
         sortable: false,
         value: "description",
-        width: "54%",
+        width: "44%",
       },
       {
         text: "Approve Status",
         align: "start",
         sortable: false,
         value: "approve",
+        width: "10%",
       },
       {
         text: "Actions",
