@@ -568,6 +568,7 @@ export const useInvoice = (): Record<string, unknown> => {
   const newInvoiceItem: any = computed(() => {
     return data && data.invoiceData && data.invoiceData
       ? data.invoiceData.invoice_items.map((data, index) => ({
+          ...data,
           index: ++index,
         }))
       : "";

@@ -1,5 +1,11 @@
 <template>
-  <v-card-title :class="!showTitleBg ? 'primary white--text pa-4' : 'pa-4'">
+  <v-card-title
+    :class="
+      !showTitleBg && colour == 'red'
+        ? 'red white--text pa-4'
+        : ' primary white--text pa-4pa-4'
+    "
+  >
     <span class="text-h5">{{ title }}</span>
   </v-card-title>
 </template>
@@ -11,6 +17,10 @@ export default defineComponent({
     title: {
       type: String,
       required: true,
+    },
+    colour: {
+      type: String,
+      required: false,
     },
     showTitleBg: {
       type: Boolean,

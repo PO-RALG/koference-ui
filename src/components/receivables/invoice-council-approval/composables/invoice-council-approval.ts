@@ -152,7 +152,12 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
         value: "invoice_number",
       },
       { text: "Invoice Date", value: "date", sortable: true },
-
+      {
+        text: "Facility",
+        align: "start",
+        sortable: false,
+        value: "facility",
+      },
       {
         text: "Customer",
         align: "start",
@@ -451,6 +456,7 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
   const newInvoiceItem: any = computed(() => {
     return data && data.invoiceData && data.invoiceData
       ? data.invoiceData.invoice_items.map((data, index) => ({
+          ...data,
           index: ++index,
         }))
       : "";
@@ -581,6 +587,9 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
   const removeRow = (index: number) => {
     data.invoice_items.splice(index, 1);
   };
+  const cancelGenericConfirmDialog = () => {
+    data.genericrejectConfirmModel = false;
+  };
 
   const previewInvoice = (invoice: any) => {
     data.invoiceData = invoice;
@@ -588,12 +597,10 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
   };
 
   const newInvoiceItems = computed(() => {
-    if (data.invoicereceip) {
-      return data.invoicereceip.items.map((item) => {
-        item.cleared = item.invoicedAmount == item.received ? true : false;
-        return item;
-      });
-    }
+    return data.invoicereceip.items.map((item) => {
+      item.cleared = item.invoicedAmount == item.received ? true : false;
+      return item;
+    });
   });
 
   const searchCustomer = (item: string) => {
@@ -678,5 +685,6 @@ export const useInvoiceCouncilApproval = (): Record<string, unknown> => {
     resetSearchText,
     approveReversalCouncil,
     rejectReversalICouncil,
+    cancelGenericConfirmDialog,
   };
 };

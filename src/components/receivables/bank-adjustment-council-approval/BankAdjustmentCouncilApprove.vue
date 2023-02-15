@@ -13,6 +13,12 @@
         disable-pagination
         hide-default-footer
       >
+        <template v-slot:[`item.facility`]="{ item }">
+          <span
+            >{{ item.facility.name }}{{ " " }}
+            {{ item.facility.facility_type.name }}</span
+          >
+        </template>
         <template v-slot:[`item.approve`]="{ item }">
           <span v-if="item && item.approve && !item.approve.council_approved">{{
             "Waiting for Approval"

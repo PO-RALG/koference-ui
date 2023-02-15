@@ -12,6 +12,8 @@ import {
   fundByActivityFundSource,
   activitiesByFundSource,
   approveReversalPVCouncilService,
+  cancelRejectPVRevesal,
+  requestVoucherApproval,
 } from "../services/payment-voucher-approval.services";
 import stringToCurrency from "@/filters/money-to-number";
 
@@ -66,6 +68,12 @@ export const usePaymentVoucher = (): any => {
         align: "start",
         sortable: false,
         value: "supplier.name",
+      },
+      {
+        text: "Facility",
+        align: "start",
+        sortable: false,
+        value: "facility",
       },
       {
         text: "Amount",
@@ -142,11 +150,49 @@ export const usePaymentVoucher = (): any => {
         (v) => !!v || "Put a reason for jection of this invoice reversal",
       ],
     },
+    rejectedReason: {},
+    rejectedWorkflowId: null,
+    rejectedReasonDialogModel: false,
+    cancelRejectionDialog: false,
+    rejectionDialog: false,
+    approvalRequestDialog: false,
   });
 
   onMounted(() => {
     getTableData();
   });
+  const submitApprovalRequest = async () => {
+    const id: number = data.formData.id;
+    await requestVoucherApproval(id);
+    data.approvalRequestDialog = false;
+    getTableData();
+  };
+
+  const submitCancelRejectionRequest = async () => {
+    const id: number = data.rejectedWorkflowId;
+    await cancelRejectPVRevesal(id);
+    data.rejectedReasonDialogModel = false;
+    data.cancelRejectionDialog = false;
+    data.rejectionDialog = false;
+    getTableData();
+  };
+
+  const cancelRejectionConfirmDialog = () => {
+    data.rejectionDialog = true;
+  };
+
+  const viewCommentRejection = (item: any, canReject: any) => {
+    data.rejectedReason = item.approves.find(
+      (approve) => approve.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+    )?.rejection_reason;
+    data.rejectedWorkflowId = item.approves.find(
+      (approve) => approve.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+    )?.id;
+    data.rejectedReasonDialogModel = true;
+    if (canReject == "CANREJECT") {
+      data.cancelRejectionDialog = true;
+    }
+  };
 
   const rejectReversalPVFacility = (model: any) => {
     data.formData = model;
@@ -286,17 +332,16 @@ export const usePaymentVoucher = (): any => {
     const { ends_on_facility, facility_approved, council_approved } = item;
     if (!!ends_on_facility && !!facility_approved) {
       return true;
-    } else if (!!ends_on_facility && !!facility_approved) {
-      return false;
     } else {
       return !!council_approved;
     }
   };
 
-  const getTableData = (params: PaymentVoucher) => {
-    data.response = params;
-    get(params).then((response: AxiosResponse) => {
-      data.response = response.data.data;
+  const getTableData = async () => {
+    get({ per_page: 10 }).then((response: AxiosResponse) => {
+      const { from, to, total, current_page, per_page, last_page } =
+        response.data.data;
+      // data.items = response.data.data.data;
       data.items = response.data.data.data.map((entry: any) => ({
         ...entry,
         approve: entry.approves.find(
@@ -355,6 +400,15 @@ export const usePaymentVoucher = (): any => {
             )
           : false,
       }));
+      data.itemsToFilter = response.data.data.data;
+      data.response = {
+        from,
+        to,
+        total,
+        current_page,
+        per_page,
+        last_page,
+      };
     });
   };
 
@@ -389,6 +443,8 @@ export const usePaymentVoucher = (): any => {
     data.formData = {} as PaymentVoucher;
     data.genericDeleteConfirmModel = false;
     data.genericrejectConfirmModel = false;
+    data.rejectedReasonDialogModel = false;
+    data.rejectionDialog = false;
     data.formDataReceiptRejectionComment = "";
   };
 
@@ -720,5 +776,9 @@ export const usePaymentVoucher = (): any => {
     approveReversalPVFacility,
     cancelGenericConfirmDialog,
     rejectReversalPVFacility,
+    viewCommentRejection,
+    cancelRejectionConfirmDialog,
+    submitApprovalRequest,
+    submitCancelRejectionRequest,
   };
 };

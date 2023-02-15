@@ -44,6 +44,12 @@
         <template v-slot:[`item.date`]="{ item }">
           <span>{{ item.date | format("DD/MM/YYYY") }}</span>
         </template>
+        <template v-slot:[`item.facility`]="{ item }">
+          <span
+            >{{ item.facility.name }}{{ " " }}
+            {{ item.facility.facility_type.name }}</span
+          >
+        </template>
         <template v-slot:[`item.amount`]="{ item }">
           {{ item.amount | toCurrency() }}
         </template>
@@ -62,6 +68,9 @@
         </template>
 
         <template v-slot:[`item.approve`]="{ item }">
+          <span v-if="item.rejectedReversalCouncil.length > 0"
+            >{{ "Reversal Rejected at Council" }}
+          </span>
           <span
             v-if="
               item.rejectedReversalCouncil.length == 0 &&
@@ -105,6 +114,22 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
+          <span v-if="item.rejectedReversalCouncil.length > 0">
+            <v-tooltip right>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  @click="viewCommentRejection(item, 'CANREJECT')"
+                  v-bind="attrs"
+                  color="red"
+                  v-on="on"
+                  class="mr-2"
+                >
+                  mdi-information-variant
+                </v-icon>
+              </template>
+              <small class="">Click to see rejection comment</small>
+            </v-tooltip>
+          </span>
           <!-- <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -808,6 +833,52 @@
         </ModalFooter>
       </template>
     </Modal>
+    <Modal :modal="data.rejectedReasonDialogModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Rejection Reason `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> {{ data.rejectedReason }}</ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn
+            v-if="data.cancelRejectionDialog"
+            color="blue darken-1"
+            text
+            @click="cancelRejectionConfirmDialog"
+          >
+            Cancel Rejection Approval
+          </v-btn>
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Close
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+    <Modal :modal="data.rejectionDialog" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Cancel Rejection`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          Are you sure you want to cancel rejection approval?
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="submitCancelRejectionRequest"
+            >Yes</v-btn
+          >
+          <v-btn color="red darken-1" text @click="cancelGenericConfirmDialog">
+            Cancel
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -860,6 +931,9 @@ export default defineComponent({
       approveReversalPVFacility,
       cancelGenericConfirmDialog,
       rejectReversalPVFacility,
+      viewCommentRejection,
+      cancelRejectionConfirmDialog,
+      submitCancelRejectionRequest,
     } = usePaymentVoucher();
 
     return {
@@ -904,6 +978,9 @@ export default defineComponent({
       approvePaymet,
       cancelGenericConfirmDialog,
       rejectReversalPVFacility,
+      viewCommentRejection,
+      cancelRejectionConfirmDialog,
+      submitCancelRejectionRequest,
     };
   },
 });

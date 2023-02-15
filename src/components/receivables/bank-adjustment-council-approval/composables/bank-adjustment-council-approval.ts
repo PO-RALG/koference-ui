@@ -52,6 +52,12 @@ export const useBankAdjustmentCouncilApprove = (): any => {
         value: "date",
       },
       {
+        text: "Facility",
+        align: "start",
+        sortable: false,
+        value: "facility",
+      },
+      {
         text: "Bank Account Name",
         align: "start",
         sortable: false,

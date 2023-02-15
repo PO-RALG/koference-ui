@@ -2,7 +2,7 @@
   <!-- login form start -->
   <Modal :modal="show" :width="600">
     <template v-slot:header>
-      <ModalHeader :title="message" />
+      <ModalHeader :title="message" :colour="`red`" />
     </template>
     <template v-slot:body>
       <v-flex>

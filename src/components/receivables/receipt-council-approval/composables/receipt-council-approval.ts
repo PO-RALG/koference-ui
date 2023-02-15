@@ -117,6 +117,12 @@ export const useReceipt = (): any => {
         sortable: false,
         value: "receipt_number",
       },
+      {
+        text: "Facility",
+        align: "start",
+        sortable: false,
+        value: "facility",
+      },
 
       { text: "Date", value: "date", sortable: true },
 

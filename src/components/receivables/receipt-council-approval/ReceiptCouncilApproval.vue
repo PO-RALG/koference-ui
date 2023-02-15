@@ -39,6 +39,12 @@
             </v-col>
           </v-card-title>
         </template>
+        <template v-slot:[`item.facility`]="{ item }">
+          <span
+            >{{ item.facility.name }}{{ " " }}
+            {{ item.facility.facility_type.name }}</span
+          >
+        </template>
         <template v-slot:[`item.description`]="{ item }">
           <span>
             {{ item.newData.description }}

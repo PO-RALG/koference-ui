@@ -47,6 +47,12 @@
             </v-col>
           </v-card-title>
         </template>
+        <template v-slot:[`item.facility`]="{ item }">
+          <span
+            >{{ item.facility.name }}{{ " " }}
+            {{ item.facility.facility_type.name }}</span
+          >
+        </template>
         <template v-slot:[`item.description`]="{ item }">
           <span>
             {{ item.description | capitalizeFirstLatter }}
@@ -373,8 +379,8 @@
             <div class="invoice-box" v-if="data.invoiceData">
               <AppLocationHeader
                 :facility="data.invoiceData.facility"
-                :facility-type="data.invoiceData.faciliType"
-                :location="data.invoiceData.location"
+                :facility-type="data.invoiceData.facility.facility_type"
+                :location="data.invoiceData.facility.location"
                 :title="'Invoice'"
               />
               <v-divider class="underline-title"></v-divider>
@@ -434,7 +440,7 @@
               <template v-slot:[`item.item`]="{ item }">
                 <tr class="text--bold">
                   {{
-                    item.definition.name
+                    item.definition?.name
                   }}
                 </tr>
               </template>
@@ -770,8 +776,10 @@ export default defineComponent({
       resetSearchText,
       approveReversalCouncil,
       rejectReversalICouncil,
+      cancelGenericConfirmDialog,
     } = useInvoiceCouncilApproval();
     return {
+      cancelGenericConfirmDialog,
       data,
       getData,
       createReceipt,

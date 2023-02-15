@@ -54,6 +54,13 @@ const approveReversalPVCouncilService = async (payload: any) => {
   );
 };
 
+const cancelRejectPVRevesal = async (id: number) => {
+  return await axios.get(`/api/v1/work-flows/remove-rejection/${id}`);
+};
+
+const requestVoucherApproval = async (id: number) => {
+  return await axios.post(`/api/v1/vouchers/${id}/request-approval`);
+};
 const printPdf = (id: string | number) => {
   const user = JSON.parse(localStorage.getItem("FFARS_USER"));
   const url = `/api/v1/vouchers/${id}/print?token=${user.token}`;
@@ -73,4 +80,6 @@ export {
   activitiesByFundSource,
   approvePVFacility,
   approveReversalPVCouncilService,
+  cancelRejectPVRevesal,
+  requestVoucherApproval,
 };
