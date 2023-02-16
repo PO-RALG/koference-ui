@@ -154,10 +154,17 @@ export const useReceipt = (): any => {
         value: "totalAmt",
       },
       {
+        text: "Approve Status",
+        align: "start",
+        sortable: false,
+        value: "approve",
+      },
+      {
         text: "Actions",
         align: "center",
         sortable: false,
         value: "actions",
+        width: "12%",
       },
     ],
     modal: false,
@@ -268,6 +275,18 @@ export const useReceipt = (): any => {
         isApproved: approve.approves.length
           ? setApprovalStatus(approve.approves[0])
           : false,
+
+        isRejectedCouncil: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                flow.council_approved === false &&
+                flow.workflow == "REVERSAL_OF_RECEIPT"
+            )
+          : false,
+
+        isApprovedFacility: approve.approves.length
+          ? setApprovalStatus(approve.approves[0])
+          : false,
       }));
       data.itemsToFilter = res.data.data.data;
     } else {
@@ -287,7 +306,20 @@ export const useReceipt = (): any => {
         approve: approve.approves.find(
           (flow) => flow.workflow == "DEPOSIT_RECEIPT"
         ),
+
         isApproved: approve.approves.length
+          ? setApprovalStatus(approve.approves[0])
+          : false,
+
+        isRejectedCouncil: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                flow.council_approved === false &&
+                flow.workflow == "REVERSAL_OF_RECEIPT"
+            )
+          : false,
+
+        isApprovedFacility: approve.approves.length
           ? setApprovalStatus(approve.approves[0])
           : false,
       }));
@@ -307,6 +339,18 @@ export const useReceipt = (): any => {
         (flow) => flow.workflow == "DEPOSIT_RECEIPT"
       ),
       isApproved: approve.approves.length
+        ? setApprovalStatus(approve.approves[0])
+        : false,
+
+      isRejectedCouncil: approve.approves.length
+        ? approve.approves.filter(
+            (flow) =>
+              flow.council_approved === false &&
+              flow.workflow == "REVERSAL_OF_RECEIPT"
+          )
+        : false,
+
+      isApprovedFacility: approve.approves.length
         ? setApprovalStatus(approve.approves[0])
         : false,
     }));
@@ -503,6 +547,18 @@ export const useReceipt = (): any => {
       isApproved: approve.approves.length
         ? setApprovalStatus(approve.approves[0])
         : false,
+
+      isRejectedCouncil: approve.approves.length
+        ? approve.approves.filter(
+            (flow) =>
+              flow.council_approved === false &&
+              flow.workflow == "REVERSAL_OF_RECEIPT"
+          )
+        : false,
+
+      isApprovedFacility: approve.approves.length
+        ? setApprovalStatus(approve.approves[0])
+        : false,
     }));
   };
 
@@ -581,6 +637,18 @@ export const useReceipt = (): any => {
         isApproved: approve.approves.length
           ? setApprovalStatus(approve.approves[0])
           : false,
+
+        isRejectedCouncil: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                flow.council_approved === false &&
+                flow.workflow == "REVERSAL_OF_RECEIPT"
+            )
+          : false,
+
+        isApprovedFacility: approve.approves.length
+          ? setApprovalStatus(approve.approves[0])
+          : false,
       }));
     }
     if (data.searchTerm.length === 0) {
@@ -594,6 +662,18 @@ export const useReceipt = (): any => {
           (flow) => flow.workflow == "DEPOSIT_RECEIPT"
         ),
         isApproved: approve.approves.length
+          ? setApprovalStatus(approve.approves[0])
+          : false,
+
+        isRejectedCouncil: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                flow.council_approved === false &&
+                flow.workflow == "REVERSAL_OF_RECEIPT"
+            )
+          : false,
+
+        isApprovedFacility: approve.approves.length
           ? setApprovalStatus(approve.approves[0])
           : false,
       }));
@@ -639,6 +719,18 @@ export const useReceipt = (): any => {
         (flow) => flow.workflow == "DEPOSIT_RECEIPT"
       ),
       isApproved: approve.approves.length
+        ? setApprovalStatus(approve.approves[0])
+        : false,
+
+      isRejectedCouncil: approve.approves.length
+        ? approve.approves.filter(
+            (flow) =>
+              flow.council_approved === false &&
+              flow.workflow == "REVERSAL_OF_RECEIPT"
+          )
+        : false,
+
+      isApprovedFacility: approve.approves.length
         ? setApprovalStatus(approve.approves[0])
         : false,
     }));

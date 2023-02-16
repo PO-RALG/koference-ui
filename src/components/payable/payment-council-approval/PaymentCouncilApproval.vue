@@ -54,9 +54,16 @@
         </template>
 
         <template v-slot:[`item.approve`]="{ item }">
-          <span v-if="item.isApprovedFacility">{{
-            "Waiting for Reversal Approval from Council"
-          }}</span>
+          <!-- {{ item.isRejectedCouncil.length }} -->
+
+          <span
+            v-if="item.isApprovedFacility && item.isRejectedCouncil.length == 0"
+            >{{ "Waiting for Reversal Approval from Council" }}</span
+          >
+          <span
+            v-if="item.isApprovedFacility && item.isRejectedCouncil.length > 0"
+            >{{ "Reversal Rejected" }}</span
+          >
           <span
             v-if="!item.isApprovedFacility && item.isRequestedToReverse[0]"
             >{{ "Waiting for Reversal Approval from Admin" }}</span

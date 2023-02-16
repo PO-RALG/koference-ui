@@ -23,6 +23,16 @@
         :loading="data.loading"
         loading-text="Loading... Please wait"
       >
+        <template v-slot:[`item.approve`]="{ item }">
+          <span
+            v-if="item.isApprovedFacility && item.isRejectedCouncil.length == 0"
+            >{{ "Waiting for Reversal Approval from Council" }}</span
+          >
+          <span
+            v-if="item.isApprovedFacility && item.isRejectedCouncil.length > 0"
+            >{{ "Reversal Rejected at Council" }}</span
+          >
+        </template>
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
