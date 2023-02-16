@@ -20,7 +20,6 @@
         class="elevation-1 pa-2"
         disable-pagination
         hide-default-footer
-        :loading="data.loading"
         loading-text="Loading... Please wait"
       >
         <template v-slot:[`item.approve`]="{ item }">
