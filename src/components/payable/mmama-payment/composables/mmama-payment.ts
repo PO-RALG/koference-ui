@@ -123,10 +123,10 @@ export const useMmamaPayment = (): any => {
   const openDialog = (formData?: any) => {
     if (formData.id) {
       data.formData = formData;
-      data.modalTitle = "Update";
+      data.modalTitle = "Sync";
     } else {
       data.formData = {} as FinancialYear;
-      data.modalTitle = "Create";
+      data.modalTitle = "Sync";
     }
     data.modal = !data.modal;
   };
@@ -140,12 +140,10 @@ export const useMmamaPayment = (): any => {
     });
   };
 
-  const createFinancialYear = (data: any) => {
-    create(data).then((response) => {
-      if (response.status === 200) {
-        reloadData();
-        cancelDialog();
-      }
+  const createFinancialYear = () => {
+    create().then(() => {
+      initialize();
+      cancelDialog();
     });
   };
 

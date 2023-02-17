@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API = "/api/v1/mmama-payments";
+const APIX = "/api/v1/mmama-paymentsx";
 
 const get = async (payload: any) => {
   return await axios.get(`${API}`, { params: payload });
@@ -18,8 +19,8 @@ const find = async (id: string | number) => {
   return await axios.get(`${API}/${id}`);
 };
 
-const create = async (payload: any) => {
-  return await axios.post(`${API}`, payload);
+const create = async () => {
+  return await axios.post(`${APIX}`);
 };
 
 const startFinancialYear = async (payload: any) => {

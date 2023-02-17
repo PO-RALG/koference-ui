@@ -3,10 +3,10 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <!-- <v-btn color="primary" @click="openDialog">
-        <v-icon>mdi-plus</v-icon>
-        Add New
-      </v-btn> -->
+      <v-btn color="primary" @click="openDialog">
+        <v-icon>mdi-sync</v-icon>
+        Sync From M MAMA
+      </v-btn>
     </v-card-actions>
     <v-card>
       <v-data-table
@@ -74,11 +74,12 @@
     </v-card>
     <Modal :modal="data.modal" :width="600">
       <template v-slot:header>
-        <ModalHeader :title="`${data.modalTitle} Financial Year`" />
+        <ModalHeader :title="`${data.modalTitle} M Mama Financial Report`" />
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
-          <v-form>
+          <ModalBody> Are you sure? </ModalBody>
+          <!-- <v-form>
             <v-container>
               <v-row>
                 <v-col cols="12" md="12">
@@ -117,15 +118,13 @@
                 </v-col>
               </v-row>
             </v-container>
-          </v-form>
+          </v-form> -->
         </ModalBody>
       </template>
       <template v-slot:footer>
         <ModalFooter>
           <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="green darken-1" text @click="save"
-            >{{ data.modalTitle }}
-          </v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ "Yes" }} </v-btn>
         </ModalFooter>
       </template>
     </Modal>
