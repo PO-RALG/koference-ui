@@ -418,7 +418,64 @@ export const usePaymentVoucher = (): any => {
     data.response = params;
     get(params).then((response: AxiosResponse) => {
       data.response = response.data.data;
-      data.items = response.data.data.data;
+      data.items = response.data.data.data.map((entry: any) => ({
+        ...entry,
+        approve: entry.approves.find(
+          (flow) => flow.workflow == "PAYMENT_VOUCHER"
+        ),
+        isApproved: entry.approves.length
+          ? setApprovalStatus(entry.approves[0])
+          : false,
+        isRejected: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved === false &&
+                flow.workflow == "PAYMENT_VOUCHER"
+            )
+          : false,
+        isRequestedToReverse: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved == null &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        isRequestedToReverseCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == null &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        isReversedApproved: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        rejectedReversalCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == false &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        rejectedReversalFacility: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.facility_approved == false &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+        approvedReversalCouncil: entry.approves.length
+          ? entry.approves.filter(
+              (flow) =>
+                flow.council_approved == true &&
+                flow.workflow == "REVERSAL_OF_PAYMENT_VOUCHER"
+            )
+          : false,
+      }));
     });
   };
 
