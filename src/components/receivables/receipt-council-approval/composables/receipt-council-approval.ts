@@ -14,6 +14,7 @@ import {
   search,
   approveReceiptFacilityService,
   approveReceiptFacilittyService,
+  cancelRejectPVRevesal,
 } from "../services/receipt-council-approval-service";
 import { get as getCustomers } from "@/components/receivables/customer/services/customer.service";
 import { get as getBankAccounts } from "@/components/setup/bank-account/services/bank-account.service";
@@ -226,11 +227,44 @@ export const useReceipt = (): any => {
       id: "",
       date: "",
     },
+
+    rejectedReason: {},
+    rejectedWorkflowId: null,
+    rejectedReasonDialogModel: false,
+    cancelRejectionDialog: false,
+    rejectionDialog: false,
+    approvalRequestDialog: false,
   });
 
   onMounted(() => {
     init();
   });
+
+  const viewCommentRejection = (item: any, canReject: any) => {
+    data.rejectedReason = item.approves.find(
+      (approve) => approve.workflow == "REVERSAL_OF_RECEIPT"
+    )?.rejection_reason;
+    data.rejectedWorkflowId = item.approves.find(
+      (approve) => approve.workflow == "REVERSAL_OF_RECEIPT"
+    )?.id;
+    data.rejectedReasonDialogModel = true;
+    if (canReject == "CANREJECT") {
+      data.cancelRejectionDialog = true;
+    }
+  };
+
+  const cancelRejectionConfirmDialog = () => {
+    data.rejectionDialog = true;
+  };
+
+  const submitCancelRejectionRequest = async () => {
+    const id: number = data.rejectedWorkflowId;
+    await cancelRejectPVRevesal(id);
+    data.rejectedReasonDialogModel = false;
+    data.cancelRejectionDialog = false;
+    data.rejectionDialog = false;
+    await reloadData();
+  };
 
   const setApprovalStatus = (item: Record<string, any>) => {
     const { ends_on_facility, facility_approved, council_approved } = item;
@@ -396,6 +430,8 @@ export const useReceipt = (): any => {
     data.receipt = receipt;
     data.deletemodal = false;
     data.reverseForm.date = null;
+    data.rejectedReasonDialogModel = false;
+    data.rejectionDialog = false;
   };
 
   const remove = async () => {
@@ -878,6 +914,8 @@ export const useReceipt = (): any => {
   const depositType = RECEIPT_TYPE.DEPOSIT;
 
   return {
+    cancelRejectionConfirmDialog,
+    viewCommentRejection,
     data,
     reverseReceipt,
     getData,
@@ -913,5 +951,6 @@ export const useReceipt = (): any => {
     cancelGenericConfirmDialog,
     approveReCouncil,
     rejectApproveCouncil,
+    submitCancelRejectionRequest,
   };
 };

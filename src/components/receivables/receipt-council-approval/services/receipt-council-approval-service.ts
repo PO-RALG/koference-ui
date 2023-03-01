@@ -70,6 +70,10 @@ const approveReceiptFacilittyService = async (payload: any) => {
   return await axios.post(`${APIAPPROVALL}`, payload);
 };
 
+const cancelRejectPVRevesal = async (id: number) => {
+  return await axios.get(`/api/v1/work-flows/remove-rejection/${id}`);
+};
+
 export {
   create,
   destroy,
@@ -84,4 +88,5 @@ export {
   viewinvoice,
   approveReceiptFacilityService,
   approveReceiptFacilittyService,
+  cancelRejectPVRevesal,
 };

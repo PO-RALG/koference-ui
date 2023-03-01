@@ -84,6 +84,7 @@
         <template v-slot:[`item.pending`]="{ item }">
           {{ (item.amount - item.received_amount) | toCurrency() }}
         </template>
+
         <template v-slot:[`item.actions`]="{ item }">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
@@ -111,6 +112,22 @@
             </template>
             <span>Print</span>
           </v-tooltip>
+          <span v-if="item.isRejectedCouncil.length > 0">
+            <v-tooltip right>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  @click="viewCommentRejection(item, 'CANREJECT')"
+                  v-bind="attrs"
+                  color="red"
+                  v-on="on"
+                  class="mr-2"
+                >
+                  mdi-information-variant
+                </v-icon>
+              </template>
+              <small class="">Click to cancel rejection approval</small>
+            </v-tooltip>
+          </span>
 
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
@@ -683,6 +700,73 @@
         </ModalFooter>
       </template>
     </Modal>
+
+    <Modal :modal="data.genericConfirmModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="data.modalTitle" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> {{ data.modalTitle }}</ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Cancel
+          </v-btn>
+          <v-btn color="green darken-1" text @click="data.genericDialogAction"
+            >Yes</v-btn
+          >
+        </ModalFooter>
+      </template>
+    </Modal>
+
+    <Modal :modal="data.rejectedReasonDialogModel" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Cancel Rejection Apprval `" />
+      </template>
+      <template v-slot:body>
+        <ModalBody> {{ data.rejectedReason }}</ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn
+            v-if="data.cancelRejectionDialog"
+            color="blue darken-1"
+            text
+            @click="cancelRejectionConfirmDialog"
+          >
+            Cancel Rejection Approval
+          </v-btn>
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Close
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+
+    <Modal :modal="data.rejectionDialog" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Cancel Rejection`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody>
+          Are you sure you want to cancel rejection approval?
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="submitCancelRejectionRequest"
+            >Yes</v-btn
+          >
+          <v-btn color="red darken-1" text @click="cancelConfirmDialog">
+            Cancel
+          </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -731,9 +815,15 @@ export default defineComponent({
       cancelGenericConfirmDialog,
       approveReCouncil,
       rejectApproveCouncil,
+      viewCommentRejection,
+      cancelRejectionConfirmDialog,
+      submitCancelRejectionRequest,
     } = useReceipt();
 
     return {
+      submitCancelRejectionRequest,
+      cancelRejectionConfirmDialog,
+      viewCommentRejection,
       data,
       getData,
       createReceipt,
