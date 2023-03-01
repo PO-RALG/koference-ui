@@ -66,6 +66,11 @@ const getGlAccounts = async (params: any): Promise<any> => {
 const approveReceiptFacilityService = async (payload: any) => {
   return await axios.post(`${APIAPPROVAL}`, payload);
 };
+
+const cancelRejectPVRevesal = async (id: number) => {
+  return await axios.get(`/api/v1/work-flows/remove-rejection/${id}`);
+};
+
 const approveReceiptReversalFacilityService = async (payload: any) => {
   return await axios.post(`${APIAPPROVALREVERSAL}`, payload);
 };
@@ -84,4 +89,5 @@ export {
   viewinvoice,
   approveReceiptFacilityService,
   approveReceiptReversalFacilityService,
+  cancelRejectPVRevesal,
 };
