@@ -1,5 +1,12 @@
 import axios from "axios";
 
+const requestPaymentApproval = async (id: number) => {
+  return await axios.post(`/api/v1/vouchers/${id}/request-approval`);
+};
+
+const cancelRejectPRevesal = async (id: number) => {
+  return await axios.get(`/api/v1/work-flows/remove-rejection/${id}`);
+};
 const get = async (params: any) => {
   return await axios.get("/api/v1/payment_reversal/approval-pending-council", {
     params,
@@ -67,4 +74,6 @@ export {
   search,
   printPdf,
   getVouchers,
+  cancelRejectPRevesal,
+  requestPaymentApproval,
 };

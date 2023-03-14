@@ -963,8 +963,8 @@
       </template>
       <template v-slot:footer>
         <ModalFooter>
+          <!-- v-if="data.cancelRejectionDialog" -->
           <v-btn
-            v-if="data.cancelRejectionDialog"
             color="blue darken-1"
             text
             @click="cancelRejectionConfirmDialog"

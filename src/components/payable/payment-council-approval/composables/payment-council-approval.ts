@@ -10,6 +10,8 @@ import {
   printPdf,
   getVouchers,
   approveReversalPCouncilService,
+  cancelRejectPRevesal,
+  requestPaymentApproval,
 } from "../services/payment-council-approval.services";
 import { Payment } from "../types/PaymentCouncilApproval";
 import { find as findPaymentVoucher } from "@/components/payable/voucher/services/payment-voucher.services";
@@ -126,11 +128,56 @@ export const usePayment = (): any => {
       ],
     },
     formDataReceiptRejectionComment: "",
+    rejectedReason: {},
+    rejectedWorkflowId: null,
+    rejectedReasonDialogModel: false,
+    cancelRejectionDialog: false,
+    rejectionDialog: false,
+    approvalRequestDialog: false,
   });
+
+  const submitApprovalRequest = async () => {
+    const id: number = data.formData.id;
+    await requestPaymentApproval(id);
+    data.approvalRequestDialog = false;
+    getTableData();
+  };
+
+  const submitCancelRejectionRequest = async () => {
+    const id: number = data.rejectedWorkflowId;
+    await cancelRejectPRevesal(id);
+    data.rejectedReasonDialogModel = false;
+    data.cancelRejectionDialog = false;
+    data.rejectionDialog = false;
+    getTableData();
+  };
+
+  const cancelApprovalRequestDialog = () => {
+    data.approvalRequestDialog = false;
+    data.rejectionDialog = false;
+    data.formData = {} as Payment;
+  };
+
+  const cancelRejectionConfirmDialog = () => {
+    data.rejectionDialog = true;
+  };
 
   onMounted(() => {
     getTableData();
   });
+
+  const viewCommentRejection = (item: any, canReject: any) => {
+    data.rejectedReason = item.approves.find(
+      (approve) => approve.workflow == "REVERSAL_OF_PAYMENT"
+    )?.rejection_reason;
+    data.rejectedWorkflowId = item.approves.find(
+      (approve) => approve.workflow == "REVERSAL_OF_PAYMENT"
+    )?.id;
+    data.rejectedReasonDialogModel = true;
+    if (canReject == "CANREJECT") {
+      data.cancelRejectionDialog = true;
+    }
+  };
 
   const filterPayment = () => {
     if (data.searchTerm.length > 3) {
@@ -470,13 +517,13 @@ export const usePayment = (): any => {
     };
 
     approveReversalPCouncilService(approveData).then(() => {
-      data.genericDeleteConfirmModel = false;
+      data.rejectedReasonDialogModel = false;
       getTableData();
     });
   };
 
   const cancelGenericConfirmDialog = () => {
-    data.genericDeleteConfirmModel = false;
+    data.rejectedReasonDialogModel = false;
   };
 
   const getPaymentVoucherData = () => {
@@ -601,6 +648,8 @@ export const usePayment = (): any => {
 
   return {
     data,
+    submitApprovalRequest,
+    cancelRejectionConfirmDialog,
     openDialog,
     cancelDialog,
     openRequestReversalDialog,
@@ -623,5 +672,8 @@ export const usePayment = (): any => {
     approveReversalPCouncil,
     cancelGenericConfirmDialog,
     rejectReversalPCouncil,
+    viewCommentRejection,
+    submitCancelRejectionRequest,
+    cancelApprovalRequestDialog,
   };
 };
