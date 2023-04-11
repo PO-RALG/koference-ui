@@ -75,7 +75,8 @@
               item.isRejectedFacility.length == 0 &&
               item.isApprovedFacility &&
               item.isApprovedCouncil &&
-              !item.isReversalApprovedFacility?.council_approved
+              !item.isReversalApprovedFacility?.council_approved &&
+              !item.isRequestedToReverse[0]
             "
             >{{ "Deposit Approved " }}</span
           >
@@ -83,6 +84,8 @@
           <span v-if="item.isRejectedFacility.length > 0">{{
             "Reversal Rejected by  Admin "
           }}</span>
+          <!-- {{ item.approvedDeposit ? true : false }} -->
+          <!-- {{ item.approve ? item.approve.workflow : null }} -->
           <span v-if="item.isApprovedFacility && !item.isApprovedCouncil">{{
             " Waiting for Deposit Approval from Council "
           }}</span>
@@ -119,26 +122,11 @@
               <small class="">Click to cancel rejection approval</small>
             </v-tooltip>
           </span>
-          <v-tooltip
-            v-if="
-              (item.isApprovedCouncil &&
-                !item.isReversalApprovedCouncil &&
-                !item.isRequestedToReverseWhileFacilityApproved.length) ||
-              (!item.approve &&
-                !item.isReversalApprovedFacility?.council_approved &&
-                !canApproveFacility(
-                  item,
-                  'REVERSAL_OF_RECEIPT',
-                  'approve',
-                  'Receipt'
-                ))
-            "
-            top
-          >
+          <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 color="grey"
-                v-if="!item.isRequestedToReverse && can('delete', 'Receipt')"
+                v-if="!item.isRequestedToReverse[0] && can('delete', 'Receipt')"
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"

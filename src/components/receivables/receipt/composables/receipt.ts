@@ -146,7 +146,7 @@ export const useReceipt = (): any => {
         value: "bank_account",
       },
       {
-        text: "Approve Status",
+        text: "Reversal Status",
         align: "start",
         sortable: false,
         value: "approve",
@@ -302,6 +302,12 @@ export const useReceipt = (): any => {
       approve: approve.approves.find(
         (flow) => flow.workflow == "DEPOSIT_RECEIPT"
       ),
+      approvedDeposit: approve.approves.find(
+        (flow) =>
+          flow.workflow == "DEPOSIT_RECEIPT" &&
+          setApprovalStatusCouncil(approve.approves[0])
+      ),
+
       isApprovedFacility: approve.approves.length
         ? setApprovalStatus(approve.approves[0])
         : false,
