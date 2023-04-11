@@ -80,15 +80,32 @@
             "
             >{{ "Deposit Approved " }}</span
           >
-          <!-- {{ item.isRejectedFacility.length }} -->
+          <!-- {{ item.isRejectedCouncil }} -->
           <span v-if="item.isRejectedFacility.length > 0">{{
             "Reversal Rejected by  Admin "
           }}</span>
           <!-- {{ item.approvedDeposit ? true : false }} -->
           <!-- {{ item.approve ? item.approve.workflow : null }} -->
-          <span v-if="item.isApprovedFacility && !item.isApprovedCouncil">{{
-            " Waiting for Deposit Approval from Council "
-          }}</span>
+          <span
+            v-if="
+              item.isApprovedFacility &&
+              !item.isApprovedCouncil &&
+              !item.isRejectedCouncil
+            "
+            >{{ " Waiting for Deposit Approval from Council " }}</span
+          >
+          <span
+            v-if="item.isApprovedFacility && item.isRejectedCouncilDepo.length"
+            >{{ "Deposit Rejected  from Council " }}</span
+          >
+          <span
+            v-if="
+              item.isApprovedFacility &&
+              item.isRejectedCouncil &&
+              !item.isRejectedCouncilDepo
+            "
+            >{{ "Receipt Rejected  from Council " }}</span
+          >
           <span v-if="item.isReversalApprovedFacility?.council_approved">{{
             "Reversal Approved "
           }}</span>

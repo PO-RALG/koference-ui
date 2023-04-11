@@ -329,6 +329,22 @@ export const useReceipt = (): any => {
               flow.workflow == "REVERSAL_OF_RECEIPT"
           )
         : false,
+      isRejectedCouncil: approve.approves.length
+        ? approve.approves.filter(
+            (flow) =>
+              !flow.council_approved &&
+              flow.council_approved !== null &&
+              flow.workflow == "REVERSAL_OF_RECEIPT"
+          )
+        : false,
+      isRejectedCouncilDepo: approve.approves.length
+        ? approve.approves.filter(
+            (flow) =>
+              !flow.council_approved &&
+              flow.council_approved !== null &&
+              flow.workflow == "DEPOSIT_RECEIPT"
+          )
+        : false,
       isReversalApprovedCouncil: approve.approves.length
         ? setReversalApprovalStatusCouncil(approve.approves[0])
         : false,
@@ -371,6 +387,12 @@ export const useReceipt = (): any => {
         approve: approve.approves.find(
           (flow) => flow.workflow == "DEPOSIT_RECEIPT"
         ),
+        approvedDeposit: approve.approves.filter(
+          (flow) =>
+            flow.workflow == "DEPOSIT_RECEIPT" &&
+            setApprovalStatusCouncil(approve.approves[0])
+        ),
+
         isApprovedFacility: approve.approves.length
           ? setApprovalStatus(approve.approves[0])
           : false,
@@ -390,6 +412,22 @@ export const useReceipt = (): any => {
               (flow) =>
                 flow.facility_approved === false &&
                 flow.workflow == "REVERSAL_OF_RECEIPT"
+            )
+          : false,
+        isRejectedCouncil: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                !flow.council_approved &&
+                flow.council_approved !== null &&
+                flow.workflow == "REVERSAL_OF_RECEIPT"
+            )
+          : false,
+        isRejectedCouncilDepo: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                !flow.council_approved &&
+                flow.council_approved !== null &&
+                flow.workflow == "DEPOSIT_RECEIPT"
             )
           : false,
         isReversalApprovedCouncil: approve.approves.length
@@ -508,6 +546,12 @@ export const useReceipt = (): any => {
       approve: approve.approves.find(
         (flow) => flow.workflow == "DEPOSIT_RECEIPT"
       ),
+      approvedDeposit: approve.approves.filter(
+        (flow) =>
+          flow.workflow == "DEPOSIT_RECEIPT" &&
+          setApprovalStatusCouncil(approve.approves[0])
+      ),
+
       isApprovedFacility: approve.approves.length
         ? setApprovalStatus(approve.approves[0])
         : false,
@@ -527,6 +571,22 @@ export const useReceipt = (): any => {
             (flow) =>
               flow.facility_approved === false &&
               flow.workflow == "REVERSAL_OF_RECEIPT"
+          )
+        : false,
+      isRejectedCouncil: approve.approves.length
+        ? approve.approves.filter(
+            (flow) =>
+              !flow.council_approved &&
+              flow.council_approved !== null &&
+              flow.workflow == "REVERSAL_OF_RECEIPT"
+          )
+        : false,
+      isRejectedCouncilDepo: approve.approves.length
+        ? approve.approves.filter(
+            (flow) =>
+              !flow.council_approved &&
+              flow.council_approved !== null &&
+              flow.workflow == "DEPOSIT_RECEIPT"
           )
         : false,
       isReversalApprovedCouncil: approve.approves.length
@@ -755,6 +815,12 @@ export const useReceipt = (): any => {
       approve: approve.approves.find(
         (flow) => flow.workflow == "DEPOSIT_RECEIPT"
       ),
+      approvedDeposit: approve.approves.filter(
+        (flow) =>
+          flow.workflow == "DEPOSIT_RECEIPT" &&
+          setApprovalStatusCouncil(approve.approves[0])
+      ),
+
       isApprovedFacility: approve.approves.length
         ? setApprovalStatus(approve.approves[0])
         : false,
@@ -774,6 +840,22 @@ export const useReceipt = (): any => {
             (flow) =>
               flow.facility_approved === false &&
               flow.workflow == "REVERSAL_OF_RECEIPT"
+          )
+        : false,
+      isRejectedCouncil: approve.approves.length
+        ? approve.approves.filter(
+            (flow) =>
+              !flow.council_approved &&
+              flow.council_approved !== null &&
+              flow.workflow == "REVERSAL_OF_RECEIPT"
+          )
+        : false,
+      isRejectedCouncilDepo: approve.approves.length
+        ? approve.approves.filter(
+            (flow) =>
+              !flow.council_approved &&
+              flow.council_approved !== null &&
+              flow.workflow == "DEPOSIT_RECEIPT"
           )
         : false,
       isReversalApprovedCouncil: approve.approves.length
@@ -875,6 +957,12 @@ export const useReceipt = (): any => {
         approve: approve.approves.find(
           (flow) => flow.workflow == "DEPOSIT_RECEIPT"
         ),
+        approvedDeposit: approve.approves.filter(
+          (flow) =>
+            flow.workflow == "DEPOSIT_RECEIPT" &&
+            setApprovalStatusCouncil(approve.approves[0])
+        ),
+
         isApprovedFacility: approve.approves.length
           ? setApprovalStatus(approve.approves[0])
           : false,
@@ -894,6 +982,22 @@ export const useReceipt = (): any => {
               (flow) =>
                 flow.facility_approved === false &&
                 flow.workflow == "REVERSAL_OF_RECEIPT"
+            )
+          : false,
+        isRejectedCouncil: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                !flow.council_approved &&
+                flow.council_approved !== null &&
+                flow.workflow == "REVERSAL_OF_RECEIPT"
+            )
+          : false,
+        isRejectedCouncilDepo: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                !flow.council_approved &&
+                flow.council_approved !== null &&
+                flow.workflow == "DEPOSIT_RECEIPT"
             )
           : false,
         isReversalApprovedCouncil: approve.approves.length
@@ -932,6 +1036,12 @@ export const useReceipt = (): any => {
         approve: approve.approves.find(
           (flow) => flow.workflow == "DEPOSIT_RECEIPT"
         ),
+        approvedDeposit: approve.approves.filter(
+          (flow) =>
+            flow.workflow == "DEPOSIT_RECEIPT" &&
+            setApprovalStatusCouncil(approve.approves[0])
+        ),
+
         isApprovedFacility: approve.approves.length
           ? setApprovalStatus(approve.approves[0])
           : false,
@@ -951,6 +1061,22 @@ export const useReceipt = (): any => {
               (flow) =>
                 flow.facility_approved === false &&
                 flow.workflow == "REVERSAL_OF_RECEIPT"
+            )
+          : false,
+        isRejectedCouncil: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                !flow.council_approved &&
+                flow.council_approved !== null &&
+                flow.workflow == "REVERSAL_OF_RECEIPT"
+            )
+          : false,
+        isRejectedCouncilDepo: approve.approves.length
+          ? approve.approves.filter(
+              (flow) =>
+                !flow.council_approved &&
+                flow.council_approved !== null &&
+                flow.workflow == "DEPOSIT_RECEIPT"
             )
           : false,
         isReversalApprovedCouncil: approve.approves.length
@@ -1019,6 +1145,12 @@ export const useReceipt = (): any => {
       approve: approve.approves.find(
         (flow) => flow.workflow == "DEPOSIT_RECEIPT"
       ),
+      approvedDeposit: approve.approves.filter(
+        (flow) =>
+          flow.workflow == "DEPOSIT_RECEIPT" &&
+          setApprovalStatusCouncil(approve.approves[0])
+      ),
+
       isApprovedFacility: approve.approves.length
         ? setApprovalStatus(approve.approves[0])
         : false,
@@ -1038,6 +1170,22 @@ export const useReceipt = (): any => {
             (flow) =>
               flow.facility_approved === false &&
               flow.workflow == "REVERSAL_OF_RECEIPT"
+          )
+        : false,
+      isRejectedCouncil: approve.approves.length
+        ? approve.approves.filter(
+            (flow) =>
+              !flow.council_approved &&
+              flow.council_approved !== null &&
+              flow.workflow == "REVERSAL_OF_RECEIPT"
+          )
+        : false,
+      isRejectedCouncilDepo: approve.approves.length
+        ? approve.approves.filter(
+            (flow) =>
+              !flow.council_approved &&
+              flow.council_approved !== null &&
+              flow.workflow == "DEPOSIT_RECEIPT"
           )
         : false,
       isReversalApprovedCouncil: approve.approves.length
