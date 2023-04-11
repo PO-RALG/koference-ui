@@ -122,9 +122,12 @@
               <small class="">Click to cancel rejection approval</small>
             </v-tooltip>
           </span>
+          <!-- {{ item.appro/vedDeposit }} -->
+
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                v-show="!item.approves.length || item.approvedDeposit.length"
                 color="grey"
                 v-if="!item.isRequestedToReverse[0] && can('delete', 'Receipt')"
                 v-bind="attrs"

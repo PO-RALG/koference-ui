@@ -302,7 +302,7 @@ export const useReceipt = (): any => {
       approve: approve.approves.find(
         (flow) => flow.workflow == "DEPOSIT_RECEIPT"
       ),
-      approvedDeposit: approve.approves.find(
+      approvedDeposit: approve.approves.filter(
         (flow) =>
           flow.workflow == "DEPOSIT_RECEIPT" &&
           setApprovalStatusCouncil(approve.approves[0])
