@@ -109,6 +109,8 @@
           <span v-if="item.isReversalApprovedFacility?.council_approved">{{
             "Reversal Approved "
           }}</span>
+          <!-- {{ item.isReversalApprovedFacility }} -->
+
           <span
             v-if="
               item.isReversalApprovedFacility &&
@@ -145,7 +147,11 @@
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 color="grey"
-                v-if="!item.isRequestedToReverse[0] && can('delete', 'Receipt')"
+                v-if="
+                  item.isReversalApprovedFacility?.council_approved !== null &&
+                  !item.isRequestedToReverse[0] &&
+                  can('delete', 'Receipt')
+                "
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
