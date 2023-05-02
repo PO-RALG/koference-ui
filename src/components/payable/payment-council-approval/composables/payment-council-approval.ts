@@ -285,7 +285,7 @@ export const usePayment = (): any => {
   };
 
   const getTableData = () => {
-    get({ per_page: 10 }).then((response: AxiosResponse) => {
+    get({ per_page: 100000 }).then((response: AxiosResponse) => {
       console.log("response.data.data", response.data.data);
       if (response.data && response.data.data != null) {
         const { from, to, total, current_page, per_page, last_page } =
