@@ -95,7 +95,7 @@
       </template>
       <template v-slot:body>
         <ModalBody v-if="data.formData">
-          <v-form>
+          <v-form enctype="multipart/form-data">
             <v-container>
               <v-row>
                 <v-col cols="12" md="12" class="mb-n8">
@@ -159,6 +159,7 @@
                     show-size
                     success="true"
                     label="File input"
+                    v-model="data.formData.file"
                   ></v-file-input>
                 </v-col>
               </v-row>
@@ -200,7 +201,7 @@ import { defineComponent } from "vue";
 import { useDocument } from "./composables/document";
 
 export default defineComponent({
-  name: "DocumentCategory",
+  name: "DocumentComponent",
   setup() {
     const {
       data,

@@ -1,6 +1,7 @@
 export interface Document {
   id: number;
   name: string;
+  file: string;
   description: string;
   document_category_id: string;
   validity: string;

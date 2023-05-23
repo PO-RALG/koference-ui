@@ -137,7 +137,7 @@ export const useDocument = (): any => {
     } else {
       const formData = new FormData();
 
-      formData.append("document_file", data.file);
+      formData.append("document_file", data.formData.file);
       formData.append("name", data.formData.name);
       formData.append("description", data.formData.description);
       formData.append(
@@ -221,7 +221,7 @@ export const useDocument = (): any => {
       return;
     }
     data.formData.document_file = event.target.files[0];
-    // console.log("event", event);
+    console.log("event", event);
     fileToupload.value = event.target.files[0];
   };
 
@@ -242,7 +242,12 @@ export const useDocument = (): any => {
     });
   };
   const selectedFile = (event: any) => {
+    console.log("data file:", event.name);
+
     data.file = event;
+    const formData = new FormData();
+
+    formData.append("document_file", event);
   };
 
   // watching a getter
