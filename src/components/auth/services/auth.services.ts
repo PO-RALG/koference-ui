@@ -6,18 +6,31 @@ const authenticate = async (payload: any) => {
   return axios.post("/api/v1/login", payload);
 };
 
+const uploadFile = async (payload: any) => {
+  // console.log("upload", payload);
+  return axios.post("/api/v1/files/upload", payload);
+};
+
 const changePassword = async (payload: any) => {
   return axios.post("/api/v1/users/change-password", payload);
 };
 
+const createData = async (payload: any) => {
+  return axios.post("/api/v1/queries", payload);
+};
+
+const sendFeedbackData = async (payload: any) => {
+  return await axios.patch(`/api/v1/queries/` + payload.query.id, payload);
+};
 const setUser = async (payload: any) => {
+  console.log("user", payload.data.msg);
   // rename menu to menu_groups and menu's menu to children
-  const data = payload.menu.map(({ menu, ...item }) => ({
+  const data = payload.data.msg.menus.map(({ menu, ...item }) => ({
     ...item,
-    children: menu,
+    // children: menu,
   }));
 
-  const sorted = _.sortBy(data, "position");
+  const sorted = _.sortBy(data, "description");
 
   const newMenuGroup = [
     {
@@ -32,13 +45,13 @@ const setUser = async (payload: any) => {
     ...sorted,
   ];
 
-  payload.menu_groups = newMenuGroup;
+  payload.data.msg.menu_groups = newMenuGroup;
   // delete menu
-  delete payload.menu;
+  delete payload.data.msg.menus;
 
   console.log("payload", payload);
 
-  const user = JSON.stringify(payload);
+  const user = JSON.stringify(payload.data.msg);
   store.dispatch("Auth/LOGIN", user);
 };
 
@@ -66,4 +79,7 @@ export {
   setAppName,
   setLoginError,
   setUser,
+  uploadFile,
+  createData,
+  sendFeedbackData,
 };

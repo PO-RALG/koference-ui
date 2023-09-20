@@ -4,7 +4,7 @@
  * @returns currentUser: Object
  */
 const getCurentUser = async (): Promise<any> => {
-  return await JSON.parse(localStorage.getItem("FFARS_USER"));
+  return await JSON.parse(localStorage.getItem("GRM_USER"));
 };
 
 export default getCurentUser;

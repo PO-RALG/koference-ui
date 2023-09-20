@@ -4,10 +4,10 @@ import { RootState } from "../types";
 import { Auth } from "./types";
 
 const state: Auth = {
-  currentUser: JSON.parse(localStorage.getItem("FFARS_USER")),
+  currentUser: JSON.parse(localStorage.getItem("GRM_USER")),
   loginError: {},
-  app: JSON.parse(localStorage.getItem("FFARS_APP")),
-  loginStatus: JSON.parse(localStorage.getItem("FFARS_LOGIN_STATUS")),
+  app: JSON.parse(localStorage.getItem("GRM_APP")),
+  loginStatus: JSON.parse(localStorage.getItem("GRM_LOGIN_STATUS")),
 };
 
 const getters: GetterTree<Auth, RootState> = {
@@ -39,6 +39,7 @@ const actions: ActionTree<Auth, RootState> = {
 
   async LOGIN({ commit }, payload: Auth) {
     commit("AUTHENTICATE", payload);
+    console.log("login", payload);
   },
 };
 
@@ -47,28 +48,28 @@ const mutations: MutationTree<Auth> = {
     const loginStatus = { isLoggedIn: true };
     state.currentUser = JSON.parse(payload);
     state.loginStatus = loginStatus;
-    localStorage.setItem("FFARS_USER", payload);
-    localStorage.setItem("FFARS_LOGIN_STATUS", JSON.stringify(loginStatus));
+    localStorage.setItem("GRM_USER", payload);
+    localStorage.setItem("GRM_LOGIN_STATUS", JSON.stringify(loginStatus));
   },
 
   SET_APP_NAME(state, payload) {
     const app = { name: payload };
     state.app = app;
-    localStorage.setItem("FFARS_APP", JSON.stringify(app));
+    localStorage.setItem("GRM_APP", JSON.stringify(app));
   },
 
   LOG_OUT(state) {
     const loginStatus = { isLoggedIn: false };
     state.loginStatus = loginStatus;
     state.currentUser = {};
-    localStorage.removeItem("FFARS_USER");
-    localStorage.removeItem("FFARS_LOGIN_STATUS");
+    localStorage.removeItem("GRM_USER");
+    localStorage.removeItem("GRM_LOGIN_STATUS");
     router.push("/login");
   },
 
   SET_LOGIN_ERROR(state, error) {
-    localStorage.removeItem("FFARS_LOGIN_STATUS");
-    localStorage.removeItem("FFARS_LOGIN_STATUS");
+    localStorage.removeItem("GRM_LOGIN_STATUS");
+    localStorage.removeItem("GRM_LOGIN_STATUS");
     state.loginError = error;
   },
 };

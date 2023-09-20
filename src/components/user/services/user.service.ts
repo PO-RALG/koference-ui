@@ -1,6 +1,8 @@
 import axios from "axios";
 
 const API = "/api/v1/users";
+const APIUSERQUERY = "/api/v1/user-queries";
+const APIALL = "/api/v1/users";
 
 const wait = (ms: number, value) => {
   return new Promise((resolve) => setTimeout(resolve, ms, value));
@@ -11,12 +13,17 @@ const get = async (payload: any) => {
   //.then(value => wait(5000, value))
 };
 
-const find = async (id: string | number) => {
-  return await axios.get(`${API}/${id}`);
+const find = async (payload: any) => {
+  console.log("data", payload);
+  return await axios.get(`${APIALL}`, { params: payload });
 };
 
 const create = async (payload: any) => {
   return await axios.post(`${API}`, payload);
+};
+
+const saveUserQuety = async (payload: any) => {
+  return await axios.post(`${APIUSERQUERY}`, payload);
 };
 
 const update = async (payload: any) => {
@@ -63,4 +70,5 @@ export {
   addApprovalRoles,
   getTrushed,
   restoreUser,
+  saveUserQuety,
 };

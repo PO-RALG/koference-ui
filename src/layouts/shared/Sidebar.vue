@@ -1,11 +1,13 @@
 <template>
-  <v-navigation-drawer v-model="drawer" width="280px" app v-if="user">
-    <template v-slot:prepend>
-      <SidebarToolbar @onSidebarClose="toggleSidebar" />
-    </template>
-    <SidebarUserInfo :user="user" :logoUrl="data.user_logo" />
-    <Menu :menuGroups="user.menu_groups" @navigate="navigateToState" />
-  </v-navigation-drawer>
+  <div>
+    <v-navigation-drawer v-model="drawer" width="280px" app v-if="user">
+      <template v-slot:prepend>
+        <SidebarToolbar @onSidebarClose="toggleSidebar" />
+      </template>
+      <SidebarUserInfo :user="user" :logoUrl="data.user_logo" />
+      <Menu :menuGroups="user.menu_groups" @navigate="navigateToState" />
+    </v-navigation-drawer>
+  </div>
 </template>
 
 <script lang="ts">
@@ -81,7 +83,7 @@ export default defineComponent({
 .sidebar-toolbar {
   height: 64px;
   color: #fff;
-  background-color: rgb(33, 150, 243) !important;
+  background-color: #19577b;
 }
 .info-toolbar {
   background-color: rgb(21, 101, 192);
@@ -99,7 +101,8 @@ export default defineComponent({
   box-shadow: 0 5px 25px 0 rgba(0, 0, 0, 0.2);
 }
 .user-banner {
-  background: rgb(21, 101, 192);
+  // background: rgb(21, 101, 192);
+  background-color: #dcddde;
   color: #ddd;
   text-align: center;
   padding: 10px 0 0 0;
@@ -119,6 +122,7 @@ export default defineComponent({
 }
 .menu-container {
   padding: 0;
+  background-color: teal;
 }
 .v-list {
   padding-top: 0 !important;
@@ -138,6 +142,12 @@ h3.admin-title {
   width: 70px;
   height: 70px;
   border: 6px solid rgba(204, 204, 204, 0.42);
+}
+.v-navigation-drawer__content {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #edf3f5;
 }
 
 .description {

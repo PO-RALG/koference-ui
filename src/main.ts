@@ -80,11 +80,11 @@ const successHandler = (response: AxiosResponse) => {
   store.dispatch("Loader/DONE");
   let message = null;
   if (typeof response.data === "object") {
-    message = response.data.message;
+    message = "Success";
   } else {
     const messages = response.data.split("\n");
-    const msg = JSON.parse(messages[messages.length - 1]);
-    message = msg.message;
+    // const msg = JSON.parse(messages[messages.length - 1]);
+    message = "Success";
   }
 
   const payload: SnackBarPayload = {

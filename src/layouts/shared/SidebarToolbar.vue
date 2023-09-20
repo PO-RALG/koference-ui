@@ -1,9 +1,9 @@
 <template>
   <v-toolbar-title
-    color="primary"
+    color=""
     class="sidebar-toolbar d-flex flex-row justify-space-between"
   >
-    <h3 class="admin-title">FFARS</h3>
+    <h3 class="admin-title">GRM</h3>
     <v-icon
       large
       @click.stop="$emit('onSidebarClose')"

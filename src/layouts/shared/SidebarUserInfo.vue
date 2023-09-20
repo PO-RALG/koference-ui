@@ -11,7 +11,7 @@
           </v-col>
           <v-col cols="8" class="text-left pl-0 mt-n2">
             <div class="description">
-              <h3 class="name">{{ fullName }}</h3>
+              <h3 class="name black--text">{{ fullName }}</h3>
               <div class="description-title" v-if="user.roles">
                 <a href="#">[{{ roleName }}]</a>
               </div>

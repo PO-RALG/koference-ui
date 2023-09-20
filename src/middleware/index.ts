@@ -3,7 +3,7 @@ import axios from "axios";
 import VueJwtDecode from "vue-jwt-decode";
 import store from "@/store";
 
-const DEFAULT_TITLE = "FFARS - Facility Financial Accounting & Reporting System";
+const DEFAULT_TITLE = "GRM";
 
 const getCurrentUser = () => {
   return store.getters["Auth/getCurrentUser"];
@@ -16,7 +16,7 @@ const getLoginStatus = async (): Promise<any> => {
 
 const setTitle = async (to, _, next) => {
   Vue.nextTick(() => {
-    document.title = `${to.meta.title} - Facility Financial Accounting & Reporting System (FFARS)` || DEFAULT_TITLE;
+    document.title = `${to.meta.title} - GRM System (GRM)` || DEFAULT_TITLE;
   });
   next();
 };
@@ -44,7 +44,8 @@ const validateToken = async (to, _, next) => {
       return false;
     }
   } else {
-    next(`/login?redirect=${TO_PATH}`);
+    next();
+    // next(`/login?redirect=${TO_PATH}`);
   }
 };
 
@@ -83,10 +84,15 @@ const auth = async (to, _, next) => {
 
   if (!hasToken) {
     const token = currentUser.token;
-    axios.defaults.headers.common["Authorization"] = `Bearer ${currentUser.token}`;
+    axios.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${currentUser.token}`;
   }
 
-  if (to.matched.some((record: any) => record.meta.requiresAuth) && currentUser) {
+  if (
+    to.matched.some((record: any) => record.meta.requiresAuth) &&
+    currentUser
+  ) {
     if (loggedIn) {
       await forcePasswordChange(next, currentUser);
     } else {
@@ -101,19 +107,19 @@ const forcePasswordChange = async (next, user) => {
   const token = user ? user.token : null;
   const { exp } = VueJwtDecode.decode(token);
 
-  if (Date.now() >= exp * 1000) {
-    const message = "Token has expired";
-    // show login pop up
-    store.dispatch("LoginDialog/SHOW", message);
-    next();
-  } else {
-    const msg = { message: "Please Reset Your Password" };
-    if (user.password_changed) {
-      next();
-    } else {
-      store.dispatch("ChangePasswordDialog/SHOW", msg);
-    }
-  }
+  // if (Date.now() >= exp * 1000) {
+  //   const message = "Token has expired";
+  //   // show login pop up
+  //   store.dispatch("LoginDialog/SHOW", message);
+  //   next();
+  // } else {
+  //   const msg = { message: "Please Reset Your Password" };
+  //   if (user.password_changed) {
+  //     next();
+  //   } else {
+  //     store.dispatch("ChangePasswordDialog/SHOW", msg);
+  //   }
+  // }
 };
 
 export {

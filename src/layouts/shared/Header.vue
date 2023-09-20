@@ -2,12 +2,12 @@
   <v-app-bar
     :clipped-left="$vuetify.breakpoint.lgAndUp"
     app
-    color="primary"
+    color="#19577b"
     dark
   >
     <v-app-bar-nav-icon @click.stop="toggleSidebar"></v-app-bar-nav-icon>
     <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
-      <span class="hidden-sm-and-down">FFARS</span>
+      <span class="hidden-sm-and-down">GRM</span>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-menu
