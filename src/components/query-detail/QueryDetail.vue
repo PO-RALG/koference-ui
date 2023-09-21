@@ -86,7 +86,9 @@
                     <div _ngcontent-byn-c280="" class="font-weight-bold">
                       Track Number
                     </div>
-                    <div _ngcontent-byn-c280="">MSIMBAZI-230917-0011</div>
+                    <div _ngcontent-byn-c280="">
+                      {{ receivedData && receivedData?.tracknumber }}
+                    </div>
                   </div>
                 </div>
                 <div
