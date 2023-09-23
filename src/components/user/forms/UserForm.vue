@@ -4,6 +4,11 @@
       <ModalHeader :title="`${title} User`" />
     </template>
     <template v-slot:body>
+      <v-alert outlined type="warning" prominent border="left">
+        <h4 class="font-weight-bold red--text">
+          Mfumo hautochukua taarifa yako yeyote bila ridhaa/hiari yako
+        </h4>
+      </v-alert>
       <ModalBody class="p-10">
         <v-form ref="form" v-model="data.valid">
           <v-container>

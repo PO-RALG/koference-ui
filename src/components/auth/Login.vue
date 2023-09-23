@@ -96,6 +96,10 @@
                           kujisajili.</span
                         >
                       </p>
+                      <p>
+                        <!-- <h4 class="font-weight-bold red--text">Mfumo hautochukua taarifa yako yeyote bila ridhaa/hiari yako
+</h4> -->
+                      </p>
                     </v-alert>
                   </v-col>
                 </v-container>
