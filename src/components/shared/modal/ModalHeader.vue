@@ -7,6 +7,23 @@
     "
   >
     <span class="text-h5">{{ title }}</span>
+    <v-spacer></v-spacer>
+
+    <v-btn
+      v-if="is_signup"
+      large
+      @click="openSignUp"
+      color="white"
+      class="white--text"
+      text
+    >
+      Jisajili (Sign up)
+    </v-btn>
+    <span v-if="is_claiming">
+      <v-btn large @click="closeDialogx" color="white" class="white--text" text>
+        <v-icon large>mdi-close</v-icon>
+      </v-btn>
+    </span>
   </v-card-title>
 </template>
 
@@ -26,6 +43,31 @@ export default defineComponent({
       type: Boolean,
       default: false,
       required: false,
+    },
+    is_claiming: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    is_signup: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+  },
+
+  data() {
+    return {};
+  },
+
+  methods: {
+    closeDialogx() {
+      console.log("data");
+      this.$emit("closeDialog");
+    },
+    openSignUp() {
+      console.log("data");
+      this.$emit("openSignUp");
     },
   },
 });

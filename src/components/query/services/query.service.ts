@@ -1,4 +1,15 @@
 import axios from "axios";
+const APIONEQUERY = "/api/v1/queries/oneQuery";
+const APIONEUSER = "/api/v1/users/users/oneUser";
+
+const trackOneQuery = async (payload: any) => {
+  console.log("data", payload);
+  return await axios.get(`${APIONEQUERY}`, { params: payload });
+};
+const trackOneUser = async (payload: any) => {
+  console.log("data", payload);
+  return await axios.get(`${APIONEUSER}`, { params: payload });
+};
 
 const get = async (payload: any) => {
   return await axios.get("/api/v1/queries", { params: payload });
@@ -34,4 +45,14 @@ const destroy = async (payload: any) => {
   return await axios.delete(`/api/v1/queries/` + payload);
 };
 
-export { get, find, create, update, destroy, search, searchCategories };
+export {
+  get,
+  find,
+  create,
+  update,
+  destroy,
+  search,
+  searchCategories,
+  trackOneQuery,
+  trackOneUser,
+};

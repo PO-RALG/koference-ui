@@ -7,11 +7,7 @@
         <v-icon>mdi-delete-empty-outline</v-icon>
         Restore Trashed Users
       </v-btn>
-      <v-btn
-        color="primary"
-        @click="openDialog"
-        :disabled="cant('create', 'User')"
-      >
+      <v-btn large color="teal" class="white--text" @click="openDialog">
         <v-icon>mdi-plus</v-icon>
         Add New
       </v-btn>
@@ -49,30 +45,12 @@
             @click.native.stop
             v-model="item.active"
             @change="openActivationDialog(item)"
-            :disabled="
-              cant('activateDeactivate', 'User') ||
-              item.id === data.currentUser.id
-            "
+            :disabled="item.id === data.currentUser.id"
             value
           >
           </v-switch>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip top v-if="canGetApprovalRole(item)">
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-bind="attrs"
-                v-on="on"
-                class="mr-2"
-                @click="openApprovalRoleDialog(item)"
-                :disabled="cant('assignApprovalRoles', 'User')"
-              >
-                mdi-check
-              </v-icon>
-              "no!"
-            </template>
-            <span>Assign Approval Role</span>
-          </v-tooltip>
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
@@ -88,11 +66,7 @@
             <span>Reset Password</span>
           </v-tooltip>
 
-          <v-icon
-            class="mr-2"
-            @click="openDialog(item)"
-            :disabled="cant('edit', 'User')"
-          >
+          <v-icon class="mr-2" @click="openDialog(item)">
             mdi-pencil-box-outline
           </v-icon>
           <v-icon
@@ -136,54 +110,7 @@
       :isOpen="data.show"
       :title="`${data.status} User`"
     />
-    <Modal
-      v-if="data.showApprovalDialog"
-      :modal="data.showApprovalDialog"
-      :width="600"
-    >
-      <template v-slot:header>
-        <ModalHeader :title="'Assign Approval Role'" />
-      </template>
-      <template v-slot:body>
-        <ModalBody>
-          <v-form ref="form">
-            <v-container>
-              <v-row>
-                <v-col cols="12" lg="12" md="12" sm="12">
-                  <v-text-field
-                    label="Name"
-                    v-model="data.user.fullName"
-                    required
-                    disabled
-                  >
-                  </v-text-field>
-                </v-col>
-                <v-col cols="12" lg="12" md="12" sm="12">
-                  <v-autocomplete
-                    v-model="data.user.approval_role_id"
-                    label="Select Approval Role"
-                    :items="data.approvalRoles"
-                    :item-text="'name'"
-                    item-value="id"
-                    outlined
-                    small
-                  >
-                  </v-autocomplete>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-form>
-        </ModalBody>
-      </template>
-      <template v-slot:footer>
-        <ModalFooter class="mt-n8">
-          <v-btn color="blue darken-1" text @click="cancelDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="setApprovalRole">
-            {{ data.modalTitle }}
-          </v-btn>
-        </ModalFooter>
-      </template>
-    </Modal>
+
     <Modal :modal="data.trushModal" :width="1200">
       <template v-slot:header>
         <ModalHeader :title="`Trashed Users `" />
@@ -268,7 +195,7 @@
         </ModalFooter>
       </template>
     </Modal>
-    <Modal :modal="data.restoreTrashedmodal" :width="400">
+    <!-- <Modal :modal="data.restoreTrashedmodal" :width="400">
       <template v-slot:header>
         <ModalHeader :title="`Restore Users From Trash `" />
       </template>
@@ -283,7 +210,7 @@
           <v-btn color="red darken-1" text @click="restore">Yes</v-btn>
         </ModalFooter>
       </template>
-    </Modal>
+    </Modal> -->
   </div>
 </template>
 
@@ -326,7 +253,6 @@ export default defineComponent({
       resetPasswd,
       filterUsers,
       resetSearchText,
-      canGetApprovalRole,
       setApprovalRole,
       openTrushedDialog,
       cancelConfirmDialog,
@@ -371,7 +297,6 @@ export default defineComponent({
       openApprovalRoleDialog,
       filterUsers,
       resetSearchText,
-      canGetApprovalRole,
       setApprovalRole,
       openTrushedDialog,
       cancelConfirmDialog,

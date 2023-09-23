@@ -10,7 +10,7 @@
             <v-row>
               <v-col cols="12" lg="4" md="4" sm="12">
                 <v-text-field
-                  label="First Name"
+                  label="jina la kwanza(First Name)"
                   v-model="formData.first_name"
                   :rules="data.requiredRules"
                   outlined
@@ -19,7 +19,7 @@
               </v-col>
               <v-col cols="12" lg="4" md="4" sm="12">
                 <v-text-field
-                  label="Midde Name"
+                  label="Jina la kati(Middle Name)"
                   v-model="formData.middle_name"
                   :rules="data.requiredRules"
                   outlined
@@ -28,7 +28,7 @@
               </v-col>
               <v-col cols="12" lg="4" md="4" sm="12">
                 <v-text-field
-                  label="Last Name"
+                  label="Jina la mwisho(Last Name)"
                   v-model="formData.last_name"
                   :rules="data.requiredRules"
                   outlined
@@ -39,7 +39,7 @@
             <v-row>
               <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
                 <v-text-field
-                  label="Email Address"
+                  label="Barua pepe(Email Address)"
                   v-model="formData.email"
                   v-bind:rules="data.emailRules"
                   outlined
@@ -48,7 +48,7 @@
               </v-col>
               <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
                 <v-text-field
-                  label="Phone Number"
+                  label="Namba ya simu(Phone Number)"
                   v-model="formData.phone_number"
                   outlined
                 >
@@ -56,16 +56,54 @@
               </v-col>
               <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
                 <v-text-field
-                  label="Check Number"
-                  v-model="formData.check_number"
+                  label="Namba ya NIDA(NIN Number)"
+                  v-model="formData.nin_number"
                   :rules="data.requiredRules"
                   outlined
                 >
                 </v-text-field>
               </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" sm="12" md="6" class="pb-6">
+              <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
+                <v-text-field
+                  label="Umri(Age)"
+                  v-model="formData.age"
+                  :rules="data.requiredRules"
+                  outlined
+                  type="number"
+                >
+                </v-text-field>
+              </v-col>
+              <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
+                <v-text-field
+                  label="Jinsi(Gender)"
+                  v-model="formData.sex"
+                  :rules="data.requiredRules"
+                  outlined
+                >
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+                <v-text-field
+                  label="Neno la kuingilia(User Name)"
+                  v-model="formData.username"
+                  :rules="data.requiredRules"
+                  outlined
+                >
+                </v-text-field>
+              </v-col>
+              <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+                <v-text-field
+                  label="Nywila(Password)"
+                  v-model="formData.password"
+                  :rules="data.requiredRules"
+                  outlined
+                >
+                </v-text-field>
+              </v-col>
+              <!-- </v-row>
+            <v-row> -->
+              <!-- <v-col cols="12" sm="12" md="6" class="pb-6">
                 <v-label v-if="formData.location">
                   <h5 class="tree-title">
                     SELECTED USER LOCATION ({{ formData.location.name }})
@@ -111,9 +149,9 @@
                     ></v-select>
                   </v-col>
                 </v-row>
-              </v-col>
+              </v-col> -->
             </v-row>
-            <v-row>
+            <!-- <v-row>
               <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
                 <DualMultiSelect
                   :source="data.roles"
@@ -124,7 +162,7 @@
                   @onChangeList="onChangeList"
                 />
               </v-col>
-            </v-row>
+            </v-row> -->
           </v-container>
           <!-- <pre>{{ formData }}</pre> -->
         </v-form>
@@ -132,9 +170,9 @@
     </template>
     <template v-slot:footer>
       <ModalFooter>
-        <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
+        <v-btn color="red darken-1" text @click="closeDialog">Funga</v-btn>
         <v-btn color="blue darken-1" text @click="save" :disabled="!data.valid">
-          {{ title }}
+          {{ "Hifadhi" }}
         </v-btn>
       </ModalFooter>
     </template>
@@ -191,7 +229,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      initialize();
+      // initialize();
     });
 
     const save = () => {

@@ -47,7 +47,6 @@ const routes: Array<RouteConfig> = [
       ...dashboardRoutes,
       ...userRoutes,
       ...financialYearRoutes,
-      ...userRoutes,
       ...levelRoutes,
       ...adminAreaRoutes,
       ...queryCategoryRoutes,

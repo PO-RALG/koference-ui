@@ -108,9 +108,14 @@
                       @click="cancelConfirmDialog"
                       color="red lighten-2"
                       large
+                      class="white--text"
                       >Cancel</v-btn
                     >
-                    <v-btn @click="submitFomrm" color="green lighten-2" large
+                    <v-btn
+                      @click="submitFomrm"
+                      color="green lighten-2"
+                      class="white--text"
+                      large
                       >{{ "Submit feedback" }}
                     </v-btn>
                   </ModalFooter>
@@ -470,6 +475,8 @@ export default {
         };
         this.formData.files = [];
         this.documentTypes = [];
+        this.userList = false;
+        this.$router.push({ name: "anotheruser" });
       });
     },
 

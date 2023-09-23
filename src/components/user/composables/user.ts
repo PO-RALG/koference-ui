@@ -11,7 +11,7 @@ import {
   getTrushed,
   restoreUser,
 } from "../services/user.service";
-import { get as getApprovalRoles } from "@/components/approval/role/services/approval-role-services";
+// import { get as getApprovalRoles } from "@/components/approval/role/services/approval-role-services";
 import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
 import { User } from "../types/User";
 
@@ -57,14 +57,14 @@ export const useUser = (type?: string): Record<string, unknown> => {
 
     trush_headers: [
       { text: "No", value: "index" },
-      { text: "Check Number", value: "check_number" },
+      { text: "NIN", value: "nin_number" },
       { text: "Phone Number", value: "phone_number" },
       { text: "Name", align: "start", sortable: false, value: "fullName" },
       { text: "Email", value: "email" },
       { text: "Actions", value: "actions", sortable: false },
     ],
     headers: [
-      { text: "Check Number", value: "check_number" },
+      { text: "NIN", value: "nin_number" },
       { text: "Phone Number", value: "phone_number" },
       { text: "Name", align: "start", sortable: false, value: "fullName" },
       { text: "Email", value: "email" },
@@ -115,6 +115,13 @@ export const useUser = (type?: string): Record<string, unknown> => {
       initialize();
     }
   });
+  // onMounted(() => {
+  //   if (type === "APPROVAL") {
+  //     loadApprovalUsers();
+  //   } else {
+  //     initialize();
+  //   }
+  // });
 
   const filterTrushedUser = () => {
     if (data.searchTermTrushed.length > 3) {
@@ -233,9 +240,10 @@ export const useUser = (type?: string): Record<string, unknown> => {
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
-        response.data.data;
+        response.data;
+      console.log("mmmm", response);
       data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data.data.data;
+      data.items = response.data;
     });
     data.currentUser = currentUser;
   };
@@ -258,15 +266,17 @@ export const useUser = (type?: string): Record<string, unknown> => {
   };
 
   const approvableRole = (name) => {
-    return name === "DT" || name === "FA" || name === "FACILITY_ADMIN";
+    // return name === "DT" || name === "FA" || name === "FACILITY_ADMIN";
   };
 
   const canGetApprovalRole = (user) => {
-    return user.roles.map((r) => r.display_name).some(approvableRole);
+    // return user.roles.map((r) => r.display_name).some(approvableRole);
   };
 
   const save = (formData: any) => {
     if (formData.id) {
+      delete formData.menus;
+      delete formData.fullName;
       updateUser(formData);
     } else {
       createUser(formData);
@@ -315,7 +325,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
     return data.items.map((user: any) => ({
       ...user,
       fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
-      displayRoles: user.roles.map((r: any) => r.name),
+      // displayRoles: user.roles.map((r: any) => r.name),
     }));
   });
 
@@ -324,7 +334,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
       .map((user: any) => ({
         ...user,
         fullName: `${user.first_name} ${user.middle_name}  ${user.last_name}`,
-        displayRoles: user.approval_role.name,
+        // displayRoles: user.approval_role.name,
       }))
       .filter((user: any) => {
         return user.can_approve === true;
@@ -474,16 +484,16 @@ export const useUser = (type?: string): Record<string, unknown> => {
 
   const openApprovalRoleDialog = (user) => {
     data.user = user;
-    loadApprovalRoles(user);
-    data.showApprovalDialog = true;
-    data.modalTitle = "Assign";
-  };
+    //   loadApprovalRoles(user);
+    //   data.showApprovalDialog = true;
+    //   data.modalTitle = "Assign";
+    // };
 
-  const loadApprovalRoles = (user) => {
-    const name = user.roles.map((r) => r.name)[0];
-    getApprovalRoles({ regSearch: name }).then((response: AxiosResponse) => {
-      data.approvalRoles = response.data.data.data;
-    });
+    // const loadApprovalRoles = (user) => {
+    //   const name = user.roles.map((r) => r.name)[0];
+    //   getApprovalRoles({ regSearch: name }).then((response: AxiosResponse) => {
+    //     data.approvalRoles = response.data.data.data;
+    //   });
   };
 
   const onUserSelection = (user) => {

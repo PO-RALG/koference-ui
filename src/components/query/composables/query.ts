@@ -23,25 +23,25 @@ export const useQuery = (): any => {
       {
         text: "Created Date",
         align: "start",
-        sortable: false,
+        sortable: true,
         value: "created_date",
       },
       {
         text: "Category",
         align: "start",
-        sortable: false,
+        sortable: true,
         value: "queryCategory.name",
       },
       {
         text: "Description",
         align: "start",
-        sortable: false,
+        sortable: true,
         value: "description",
       },
       {
         text: "Status",
         align: "start",
-        sortable: false,
+        sortable: true,
         value: "queryStatus.name",
       },
 

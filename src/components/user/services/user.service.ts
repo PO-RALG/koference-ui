@@ -3,6 +3,7 @@ import axios from "axios";
 const API = "/api/v1/users";
 const APIUSERQUERY = "/api/v1/user-queries";
 const APIALL = "/api/v1/users";
+const APISENDMAIL = "/api/v1/users/sendMail";
 
 const wait = (ms: number, value) => {
   return new Promise((resolve) => setTimeout(resolve, ms, value));
@@ -21,13 +22,16 @@ const find = async (payload: any) => {
 const create = async (payload: any) => {
   return await axios.post(`${API}`, payload);
 };
+const sendMail = async (payload: any) => {
+  return await axios.post(`${APISENDMAIL}`, payload);
+};
 
 const saveUserQuety = async (payload: any) => {
   return await axios.post(`${APIUSERQUERY}`, payload);
 };
 
 const update = async (payload: any) => {
-  return await axios.put(`${API}/${payload.id}`, payload);
+  return await axios.patch(`${API}/${payload.id}`, payload);
 };
 
 const deleteUser = async (id: number | string) => {
@@ -71,4 +75,5 @@ export {
   getTrushed,
   restoreUser,
   saveUserQuety,
+  sendMail,
 };
