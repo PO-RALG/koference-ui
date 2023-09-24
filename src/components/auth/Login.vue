@@ -117,7 +117,16 @@
                     ></v-text-field>
                   </v-col>
                 </v-container>
-
+                <v-container
+                  v-if="data.retrivedUser.length > 0"
+                  class="d-flex justify-center align-center"
+                >
+                  Umetambulika kwa majina:
+                  <span class="font-weight-bold text-uppercase">
+                    {{ data?.retrivedUserToBind?.first_name }} {{ " " }}
+                    {{ data?.retrivedUserToBind?.last_name }}</span
+                  >
+                </v-container>
                 <ModalBody v-if="data.formData">
                   <v-form
                     v-if="data.selectedOption === 'anonymous'"
@@ -879,6 +888,7 @@ export default Vue.extend({
     const query = props.query;
 
     let data = reactive({
+      retrivedUserToBind: "",
       searchUser: "",
       selectedOption: "known",
       searchTerm: "",
@@ -974,6 +984,7 @@ export default Vue.extend({
       const regSearchTerm = item ? item : data.searchUser;
       trackOneUser({ regSearchTerm }).then((response) => {
         data.retrivedUser = response.data;
+        data.retrivedUserToBind = response.data[0];
         data.formData.queryof_user_id = response.data[0].id;
       });
     };
