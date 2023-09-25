@@ -2,33 +2,38 @@
   <v-snackbar
     @click="dismiss"
     v-if="show"
-    color="black"
+    color="green darken-2"
     v-model="show"
+    :title="true"
     :bottom="true"
     :right="true"
     :vertical="message.color !== 'success'"
     :multi-line="data.multiline"
     timeout="-1"
+    class="white--text"
   >
     <v-row v-if="message.color === 'success'" @click="dismiss">
       <v-col cols="12" sm="12" md="12" lg="12">
-        <p :class="message.class">
+        <v-icon>mdi-check-circle</v-icon>
+
+        <span>
           {{ message.title }}
-        </p>
+        </span>
       </v-col>
     </v-row>
     <v-row v-else @click="dismiss">
       <v-col cols="12" sm="12" md="12" lg="12">
-        <p :class="message.class">
+        <v-icon>mdi-alert</v-icon>
+        <span :class="message.class">
           {{ message.title }}
-        </p>
+        </span>
         <ul v-if="typeof message.error === 'object'">
           <li
             v-for="(entry, index) in message.error"
             :key="index"
             :class="message.class"
           >
-            {{ entry }}
+            {{ index + 1 }}{{ "." }} {{ entry }}
           </li>
         </ul>
         <ul v-else>
@@ -39,7 +44,7 @@
       </v-col>
     </v-row>
     <template v-slot:action="{ attrs }">
-      <v-btn :class="message.class" text v-bind="attrs" @click="dismiss"
+      <v-btn class="white--text" text v-bind="attrs" @click="dismiss"
         >Close</v-btn
       >
     </template>

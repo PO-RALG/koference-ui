@@ -7,15 +7,19 @@
   >
     <v-layout justify-center align-center class="landing-page-background">
       <!-- App Bar -->
-      <v-app-bar app>
-        <v-toolbar-title class="custom-title"
+      <v-app-bar color="#19577b" app>
+        <v-toolbar-title class="custom-title white--text"
           >MRADI WA BONDE LA MTO MSIMBAZI (MSIMBAZI BASIN PROJECT)
           (GRM-SYSTEM)</v-toolbar-title
         >
         <v-spacer></v-spacer>
-        <v-btn @click="openClaimForm" text>Tuma Shauri (Query Submition)</v-btn>
-        <v-btn text @click="searchQuery">Fuatlia (Query Tracking)</v-btn>
-        <v-btn @click="openLogin" text>Ingia (Login)</v-btn>
+        <v-btn class="white--text" @click="openClaimForm" text
+          >Tuma Shauri (Query Submition)</v-btn
+        >
+        <v-btn class="white--text" text @click="searchQuery"
+          >Fuatlia (Query Tracking)</v-btn
+        >
+        <v-btn class="white--text" @click="openLogin" text>Ingia (Login)</v-btn>
       </v-app-bar>
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
@@ -44,6 +48,7 @@
                 <ModalHeader
                   :title="`${data.modalTitle} Tuma Malalamiko , Ushauri au Maoni Yako`"
                   :is_signup="true"
+                  :is_known="data.selectedOption"
                   :is_claiming="true"
                   @closeDialog="closeDialog"
                   @openSignUp="openSignUp"
@@ -77,8 +82,13 @@
                     >
                       Ili uweze kutuma ujumbe wako kwa kutambulika
                       <span class="font-weight-bold"
-                        >hakikisha umejisajili</span
-                      >
+                        >hakikisha
+                        <span
+                          class="show-hand text-decoration-underline primary--text"
+                          @click="openSignUp"
+                          ><em>umejisajili</em></span
+                        >
+                      </span>
                       na umetambulika kwa kuingiza
                       <span class="font-weight-bold"
                         >namba yako ya utambuzi hapa chini.
@@ -96,10 +106,7 @@
                           kujisajili.</span
                         >
                       </p>
-                      <p>
-                        <!-- <h4 class="font-weight-bold red--text">Mfumo hautochukua taarifa yako yeyote bila ridhaa/hiari yako
-</h4> -->
-                      </p>
+                      <p></p>
                     </v-alert>
                   </v-col>
                 </v-container>
@@ -114,11 +121,12 @@
                       solo-inverted
                       clearable
                       @click:append="trackUser(data.searchUser)"
+                      :disabled="data.retrivedUserToBind"
                     ></v-text-field>
                   </v-col>
                 </v-container>
                 <v-container
-                  v-if="data.retrivedUser.length > 0"
+                  v-if="data.retrivedUserToBind"
                   class="d-flex justify-center align-center"
                 >
                   Umetambulika kwa majina:
@@ -217,6 +225,7 @@
                       <v-row>
                         <v-col cols="12" md="12" class="mb-n8">
                           <v-select
+                            v-if="data.retrivedUserToBind != null"
                             :items="data.queryCategories"
                             prepend-inner-icon="mdi-file-document-multiple"
                             label="Chagua aina ya wasilisho lako(Lalamiko)"
@@ -841,6 +850,7 @@
           </v-col>
         </v-row>
         <UserForm
+          :isClaim="true"
           :isOpen="data.userModal"
           :title="data.modalTitle"
           :formData="data.formData"
@@ -874,7 +884,11 @@ import { get as getQueryCategories } from "../setup/query-category/services/quer
 import { getDocumentTypeCategory } from "../setup/query-document_type/services/query-document_type.service";
 import _ from "lodash";
 import { User } from "../../components/user/types/User";
-import { create, sendMail } from "../../components/user/services/user.service";
+import {
+  create,
+  sendMail,
+  sendMailForSubmition,
+} from "../../components/user/services/user.service";
 
 export default Vue.extend({
   name: "LoginComponent",
@@ -888,7 +902,7 @@ export default Vue.extend({
     const query = props.query;
 
     let data = reactive({
-      retrivedUserToBind: "",
+      retrivedUserToBind: null,
       searchUser: "",
       selectedOption: "known",
       searchTerm: "",
@@ -994,6 +1008,8 @@ export default Vue.extend({
       data.searchTerm = "";
       data.retrivedQuery = "";
       data.retrivedUser = "";
+      data.searchUser = "";
+      data.retrivedUserToBind = null;
       data.formData = {
         id: "",
         description: "",
@@ -1018,17 +1034,17 @@ export default Vue.extend({
       data.searchQuery = true;
     };
     const closeDialog = () => {
-      data.modal = false;
+      (data.retrivedUserToBind = null), (data.modal = false);
       data.searchQuery = false;
-
-      data.formData = {
-        id: "",
-        description: "",
-        queryof_user_id: null,
-        queryStatusId: 1,
-        queryCategoryId: "",
-        files: [],
-      };
+      (data.searchUser = ""),
+        (data.formData = {
+          id: "",
+          description: "",
+          queryof_user_id: null,
+          queryStatusId: 1,
+          queryCategoryId: "",
+          files: [],
+        });
       data.formData.files = [];
       data.documentTypes = [];
       data.retrivedQuery = "";
@@ -1061,7 +1077,7 @@ export default Vue.extend({
       if (data.formData.id) {
         // updateQueryCategory(data.formData);
       } else {
-        createData(data.formData).then(() => {
+        createData(data.formData).then((response) => {
           data.modal = false;
           data.formData = {
             id: "",
@@ -1073,6 +1089,9 @@ export default Vue.extend({
           };
           data.formData.files = [];
           data.documentTypes = [];
+          // console.log("response:", response);
+          data.retrivedUserToBind.query = response.data;
+          sendMailForSubmition(data.retrivedUserToBind);
         });
       }
     };
@@ -1150,6 +1169,9 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.show-hand {
+  cursor: pointer;
+}
 .custom-title {
   font-size: 18px;
   font-weight: bold;

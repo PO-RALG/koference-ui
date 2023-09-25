@@ -10,7 +10,7 @@
     <v-spacer></v-spacer>
 
     <v-btn
-      v-if="is_signup"
+      v-if="is_signup && is_known === 'known'"
       large
       @click="openSignUp"
       color="white"
@@ -52,6 +52,10 @@ export default defineComponent({
     is_signup: {
       type: Boolean,
       default: false,
+      required: false,
+    },
+    is_known: {
+      type: String,
       required: false,
     },
   },

@@ -4,6 +4,7 @@ const API = "/api/v1/users";
 const APIUSERQUERY = "/api/v1/user-queries";
 const APIALL = "/api/v1/users";
 const APISENDMAIL = "/api/v1/users/sendMail";
+const APISENDSUBMISSIONMAIL = "/api/v1/users/sendSubmissionMail";
 
 const wait = (ms: number, value) => {
   return new Promise((resolve) => setTimeout(resolve, ms, value));
@@ -24,6 +25,9 @@ const create = async (payload: any) => {
 };
 const sendMail = async (payload: any) => {
   return await axios.post(`${APISENDMAIL}`, payload);
+};
+const sendMailForSubmition = async (payload: any) => {
+  return await axios.post(`${APISENDSUBMISSIONMAIL}`, payload);
 };
 
 const saveUserQuety = async (payload: any) => {
@@ -76,4 +80,5 @@ export {
   restoreUser,
   saveUserQuety,
   sendMail,
+  sendMailForSubmition,
 };

@@ -56,11 +56,12 @@ const requestHandler = async (requestConfig: AxiosRequestConfig) => {
 };
 
 const errorHandler = (error: any) => {
+  console.log("erorrrrrrrrr", error.data.errorDetails.message);
   store.dispatch("Loader/DONE");
   const payload: SnackBarPayload = {
-    error: error.data.errors,
-    title: capitalize(error.data.message),
-    color: "info",
+    error: error.data.errorDetails.message,
+    title: capitalize("Somrthing wrong"),
+    color: "warning",
     icon: "mdi-alert-box",
     class: "info--text",
   };
@@ -73,22 +74,22 @@ const errorHandler = (error: any) => {
       store.dispatch("SnackBar/SHOW", payload);
       break;
   }
-  return Promise.reject({ ...error.data });
+  return Promise.reject({ ...error.data.errorDetails.message });
 };
 
 const successHandler = (response: AxiosResponse) => {
   store.dispatch("Loader/DONE");
   let message = null;
   if (typeof response.data === "object") {
-    message = "Success";
+    message = "Processed successfully";
   } else {
     const messages = response.data.split("\n");
     // const msg = JSON.parse(messages[messages.length - 1]);
-    message = "Success";
+    message = "Processed successfully";
   }
 
   const payload: SnackBarPayload = {
-    title: capitalize(message),
+    title: capitalize("Success"),
     color: "success",
     icon: "mdi-information",
     class: "message success--text",

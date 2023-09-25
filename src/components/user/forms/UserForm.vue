@@ -4,11 +4,13 @@
       <ModalHeader :title="`${title} User`" />
     </template>
     <template v-slot:body>
-      <v-alert outlined type="warning" prominent border="left">
-        <h4 class="font-weight-bold red--text">
-          Mfumo hautochukua taarifa yako yeyote bila ridhaa/hiari yako
-        </h4>
-      </v-alert>
+      <v-col cols="12" lg="12" md="12" sm="12">
+        <v-alert v-if="isClaim" outlined type="warning" prominent border="left">
+          <h4 class="font-weight-bold red--text">
+            Mfumo hautochukua taarifa yako yeyote bila ridhaa/hiari yako
+          </h4>
+        </v-alert>
+      </v-col>
       <ModalBody class="p-10">
         <v-form ref="form" v-model="data.valid">
           <v-container>
@@ -211,6 +213,9 @@ export default defineComponent({
     formData: {
       type: Object,
       default: {},
+    },
+    isClaim: {
+      type: Boolean,
     },
   },
   setup(props, { emit }) {

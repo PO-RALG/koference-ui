@@ -21,6 +21,7 @@ const getters: GetterTree<SnackBar, RootState> = {
 const actions: ActionTree<SnackBar, RootState> = {
   SHOW({ commit }, payload) {
     commit("SHOW", payload);
+    console.log("mesageeeee", payload);
   },
 
   HIDE({ commit }) {
