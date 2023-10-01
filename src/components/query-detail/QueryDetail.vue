@@ -55,7 +55,7 @@
                     class="sub-header py-2 d-flex flex-row justify-content-between"
                   >
                     <span _ngcontent-byn-c280="" class="time-age">
-                      Age: 0d, 3h, 18m &nbsp;&nbsp;
+                      Age:{{ receivedData.days_passed }}{{ " Days" }}
                       <!----></span
                     >
                     <!-- <span
@@ -78,7 +78,7 @@
                     <div _ngcontent-byn-c280="" class="font-weight-bold">
                       Title
                     </div>
-                    <div _ngcontent-byn-c280="">GMS CODE REQUEST</div>
+                    <div _ngcontent-byn-c280="">CLAIM FROM CLIENT</div>
                   </div>
                 </div>
                 <div _ngcontent-byn-c280="" class="col-md-4">
@@ -87,7 +87,7 @@
                       Track Number
                     </div>
                     <div _ngcontent-byn-c280="">
-                      {{ receivedData && receivedData?.tracknumber }}
+                      {{ receivedData.tracknumber }}
                     </div>
                   </div>
                 </div>
@@ -133,7 +133,7 @@
                       Submission Date
                     </div>
                     <div _ngcontent-byn-c280="">
-                      {{ receivedData?.createdAt | format() }}
+                      {{ receivedData?.created | format() }}
                     </div>
                   </div>
                 </div>
@@ -143,7 +143,7 @@
                       Issue Category
                     </div>
                     <div _ngcontent-byn-c280="">
-                      {{ receivedData && receivedData.queryCategory?.name }}
+                      {{ receivedData.category }}
                     </div>
                   </div>
                 </div>
@@ -183,13 +183,10 @@
                     <div _ngcontent-byn-c280="" class="font-weight-bold">
                       Assigned To
                     </div>
-                    <div
-                      v-if="receivedData && receivedData.user"
-                      _ngcontent-byn-c280=""
-                    >
-                      {{ receivedData?.user.first_name }}
+                    <div v-if="receivedData.assignedtof" _ngcontent-byn-c280="">
+                      {{ receivedData.assignedtof }}
                       {{ " " }}
-                      {{ receivedData?.user.first_name }}
+                      {{ receivedData.assignedtol }}
                     </div>
                     <div v-else _ngcontent-byn-c280="">
                       {{ "___________" }}
@@ -205,7 +202,7 @@
                     <div _ngcontent-byn-c280="">
                       <!-- hello, -->
                       <div>
-                        {{ receivedData?.description }}
+                        {{ receivedData.description }}
                       </div>
                       <div><br /></div>
                       <!-- <div>Best Regards,</div> -->
@@ -246,6 +243,7 @@
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                      v-if="receivedData.status != 'Imejibiwa'"
                       @click="assignUser"
                       v-bind="attrs"
                       v-on="on"
@@ -294,7 +292,7 @@
                   <span class="pl-4">This Query is currently at status</span>
                   <br _ngcontent-byn-c280="" />
                   <v-btn text class="primaary--text" color="green"
-                    >{{ receivedData && receivedData.queryStatus?.name }}
+                    >{{ receivedData.status }}
                   </v-btn>
                 </p>
                 <p
@@ -311,7 +309,7 @@
       </v-card-text>
 
       <div
-        v-if="receivedData && receivedData.claimAttachment.length > 0"
+        v-if="receivedData && receivedData?.queryclaimattachments.length > 0"
         class="col-md-4"
       >
         <div _ngcontent-byn-c280="" class="box-detail">
@@ -320,20 +318,16 @@
       </div>
       <v-container>
         <v-list dense>
-          <!-- Loop through your list of files and display them -->
           <v-list-item
-            v-for="(file, index) in receivedData?.claimAttachment"
+            v-for="(file, index) in receivedData?.queryclaimattachments"
             :key="index"
           >
             <v-list-item-content>
               <v-list-item-title>
                 <v-icon>mdi-attachment</v-icon>
-                <em class="primary--text">{{
-                  file.queryDocumentType?.name
-                }}</em></v-list-item-title
+                <em class="primary--text">{{ file }}</em></v-list-item-title
               >
             </v-list-item-content>
-            <!-- You can add additional elements/buttons here related to each file -->
           </v-list-item>
         </v-list>
       </v-container>

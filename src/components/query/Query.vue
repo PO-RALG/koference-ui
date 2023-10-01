@@ -4,7 +4,6 @@
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
     </v-card-actions>
-
     <v-data-table
       :headers="data.headers"
       :items="data.items"

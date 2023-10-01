@@ -793,9 +793,12 @@
                             <v-list-item-content>
                               <v-list-item-title>
                                 <v-icon>mdi-attachment</v-icon>
-                                <em class="primary--text">{{
-                                  file.queryDocumentType?.name
-                                }}</em></v-list-item-title
+                                <em
+                                  @click="getFile(file.file_name)"
+                                  class="primary--text"
+                                  >{{ file.queryDocumentType?.name }}{{ "-"
+                                  }}{{ file.file_name }}</em
+                                ></v-list-item-title
                               >
                             </v-list-item-content>
                             <!-- You can add additional elements/buttons here related to each file -->
@@ -857,6 +860,11 @@
           @onSubmit="save"
           @onClose="cancelDialog"
         />
+        <FilePreview
+          :filePrevieModel="data.filePreviewmodal"
+          :toopen="data.toopen"
+          @closeFilePreview="closeFilePreview"
+        />
       </v-main>
     </v-layout>
   </v-app>
@@ -864,6 +872,7 @@
 
 <script lang="ts">
 import UserForm from "../../components/user/forms/UserForm.vue";
+import FilePreview from "./FilePreview.vue";
 import Vue from "vue";
 import { reactive, onMounted } from "vue";
 import {
@@ -871,6 +880,7 @@ import {
   setUser,
   uploadFile,
   createData,
+  openFile,
   // getAppName,
   // setAppName,
 } from "./services";
@@ -895,6 +905,7 @@ export default Vue.extend({
 
   components: {
     UserForm,
+    FilePreview,
   },
   props: ["source", "query"],
 
@@ -902,6 +913,9 @@ export default Vue.extend({
     const query = props.query;
 
     let data = reactive({
+      filePreviewmodal: false,
+      isClaim: false,
+      toopen: "",
       retrivedUserToBind: null,
       searchUser: "",
       selectedOption: "known",
@@ -954,6 +968,43 @@ export default Vue.extend({
       //   data.siteName = response.data.data;
       // });
     });
+
+    const previewFiles = (response: any) => {
+      data.toopen = response;
+      // window.open(response.data, "_blank");
+      console.log("path", response);
+      cancelDialog();
+    };
+    // const previewFiles = (response: any) => {
+    //   const fileInfo = response.data;
+    //   const fileUrl = `${fileInfo}`;
+    //   data.toopen = fileUrl;
+    //   // window.open(response.data, "_blank");
+    //   console.log("path", fileUrl);
+    //   cancelDialog();
+    // };
+    const closeFilePreview = () => {
+      data.filePreviewmodal = false;
+    };
+
+    const getFile = (path: any) => {
+      const dataz = {
+        path: path,
+      };
+      data.filePreviewmodal = true;
+      previewFiles(path);
+      // openFile(dataz).then((response: AxiosResponse) => {
+      //   if (response.status === 200 || response.status === 201) {
+      //     previewFiles(response);
+      //   }
+      // });
+
+      // Corrected code
+      // let modalState = {
+      //   fileUrl: 'ddfebc03-de02-48dd-8390-b8668aead8ba.png',
+      //   filePreviewModal: true, // Use an object to manage modal states
+      // };
+    };
     const createUser = (data: User) => {
       create(data).then((response: AxiosResponse) => {
         if (response.status === 200 || response.status === 201) {
@@ -1163,6 +1214,9 @@ export default Vue.extend({
       cancelDialog,
       save,
       openSignUp,
+      getFile,
+      previewFiles,
+      closeFilePreview,
     };
   },
 });
@@ -1286,7 +1340,7 @@ a {
   width: 100px;
   display: block;
   background: #79a70a;
-  background: linear-gradient(#052c57 0%, #77bdec 100%);
+  background: linear-gradient(#79a70a 0%);
   box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
   position: absolute;
   top: 19px;

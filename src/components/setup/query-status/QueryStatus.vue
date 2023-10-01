@@ -60,7 +60,7 @@
         </template>
         <template v-slot:footer>
           <Paginate
-            :params="data.response"
+            :params="data.response.items"
             :rows="data.rows"
             @onPageChange="getData"
           />

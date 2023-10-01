@@ -49,11 +49,18 @@ export const useQueryStatus = (): any => {
   const initialize = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
       console.log("res", response.data);
-      const { from, to, total, current_page, per_page, last_page } =
+      const { from, to, totalPages, currentPage, itemsPerPage, last_page } =
         response.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
-      data.items = response.data;
-      data.itemsToFilter = response.data;
+      data.response = {
+        from,
+        to,
+        totalPages,
+        currentPage,
+        itemsPerPage,
+        last_page,
+      };
+      data.items = response.data.items;
+      data.itemsToFilter = response.data.items;
     });
   };
 
@@ -73,9 +80,16 @@ export const useQueryStatus = (): any => {
 
   const reloadData = () => {
     get({ per_page: 10 }).then((response: AxiosResponse) => {
-      const { from, to, total, current_page, per_page, last_page } =
+      const { from, to, totalItems, current_page, per_page, last_page } =
         response.data;
-      data.response = { from, to, total, current_page, per_page, last_page };
+      data.response = {
+        from,
+        to,
+        totalItems,
+        current_page,
+        per_page,
+        last_page,
+      };
       data.items = response.data;
     });
   };

@@ -4,10 +4,20 @@
     @mouseover="showTooltip"
     @mouseleave="hideTooltip"
   >
-    <td>{{ item.createdAt | format() }}</td>
-    <td>{{ item.queryCategory?.name }}</td>
+    <!-- <td>{{ new Date() - new Date(item.createdAt) }}</td> -->
+    <td>{{ item.created | format() }}</td>
+    <td>{{ item.category }}</td>
     <td>{{ item.description }}</td>
-    <td>{{ item.queryStatus?.name }}</td>
+    <td>{{ item.status }}</td>
+    <td>{{ item.days_passed }}</td>
+    <td>
+      <div
+        v-if="item.days_passed > 2 && item.status != 'Imejibiwa'"
+        class="warningx"
+      >
+        This query is out of normal time to be executed!
+      </div>
+    </td>
     <!-- Add other table columns as needed -->
     <v-tooltip :value="showingTooltip" top>
       <template v-slot:activator="{ on }">
@@ -48,5 +58,23 @@ export default {
 <style>
 td {
   cursor: pointer;
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.warningx {
+  animation: blink 1s infinite; /* Adjust the animation duration as needed */
+  background-color: #ff0000; /* Background color for the warning */
+  color: #fff; /* Text color for the warning */
+  padding: 10px; /* Adjust padding as needed */
 }
 </style>

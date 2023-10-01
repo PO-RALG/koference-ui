@@ -24,13 +24,13 @@ export const useQuery = (): any => {
         text: "Created Date",
         align: "start",
         sortable: true,
-        value: "created_date",
+        value: "created",
       },
       {
         text: "Category",
         align: "start",
         sortable: true,
-        value: "queryCategory.name",
+        value: "category",
       },
       {
         text: "Description",
@@ -42,7 +42,19 @@ export const useQuery = (): any => {
         text: "Status",
         align: "start",
         sortable: true,
-        value: "queryStatus.name",
+        value: "status",
+      },
+      {
+        text: "Days Passed",
+        align: "start",
+        sortable: true,
+        value: "days_passed",
+      },
+      {
+        text: "Warning",
+        align: "start",
+        sortable: true,
+        value: "",
       },
 
       // { text: "Actions", value: "actions", sortable: false },
@@ -93,6 +105,22 @@ export const useQuery = (): any => {
       data.itemsToFilter = response.data;
     });
   };
+
+  // const itemsnew = computed(() => {
+  //   return data.itemsDeleted
+  //     .map((trashed: any) => ({
+  //       ...trashed,
+  //     }))
+  //     .sort(function (a, b) {
+  //       if (a > b) return 1;
+  //       return -1;
+  //     })
+  //     .map((item, index) => ({
+  //       ...item,
+  //       index: ++index,
+  //       fullName: `${item.first_name} ${item.middle_name}  ${item.last_name}`,
+  //     }));
+  // });
 
   const searchCategory = (item: string) => {
     if (item) {
