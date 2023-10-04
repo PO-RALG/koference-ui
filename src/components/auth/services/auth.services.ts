@@ -27,9 +27,9 @@ const sendFeedbackData = async (payload: any) => {
   return await axios.patch(`/api/v1/queries/` + payload.query.id, payload);
 };
 const setUser = async (payload: any) => {
-  console.log("user", payload.data.msg);
+  console.log("user", payload.data);
   // rename menu to menu_groups and menu's menu to children
-  const data = payload.data.msg.menus.map(({ menu, ...item }) => ({
+  const data = payload.data.menus.map(({ menu, ...item }) => ({
     ...item,
     // children: menu,
   }));
@@ -49,13 +49,13 @@ const setUser = async (payload: any) => {
     ...sorted,
   ];
 
-  payload.data.msg.menu_groups = newMenuGroup;
+  payload.data.menu_groups = newMenuGroup;
   // delete menu
-  delete payload.data.msg.menus;
+  delete payload.data.menus;
 
   console.log("payload", payload);
 
-  const user = JSON.stringify(payload.data.msg);
+  const user = JSON.stringify(payload.data);
   store.dispatch("Auth/LOGIN", user);
 };
 

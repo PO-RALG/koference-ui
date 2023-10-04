@@ -233,7 +233,7 @@
                             v-model="data.formData.queryCategoryId"
                             :item-text="'name'"
                             item-value="id"
-                            @change="loadDocumentType"
+                            @change="loadDocumentTypeSetKnown"
                           >
                             <template v-slot:selection="{ item }">
                               {{ item.name }}-{{ item.description }}
@@ -954,6 +954,7 @@ export default Vue.extend({
         queryCategoryId: "",
         files: [],
         queryof_user_id: null,
+        usersource: "",
       },
       retrivedQuery: "",
       retrivedUser: "",
@@ -1068,6 +1069,7 @@ export default Vue.extend({
         queryStatusId: 1,
         queryCategoryId: "",
         files: [],
+        usersource: "",
       };
     };
     const closeSearchQuery = () => {
@@ -1095,6 +1097,7 @@ export default Vue.extend({
           queryStatusId: 1,
           queryCategoryId: "",
           files: [],
+          usersource: "",
         });
       data.formData.files = [];
       data.documentTypes = [];
@@ -1137,6 +1140,7 @@ export default Vue.extend({
             queryStatusId: 1,
             queryCategoryId: "",
             files: [],
+            usersource: "",
           };
           data.formData.files = [];
           data.documentTypes = [];
@@ -1171,7 +1175,15 @@ export default Vue.extend({
       getDocumentTypeCategory(e).then((response: any) => {
         console.log("response", response);
         data.documentTypes = response.data;
+        data.formData.usersource = "Anonymous";
+      });
+    };
+    const loadDocumentTypeSetKnown = (e) => {
+      getDocumentTypeCategory(e).then((response: any) => {
+        console.log("response", response);
+        data.documentTypes = response.data;
         data.formData.queryof_user_id = data.retrivedUser[0].id;
+        data.formData.usersource = "Known";
       });
     };
 
@@ -1196,6 +1208,7 @@ export default Vue.extend({
     };
 
     return {
+      loadDocumentTypeSetKnown,
       openClaimForm,
       loadDocumentType,
       loginUser,

@@ -3,6 +3,10 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
+      <v-btn large color="teal" class="white--text" @click="openDialog">
+        <v-icon>mdi-plus</v-icon>
+        Add New
+      </v-btn>
     </v-card-actions>
     <v-data-table
       :headers="data.headers"

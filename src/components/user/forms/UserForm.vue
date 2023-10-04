@@ -80,14 +80,16 @@
                 >
                 </v-text-field>
               </v-col>
-              <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
-                <v-text-field
-                  label="Jinsi(Gender)"
+              <v-col cols="12" sm="6" md="6" class="mt-n8">
+                <v-select
                   v-model="formData.sex"
-                  :rules="data.requiredRules"
+                  :items="data.genders"
+                  item-value="name"
+                  item-text="name"
                   outlined
-                >
-                </v-text-field>
+                  clearable
+                  label="Select Gender"
+                ></v-select>
               </v-col>
 
               <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
@@ -230,6 +232,7 @@ export default defineComponent({
       selectedRoles: [],
       facilities: [],
       node: null,
+      genders: [{ name: "Me" }, { name: "Ke" }],
     });
 
     const initialize = () => {

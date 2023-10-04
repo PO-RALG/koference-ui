@@ -80,8 +80,7 @@ export default defineComponent({
       maintainAspectRatio: false,
     };
 
-    onMounted(() => {
-    });
+    onMounted(() => {});
 
     return {
       data,

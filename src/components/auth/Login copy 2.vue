@@ -252,7 +252,7 @@
                   {{ ". All right reserved." }}
                 </small>
                 <small class="white--text">
-                  <strong>{{ " FFARS v2.0 ." }}</strong>
+                  <strong>{{ " GRM v1.0 ." }}</strong>
                 </small>
                 <small class="white--text">
                   {{

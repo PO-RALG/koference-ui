@@ -72,9 +72,31 @@ export default defineComponent({
   },
   setup() {
     const data = reactive({
+      backgroundColor: "#f87979",
       chartOptions: {
+        plugins: {
+          title: {
+            display: true,
+            text: "Bar chart showing Top 5 claimers", // Add your title here
+            fontSize: 16, // Customize the font size if needed
+          },
+        },
         responsive: true,
         maintainAspectRatio: true,
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: "Claimer Name", // Add your X-axis label here
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: "Number of submited query", // Add your Y-axis label here
+            },
+          },
+        },
       },
     });
     return {

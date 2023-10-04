@@ -7,6 +7,15 @@ import VueMask from "v-mask";
 import moment from "moment"; //require
 import _ from "lodash";
 
+import VueFusionCharts from "vue-fusioncharts";
+import FusionCharts from "fusioncharts";
+import Charts from "fusioncharts/fusioncharts.charts";
+import FusionTheme from "fusioncharts/themes/fusioncharts.theme.fusion";
+import Column2D from "fusioncharts/fusioncharts.charts";
+
+// Register FusionCharts components
+Vue.use(VueFusionCharts, FusionCharts, Charts, FusionTheme, Column2D);
+
 import "@/plugins/vuetify-mask";
 
 import App from "@/App.vue";

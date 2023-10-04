@@ -21,9 +21,8 @@
           <v-form ref="form" v-model="data.valid">
             <v-text-field
               prepend-inner-icon="mdi-account-box"
-              label="Email"
-              v-model="data.email"
-              v-bind:rules="data.emailRules"
+              label="Username"
+              v-model="data.username"
               outlined
               required
               class="mr-0 ml-0"

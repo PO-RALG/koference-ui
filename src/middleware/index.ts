@@ -44,8 +44,8 @@ const validateToken = async (to, _, next) => {
       return false;
     }
   } else {
-    next();
-    // next(`/login?redirect=${TO_PATH}`);
+    // next();
+    next(`/login?redirect=${TO_PATH}`);
   }
 };
 

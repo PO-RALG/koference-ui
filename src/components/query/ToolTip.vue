@@ -12,7 +12,7 @@
     <td>{{ item.days_passed }}</td>
     <td>
       <div
-        v-if="item.days_passed > 2 && item.status != 'Imejibiwa'"
+        v-if="item.days_passed > 14 && item.status != 'Imejibiwa'"
         class="warningx"
       >
         This query is out of normal time to be executed!

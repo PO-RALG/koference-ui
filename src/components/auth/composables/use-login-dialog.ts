@@ -13,12 +13,12 @@ export const useLoginDialog = (): any => {
     errorMessage: "",
     loginMessage: "",
     loading: false,
-    email: "",
+    username: "",
     emailRules: [
-      (v: any) => !!v || "Email is required",
+      (v: any) => !!v || "username is required",
       (v: any) =>
         /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-        "E-mail must be a valid email",
+        "E-mail must be a valid username",
     ],
     password: "",
     passwordRules: [(v: any) => !!v || "Password is required"],
@@ -38,7 +38,7 @@ export const useLoginDialog = (): any => {
 
   const login = () => {
     const payload = {
-      email: data.email,
+      username: data.username,
       password: data.password,
     };
 

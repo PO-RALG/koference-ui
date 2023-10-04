@@ -128,7 +128,7 @@
         </v-container>
       </v-form>
     </v-card> -->
-    <!-- <v-card elevation="1" class="top-card">
+    <v-card elevation="1" class="mt-10 pt-5 pl-5 pr-5 mb-0 top-card">
       <v-container>
         <v-row>
           <v-col
@@ -137,112 +137,116 @@
             :style="$vuetify.breakpoint.lgAndUp ? ' flex: 1 0 20%;' : ''"
             sm="12"
             class="border-right"
-            v-for="entry in data.cardData"
-            :key="entry.id"
           >
-            <MoneyCard :title="entry.title" :amount="entry.amount" />
+            <MoneyCard
+              :title="'Total Queries'"
+              :amount="data.summary.total_query_count"
+              :title_summary="'List of all submited queries'"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            md="6"
+            :style="$vuetify.breakpoint.lgAndUp ? ' flex: 1 0 20%;' : ''"
+            sm="12"
+            class="border-right"
+          >
+            <MoneyCard
+              :title="'Pending Queries'"
+              :amount="data.summary.pending_query_count"
+              :title_summary="'List of all queries that has been not assigned to attendant'"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            md="6"
+            :style="$vuetify.breakpoint.lgAndUp ? ' flex: 1 0 20%;' : ''"
+            sm="12"
+            class="border-right"
+          >
+            <MoneyCard
+              :title="'Replied Queries'"
+              :amount="data.summary.replied_queries"
+              :title_summary="'List of all queries that has been attended'"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            md="6"
+            :style="$vuetify.breakpoint.lgAndUp ? ' flex: 1 0 20%;' : ''"
+            sm="12"
+            class="border-right"
+          >
+            <MoneyCard
+              :title="'Under processing Queries'"
+              :amount="data.summary.underprocessing_queries"
+              :title_summary="'List of all queries that has been assigned to attendant but not replied'"
+            />
           </v-col>
         </v-row>
       </v-container>
-    </v-card> -->
+    </v-card>
 
-    <!-- <v-card
+    <v-card
       elevation="0"
       class="top-card mt-5"
       style="border-bottom: 1px solid #ccc"
     >
       <v-container>
         <v-row>
-          <v-col cols="12" md="6" sm="12" class="border-right">
-            <BarChart
+          <v-col cols="12" md="3" sm="12" class="border-right">
+            <BarChart2
               :chartData="data.currentSource"
               :height="500"
               :width="400"
             />
           </v-col>
-          <v-col cols="12" md="6" sm="12" class="border-right">
+          <v-col cols="12" md="2" sm="12" class="border-right">
+            <PieChart
+              :chartData="data.reporterBySource"
+              :height="500"
+              :width="400"
+            />
+          </v-col>
+          <v-col cols="12" md="3" sm="12" class="border-right">
             <BarChart
-              :chartData="data.receivedVsPayments"
+              :chartData="data.reporterTopFiveRepoeter"
+              :height="500"
+              :width="400"
+            />
+          </v-col>
+          <v-col cols="12" md="3" sm="12" class="border-right">
+            <PieChart
+              :chartData="data.reporterByGender"
               :height="500"
               :width="400"
             />
           </v-col>
         </v-row>
       </v-container>
-    </v-card> -->
+    </v-card>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted, computed } from "vue";
-import EqualHeights from "@/components/shared/equal-heights/EqualHeights.vue";
-import MoneyCard from "@/components/dashboard/components/MoneyCard.vue";
-import { getChildren } from "@/components/admin-area/admin-area/services/admin-area-services";
-import { get as getFacilities } from "@/components/facility/facility/services/facility.service";
+
 import {
-  byMonth,
-  get,
-  getByCurrentSource,
-  getCarryoverByFundSource,
+  getByCategory,
+  getByNature,
+  queryTopFive,
+  queryByGender,
+  querySummary,
 } from "@/components/dashboard/services";
-import store from "@/store";
 import BarChart from "@/components/dashboard/components/charts/BarChart.vue";
-import capitalize from "@/helpers/FormatHelper";
-
-interface FormFilter {
-  financial_year_id: string;
-  location_id: string;
-  region_id: string;
-  council_id: string;
-  fac_id: string;
-}
-
-interface Location {
-  code: string;
-  description: string;
-  id: number;
-  level: Level;
-}
+import BarChart2 from "@/components/dashboard/components/charts/BarChart2.vue";
+import PieChart from "@/components/dashboard/components/charts/PieChart.vue";
 
 interface Level {
   id: number;
   code: string;
   name: string;
   position: number;
-}
-
-interface User {
-  id: number;
-  location: Location;
-}
-
-interface AdminArea {
-  name: string;
-  id: string;
-  code: string;
-  displayName: string;
-  level?: Record<string, any>;
-}
-
-interface Facility {
-  id: string;
-  name: string;
-  code: string;
-  facility_type?: Record<string, any>;
-  displayName: string;
-  location?: Record<string, any>;
-}
-
-interface DashboardData {
-  id: number;
-  title: string;
-  amount: number;
-}
-
-interface CurrentSource {
-  description: string;
-  code: string;
-  fund_received: string;
 }
 
 interface ChartOptions {
@@ -254,210 +258,54 @@ interface ChartOptions {
   data: Array<string>;
 }
 
-interface BarChartData {
+interface ChartData {
   labels: Array<string>;
   datasets: Array<ChartOptions>;
 }
 
 export default defineComponent({
   components: {
-    EqualHeights,
-    MoneyCard,
     BarChart,
+    BarChart2,
+    PieChart,
   },
 
   setup() {
-    const formData: FormFilter = {
-      financial_year_id: "",
-      location_id: "",
-      fac_id: "",
-      region_id: "",
-      council_id: "",
-    };
-
-    const entries: Array<AdminArea> = [];
-    const councils: Array<AdminArea> = [];
-    const facilities: Array<Facility> = [];
-    const cardData: Array<DashboardData> = [];
-    let currentSource: BarChartData;
-    let receivedVsPayments: any;
+    let currentSource: ChartData;
+    let reporterByGender: ChartData;
+    let loadDashboardsByGender: ChartData;
+    let reporterTopFiveRepoeter: ChartData;
+    let reporterBySource: ChartData;
     const graphs = [1, 2, 3];
-    const regionIsCurrentSelection: boolean = false;
-    const isCouncil: boolean = false;
-    const user: User = {
-      id: null,
-      location: {
-        id: null,
-        description: "",
-        code: "",
-        level: {
-          name: "",
-          id: null,
-          code: "",
-          position: null,
-        },
-      },
-    };
 
     const data = reactive({
-      formData,
       valid: false,
-      cardData,
-      entries,
-      councils,
       graphs,
-      user,
-      facilities,
-      regionIsCurrentSelection,
-      receivedVsPayments,
-      isCouncil,
-      searchTerm: "",
+      loadDashboardsByGender,
+      reporterTopFiveRepoeter,
+      reporterBySource,
       currentSource,
+      reporterByGender,
+      summary: null,
     });
 
     onMounted(() => {
-      // loadAdminAreas();
-      // loadDashboards();
-      // data.cardData = [];
+      loadDashboards();
     });
 
-    interface Dashboard {
-      balance: string;
-      opening: string;
-      payment: string;
-      received: string;
-      total_fund: string;
-    }
+    const mapCurrentQueries = (results: Array<CurrentSource>): ChartData => {
+      const labels = results.map((result) => result.category);
+      const data = results.map((result) => result.record_count);
 
-    const setUpUser = async () => {
-      const user = store.getters["Auth/getCurrentUser"];
-      data.user = {
-        ...user,
-      };
-    };
-
-    const mapDashboards = (obj: Dashboard): Array<DashboardData> => {
-      const results = [];
-      Object.entries(obj).map((entry, idx) => {
-        results.push({
-          id: idx + 1,
-          title: entry[0].split("_").join(" ").toUpperCase(),
-          amount: entry[1] ? parseInt(entry[1]) : 0,
-        });
-      });
-      return results;
-    };
-
-    const loadDashboards = async () => {
-      const response = await get({});
-      const _byMonthResponse = await byMonth({});
-      const _byMonthMapped = mapByMonth(_byMonthResponse.data);
-      const _carryoverBySourceResponse = await getCarryoverByFundSource({});
-      const currResp = await getByCurrentSource({});
-      console.log(_byMonthResponse.data);
-      console.log("carryover by source:", _carryoverBySourceResponse.data);
-      const _mappedCurrentSource = mapCurrentSource(currResp.data);
-      const _mappedDashboards = mapDashboards(response.data[0]);
-
-      data.cardData = _mappedDashboards;
-      data.currentSource = _mappedCurrentSource;
-      data.receivedVsPayments = _byMonthMapped;
-    };
-
-    const mapByMonth = (results: Array<any>) => {
-      const labels = results.map((r) => capitalize(r.month));
-      const _fundsReceived = results.map((r) => r.fund_received);
-      const _payments = results.map((r) => r.payments);
-      const fundsReceived = {
-        label: "Funds Received",
-        borderWidth: 1,
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-        ],
-        borderColor: [
-          "rgba(255,99,132,1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-          "rgba(255,99,132,1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-        ],
-        pointBorderColor: "#2554FF",
-        data: _fundsReceived,
-        yAxisID: "y-axis-funds",
-      };
-
-      const payments = {
-        label: "Payments Made",
-        backgroundColor: "rgba(99, 132, 0, 0.6)",
-        borderColor: "rgba(99, 132, 0, 1)",
-        data: _payments,
-      };
-
-      const dataOptions = {
-        labels,
-        datasets: [fundsReceived, payments],
-      };
-
-      return dataOptions;
-    };
-
-    const mapCurrentSource = (results: Array<CurrentSource>): BarChartData => {
-      const labels = results.map((result) => result.description);
-      const data = results.map((result) => result.fund_received);
-
-      const dataOptions: BarChartData = {
+      const dataOptions: ChartData = {
         labels,
         datasets: [
           {
-            label: "Ammounts by current source",
+            label: "Reported queries",
             borderWidth: 1,
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)",
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)",
-            ],
-            borderColor: [
-              "rgba(255,99,132,1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)",
-              "rgba(255,99,132,1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)",
-            ],
-            pointBorderColor: "#2554FF",
+            backgroundColor: ["#AED581", "#81C784", "#CFD8DC"],
+            borderColor: ["#00D8FF"],
+            pointBorderColor: "",
             data: [...data],
           },
         ],
@@ -465,134 +313,89 @@ export default defineComponent({
       return dataOptions;
     };
 
-    const mapAreas = <T extends AdminArea>(
-      areas: Array<T>
-    ): Array<AdminArea> => {
-      return areas.map((area: T) => ({
-        displayName: `${area.name}`,
-        id: area.id,
-        name: area.name,
-        code: area.code,
-      }));
-    };
+    const mapCurrentNature = (results: Array<CurrentSource>): ChartData => {
+      const labels = results.map((result) => result.category);
+      const data = results.map((result) => result.record_count);
 
-    const mapFacilities = <T extends Facility>(
-      facilities: Array<T>
-    ): Array<Facility> => {
-      return facilities.map((facility: T) => ({
-        id: facility.id,
-        name: facility.name,
-        code: facility.code,
-        displayName: `${facility.name} (${facility.facility_type.name}) - ${facility.location.name}`,
-      }));
-    };
-
-    const setLocationId = () => {
-      if (
-        !!data.formData.region_id &&
-        !!data.formData.council_id &&
-        !data.regionIsCurrentSelection
-      ) {
-        return data.formData.council_id;
-      } else {
-        return data.formData.region_id;
-      }
-    };
-
-    const filterDashboard = async (isRegion: boolean = true) => {
-      data.regionIsCurrentSelection = isRegion;
-
-      const params = {
-        ...data.formData,
-        location_id: data.isCouncil
-          ? data.user.location.id
-          : isRegion
-          ? data.formData.region_id
-          : setLocationId(),
+      const dataOptions: ChartData = {
+        labels,
+        datasets: [
+          {
+            label: "Number query from user nature",
+            borderWidth: 1,
+            backgroundColor: ["#B3E5FC", "#B2DFDB", "#DD1B16"],
+            borderColor: ["#00D8FF"],
+            pointBorderColor: "",
+            data: [...data],
+          },
+        ],
       };
-
-      const response = await get(params);
-
-      if (!data.formData.council_id || isRegion) {
-        await getCouncils(data.formData.region_id);
-      }
-
-      if (!isRegion) {
-        const res = await getFacilities({
-          location_id: data.formData.council_id,
-        });
-        const _mappedFacilties = mapFacilities(res.data.data.data);
-        data.facilities = _mappedFacilties;
-      }
-
-      const _mappedDashboards = mapDashboards(response.data[0]);
-      data.cardData = _mappedDashboards;
+      return dataOptions;
     };
 
-    const loadAdminAreas = async () => {
-      await setUpUser();
-      const locationId = data && data.user && data.user.location.id;
-      const response = await getChildren(locationId);
-      data.isCouncil = response.data.data.level_id === 3;
-      const res = await getFacilities({
-        per_page: 10,
-        location_id: response.data.data.id,
-      });
-      const _mappedAreas = mapAreas(response.data.data.children);
-      const _mappedFacilties = mapFacilities(res.data.data.data);
-      data.facilities = _mappedFacilties;
-      data.entries = _mappedAreas;
+    const mapTopFive = (results: Array<CurrentSource>): ChartData => {
+      const labels = results.map((result) => result.category);
+      const data = results.map((result) => result.record_count);
+
+      const dataOptions: any = {
+        labels,
+        datasets: [
+          {
+            label: "Query reported",
+            borderWidth: 1,
+            backgroundColor: ["#4DB6AC"],
+            borderColor: ["#00D8FF"],
+            pointBorderColor: "",
+            data: [...data],
+          },
+        ],
+      };
+      return dataOptions;
     };
 
-    const getCouncils = async (regionId: string) => {
-      const response = await getChildren(regionId);
-      const _mappedAreas = mapAreas(response.data.data.children);
-      data.councils = _mappedAreas;
+    const mapTopQueryByGender = (results: Array<CurrentSource>): ChartData => {
+      const labels = results.map((result) => result.category);
+      const data = results.map((result) => result.record_count);
+
+      const dataOptions: ChartData = {
+        labels,
+        datasets: [
+          {
+            label: "Number query from user nature",
+            borderWidth: 1,
+            backgroundColor: ["#EEEEEE", "#BDBDBD"],
+            borderColor: ["#00D8FF"],
+            pointBorderColor: "",
+            data: [...data],
+          },
+        ],
+      };
+      return dataOptions;
     };
 
-    const resetSearchText = async () => {
-      data.searchTerm = "";
-      const response = await getChildren();
-      const _mappedAreas = mapAreas(response.data.data.children);
-      data.entries = _mappedAreas;
+    const loadDashboards = async () => {
+      const summaries = await querySummary({});
+      data.summary = summaries.data[0];
+
+      const currResp = await getByCategory({});
+      const _mappedCurrentSource = mapCurrentQueries(currResp.data);
+      data.currentSource = _mappedCurrentSource;
+
+      const currNature = await getByNature({});
+      const _mappedNature = mapCurrentNature(currNature.data);
+      data.reporterBySource = _mappedNature;
+
+      const currTopFive = await queryTopFive({});
+      const _mappedTopFive = mapTopFive(currTopFive.data);
+      data.reporterTopFiveRepoeter = _mappedTopFive;
+
+      const currQueryByGender = await queryByGender({});
+      const _mappedQueryByGender = mapTopQueryByGender(currQueryByGender.data);
+      data.reporterByGender = _mappedQueryByGender;
     };
-
-    const searchAdminAreas = async (val: string) => {
-      const searchTerm = val ? val : data.searchTerm;
-      const response = data.entries.filter((entry: AdminArea) =>
-        entry.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
-      const _mappedAreas = mapAreas(response);
-      data.entries = _mappedAreas;
-    };
-
-    const searchFacilities = async (val: string) => {
-      const searchTerm = val ? val : data.searchTerm;
-      const response = await getFacilities({
-        regSearch: searchTerm,
-        location_id: data.formData.council_id
-          ? data.formData.council_id
-          : data.formData.region_id,
-      });
-      const _mappedFacilties = mapFacilities(response.data.data.data);
-      data.facilities = _mappedFacilties;
-    };
-
-    const showSmallColumns = computed(() => {
-      const val =
-        !data.formData.region_id ||
-        (!data.formData.council_id && !data.formData.region_id);
-      return !!val;
-    });
 
     return {
       data,
-      searchAdminAreas,
-      searchFacilities,
-      filterDashboard,
-      resetSearchText,
-      showSmallColumns,
     };
   },
 });

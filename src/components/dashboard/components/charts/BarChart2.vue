@@ -1,5 +1,5 @@
 <template>
-  <Pie
+  <Bar
     :chart-options="data.chartOptions"
     :chart-data="chartData"
     :chart-id="chartId"
@@ -14,9 +14,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive } from "vue";
-import { Pie } from "vue-chartjs";
-import { Chart, ArcElement } from "chart.js";
-Chart.register(ArcElement);
+import { Bar } from "vue-chartjs";
 import {
   Chart as ChartJS,
   Title,
@@ -27,6 +25,10 @@ import {
   LinearScale,
 } from "chart.js";
 
+// Import the datalabels plugin
+// import { datalabels } from "chartjs-plugin-datalabels";
+
+// Register necessary modules
 ChartJS.register(
   Title,
   Tooltip,
@@ -37,8 +39,8 @@ ChartJS.register(
 );
 
 export default defineComponent({
-  name: "PieChart",
-  components: { Pie },
+  name: "BarChart",
+  components: { Bar },
   props: {
     chartId: {
       type: String,
@@ -54,7 +56,7 @@ export default defineComponent({
     },
     height: {
       type: Number,
-      default: 500,
+      default: 400,
     },
     cssClasses: {
       default: "",
@@ -65,8 +67,8 @@ export default defineComponent({
       default: () => {},
     },
     plugins: {
-      type: Object,
-      default: () => {},
+      type: Array,
+      default: () => [], // Include the 'datalabels' plugin
     },
     chartData: {
       default: () => ({}),
@@ -75,16 +77,33 @@ export default defineComponent({
   setup() {
     const data = reactive({
       chartOptions: {
+        responsive: true,
+        maintainAspectRatio: true,
         plugins: {
           title: {
             display: true,
-            text: "Pie chart showing Number of queries based on claimer Nature", // Add your title here
-            fontSize: 16, // Customize the font size if needed
+            text: "Bar chart showing Number of query reported per Category ",
+            fontSize: 16,
+          },
+          legend: {
+            display: true,
+            position: "right",
           },
         },
-        responsive: true,
-        maintainAspectRatio: true,
-        backgroundColor: ["#A5D6A7", "#4DD0E1"],
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: "Category Name",
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: "Number of attended query",
+            },
+          },
+        },
       },
     });
     return {
