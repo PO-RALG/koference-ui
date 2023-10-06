@@ -7,7 +7,7 @@
   >
     <v-layout justify-center align-center class="landing-page-background">
       <!-- App Bar -->
-      <v-app-bar color="#19577b" app>
+      <!-- <v-app-bar color="#19577b" app>
         <v-toolbar-title class="custom-title white--text"
           >MRADI WA BONDE LA MTO MSIMBAZI (MSIMBAZI BASIN PROJECT)
           (GRM-SYSTEM)</v-toolbar-title
@@ -20,7 +20,54 @@
           >Fuatlia (Query Tracking)</v-btn
         >
         <v-btn class="white--text" @click="openLogin" text>Ingia (Login)</v-btn>
+      </v-app-bar> -->
+
+      <v-app-bar color="#19577b" app>
+        <v-toolbar-title class="custom-title white--text d-none d-md-flex"
+          >MRADI WA BONDE LA MTO MSIMBAZI (MSIMBAZI BASIN PROJECT)
+          (GRM-SYSTEM)</v-toolbar-title
+        >
+        <v-toolbar-title class="custom-title white--text d-md-none"
+          >MALALAMIKO (GRM)</v-toolbar-title
+        >
+        <!-- Show the menu button only on small devices -->
+
+        <!-- Buttons in the app bar -->
+        <v-spacer></v-spacer>
+        <v-btn icon @click="toggleDrawer" class="d-md-none white--text">
+          <v-icon>mdi-menu</v-icon>
+        </v-btn>
+        <v-btn text @click="openClaimForm" class="d-none d-md-flex white--text"
+          >Tuma Shauri (Query Submition)</v-btn
+        >
+        <v-btn text @click="searchQuery" class="d-none d-md-flex white--text"
+          >Fuatlia (Query Tracking)</v-btn
+        >
+        <v-btn text @click="openLogin" class="d-none d-md-flex white--text"
+          >Ingia (Login)</v-btn
+        >
       </v-app-bar>
+      <div class="backdrop" @click="closeDrawer" v-if="data.drawer"></div>
+      <v-navigation-drawer
+        app
+        temporary
+        left
+        width="70%"
+        src=""
+        :value="data.drawer"
+        @input="data.drawer = $event"
+      >
+        <!-- Buttons in the navigation drawer -->
+        <v-btn color="teal lighten-2" text @click="openClaimForm" class=""
+          ><v-icon>mdi-send</v-icon>Tuma (Query Submition)</v-btn
+        >
+        <v-btn color="blue lighten-2" text @click="searchQuery" class=""
+          ><v-icon>mdi-magnify</v-icon>Fuatlia (Query Tracking)</v-btn
+        >
+        <v-btn color="green lighten-2" text @click="openLogin" class="">
+          <v-icon>mdi-login</v-icon>Ingia (Login)
+        </v-btn>
+      </v-navigation-drawer>
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
           <v-col cols="8" sm="8" md="7">
@@ -144,7 +191,7 @@
                     <v-container>
                       <v-row>
                         <v-col cols="12" md="12" class="mb-n8">
-                          <v-select
+                          <!-- <v-select
                             :items="data.queryCategories"
                             prepend-inner-icon="mdi-file-document-multiple"
                             label="Chaguax aina ya wasilisho lako(Lalamiko)"
@@ -160,12 +207,11 @@
                             <template v-slot:item="{ item }">
                               {{ item.name }} -{{ item.description }}
                             </template>
-                          </v-select>
+                          </v-select> -->
 
                           <v-col cols="12" md="12" class="mb-n8">
                             <v-textarea
                               outlined
-                              v-if="data.formData.queryCategoryId"
                               name="input-7-4"
                               label="Andika Maelezo Hapa Chini"
                               v-model="data.formData.description"
@@ -203,12 +249,12 @@
                             </v-card-text>
                           </v-row>
                           <v-btn
-                            v-if="data.formData.queryCategoryId"
+                            :disabled="!data.formData.description"
                             @click="submitFomrm"
                             color="green lighten-2"
                             large
                             class="white--text"
-                            >{{ "Tuma" }}
+                            >{{ "Tuma lalamiko" }}
                           </v-btn>
                           <!-- {{ data.documentTypes }} -->
                           <!-- end -->
@@ -224,7 +270,7 @@
                     <v-container>
                       <v-row>
                         <v-col cols="12" md="12" class="mb-n8">
-                          <v-select
+                          <!-- <v-select
                             v-if="data.retrivedUserToBind != null"
                             :items="data.queryCategories"
                             prepend-inner-icon="mdi-file-document-multiple"
@@ -241,12 +287,20 @@
                             <template v-slot:item="{ item }">
                               {{ item.name }} -{{ item.description }}
                             </template>
-                          </v-select>
+                          </v-select> -->
 
-                          <v-col cols="12" md="12" class="mb-n8">
+                          <!-- <v-col cols="12" md="12" class="mb-n8">
                             <v-textarea
                               outlined
                               v-if="data.formData.queryCategoryId"
+                              name="input-7-4"
+                              label="Andika Maelezo Hapa Chini"
+                              v-model="data.formData.description"
+                            ></v-textarea>
+                          </v-col> -->
+                          <v-col cols="12" md="12" class="mb-n8">
+                            <v-textarea
+                              outlined
                               name="input-7-4"
                               label="Andika Maelezo Hapa Chini"
                               v-model="data.formData.description"
@@ -284,12 +338,12 @@
                             </v-card-text>
                           </v-row>
                           <v-btn
-                            v-if="data.formData.queryCategoryId"
+                            :disabled="!data.formData.description"
                             @click="submitFomrm"
                             color="green lighten-2"
                             large
                             class="white--text"
-                            >{{ "Tuma" }}
+                            >{{ "Tuma lalamiko" }}
                           </v-btn>
                           <!-- {{ data.documentTypes }} -->
                           <!-- end -->
@@ -913,6 +967,7 @@ export default Vue.extend({
     const query = props.query;
 
     let data = reactive({
+      drawer: false, // Initial state of the navigation drawer
       filePreviewmodal: false,
       isClaim: false,
       toopen: "",
@@ -954,7 +1009,7 @@ export default Vue.extend({
         queryCategoryId: "",
         files: [],
         queryof_user_id: null,
-        usersource: "",
+        usersource: "Anonymous",
       },
       retrivedQuery: "",
       retrivedUser: "",
@@ -964,11 +1019,15 @@ export default Vue.extend({
       getQueryCategories({}).then((response: any) => {
         data.queryCategories = response.data;
       });
+      loadDocumentTypeSetKnown(1);
       // getAppName().then((response) => {
       //   setAppName(response.data.data);
       //   data.siteName = response.data.data;
       // });
     });
+    const toggleDrawer = () => {
+      data.drawer = !data.drawer; // Toggle the state of the navigation drawer
+    };
 
     const previewFiles = (response: any) => {
       data.toopen = response;
@@ -1037,6 +1096,7 @@ export default Vue.extend({
       // data.formData = {} as User;
       data.formData = {} as any;
       data.userModal = false;
+      data.drawer = false; // Toggle the state of the navigation drawer
     };
     const trackQuery = (item: any) => {
       // data.searchTerm = "";
@@ -1052,6 +1112,7 @@ export default Vue.extend({
         data.retrivedUser = response.data;
         data.retrivedUserToBind = response.data[0];
         data.formData.queryof_user_id = response.data[0].id;
+        data.formData.usersource = "Known";
       });
     };
 
@@ -1069,8 +1130,10 @@ export default Vue.extend({
         queryStatusId: 1,
         queryCategoryId: "",
         files: [],
-        usersource: "",
+        usersource: "Anonymous",
       };
+      loadDocumentTypeSetKnown(1);
+      data.drawer = false; // Toggle the state of the navigation drawer
     };
     const closeSearchQuery = () => {
       data.searchQuery = false;
@@ -1097,12 +1160,16 @@ export default Vue.extend({
           queryStatusId: 1,
           queryCategoryId: "",
           files: [],
-          usersource: "",
+          usersource: "Anonymous",
         });
       data.formData.files = [];
       data.documentTypes = [];
       data.retrivedQuery = "";
       data.searchTerm = "";
+      loadDocumentTypeSetKnown(1);
+      loadDocumentType(1);
+      data.selectedOption = "known";
+      data.drawer = false; // Toggle the state of the navigation drawer
     };
 
     const openSignUp = () => {
@@ -1125,6 +1192,7 @@ export default Vue.extend({
     };
     const closeDialogLogin = () => {
       data.modalLogin = false;
+      data.drawer = false; // Toggle the state of the navigation drawer
     };
 
     const submitFomrm = () => {
@@ -1140,7 +1208,7 @@ export default Vue.extend({
             queryStatusId: 1,
             queryCategoryId: "",
             files: [],
-            usersource: "",
+            usersource: "Anonymous",
           };
           data.formData.files = [];
           data.documentTypes = [];
@@ -1207,7 +1275,13 @@ export default Vue.extend({
       });
     };
 
+    const closeDrawer = () => {
+      console.log("inafika");
+      data.drawer = false;
+    };
+
     return {
+      closeDrawer,
       loadDocumentTypeSetKnown,
       openClaimForm,
       loadDocumentType,
@@ -1230,6 +1304,7 @@ export default Vue.extend({
       getFile,
       previewFiles,
       closeFilePreview,
+      toggleDrawer,
     };
   },
 });
@@ -1380,5 +1455,22 @@ a {
   border-right: 3px solid #79a70a;
   border-bottom: 3px solid transparent;
   border-top: 3px solid #79a70a;
+}
+</style>
+<style>
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  display: none;
+}
+
+/* Show the backdrop when the drawer is open */
+.v-navigation-drawer[value="true"] + .backdrop {
+  display: block;
 }
 </style>

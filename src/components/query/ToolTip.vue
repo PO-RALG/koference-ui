@@ -6,8 +6,9 @@
   >
     <!-- <td>{{ new Date() - new Date(item.createdAt) }}</td> -->
     <td>{{ item.created | format() }}</td>
-    <td>{{ item.category }}</td>
-    <td>{{ item.description }}</td>
+    <td v-if="item.category">{{ item.category }}</td>
+    <td v-if="!item.category">{{ "Not categorized" }}</td>
+    <!-- <td>{{ item.description }}</td> -->
     <td>{{ item.status }}</td>
     <td>{{ item.days_passed }}</td>
     <td>

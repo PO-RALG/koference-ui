@@ -33,6 +33,24 @@
                 </template>
               </v-select>
             </v-col>
+            <v-col cols="12" md="12" class="mt-n3">
+              <v-select
+                :items="queryCategories"
+                prepend-inner-icon="mdi-file-document-multiple"
+                label="Chagua aina ya wasilisho lako(Lalamiko)"
+                outlined
+                v-model="formData.queryCategoryId"
+                :item-text="'name'"
+                item-value="id"
+              >
+                <template v-slot:selection="{ item }">
+                  {{ item.name }}-{{ item.description }}
+                </template>
+                <template v-slot:item="{ item }">
+                  {{ item.name }} -{{ item.description }}
+                </template>
+              </v-select>
+            </v-col>
           </ModalBody>
         </template>
         <template v-slot:footer>
@@ -337,6 +355,8 @@
 
 <script>
 import { get, find, saveUserQuety } from "../user/services/user.service";
+import { get as getQueryCategories } from "../setup/query-category/services/query-category.service";
+
 export default {
   data() {
     return {
@@ -346,6 +366,7 @@ export default {
       users: [],
       userList: false,
       title: "Query Details",
+      queryCategories: [],
     };
   },
 
@@ -354,7 +375,9 @@ export default {
       saveUserQuety(this.formData);
       this.userList = false;
       this.$router.push({ name: "query" });
+      // this.$emit("reloadData");
     },
+
     assignUser() {
       this.formData.queryId = this.receivedData.id;
       this.userList = true;
@@ -383,6 +406,9 @@ export default {
     },
   },
   mounted() {
+    getQueryCategories({}).then((response) => {
+      this.queryCategories = response.data;
+    });
     this.getCurrentUser();
     this.usersX = this.getCurrentUser();
     // Parse the received JSON string back to an object

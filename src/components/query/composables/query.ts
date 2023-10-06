@@ -32,12 +32,12 @@ export const useQuery = (): any => {
         sortable: true,
         value: "category",
       },
-      {
-        text: "Description",
-        align: "start",
-        sortable: true,
-        value: "description",
-      },
+      // {
+      //   text: "Description",
+      //   align: "start",
+      //   sortable: true,
+      //   value: "description",
+      // },
       {
         text: "Status",
         align: "start",
