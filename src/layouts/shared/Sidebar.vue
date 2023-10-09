@@ -83,7 +83,7 @@ export default defineComponent({
 .sidebar-toolbar {
   height: 64px;
   color: #fff;
-  background-color: #19577b;
+  background-color: #1a202c;
 }
 .info-toolbar {
   background-color: rgb(21, 101, 192);

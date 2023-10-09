@@ -13,7 +13,9 @@
             <div class="description">
               <h3 class="name black--text">{{ fullName }}</h3>
               <div class="description-title" v-if="user.roles">
-                <a href="#">[{{ roleName }}]</a>
+                <a href="#" class="black--text"
+                  >{{ "ROLES:" }} [{{ roleName }}]</a
+                >
               </div>
               <div class="location pt-2">
                 <a href="#">{{ location }}</a>

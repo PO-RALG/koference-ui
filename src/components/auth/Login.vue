@@ -22,7 +22,7 @@
         <v-btn class="white--text" @click="openLogin" text>Ingia (Login)</v-btn>
       </v-app-bar> -->
 
-      <v-app-bar color="#19577b" app>
+      <v-app-bar color="#1a202c" app>
         <v-toolbar-title class="custom-title white--text d-none d-md-flex"
           >MRADI WA BONDE LA MTO MSIMBAZI (MSIMBAZI BASIN PROJECT)
           (GRM-SYSTEM)</v-toolbar-title
@@ -38,13 +38,13 @@
           <v-icon>mdi-menu</v-icon>
         </v-btn>
         <v-btn text @click="openClaimForm" class="d-none d-md-flex white--text"
-          >Tuma Shauri (Query Submition)</v-btn
+          ><v-icon>mdi-send</v-icon>Tuma Lalamiko</v-btn
         >
         <v-btn text @click="searchQuery" class="d-none d-md-flex white--text"
-          >Fuatlia (Query Tracking)</v-btn
+          ><v-icon>mdi-magnify</v-icon>Fuatilia</v-btn
         >
         <v-btn text @click="openLogin" class="d-none d-md-flex white--text"
-          >Ingia (Login)</v-btn
+          ><v-icon>mdi-login</v-icon>Login</v-btn
         >
       </v-app-bar>
       <div class="backdrop" @click="closeDrawer" v-if="data.drawer"></div>
@@ -62,7 +62,7 @@
           ><v-icon>mdi-send</v-icon>Tuma (Query Submition)</v-btn
         >
         <v-btn color="blue lighten-2" text @click="searchQuery" class=""
-          ><v-icon>mdi-magnify</v-icon>Fuatlia (Query Tracking)</v-btn
+          ><v-icon>mdi-magnify</v-icon>Fuatilia (Query Tracking)</v-btn
         >
         <v-btn color="green lighten-2" text @click="openLogin" class="">
           <v-icon>mdi-login</v-icon>Ingia (Login)
@@ -93,7 +93,8 @@
             <Modal :modal="data.modal" :width="1000" :fullScreen="true">
               <template v-slot:header>
                 <ModalHeader
-                  :title="`${data.modalTitle} Tuma Malalamiko , Ushauri au Maoni Yako`"
+                  :title="`${data.modalTitle} Utumaji`"
+                  :icon="'mdi-send'"
                   :is_signup="true"
                   :is_known="data.selectedOption"
                   :is_claiming="true"
@@ -477,7 +478,8 @@
               <template v-slot:header>
                 <ModalHeader
                   :is_claiming="true"
-                  :title="`Ufuatiliaji (Query Tracking)`"
+                  :title="`Ufuatiliaji`"
+                  :icon="'mdi-magnify'"
                   @closeDialog="closeDialog"
                 />
               </template>

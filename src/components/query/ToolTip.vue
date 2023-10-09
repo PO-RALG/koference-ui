@@ -13,7 +13,7 @@
     <td>{{ item.days_passed }}</td>
     <td>
       <div
-        v-if="item.days_passed > 14 && item.status != 'Imejibiwa'"
+        v-if="item.days_passed > 2 && item.status != 'Imejibiwa'"
         class="warningx"
       >
         This query is out of normal time to be executed!
@@ -76,6 +76,7 @@ td {
   animation: blink 1s infinite; /* Adjust the animation duration as needed */
   background-color: #ff0000; /* Background color for the warning */
   color: #fff; /* Text color for the warning */
-  padding: 10px; /* Adjust padding as needed */
+  padding: 1px; /* Adjust padding as needed */
+  width: 45%;
 }
 </style>

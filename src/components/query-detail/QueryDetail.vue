@@ -10,14 +10,20 @@
           <ModalBody>
             <v-col cols="12" md="12" class="mt-n3">
               <v-select
+                prepend-inner-icon="mdi-account-check"
                 v-model="formData.user_id"
                 :items="users"
                 item-value="id"
-                item-text="first_name"
-                label="Select user"
+                :item-text="'full_name'"
+                label="Select assined officer"
                 outlined
                 required
               >
+                <template v-slot:selection="{ item }">
+                  {{ item.first_name }}-{{ item.last_name }}-{{
+                    item.phone_number
+                  }}
+                </template>
                 <template v-slot:prepend-item>
                   <v-list-item>
                     <v-list-item-content>
@@ -37,7 +43,7 @@
               <v-select
                 :items="queryCategories"
                 prepend-inner-icon="mdi-file-document-multiple"
-                label="Chagua aina ya wasilisho lako(Lalamiko)"
+                label="Select query category"
                 outlined
                 v-model="formData.queryCategoryId"
                 :item-text="'name'"
@@ -63,163 +69,120 @@
         </template>
       </Modal>
       <v-card-text>
-        <div _ngcontent-byn-c280="" class="white-box">
-          <div _ngcontent-byn-c280="" class="row">
-            <div _ngcontent-byn-c280="" class="col-md-8">
-              <div _ngcontent-byn-c280="" class="row DetailsDiv">
-                <div _ngcontent-byn-c280="" class="col-md-12">
+        <div class="white-box">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="row DetailsDiv">
+                <div class="col-md-12">
                   <div
-                    _ngcontent-byn-c280=""
                     class="sub-header py-2 d-flex flex-row justify-content-between"
                   >
-                    <span _ngcontent-byn-c280="" class="time-age">
+                    <span class="time-age">
                       Age:{{ receivedData.days_passed }}{{ " Days" }}
                       <!----></span
                     >
                     <!-- <span
-                      _ngcontent-byn-c280=""
+
                       class="time-till-resolved ng-star-inserted"
                       style=""
                     >
                       &nbsp;&nbsp; Time until resolved: (0d, 3h, 18m) </span
                     > -->
                     <!----><mat-divider
-                      _ngcontent-byn-c280=""
                       role="separator"
                       class="mat-divider mat-divider-horizontal"
                       aria-orientation="horizontal"
                     ></mat-divider>
                   </div>
                 </div>
-                <div _ngcontent-byn-c280="" class="col-md-4">
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Title
-                    </div>
-                    <div _ngcontent-byn-c280="">CLAIM FROM CLIENT</div>
+                <div class="col-md-4">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Title</div>
+                    <div class="underline-text">CLAIM FROM CLIENT</div>
                   </div>
                 </div>
-                <div _ngcontent-byn-c280="" class="col-md-4">
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Track Number
-                    </div>
-                    <div _ngcontent-byn-c280="">
+                <div class="col-md-4">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Track Number</div>
+                    <div class="underline-text">
                       {{ receivedData.tracknumber }}
                     </div>
                   </div>
                 </div>
-                <div
-                  _ngcontent-byn-c280=""
-                  class="col-md-4 ng-star-inserted"
-                  style=""
-                >
+                <div class="col-md-4 ng-star-inserted" style="">
                   <!---->
-                  <div
-                    _ngcontent-byn-c280=""
-                    class="box-detail ng-star-inserted"
-                  >
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Reported to
-                    </div>
-                    <div _ngcontent-byn-c280="">Msimbazi Basin</div>
+                  <div class="box-detail ng-star-inserted">
+                    <div class="font-weight-bold">Reported to</div>
+                    <div class="underline-text">Msimbazi Basin</div>
                   </div>
                   <!---->
                 </div>
                 <!----><!----><!---->
 
-                <div _ngcontent-byn-c280="" class="col-md-4 ng-star-inserted">
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Reported Via
-                    </div>
-                    <div _ngcontent-byn-c280="">Website</div>
+                <div class="col-md-4 ng-star-inserted">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Reported Via</div>
+                    <div class="underline-text">Website</div>
                   </div>
                 </div>
                 <!----><!---->
-                <div _ngcontent-byn-c280="" class="col-md-4">
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Incidence Origin
-                    </div>
-                    <div _ngcontent-byn-c280="">EXTERNAL</div>
+                <div class="col-md-4">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Incidence Origin</div>
+                    <div class="underline-text">EXTERNAL</div>
                   </div>
                 </div>
-                <div _ngcontent-byn-c280="" class="col-md-4">
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Submission Date
-                    </div>
-                    <div _ngcontent-byn-c280="">
+                <div class="col-md-4">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Submission Date</div>
+                    <div class="underline-text">
                       {{ receivedData?.created | format() }}
                     </div>
                   </div>
                 </div>
-                <div _ngcontent-byn-c280="" class="col-md-4">
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Issue Category
-                    </div>
-                    <div _ngcontent-byn-c280="">
+                <div class="col-md-4">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Issue Category</div>
+                    <div class="underline-text">
                       {{ receivedData.category }}
                     </div>
                   </div>
                 </div>
-                <div
-                  _ngcontent-byn-c280=""
-                  class="col-md-4 ng-star-inserted"
-                  style=""
-                >
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Issue Title
-                    </div>
-                    <div _ngcontent-byn-c280="">Query Submition</div>
+                <div class="col-md-4 ng-star-inserted" style="">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Issue Title</div>
+                    <div class="underline-text">Query Submition</div>
                   </div>
                 </div>
                 <!---->
 
-                <div
-                  _ngcontent-byn-c280=""
-                  class="col-md-4 ng-star-inserted"
-                  style=""
-                >
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Priortiy
-                    </div>
-                    <div _ngcontent-byn-c280="">High</div>
+                <div class="col-md-4 ng-star-inserted" style="">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Priortiy</div>
+                    <div class="underline-text">High</div>
                   </div>
                 </div>
                 <!---->
-                <div
-                  _ngcontent-byn-c280=""
-                  class="col-md-4 ng-star-inserted"
-                  style=""
-                >
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Assigned To
-                    </div>
-                    <div v-if="receivedData.assignedtof" _ngcontent-byn-c280="">
+                <div class="col-md-4 ng-star-inserted" style="">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Assigned To</div>
+                    <div class="underline-text" v-if="receivedData.assignedtof">
                       {{ receivedData.assignedtof }}
                       {{ " " }}
                       {{ receivedData.assignedtol }}
                     </div>
-                    <div v-else _ngcontent-byn-c280="">
+                    <div v-else>
                       {{ "___________" }}
                     </div>
                   </div>
                 </div>
                 <!----><!----><!----><!----><!----><!---->
-                <div _ngcontent-byn-c280="" class="col-md-12">
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Description
-                    </div>
-                    <div _ngcontent-byn-c280="">
+                <div class="col-md-12">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Description</div>
+                    <div>
                       <!-- hello, -->
-                      <div>
+                      <div class="underline-text">
                         {{ receivedData.description }}
                       </div>
                       <div><br /></div>
@@ -229,34 +192,22 @@
                   </div>
                 </div>
                 <!---->
-                <div
-                  _ngcontent-byn-c280=""
-                  class="col-md-4 ng-star-inserted"
-                  style=""
-                >
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Resolved Date
-                    </div>
-                    <div _ngcontent-byn-c280="">Sep 17, 2023 @ 21:21:58</div>
+                <div class="col-md-4 ng-star-inserted" style="">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Resolved Date</div>
+                    <div>{{ receivedData?.resolved | format() }}</div>
                   </div>
                 </div>
-                <div
-                  _ngcontent-byn-c280=""
-                  class="col-md-4 ng-star-inserted"
-                  style=""
-                >
-                  <div _ngcontent-byn-c280="" class="box-detail">
-                    <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Closed Date
-                    </div>
-                    <div _ngcontent-byn-c280="">{{ "____________" }}</div>
+                <div class="col-md-4 ng-star-inserted" style="">
+                  <div class="box-detail">
+                    <div class="font-weight-bold">Closed Date</div>
+                    <div>{{ "____________" }}</div>
                   </div>
                 </div>
                 <!----><!---->
               </div>
             </div>
-            <div _ngcontent-byn-c280="" class="col-md-4">
+            <div class="col-md-4">
               <div class="right-aligned-text">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
@@ -292,32 +243,21 @@
                 </router-link>
               </div>
               <v-card
-                _ngcontent-byn-c280=""
                 class="mat-card mat-focus-indicator shadow-sm mat-elevation-z3"
-                ><p _ngcontent-byn-c280="" class="ng-star-inserted" style="">
-                  <!----><span
-                    _ngcontent-byn-c280=""
-                    class="ng-star-inserted font-weight-bold pl-4"
+                ><p class="ng-star-inserted" style="">
+                  <!----><span class="ng-star-inserted font-weight-bold pl-4"
                     >PROGRESS STATUS </span
                   ><!---->
                 </p>
                 <!---->
-                <p
-                  _ngcontent-byn-c280=""
-                  class="resolved ng-star-inserted"
-                  style=""
-                >
+                <p class="resolved ng-star-inserted" style="">
                   <span class="pl-4">This Query is currently at status</span>
-                  <br _ngcontent-byn-c280="" />
+                  <br />
                   <v-btn text class="primaary--text" color="green"
                     >{{ receivedData.status }}
                   </v-btn>
                 </p>
-                <p
-                  _ngcontent-byn-c280=""
-                  class="resolved ng-star-inserted"
-                  style=""
-                ></p>
+                <p class="resolved ng-star-inserted" style=""></p>
                 <!----><!----><!----><!----><!----><!----><!----></v-card
               >
             </div>
@@ -330,8 +270,8 @@
         v-if="receivedData && receivedData?.queryclaimattachments.length > 0"
         class="col-md-4"
       >
-        <div _ngcontent-byn-c280="" class="box-detail">
-          <div _ngcontent-byn-c280="">Attached Documents</div>
+        <div class="box-detail">
+          <div>Attached Documents</div>
         </div>
       </div>
       <v-container>
@@ -393,14 +333,18 @@ export default {
       const regSearchTerm = item ? item : this.searchTerm;
       find({ regSearchTerm }).then((response) => {
         const allUsers = response.data;
-        for (let i = 0; i < allUsers.length; i++) {
-          const element = allUsers[i];
-          if (element) {
-            this.users.push(element);
-          }
-        }
+        // Use .map() to add the full_name attribute to each user
+        const usersWithFullName = allUsers.map((user) => {
+          // Calculate the full_name based on your data structure
+          const full_name = `${user.first_name} ${user.last_name} ${user.phone_number}`;
+          // Return the user object with the added full_name attribute
+          return { ...user, full_name };
+        });
+        // Use .filter() to remove any user objects with falsy values
+        this.users = usersWithFullName.filter((user) => user);
       });
     },
+
     getCurrentUser() {
       return this.$store.getters["Auth/getCurrentUser"];
     },
@@ -410,7 +354,7 @@ export default {
       this.queryCategories = response.data;
     });
     this.getCurrentUser();
-    this.usersX = this.getCurrentUser();
+    // this.usersX = this.getCurrentUser();
     // Parse the received JSON string back to an object
     this.receivedData = JSON.parse(this.$route.query.data);
   },
@@ -419,5 +363,15 @@ export default {
 <style>
 .right-aligned-text {
   text-align: right;
+}
+
+/* Applying underline to text */
+.underline-text {
+  text-decoration: underline; /* Add an underline */
+}
+
+/* Applying underline to other elements, like divs or spans */
+.underline-element {
+  border-bottom: 1px solid #000; /* Add a solid black underline */
 }
 </style>

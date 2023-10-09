@@ -6,21 +6,31 @@
         : ' bg_color white--text pa-4pa-4'
     "
   >
-    <span class="text-h5">{{ title }}</span>
-    <v-spacer></v-spacer>
+    <span class="text-h5">
+      <v-icon large color="white">{{ icon }}</v-icon> {{ title }}</span
+    >
 
+    <v-spacer></v-spacer>
     <v-btn
       v-if="is_signup && is_known === 'known'"
-      large
       @click="openSignUp"
       color="white"
-      class="white--text"
+      class="white--text d-md-none"
       text
     >
-      Jisajili (Sign up)
+      Jisajili
+    </v-btn>
+    <v-btn
+      v-if="is_signup && is_known === 'known'"
+      @click="openSignUp"
+      color="white"
+      class="white--text d-none d-md-flex"
+      text
+    >
+      Jisajili
     </v-btn>
     <span v-if="is_claiming">
-      <v-btn large @click="closeDialogx" color="white" class="white--text" text>
+      <v-btn small @click="closeDialogx" color="white" class="white--text" text>
         <v-icon large>mdi-close</v-icon>
       </v-btn>
     </span>
@@ -58,6 +68,10 @@ export default defineComponent({
       type: String,
       required: false,
     },
+    icon: {
+      type: String,
+      required: false,
+    },
   },
 
   data() {
@@ -78,6 +92,6 @@ export default defineComponent({
 </script>
 <style>
 .bg_color {
-  background: #19577b;
+  background: #1a202c;
 }
 </style>

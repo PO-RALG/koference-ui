@@ -2,7 +2,7 @@
   <v-app-bar
     :clipped-left="$vuetify.breakpoint.lgAndUp"
     app
-    color="#19577b"
+    color="#1a202c"
     dark
   >
     <v-app-bar-nav-icon @click.stop="toggleSidebar"></v-app-bar-nav-icon>

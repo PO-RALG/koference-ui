@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = "/api/v1/users";
 const APIUSERQUERY = "/api/v1/user-queries";
-const APIALL = "/api/v1/users";
+const APIALL = "/api/v1/users/users/search";
 const APISENDMAIL = "/api/v1/users/sendMail";
 const APISENDSUBMISSIONMAIL = "/api/v1/users/sendSubmissionMail";
 

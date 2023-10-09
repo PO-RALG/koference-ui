@@ -1,7 +1,8 @@
 <template>
   <Modal :modal="isOpen" :width="950">
     <template v-slot:header>
-      <ModalHeader :title="`${title} User`" />
+      <ModalHeader v-if="isClaim" :title="`${title} Fomu ya Kujisajili `" />
+      <ModalHeader v-if="!isClaim" :title="`${title} User`" />
     </template>
     <template v-slot:body>
       <v-col cols="12" lg="12" md="12" sm="12">
@@ -17,82 +18,85 @@
             <v-row>
               <v-col cols="12" lg="4" md="4" sm="12">
                 <v-text-field
-                  label="jina la kwanza(First Name)"
+                  label="jina la kwanza(First Name) *"
                   v-model="formData.first_name"
-                  :rules="data.requiredRules"
+                  :rules="data.userValidation.firstname"
                   outlined
                 >
                 </v-text-field>
               </v-col>
               <v-col cols="12" lg="4" md="4" sm="12">
                 <v-text-field
-                  label="Jina la kati(Middle Name)"
+                  label="Jina la kati(Middle Name) *"
                   v-model="formData.middle_name"
-                  :rules="data.requiredRules"
+                  :rules="data.userValidation.middleName"
                   outlined
                 >
                 </v-text-field>
               </v-col>
               <v-col cols="12" lg="4" md="4" sm="12">
                 <v-text-field
-                  label="Jina la mwisho(Last Name)"
+                  label="Jina la mwisho(Last Name) *"
                   v-model="formData.last_name"
-                  :rules="data.requiredRules"
+                  :rules="data.userValidation.surname"
                   outlined
                 >
                 </v-text-field>
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
+              <v-col cols="12" lg="4" md="4" sm="12" class="mt-n5">
                 <v-text-field
                   label="Barua pepe(Email Address)"
                   v-model="formData.email"
-                  v-bind:rules="data.emailRules"
+                  :rules="data.userValidation.email"
                   outlined
                 >
                 </v-text-field>
               </v-col>
-              <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
+              <v-col cols="12" lg="4" md="4" sm="12" class="mt-n5">
                 <v-text-field
-                  label="Namba ya simu(Phone Number)"
+                  label="Namba ya simu(Phone Number) *"
                   v-model="formData.phone_number"
+                  :rules="data.userValidation.PhoneNoRequired"
                   outlined
                 >
                 </v-text-field>
               </v-col>
-              <v-col cols="12" lg="4" md="4" sm="12" class="mt-n8">
+              <v-col cols="12" lg="4" md="4" sm="12" class="mt-n5">
                 <v-text-field
-                  label="Namba ya NIDA(NIN Number)"
+                  label="Namba ya NIDA(NIN Number) *"
                   v-model="formData.nin_number"
-                  :rules="data.requiredRules"
+                  :rules="data.userValidation.nin"
                   outlined
                 >
                 </v-text-field>
               </v-col>
-              <v-col cols="12" lg="6" md="6" sm="12" class="mt-n8">
+              <v-col cols="12" lg="6" md="6" sm="12" class="mt-n5">
                 <v-text-field
-                  label="Umri(Age)"
+                  label="Umri(Age) *"
                   v-model="formData.age"
-                  :rules="data.requiredRules"
                   outlined
+                  :rules="data.userValidation.required"
                   type="number"
                 >
                 </v-text-field>
               </v-col>
-              <v-col cols="12" sm="6" md="6" class="mt-n8">
+              <v-col cols="12" sm="6" md="6" class="mt-n5">
                 <v-select
+                  outlined
+                  label="Gender *"
                   v-model="formData.sex"
                   :items="data.genders"
+                  :item-text="'name'"
                   item-value="name"
-                  item-text="name"
-                  outlined
+                  :rules="data.userValidation.required"
+                  :no-data-text="'Hakuna data'"
                   clearable
-                  label="Select Gender"
                 ></v-select>
               </v-col>
 
-              <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+              <v-col cols="12" lg="12" md="12" sm="12" class="mt-n5">
                 <v-text-field
                   label="Neno la kuingilia(User Name)"
                   v-model="formData.username"
@@ -101,7 +105,7 @@
                 >
                 </v-text-field>
               </v-col>
-              <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+              <v-col cols="12" lg="12" md="12" sm="12" class="mt-n5">
                 <v-text-field
                   label="Nywila(Password)"
                   v-model="formData.password"
@@ -132,7 +136,7 @@
               <v-col cols="12" sm="12" md="6">
                 <v-row
                   v-if="data.showFacility || data.isFacilityUser"
-                  class="mt-n8"
+                  class="mt-n5"
                 >
                   <v-col cols="12" sm="12" md="12">
                     <v-checkbox
@@ -145,7 +149,7 @@
                     cols="12"
                     sm="12"
                     md="12"
-                    class="mt-n8"
+                    class="mt-n5"
                     v-if="data.facilities && data.isFacilityUser"
                   >
                     <v-select
@@ -161,7 +165,7 @@
               </v-col> -->
             </v-row>
             <!-- <v-row>
-              <v-col cols="12" lg="12" md="12" sm="12" class="mt-n8">
+              <v-col cols="12" lg="12" md="12" sm="12" class="mt-n5">
                 <DualMultiSelect
                   :source="data.roles"
                   :destination="selectedRoles"
@@ -233,6 +237,43 @@ export default defineComponent({
       facilities: [],
       node: null,
       genders: [{ name: "Me" }, { name: "Ke" }],
+      userValidation: {
+        enabled: [(v) => !!v || "Required"],
+        accountNonLocked: [(v) => !!v || "Required"],
+        accountNonExpired: [(v) => !!v || "Required"],
+        credentialsNonExpired: [(v) => !!v || "Required"],
+        gender: [(v) => !!v || "Required"],
+        login: [(v) => !!v || "Required"],
+        email: [
+          // (v) => !!v || "E-mail is required",
+          (v) => /.+@.+\..+/.test(v) || "Barua pepe lazima iwe sahihi",
+        ],
+        firstname: [
+          (v) => !!v || "Jina la kwanza ni lazima",
+          (v) => /.+[^#<>:;,?""*|/]+/.test(v) || "Jaza angalau neno moja",
+        ],
+        middleName: [
+          (v) => !!v || " Jina la kati ni lazima",
+          (v) => /.+[^#<>:;,?""*|/]+/.test(v) || "Jaza angalau neno moja",
+        ],
+        surname: [
+          (v) => !!v || "Jina la ukoo ni lazima",
+          (v) => /.+[^#<>:;,?""*|/]+/.test(v) || "Jaza angalau neno moja",
+        ],
+        required: [
+          (v) => !!v || " Lazima ujaze kipengele hiki",
+          (v) => /.+[^#<>:;,?""*|/]+/.test(v) || "Jaza angalau neno moja",
+        ],
+        nin: [
+          (v) => !!v || "Namba ya NIDA ni lazima",
+          (v) => /.+[^#<>:;,?""*|/]+/.test(v) || "Jaza angalau neno moja",
+        ],
+        PhoneNoRequired: [
+          (v) => !!v || "Namba ya simu ni lazima",
+          (v) => Number.isInteger(Number(v)) || "Jaza namba pekee",
+          (v) => (v && v.length == 10) || "Namba zisizidi kumi (10)",
+        ],
+      },
     });
 
     const initialize = () => {
