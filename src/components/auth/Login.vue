@@ -880,29 +880,381 @@
                 </ModalFooter>
               </template>
             </Modal>
+            <div class="web-container mt-20 pt-10">
+              <app-features-and-services>
+                <v-card
+                  color="#E3F2FD"
+                  class="p-10 lg:p-20 !bg-primary/10 rounded-lg"
+                >
+                  <web-section-header>
+                    <div class="text-center">
+                      <h1 class="font-bold !text-2xl mb-1">
+                        Features & Services
+                      </h1>
+                      <div class="h-[2px] m-auto !bg-primary w-[100px]"></div>
+                    </div>
+                  </web-section-header>
+                  <v-row
+                    class="space-y-10 md:space-y-0 md:grid md:grid-cols-2 mt-10 gap-10 lg:gap-20"
+                  >
+                    <v-col>
+                      <v-row class="flex space-x-0">
+                        <v-col class="space-y-3">
+                          <v-col
+                            class="aspect-square h-10 !bg-primary rounded-md text-white grid place-content-center"
+                          >
+                            <v-icon x-large color="rgb(59 130 246 / 0.5)"
+                              >mdi-email</v-icon
+                            >
+                          </v-col>
+                          <h2
+                            class="!text-primary !text-xl font-bold !text-2xl mb-1"
+                          >
+                            Subscription
+                          </h2>
+                          <p>
+                            GRM allows subscription by the public for obtaining
+                            query status information through email and SMS.
+                          </p>
+                        </v-col>
+                      </v-row>
+                    </v-col>
 
-            <div class="pt-5">
-              <v-row class="mb-6 pa-0" justify="center" no-gutters>
-                <small class="white--text">
-                  {{ "Copyright" }}
-                </small>
-                <small class="white--text">
-                  {{ " ©2022 MSIMBAZI BASIN" }}
-                </small>
-                <small class="white--text">
-                  {{ ". All right reserved." }}
-                </small>
-                <small class="white--text">
-                  <strong>{{ " GRM v1.0 ." }}</strong>
-                </small>
-                <small class="white--text">
-                  {{
-                    "For any Technical inquiry, please contact your ICT Support Team ."
-                  }}
-                </small>
-              </v-row>
-              <v-row class="mb-n8 pa-0" justify="center" no-gutters> </v-row>
+                    <v-col>
+                      <v-row>
+                        <v-col class="space-y-0">
+                          <v-col class="">
+                            <v-icon color="rgb(59 130 246 / 0.5)" x-large
+                              >mdi-cellphone</v-icon
+                            >
+                          </v-col>
+                          <h2
+                            class="!text-primary !text-xl font-bold !text-2xl mb-1"
+                          >
+                            Mobile Application
+                          </h2>
+                          <p>
+                            GRM mobile application facilitates e-registration of
+                            clients and e-submission of their queries through
+                            mobile phones or tablets.
+                          </p>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                    <v-col>
+                      <v-row>
+                        <v-col class="space-y-0">
+                          <v-col class="">
+                            <v-icon color="rgb(59 130 246 / 0.5)" x-large
+                              >mdi-monitor-dashboard</v-icon
+                            >
+                          </v-col>
+                          <h2
+                            class="!text-primary !text-xl font-bold !text-2xl mb-1"
+                          >
+                            Reports && Visualization
+                          </h2>
+                          <p>
+                            GRM application facilitates data analysis by
+                            providing various reports and visualizations to help
+                            you make informed decisions and gain valuable
+                            insights into your business.
+                          </p>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </app-features-and-services>
             </div>
+
+            <!-- <web-footer class="">
+              <div class="bg-gray-100 !text-xs mt-20">
+                <div class="web-container mt-20 pt-10">
+                  <v-container>
+                    <v-row class="grid xl:grid-cols-12 gap-2 2xl:gap-10">
+                      <v-col cols="4" class="pr-9 !font-light">
+                        <div>
+                          <v-img
+                            loading="lazy"
+                            src="/assets/images/logo.png"
+                            class="h-20 mb-10"
+                          ></v-img>
+                        </div>
+                        <p>
+                          A broad electronic procurement system through which
+                          procuring entities perform procurement related
+                          functions such as preparation and publication of
+                          annual procurement plans, pre-qualification,
+                          initiation of tenders, invitation of tenders, tender
+                          opening, evaluation, post qualification, negotiation,
+                          awarding of contracts, contract management, purchase
+                          through e-auction or e-catalogue, and make payments
+                          electronically. Moreover, the system facilitates
+                          tenderers to register, provide their qualification
+                          details, view tenders, and submit their priced offers.
+                        </p>
+                        <p>
+                          GRM means National e-Procurement System of Tanzania.
+                          This system has been developed, hosted, and operated
+                          by the Government of the United Republic of Tanzania
+                          in 2022 for facilitation of procurement functions by
+                          means of information and communication technology.
+                        </p>
+                      </v-col>
+                      <v-col cols="2">
+                        <div
+                          class="font-bold pr-4 pb-2 !border-b-2 !border-b-primary mb-4 !inline-block"
+                        >
+                          Useful links
+                        </div>
+                        <ul class="space-y-3 !ml-0 !pl-0 !font-light text-gray">
+                          <li>
+                            <a
+                              class="hover:text-gray-900 text-gray-700"
+                              href="/annual-procurement-plans"
+                              >General Procurement Notices</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              class="hover:text-gray-900 text-gray-700"
+                              href="/tenders/published-tenders"
+                              >Current Tenders</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              class="hover:text-gray-900 text-gray-700"
+                              href="/tenders/awarded-tenders"
+                              >Awarded Contracts</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              class="hover:text-gray-900 text-gray-700"
+                              href="/tenders/published-tenders"
+                              >Advanced Search</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              class="hover:text-gray-900 text-gray-700"
+                              href="/documents/forms"
+                              >Forms</a
+                            >
+                          </li>
+                        </ul>
+                      </v-col>
+                      <v-col cols="2">
+                        <div
+                          class="font-bold pr-4 pb-2 !border-b-2 !border-b-primary mb-4 !inline-block"
+                        >
+                          Help
+                        </div>
+                        <ul class="space-y-3 !ml-0 !pl-0 !font-light">
+                          <li>
+                            <a
+                              target="_blank"
+                              href="https://www.youtube.com/watch?v=zhNaeWnwFH4&amp;list=PL0xdBmzPXCeGgX720ipgt2M2rQxyqGQ73"
+                              class="cursor-pointer hover:text-gray-900 text-gray-700"
+                              >Supplier Training Video</a
+                            >
+                          </li>
+                          <li class="cursor-pointer" tabindex="0">
+                            User Guides
+                          </li>
+                          <li class="cursor-pointer" tabindex="0">
+                            Terms and Conditions
+                          </li>
+                        </ul>
+                      </v-col>
+                      <v-col cols="2">
+                        <div
+                          class="font-bold pr-4 pb-2 !border-b-2 !border-b-primary mb-4 !inline-block"
+                        >
+                          Contacts
+                        </div>
+                        <div class="flex space-x-4">
+                          <div class="!text-primary">
+                            <v-icon>mdi-email</v-icon>
+                          </div>
+                          <div class="!font-light">
+                            <a
+                              href="mailto:support@GRM.go.tz"
+                              style="text-decoration: none; color: black"
+                              >support@GRM.go.tz</a
+                            >
+                          </div>
+                        </div>
+                        <div class="flex space-x-4">
+                          <div class="!text-primary">
+                            <v-icon>mdi-phone</v-icon>
+                          </div>
+                          <div>
+                            <ul class="space-y-3 !ml-0 !pl-0 !font-light">
+                              <li>
+                                <a
+                                  href="tel:+255736494948"
+                                  style="text-decoration: none; color: black"
+                                  >+255 (0)736 494948</a
+                                >
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </v-col>
+                      <v-col cols="2">
+                        <div
+                          class="font-bold pr-4 pb-2 !border-b-2 !border-b-primary mb-4 !inline-block"
+                        >
+                          Download Mobile App
+                        </div>
+                        <div class="text-right">
+                          <div class="mb-1">
+                            <a
+                              href="https://play.google.com/store/apps/details?id=com.tz.go.ppra.GRM&amp;hl=en&amp;gl=US"
+                              target="_blank"
+                              class="cursor-pointer"
+                            >
+                              <v-img
+                                loading="lazy"
+                                src="/assets/images/google playstore.png"
+                              ></v-img>
+                            </a>
+                          </div>
+                          <div>
+                            <a
+                              href="https://apps.apple.com/app/id1660520548"
+                              target="_blank"
+                              class="cursor-pointer"
+                            >
+                              <v-img
+                                loading="lazy"
+                                src="/assets/images/play-store-button.png"
+                              ></v-img>
+                            </a>
+                          </div>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </div>
+                <div
+                  class="py-3 border-t border-t-gray-300 mt-5 flex items-center"
+                >
+                  <div class="web-container flex items-center justify-between">
+                    <div>
+                      Copyright © 2023. All Rights Reserved. Version 1.0.0
+                    </div>
+                    <div class="flex space-x-3">
+                      <a
+                        href="http://www.facebook.com/PPRA_Tanzania-2588600117819083"
+                        target="_blank"
+                        title="PPRA On Facebook"
+                      >
+                        <v-img
+                          loading="lazy"
+                          src="/assets/images/facebook.png"
+                        ></v-img>
+                      </a>
+                      <a
+                        href="http://www.twitter.com/PpraTanzania"
+                        target="_blank"
+                        title="PPRA On Twitter"
+                      >
+                        <v-img
+                          loading="lazy"
+                          src="/assets/images/twitter.png"
+                        ></v-img>
+                      </a>
+                      <a
+                        href="http://www.instagram.com/ppra_tanzania"
+                        target="_blank"
+                        title="PPRA On Instagram"
+                      >
+                        <v-img
+                          loading="lazy"
+                          src="/assets/images/instagram.png"
+                        ></v-img>
+                      </a>
+                      <a
+                        href="https://www.youtube.com/@ppratanzania668"
+                        target="_blank"
+                        title="PPRA On Youtube"
+                      >
+                        <v-img
+                          loading="lazy"
+                          src="/assets/images/youtube.png"
+                        ></v-img>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </web-footer> -->
+            <v-footer app>
+              <!-- Adjust the background color and text color -->
+              <v-sheet color="primary" dark>
+                <v-container>
+                  <v-row>
+                    <v-col>
+                      <v-img src="/assets/logo.png" height="50"></v-img>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-sheet>
+
+              <!-- Footer content -->
+
+              <v-sheet>
+                <v-container>
+                  <v-row>
+                    <v-col>
+                      <p class="text-center">
+                        &copy; {{ new Date().getFullYear() }}
+                        <small class="">
+                          {{ " ©2022 MSIMBAZI BASIN" }}
+                        </small>
+                        <small class="">
+                          {{ ". All right reserved." }}
+                        </small>
+                        <small class="">
+                          <strong>{{ " GRM v1.0 ." }}</strong>
+                        </small>
+                        <small class="">
+                          {{
+                            "For any Technical inquiry, please contact your ICT Support Team ."
+                          }} </small
+                        >.
+                      </p>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-sheet>
+              <v-spacer></v-spacer>
+              <v-sheet color="primary" dark>
+                <v-container>
+                  <v-row>
+                    <v-col cols="6">
+                      <v-img src="/assets/logo.png" height="50"></v-img>
+                    </v-col>
+                    <v-col cols="6" class="text-right">
+                      <!-- Social media icons with links -->
+                      <v-btn icon href="https://www.facebook.com/your-page">
+                        <v-icon>mdi-facebook</v-icon>
+                      </v-btn>
+                      <v-btn icon href="https://twitter.com/your-page">
+                        <v-icon>mdi-twitter</v-icon>
+                      </v-btn>
+                      <v-btn icon href="https://www.instagram.com/your-page">
+                        <v-icon>mdi-instagram</v-icon>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-sheet>
+            </v-footer>
           </v-col>
           <v-col cols="8" sm="8" md="7">
             <div class="text-center"></div>
@@ -1323,10 +1675,13 @@ export default Vue.extend({
 }
 </style>
 <style scoped>
+footer {
+  margin-top: 20px;
+}
 .landing-page-background {
   /* Set your background image here */
-  background-image: url("./V.jpg");
-  background-color: #f4f4f4;
+  /* background-image: url("./V.jpg"); */
+  background-color: #41546b;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
