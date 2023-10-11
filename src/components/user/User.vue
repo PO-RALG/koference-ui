@@ -66,8 +66,19 @@
             <span>Reset Password</span>
           </v-tooltip>
 
-          <v-icon class="mr-2" @click="openDialog(item)">
+          <v-icon
+            :disabled="item.id === data.currentUser.id"
+            class="mr-2"
+            @click="openDialog(item)"
+          >
             mdi-pencil-box-outline
+          </v-icon>
+          <v-icon
+            :disabled="item.id === data.currentUser.id"
+            class="mr-2"
+            @click="openDialogMapRoles(item)"
+          >
+            mdi-card-account-mail
           </v-icon>
           <v-icon
             @click="openConfirmDialog(item)"
@@ -92,6 +103,14 @@
       :title="data.modalTitle"
       :formData="data.formData"
       @onSubmit="save"
+      @onClose="cancelDialog"
+    />
+    <RoleForm
+      :isOpen="data.roleModal"
+      :userObject="data.userObject"
+      :title="data.modalTitle"
+      :formData="data.formData"
+      @onSubmit="saveUserRoles"
       @onClose="cancelDialog"
     />
     <ConfirmDialog
@@ -218,11 +237,13 @@
 import { defineComponent } from "vue";
 import { useUser } from "./composables/user";
 import UserForm from "./forms/UserForm.vue";
+import RoleForm from "./forms/RoleForm.vue";
 
 export default defineComponent({
   name: "MainUserComponent",
   components: {
     UserForm,
+    RoleForm,
   },
   setup() {
     const {
@@ -245,6 +266,7 @@ export default defineComponent({
       facilities,
       updateUser,
       save,
+      saveUserRoles,
       deleteItem,
       onChangeList,
       status,
@@ -261,6 +283,7 @@ export default defineComponent({
       restore,
       openRestoreTrashedDialog,
       filterTrushedUser,
+      openDialogMapRoles,
     } = useUser();
 
     const showRoles = (roles) => {
@@ -289,6 +312,7 @@ export default defineComponent({
       facilities,
       updateUser,
       save,
+      saveUserRoles,
       deleteItem,
       onChangeList,
       toggleStatus,
@@ -304,6 +328,7 @@ export default defineComponent({
       restore,
       openRestoreTrashedDialog,
       filterTrushedUser,
+      openDialogMapRoles,
     };
   },
 });

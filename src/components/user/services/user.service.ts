@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API = "/api/v1/users";
+const MAPROLES = "/api/v1/user-roles";
 const APIUSERQUERY = "/api/v1/user-queries";
 const APIALL = "/api/v1/users/users/search";
 const APISENDMAIL = "/api/v1/users/sendMail";
@@ -23,6 +24,10 @@ const find = async (payload: any) => {
 const create = async (payload: any) => {
   return await axios.post(`${API}`, payload);
 };
+const maprole = async (payload: any) => {
+  return await axios.post(`${MAPROLES}`, payload);
+};
+
 const sendMail = async (payload: any) => {
   return await axios.post(`${APISENDMAIL}`, payload);
 };
@@ -81,4 +86,5 @@ export {
   saveUserQuety,
   sendMail,
   sendMailForSubmition,
+  maprole,
 };

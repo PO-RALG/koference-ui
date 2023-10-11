@@ -3,6 +3,7 @@ import { AxiosResponse } from "axios";
 import {
   get,
   create,
+  maprole,
   update,
   deleteUser,
   toggleActive,
@@ -27,6 +28,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
     currentUser: null,
     status: "",
     isOpen: false,
+    roleModal: false,
     selectedRoles: [],
     approvalRoles: [],
     filteredRoles: [],
@@ -105,7 +107,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
       role_id: null,
       entries: [],
     },
-    search: { can_approve: false },
+    userObject: "",
   });
 
   onMounted(() => {
@@ -263,6 +265,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
     data.isFacilityUser = false;
     data.showApprovalDialog = false;
     data.modal = false;
+    data.roleModal = false;
   };
 
   const approvableRole = (name) => {
@@ -275,12 +278,16 @@ export const useUser = (type?: string): Record<string, unknown> => {
 
   const save = (formData: any) => {
     if (formData.id) {
+      delete formData.roles;
       delete formData.menus;
       delete formData.fullName;
       updateUser(formData);
     } else {
       createUser(formData);
     }
+  };
+  const saveUserRoles = (formData: any) => {
+    mapUserRoles(formData);
   };
 
   const setApprovalRole = () => {
@@ -383,7 +390,6 @@ export const useUser = (type?: string): Record<string, unknown> => {
       data.formData = formData;
       if (formData.facility_id) {
         data.isFacilityUser = true;
-        loadFacilities();
       }
       data.modalTitle = "Update";
     } else {
@@ -391,6 +397,12 @@ export const useUser = (type?: string): Record<string, unknown> => {
       data.modalTitle = "Create";
     }
     data.modal = !data.modal;
+  };
+  const openDialogMapRoles = (payload?: any) => {
+    data.roleModal = !data.roleModal;
+    data.formData.id = payload.id;
+    data.formData.roles = payload.roles;
+    data.userObject = payload;
   };
 
   const updateUser = (data: User) => {
@@ -405,6 +417,14 @@ export const useUser = (type?: string): Record<string, unknown> => {
   const createUser = (data: User) => {
     create(data).then((response: AxiosResponse) => {
       if (response.status === 200) {
+        cancelDialog();
+        initialize();
+      }
+    });
+  };
+  const mapUserRoles = (data: User) => {
+    maprole(data).then((response: AxiosResponse) => {
+      if (response.status === 200 || response.status === 201) {
         cancelDialog();
         initialize();
       }
@@ -438,16 +458,6 @@ export const useUser = (type?: string): Record<string, unknown> => {
     });
     data.item = {} as User;
     data.isOpen = false;
-  };
-
-  const loadFacilities = () => {
-    const isFacilityUser = !!data.isFacilityUser;
-    data.isFacilityUser = isFacilityUser;
-    getFacilities({ search: { location_id: data.location["id"] } }).then(
-      (response: AxiosResponse) => {
-        data.facilities = response.data.data.data;
-      }
-    );
   };
 
   const filterRoles = (term: string) => {
@@ -536,7 +546,6 @@ export const useUser = (type?: string): Record<string, unknown> => {
     filterRoles,
     selectedRoles,
     confirmTitle,
-    loadFacilities,
     getData,
     users,
     filterUsers,
@@ -544,6 +553,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
     closeActivationDialog,
     updateUser,
     save,
+    saveUserRoles,
     deleteItem,
     status,
     resetPasswd,
@@ -561,5 +571,6 @@ export const useUser = (type?: string): Record<string, unknown> => {
     cancelRestoreDialog,
     restore,
     initializeTrushed,
+    openDialogMapRoles,
   };
 };

@@ -1,5 +1,5 @@
 import axios from "axios";
-const API = "/api/v1/auth-roles";
+const API = "/api/v1/roles";
 const PERMISSION_API = "/api/v1/auth-permissions";
 
 const get = async (payload: any) => {
@@ -30,4 +30,12 @@ const deleteRole = async (id: number | string) => {
   return await axios.delete(`${API}/${id}`);
 };
 
-export { get, find, create, update, deleteRole, getPermissions, addPermissions };
+export {
+  get,
+  find,
+  create,
+  update,
+  deleteRole,
+  getPermissions,
+  addPermissions,
+};
