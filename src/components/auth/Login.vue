@@ -1214,7 +1214,7 @@
                       <p class="text-center">
                         &copy; {{ new Date().getFullYear() }}
                         <small class="">
-                          {{ " ©2022 MSIMBAZI BASIN" }}
+                          {{ "MSIMBAZI BASIN" }}
                         </small>
                         <small class="">
                           {{ ". All right reserved." }}
