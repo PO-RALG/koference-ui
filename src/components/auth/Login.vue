@@ -6,25 +6,12 @@
     fill-height
   >
     <v-layout justify-center align-center class="landing-page-background">
-      <!-- App Bar -->
-      <!-- <v-app-bar color="#19577b" app>
-        <v-toolbar-title class="custom-title white--text"
-          >MRADI WA BONDE LA MTO MSIMBAZI (MSIMBAZI BASIN PROJECT)
-          (GRM-SYSTEM)</v-toolbar-title
-        >
-        <v-spacer></v-spacer>
-        <v-btn class="white--text" @click="openClaimForm" text
-          >Tuma Shauri (Query Submition)</v-btn
-        >
-        <v-btn class="white--text" text @click="searchQuery"
-          >Fuatlia (Query Tracking)</v-btn
-        >
-        <v-btn class="white--text" @click="openLogin" text>Ingia (Login)</v-btn>
-      </v-app-bar> -->
-
-      <v-app-bar color="#1a202c" app>
-        <v-toolbar-title class="custom-title white--text d-none d-md-flex"
-          >MRADI WA BONDE LA MTO MSIMBAZI (MSIMBAZI BASIN PROJECT)
+      <v-app-bar color="#1476d7" app>
+        <div>
+          <v-img loading="lazy" :src="data.coat" class="login-logo"></v-img>
+        </div>
+        <v-toolbar-title class="custom-title white--text d-none d-md-flex">
+          MRADI WA BONDE LA MTO MSIMBAZI (MSIMBAZI BASIN PROJECT)
           (GRM-SYSTEM)</v-toolbar-title
         >
         <v-toolbar-title class="custom-title white--text d-md-none"
@@ -71,25 +58,6 @@
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
           <v-col cols="8" sm="8" md="7">
-            <!-- <v-row class="mb-0 pa-0" justify="center">
-              <v-col md="auto">
-                <v-flex class="col-md12">
-                  <img :src="data.coat" class="login-logo" />
-                  <v-row class="mb-0 pa-0" justify="center" no-gutters>
-                    <h4 class="white--text">
-                      <strong>
-                        {{ "THE UNITED REPUBLIC OF TANZANIA" }}
-                      </strong>
-                    </h4>
-                  </v-row>
-                  <h4 class="white--text">
-                    {{
-                      "FACILITY FINANCIAL ACCOUNTING AND REPORTING SYSTEM (FFARS)"
-                    }}
-                  </h4>
-                </v-flex>
-              </v-col>
-            </v-row> -->
             <Modal :modal="data.modal" :width="1000" :fullScreen="true">
               <template v-slot:header>
                 <ModalHeader
@@ -192,24 +160,6 @@
                     <v-container>
                       <v-row>
                         <v-col cols="12" md="12" class="mb-n8">
-                          <!-- <v-select
-                            :items="data.queryCategories"
-                            prepend-inner-icon="mdi-file-document-multiple"
-                            label="Chaguax aina ya wasilisho lako(Lalamiko)"
-                            outlined
-                            v-model="data.formData.queryCategoryId"
-                            :item-text="'name'"
-                            item-value="id"
-                            @change="loadDocumentType"
-                          >
-                            <template v-slot:selection="{ item }">
-                              {{ item.name }}-{{ item.description }}
-                            </template>
-                            <template v-slot:item="{ item }">
-                              {{ item.name }} -{{ item.description }}
-                            </template>
-                          </v-select> -->
-
                           <v-col cols="12" md="12" class="mb-n8">
                             <v-textarea
                               outlined
@@ -271,34 +221,6 @@
                     <v-container>
                       <v-row>
                         <v-col cols="12" md="12" class="mb-n8">
-                          <!-- <v-select
-                            v-if="data.retrivedUserToBind != null"
-                            :items="data.queryCategories"
-                            prepend-inner-icon="mdi-file-document-multiple"
-                            label="Chagua aina ya wasilisho lako(Lalamiko)"
-                            outlined
-                            v-model="data.formData.queryCategoryId"
-                            :item-text="'name'"
-                            item-value="id"
-                            @change="loadDocumentTypeSetKnown"
-                          >
-                            <template v-slot:selection="{ item }">
-                              {{ item.name }}-{{ item.description }}
-                            </template>
-                            <template v-slot:item="{ item }">
-                              {{ item.name }} -{{ item.description }}
-                            </template>
-                          </v-select> -->
-
-                          <!-- <v-col cols="12" md="12" class="mb-n8">
-                            <v-textarea
-                              outlined
-                              v-if="data.formData.queryCategoryId"
-                              name="input-7-4"
-                              label="Andika Maelezo Hapa Chini"
-                              v-model="data.formData.description"
-                            ></v-textarea>
-                          </v-col> -->
                           <v-col cols="12" md="12" class="mb-n8">
                             <v-textarea
                               outlined
@@ -346,8 +268,6 @@
                             class="white--text"
                             >{{ "Tuma lalamiko" }}
                           </v-btn>
-                          <!-- {{ data.documentTypes }} -->
-                          <!-- end -->
                         </v-col>
                       </v-row>
                     </v-container>
@@ -433,18 +353,6 @@
                               class="mr-3 ml-3"
                             ></v-text-field>
                             <v-card-actions class="mr-1 ml-0 mt-n4">
-                              <!-- <v-btn
-                          x-small
-                          class="mx-2 d-none d-sm-flex ml-0"
-                          fab
-                          outlined
-                          dark
-                          color="primary"
-                        >
-                          <a href="http://196.192.73.13/docs" target="_blank">
-                            <v-icon small color="primary">mdi-help</v-icon>
-                          </a>
-                        </v-btn> -->
                               <v-btn
                                 @click="closeDialogLogin"
                                 color="red lighten-2"
@@ -519,16 +427,8 @@
                                       class="time-age"
                                     >
                                       Age: 0d, 3h, 18m &nbsp;&nbsp;
-                                      <!----></span
-                                    >
-                                    <!-- <span
-                      _ngcontent-byn-c280=""
-                      class="time-till-resolved ng-star-inserted"
-                      style=""
-                    >
-                      &nbsp;&nbsp; Time until resolved: (0d, 3h, 18m) </span
-                    > -->
-                                    <!----><mat-divider
+                                    </span>
+                                    <mat-divider
                                       _ngcontent-byn-c280=""
                                       role="separator"
                                       class="mat-divider mat-divider-horizontal"
@@ -968,174 +868,42 @@
               </app-features-and-services>
             </div>
 
-            <!-- <web-footer class="">
+            <web-footer class="">
               <div class="bg-gray-100 !text-xs mt-20">
                 <div class="web-container mt-20 pt-10">
                   <v-container>
                     <v-row class="grid xl:grid-cols-12 gap-2 2xl:gap-10">
-                      <v-col cols="4" class="pr-9 !font-light">
-                        <div>
-                          <v-img
-                            loading="lazy"
-                            src="/assets/images/logo.png"
-                            class="h-20 mb-10"
-                          ></v-img>
-                        </div>
+                      <v-col cols="12" class="pr-9 !font-light white--text">
                         <p>
-                          A broad electronic procurement system through which
-                          procuring entities perform procurement related
-                          functions such as preparation and publication of
-                          annual procurement plans, pre-qualification,
-                          initiation of tenders, invitation of tenders, tender
-                          opening, evaluation, post qualification, negotiation,
-                          awarding of contracts, contract management, purchase
-                          through e-auction or e-catalogue, and make payments
-                          electronically. Moreover, the system facilitates
-                          tenderers to register, provide their qualification
-                          details, view tenders, and submit their priced offers.
+                          The Msimbazi River Basin is an economically,
+                          geographically, and environmentally significant
+                          region, home to about 1.6 million people and critical
+                          transportation infrastructure that connects the
+                          Central Business District of Tanzania's most populous
+                          city, Dar es Salaam, with the rest of the city. But
+                          flooding has become increasingly severe over the past
+                          decade, with major flood events experienced in seven
+                          out of the last 10 years. These events are expected to
+                          increase with urbanization and climate change. The
+                          Government of Tanzania, with a $200 million credit
+                          from the World Bank Group’s International Development
+                          Association (IDA), established the Msimbazi Basin
+                          Development Project (2022-2028) to strengthen flood
+                          resilience and integrate urban development efforts in
+                          this economically important and flood-prone area of
+                          Dar es Salaam. The project is anticipated to benefit
+                          from $60 million worth of credit from the Spanish
+                          Agency for International Development Cooperation and a
+                          grant from the Netherlands Ministry of Foreign Affairs
+                          through Invest.
                         </p>
                         <p>
-                          GRM means National e-Procurement System of Tanzania.
-                          This system has been developed, hosted, and operated
-                          by the Government of the United Republic of Tanzania
-                          in 2022 for facilitation of procurement functions by
-                          means of information and communication technology.
+                          GRM System of Msimbazi Project. This system has been
+                          developed, hosted, and operated by the Government of
+                          the United Republic of Tanzania in 2023 for
+                          facilitation of queries functions by means of
+                          information and communication technology.
                         </p>
-                      </v-col>
-                      <v-col cols="2">
-                        <div
-                          class="font-bold pr-4 pb-2 !border-b-2 !border-b-primary mb-4 !inline-block"
-                        >
-                          Useful links
-                        </div>
-                        <ul class="space-y-3 !ml-0 !pl-0 !font-light text-gray">
-                          <li>
-                            <a
-                              class="hover:text-gray-900 text-gray-700"
-                              href="/annual-procurement-plans"
-                              >General Procurement Notices</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              class="hover:text-gray-900 text-gray-700"
-                              href="/tenders/published-tenders"
-                              >Current Tenders</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              class="hover:text-gray-900 text-gray-700"
-                              href="/tenders/awarded-tenders"
-                              >Awarded Contracts</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              class="hover:text-gray-900 text-gray-700"
-                              href="/tenders/published-tenders"
-                              >Advanced Search</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              class="hover:text-gray-900 text-gray-700"
-                              href="/documents/forms"
-                              >Forms</a
-                            >
-                          </li>
-                        </ul>
-                      </v-col>
-                      <v-col cols="2">
-                        <div
-                          class="font-bold pr-4 pb-2 !border-b-2 !border-b-primary mb-4 !inline-block"
-                        >
-                          Help
-                        </div>
-                        <ul class="space-y-3 !ml-0 !pl-0 !font-light">
-                          <li>
-                            <a
-                              target="_blank"
-                              href="https://www.youtube.com/watch?v=zhNaeWnwFH4&amp;list=PL0xdBmzPXCeGgX720ipgt2M2rQxyqGQ73"
-                              class="cursor-pointer hover:text-gray-900 text-gray-700"
-                              >Supplier Training Video</a
-                            >
-                          </li>
-                          <li class="cursor-pointer" tabindex="0">
-                            User Guides
-                          </li>
-                          <li class="cursor-pointer" tabindex="0">
-                            Terms and Conditions
-                          </li>
-                        </ul>
-                      </v-col>
-                      <v-col cols="2">
-                        <div
-                          class="font-bold pr-4 pb-2 !border-b-2 !border-b-primary mb-4 !inline-block"
-                        >
-                          Contacts
-                        </div>
-                        <div class="flex space-x-4">
-                          <div class="!text-primary">
-                            <v-icon>mdi-email</v-icon>
-                          </div>
-                          <div class="!font-light">
-                            <a
-                              href="mailto:support@GRM.go.tz"
-                              style="text-decoration: none; color: black"
-                              >support@GRM.go.tz</a
-                            >
-                          </div>
-                        </div>
-                        <div class="flex space-x-4">
-                          <div class="!text-primary">
-                            <v-icon>mdi-phone</v-icon>
-                          </div>
-                          <div>
-                            <ul class="space-y-3 !ml-0 !pl-0 !font-light">
-                              <li>
-                                <a
-                                  href="tel:+255736494948"
-                                  style="text-decoration: none; color: black"
-                                  >+255 (0)736 494948</a
-                                >
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </v-col>
-                      <v-col cols="2">
-                        <div
-                          class="font-bold pr-4 pb-2 !border-b-2 !border-b-primary mb-4 !inline-block"
-                        >
-                          Download Mobile App
-                        </div>
-                        <div class="text-right">
-                          <div class="mb-1">
-                            <a
-                              href="https://play.google.com/store/apps/details?id=com.tz.go.ppra.GRM&amp;hl=en&amp;gl=US"
-                              target="_blank"
-                              class="cursor-pointer"
-                            >
-                              <v-img
-                                loading="lazy"
-                                src="/assets/images/google playstore.png"
-                              ></v-img>
-                            </a>
-                          </div>
-                          <div>
-                            <a
-                              href="https://apps.apple.com/app/id1660520548"
-                              target="_blank"
-                              class="cursor-pointer"
-                            >
-                              <v-img
-                                loading="lazy"
-                                src="/assets/images/play-store-button.png"
-                              ></v-img>
-                            </a>
-                          </div>
-                        </div>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -1144,9 +912,6 @@
                   class="py-3 border-t border-t-gray-300 mt-5 flex items-center"
                 >
                   <div class="web-container flex items-center justify-between">
-                    <div>
-                      Copyright © 2023. All Rights Reserved. Version 1.0.0
-                    </div>
                     <div class="flex space-x-3">
                       <a
                         href="http://www.facebook.com/PPRA_Tanzania-2588600117819083"
@@ -1192,7 +957,7 @@
                   </div>
                 </div>
               </div>
-            </web-footer> -->
+            </web-footer>
             <v-footer app>
               <!-- Adjust the background color and text color -->
               <v-sheet color="primary" dark>
@@ -1224,7 +989,7 @@
                         </small>
                         <small class="">
                           {{
-                            "For any Technical inquiry, please contact your ICT Support Team ."
+                            "For any Technical inquiry, please contact your ICT Support Team"
                           }} </small
                         >.
                       </p>
@@ -1728,8 +1493,8 @@ footer {
 }
 .login-logo {
   border-radius: 50%;
-  height: 100px;
-  width: 100px;
+  height: 50px;
+  width: 50px;
   border: 4px solid #ccc;
   background-color: white;
 }

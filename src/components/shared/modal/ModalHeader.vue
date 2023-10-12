@@ -92,6 +92,6 @@ export default defineComponent({
 </script>
 <style>
 .bg_color {
-  background: #1a202c;
+  background: #1476d7;
 }
 </style>
