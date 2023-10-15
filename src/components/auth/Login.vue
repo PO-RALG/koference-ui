@@ -5,56 +5,128 @@
     fluid
     fill-height
   >
-    <v-layout justify-center align-center class="landing-page-background">
-      <v-app-bar color="#1476d7" app>
-        <div>
-          <v-img loading="lazy" :src="data.coat" class="login-logo"></v-img>
-        </div>
-        <v-toolbar-title class="custom-title white--text d-none d-md-flex">
-          MRADI WA BONDE LA MTO MSIMBAZI (MSIMBAZI BASIN PROJECT)
-          (GRM-SYSTEM)</v-toolbar-title
+    <el-header style="background-color: #1476d7">
+      <div class="header-content">
+        <el-image :src="data.coat" class="login-logo" fit="cover"></el-image>
+        <el-row
+          class="custom-title white--text"
+          type="flex"
+          justify="center"
+          align="left"
         >
-        <v-toolbar-title class="custom-title white--text d-md-none"
-          >MALALAMIKO (GRM)</v-toolbar-title
-        >
-        <!-- Show the menu button only on small devices -->
-
-        <!-- Buttons in the app bar -->
+          <el-col
+            class="d-none d-md-flex"
+            :span="24"
+            style="text-align: center"
+          >
+            <span style="font-size: 14px; font-weight: bold; color: #ffffff">
+              MRADI WA BONDE LA MTO MSIMBAZI (MSIMBAZI BASIN PROJECT)
+              (GRM-SYSTEM)
+            </span>
+          </el-col>
+          <el-col class="d-md-none" :md="12"> MALALAMIKO (GRM) </el-col>
+        </el-row>
         <v-spacer></v-spacer>
-        <v-btn icon @click="toggleDrawer" class="d-md-none white--text">
+        <el-button
+          icon
+          @click="toggleDrawer"
+          class="d-md-none"
+          style="color: black"
+        >
+          <i class="el-icon-menu"></i>
+        </el-button>
+        <!-- <v-btn icon @click="toggleDrawer" class="d-md-none white--text">
           <v-icon>mdi-menu</v-icon>
-        </v-btn>
-        <v-btn text @click="openClaimForm" class="d-none d-md-flex white--text"
-          ><v-icon>mdi-send</v-icon>Tuma Lalamiko</v-btn
+        </v-btn> -->
+        <el-button
+          type="text"
+          @click="openClaimForm"
+          class="d-none d-md-block white--text"
         >
-        <v-btn text @click="searchQuery" class="d-none d-md-flex white--text"
-          ><v-icon>mdi-magnify</v-icon>Fuatilia</v-btn
+          <i class="el-icon-s-promotion"></i> Tuma Lalamiko
+        </el-button>
+        <el-button
+          type="text"
+          @click="searchQuery"
+          class="d-none d-md-block white--text"
         >
-        <v-btn text @click="openLogin" class="d-none d-md-flex white--text"
-          ><v-icon>mdi-login</v-icon>Login</v-btn
+          <i class="el-icon-search"></i> Fuatilia
+        </el-button>
+        <el-button
+          type="text"
+          @click="openLogin"
+          class="d-none d-md-block white--text"
         >
-      </v-app-bar>
+          <i class="el-icon-user"></i> Login
+        </el-button>
+      </div>
+    </el-header>
+    <v-layout justify-center align-center class="landing-page-background">
       <div class="backdrop" @click="closeDrawer" v-if="data.drawer"></div>
       <v-navigation-drawer
         app
         temporary
         left
         width="70%"
-        src=""
         :value="data.drawer"
         @input="data.drawer = $event"
+        absolute
       >
-        <!-- Buttons in the navigation drawer -->
-        <v-btn color="teal lighten-2" text @click="openClaimForm" class=""
-          ><v-icon>mdi-send</v-icon>Tuma (Query Submition)</v-btn
-        >
-        <v-btn color="blue lighten-2" text @click="searchQuery" class=""
-          ><v-icon>mdi-magnify</v-icon>Fuatilia (Query Tracking)</v-btn
-        >
-        <v-btn color="green lighten-2" text @click="openLogin" class="">
-          <v-icon>mdi-login</v-icon>Ingia (Login)
-        </v-btn>
+        <template v-slot:prepend>
+          <v-list-item two-line>
+            <v-list-item-avatar>
+              <img :src="data.coat" />
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title>Msimbazi Basin Project</v-list-item-title>
+              <v-list-item-subtitle>GRM SYSTEM</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+
+        <v-divider></v-divider>
+
+        <v-list dense>
+          <v-list-item
+            v-for="item in data.items"
+            :key="item.title"
+            @click="handleItemClick(item.method)"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <v-footer app>
+          <v-sheet color="primary" dark>
+            <v-container>
+              <v-row>
+                <v-col cols="6">
+                  <v-img src="/assets/logo.png" height="10"></v-img>
+                </v-col>
+                <v-col cols="12" class="text-right">
+                  <!-- Social media icons with links -->
+                  <v-btn icon href="https://www.facebook.com/your-page">
+                    <v-icon>mdi-facebook</v-icon>
+                  </v-btn>
+                  <v-btn icon href="https://twitter.com/your-page">
+                    <v-icon>mdi-twitter</v-icon>
+                  </v-btn>
+                  <v-btn icon href="https://www.instagram.com/your-page">
+                    <v-icon>mdi-instagram</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-sheet>
+        </v-footer>
       </v-navigation-drawer>
+
       <v-main align="center" justify="center">
         <v-row align="center" justify="center">
           <v-col cols="8" sm="8" md="7">
@@ -998,7 +1070,7 @@
                 </v-container>
               </v-sheet>
               <v-spacer></v-spacer>
-              <v-sheet color="primary" dark>
+              <v-sheet color="primary" dark class="d-none d-md-flex">
                 <v-container>
                   <v-row>
                     <v-col cols="6">
@@ -1086,6 +1158,11 @@ export default Vue.extend({
     const query = props.query;
 
     let data = reactive({
+      items: [
+        { title: "Lalamika", icon: "mdi-send", method: "openClaimForm" },
+        { title: "Fuatilia", icon: "mdi-magnify", method: "searchQuery" },
+        { title: "Ingia(Login)", icon: "mdi-login", method: "openLogin" },
+      ],
       drawer: false, // Initial state of the navigation drawer
       filePreviewmodal: false,
       isClaim: false,
@@ -1262,6 +1339,20 @@ export default Vue.extend({
     const openClaimForm = () => {
       data.modal = true;
     };
+    const handleItemClick = (item) => {
+      if (item === "openClaimForm") {
+        data.modal = true;
+        data.drawer = false;
+      }
+      if (item === "searchQuery") {
+        data.searchQuery = true;
+        data.drawer = false;
+      }
+      if (item === "openLogin") {
+        data.modalLogin = true;
+        data.drawer = false;
+      }
+    };
     const openLogin = () => {
       data.modalLogin = true;
     };
@@ -1424,12 +1515,19 @@ export default Vue.extend({
       previewFiles,
       closeFilePreview,
       toggleDrawer,
+      handleItemClick,
     };
   },
 });
 </script>
 
 <style scoped>
+.header-content {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  padding: 0 10px;
+}
 .show-hand {
   cursor: pointer;
 }

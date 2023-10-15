@@ -1,4 +1,9 @@
 import Vue from "vue";
+import ElementUI from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
+
+Vue.use(ElementUI);
+
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import VueJwtDecode from "vue-jwt-decode";
 import VueAxios from "vue-axios";
