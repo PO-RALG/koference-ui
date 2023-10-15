@@ -24,6 +24,7 @@
               (GRM-SYSTEM)
             </span>
           </el-col>
+
           <el-col class="d-md-none" :md="12"> MALALAMIKO (GRM) </el-col>
         </el-row>
         <v-spacer></v-spacer>
@@ -87,7 +88,7 @@
 
         <v-divider></v-divider>
 
-        <v-list dense>
+        <v-list>
           <v-list-item
             v-for="item in data.items"
             :key="item.title"
@@ -102,13 +103,10 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
-        <v-footer app>
+        <v-footer app class="mb-10">
           <v-sheet color="primary" dark>
             <v-container>
               <v-row>
-                <v-col cols="6">
-                  <v-img src="/assets/logo.png" height="10"></v-img>
-                </v-col>
                 <v-col cols="12" class="text-right">
                   <!-- Social media icons with links -->
                   <v-btn icon href="https://www.facebook.com/your-page">
@@ -860,7 +858,7 @@
                 >
                   <web-section-header>
                     <div class="text-center">
-                      <h1 class="font-bold !text-2xl mb-1">
+                      <h1 class="font-bold !text-2xl mb-1 f-heading">
                         Features & Services
                       </h1>
                       <div class="h-[2px] m-auto !bg-primary w-[100px]"></div>
@@ -1522,6 +1520,21 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.f-heading {
+  /* color: #e1dfe9; */
+  color: #908e9b;
+}
+.container {
+  display: flex;
+  flex-wrap: wra;
+  padding: 1rem;
+  row-gap: 1rem;
+  column-gap: 1rem;
+}
+.item {
+  flex-grow: 1rem;
+  flex-shrink: 0;
+}
 .header-content {
   display: flex;
   /* justify-content: space-between; */
