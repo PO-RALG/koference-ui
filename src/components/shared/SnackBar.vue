@@ -6,7 +6,7 @@
     v-model="show"
     :title="true"
     :bottom="true"
-    :right="true"
+    :right="false"
     :vertical="message.color !== 'success'"
     :multi-line="data.multiline"
     timeout="-1"

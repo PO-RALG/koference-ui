@@ -15,7 +15,7 @@
     />
     <v-main>
       <v-container class="fill-height" fluid>
-        <v-layout></v-layout>
+        <v-layout> </v-layout>
       </v-container>
     </v-main>
   </div>
@@ -47,6 +47,7 @@ export default defineComponent({
     });
 
     // methods
+
     const toggleDrawer = () => {
       data.drawer
         ? store.dispatch("Drawer/CLOSE")

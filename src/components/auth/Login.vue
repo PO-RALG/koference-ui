@@ -858,9 +858,7 @@
                 >
                   <web-section-header>
                     <div class="text-center">
-                      <h1 class="font-bold !text-2xl mb-1 f-heading">
-                        Features & Services
-                      </h1>
+                      <h1 class="f-heading">Features And Services</h1>
                       <div class="h-[2px] m-auto !bg-primary w-[100px]"></div>
                     </div>
                   </web-section-header>
@@ -939,7 +937,7 @@
             </div>
 
             <web-footer class="">
-              <div class="bg-gray-100 !text-xs mt-20">
+              <div class="bg-gray-100 !text-xs">
                 <div class="web-container mt-20 pt-10">
                   <v-container>
                     <v-row class="grid xl:grid-cols-12 gap-2 2xl:gap-10">
@@ -1030,7 +1028,7 @@
             </web-footer>
             <v-footer app>
               <!-- Adjust the background color and text color -->
-              <v-sheet color="primary" dark>
+              <v-sheet color="primary" dark class="d-none d-md-flex">
                 <v-container>
                   <v-row>
                     <v-col>

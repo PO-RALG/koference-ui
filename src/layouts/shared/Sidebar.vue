@@ -1,6 +1,15 @@
 <template>
-  <div>
-    <v-navigation-drawer v-model="drawer" width="280px" app v-if="user">
+  <div class="" @click="closeDrawer" v-if="Droower">
+    <v-navigation-drawer
+      app
+      temporary
+      left
+      width="70%"
+      :value="Droower"
+      @input="Droower = $event"
+      absolute
+      v-if="user"
+    >
       <template v-slot:prepend>
         <SidebarToolbar @onSidebarClose="toggleSidebar" />
       </template>
@@ -11,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, reactive, ref, computed, watch } from "vue";
 import router from "@/router";
 import SidebarToolbar from "./SidebarToolbar.vue";
 import SidebarUserInfo from "./SidebarUserInfo.vue";
@@ -44,10 +53,27 @@ export default defineComponent({
     const data = reactive({
       user_logo: "/coat_of_arms.svg.png",
       mini: false,
+      drower: false,
     });
 
+    const Droower = computed(() => {
+      return _props.drawer;
+    });
+
+    // const xxxx = watch(
+    //   () => _props.drawer,
+    //   (newDrawerValue) => {
+    //     data.drower = newDrawerValue;
+    //   }
+    // );
+
     const toggleSidebar = () => {
+      console.log("inafika");
       emit("sidebarToggle");
+    };
+    const closeDrawer = () => {
+      console.log("inafika");
+      emit("sidebarToggle", _props.drawer);
     };
 
     const navigateToState = (state: any) => {
@@ -72,11 +98,46 @@ export default defineComponent({
       navigateToState,
       toggleSidebar,
       isOpen,
+      closeDrawer,
+      Droower,
     };
   },
 });
 </script>
+<style>
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  display: none;
+}
 
+/* Show the backdrop when the drawer is open */
+.v-navigation-drawer[value="true"] + .backdrop {
+  display: block;
+}
+</style>
+<style>
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  display: none;
+}
+
+/* Show the backdrop when the drawer is open */
+.v-navigation-drawer[value="true"] + .backdrop {
+  display: block;
+}
+</style>
 <style lang="scss">
 @import "../../assets/perfect-scrollbar.css";
 

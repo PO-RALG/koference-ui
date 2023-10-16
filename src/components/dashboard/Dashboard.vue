@@ -1,133 +1,5 @@
 <template>
   <div>
-    <!-- <v-card elevation="1" class="mt-10 pt-5 pl-5 pr-5 mb-0 top-card">
-      <v-form ref="form" v-model="data.valid">
-        <v-container>
-          <v-row>
-            <v-col
-              cols="12"
-              :md="showSmallColumns ? 4 : 3"
-              v-if="!isLowLevelUser()"
-            >
-              <v-select
-                :items="data.entries"
-                label="Select Region"
-                outlined
-                v-model="data.formData.region_id"
-                @change="filterDashboard(true)"
-                :disabled="data.isCouncil"
-                :item-text="'displayName'"
-                item-value="id"
-              >
-                <template v-slot:prepend-item>
-                  <v-list-item>
-                    <v-list-item-content>
-                      <v-text-field
-                        outlined
-                        dense
-                        placeholder="Search Admin Areas..."
-                        @input="searchAdminAreas"
-                        height="60"
-                        hide-details=""
-                        @click:clear="resetSearchText()"
-                        clearable
-                      ></v-text-field>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider></v-divider>
-                </template>
-              </v-select>
-            </v-col>
-            <v-col
-              cols="12"
-              md="3"
-              :md="showSmallColumns ? 4 : 3"
-              v-if="!isLowLevelUser() && !data.isCouncil"
-            >
-              <v-select
-                :items="data.councils"
-                label="Select Council"
-                outlined
-                v-model="data.formData.council_id"
-                @change="filterDashboard(false)"
-                :item-text="'displayName'"
-                item-value="id"
-              >
-              </v-select>
-            </v-col>
-            <v-col
-              v-if="!isLowLevelUser()"
-              cols="12"
-              :md="showSmallColumns ? 4 : 3"
-            >
-              <fetcher :api="'/api/v1/financial-years'">
-                <div slot-scope="{ json: entries, loading }">
-                  <div v-if="loading">Loading...</div>
-                  <v-select
-                    v-else
-                    :items="entries"
-                    :item-text="'name'"
-                    label="Financial Year"
-                    @change="filterDashboard"
-                    item-value="id"
-                    outlined
-                    v-model="data.formData.financial_year_id"
-                  />
-                </div>
-              </fetcher>
-            </v-col>
-            <v-col v-else cols="12" :md="12">
-              <fetcher :api="'/api/v1/financial-years'">
-                <div slot-scope="{ json: entries, loading }">
-                  <div v-if="loading">Loading...</div>
-                  <v-select
-                    v-else
-                    :items="entries"
-                    :item-text="'name'"
-                    label="Financial Year"
-                    @change="filterDashboard"
-                    item-value="id"
-                    outlined
-                    v-model="data.formData.financial_year_id"
-                  />
-                </div>
-              </fetcher>
-            </v-col>
-            <v-col
-              cols="12"
-              :md="showSmallColumns ? 4 : 3"
-              v-if="!isLowLevelUser()"
-            >
-              <v-select
-                :items="data.facilities"
-                label="Select Facility"
-                outlined
-                v-model="data.formData.fac_id"
-                :item-text="'displayName'"
-                @change="filterDashboard"
-                item-value="id"
-              >
-                <template v-slot:prepend-item>
-                  <v-list-item>
-                    <v-list-item-content>
-                      <v-text-field
-                        outlined
-                        dense
-                        placeholder="Search Facilities..."
-                        @input="searchFacilities"
-                        height="60"
-                        hide-details=""
-                      ></v-text-field>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider></v-divider>
-                </template>
-              </v-select>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-form>
-    </v-card> -->
     <v-card elevation="1" class="mt-10 pt-5 pl-5 pr-5 mb-0 top-card">
       <v-container>
         <v-row>
@@ -286,7 +158,12 @@ export default defineComponent({
       reporterBySource,
       currentSource,
       reporterByGender,
-      summary: null,
+      summary: {
+        total_query_count: "",
+        pending_query_count: "",
+        replied_queries: "",
+        underprocessing_queries: "",
+      },
     });
 
     onMounted(() => {

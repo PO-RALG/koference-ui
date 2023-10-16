@@ -27,7 +27,7 @@ export default defineComponent({
       required: true,
     },
     amount: {
-      type: Number,
+      type: String || Number,
       required: true,
     },
   },

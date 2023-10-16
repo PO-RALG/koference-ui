@@ -11,6 +11,7 @@
       class="sidebar-close-icon"
       >mdi-close</v-icon
     >
+    <div class="backdrop" @click.stop="$emit('onSidebarClose')"></div>
   </v-toolbar-title>
 </template>
 <script>
@@ -24,3 +25,20 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  display: none;
+}
+
+/* Show the backdrop when the drawer is open */
+.v-navigation-drawer[value="true"] + .backdrop {
+  display: block;
+}
+</style>
