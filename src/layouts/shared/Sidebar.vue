@@ -1,21 +1,37 @@
 <template>
-  <div class="" @click="closeDrawer" v-if="Droower">
-    <v-navigation-drawer
-      app
-      temporary
-      left
-      width="280px"
-      :value="Droower"
-      @input="Droower = $event"
-      absolute
-      v-if="user"
-    >
-      <template v-slot:prepend>
-        <SidebarToolbar @onSidebarClose="toggleSidebar" />
-      </template>
-      <SidebarUserInfo :user="user" :logoUrl="data.user_logo" />
-      <Menu :menuGroups="user.menu_groups" @navigate="navigateToState" />
-    </v-navigation-drawer>
+  <div>
+    <div class="d-md-none" @click="closeDrawer" v-if="Droower">
+      <v-navigation-drawer
+        app
+        left
+        width="280px"
+        :value="Droower"
+        @input="Droower = $event"
+        v-if="user"
+      >
+        <template v-slot:prepend>
+          <SidebarToolbar @onSidebarClose="toggleSidebar" />
+        </template>
+        <SidebarUserInfo :user="user" :logoUrl="data.user_logo" />
+        <Menu :menuGroups="user.menu_groups" @navigate="navigateToState" />
+      </v-navigation-drawer>
+    </div>
+    <div class="d-none d-md-flex">
+      <v-navigation-drawer
+        app
+        left
+        width="280px"
+        :value="Droower"
+        @input="Droower = $event"
+        v-if="user"
+      >
+        <template v-slot:prepend>
+          <SidebarToolbar @onSidebarClose="toggleSidebar" />
+        </template>
+        <SidebarUserInfo :user="user" :logoUrl="data.user_logo" />
+        <Menu :menuGroups="user.menu_groups" @navigate="navigateToState" />
+      </v-navigation-drawer>
+    </div>
   </div>
 </template>
 
@@ -144,7 +160,7 @@ export default defineComponent({
 .sidebar-toolbar {
   height: 64px;
   color: #fff;
-  background-color: #1a202c;
+  background-color: rgb(21, 101, 192);
 }
 .info-toolbar {
   background-color: rgb(21, 101, 192);
