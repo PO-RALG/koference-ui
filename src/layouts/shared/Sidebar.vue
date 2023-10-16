@@ -4,7 +4,7 @@
       app
       temporary
       left
-      width="70%"
+      width="280px"
       :value="Droower"
       @input="Droower = $event"
       absolute
