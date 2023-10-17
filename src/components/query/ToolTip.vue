@@ -16,7 +16,7 @@
         v-if="item.days_passed > 2 && item.status != 'Imejibiwa'"
         class="warningx"
       >
-        This query is out of normal time to be executed!
+        Out of time
       </div>
     </td>
     <!-- Add other table columns as needed -->
@@ -77,6 +77,6 @@ td {
   background-color: #ff0000; /* Background color for the warning */
   color: #fff; /* Text color for the warning */
   padding: 1px; /* Adjust padding as needed */
-  width: 45%;
+  width: 28%;
 }
 </style>
