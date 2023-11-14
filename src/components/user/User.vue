@@ -17,7 +17,6 @@
       <v-data-table
         :headers="data.headers"
         :items="users"
-        hide-default-footer
         class="elevation-1"
       >
         <template v-slot:top>
@@ -89,13 +88,13 @@
             mdi-trash-can-outline
           </v-icon>
         </template>
-        <template v-slot:footer>
+        <!-- <template v-slot:footer>
           <Paginate
             :params="data.response"
             :rows="data.rows"
             @onPageChange="getData"
           />
-        </template>
+        </template> -->
       </v-data-table>
     </v-card>
     <UserForm
