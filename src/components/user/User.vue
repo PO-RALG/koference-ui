@@ -74,11 +74,11 @@
             mdi-pencil-box-outline
           </v-icon>
           <v-icon
-            :disabled="item.id === data.currentUser.id"
+            
             class="mr-2"
             @click="openDialogMapRoles(item)"
           >
-            mdi-card-account-mail
+            mdi-account-lock
           </v-icon>
           <v-icon
             @click="openConfirmDialog(item)"

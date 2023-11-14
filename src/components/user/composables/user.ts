@@ -240,7 +240,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
   };
 
   const initialize = () => {
-    get({ per_page: 10 }).then((response: AxiosResponse) => {
+    get({ per_page: 100 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data;
       console.log("mmmm", response);
