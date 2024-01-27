@@ -72,7 +72,7 @@
                 >
                 </v-text-field>
               </v-col>
-              <v-col cols="12" lg="6" md="6" sm="12" class="mt-n5">
+              <!-- <v-col cols="12" lg="6" md="6" sm="12" class="mt-n5">
                 <v-text-field
                   label="Umri(Age) *"
                   v-model="formData.age"
@@ -81,8 +81,8 @@
                   type="number"
                 >
                 </v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="6" class="mt-n5">
+              </v-col> -->
+              <v-col cols="12" lg="12" md="12" sm="12" class="mt-n5">
                 <v-select
                   outlined
                   label="Gender *"
@@ -96,8 +96,9 @@
                 ></v-select>
               </v-col>
 
-              <v-col cols="12" lg="12" md="12" sm="12" class="mt-n5">
+              <v-col cols="12" lg="6" md="6" sm="12" class="mt-n5">
                 <v-text-field
+                  type="password"
                   label="Neno la kuingilia(User Name)"
                   v-model="formData.username"
                   :rules="data.requiredRules"
@@ -105,8 +106,9 @@
                 >
                 </v-text-field>
               </v-col>
-              <v-col cols="12" lg="12" md="12" sm="12" class="mt-n5">
+              <v-col cols="12" lg="6" md="6" sm="12" class="mt-n5">
                 <v-text-field
+                  type="password"
                   label="Nywila(Password)"
                   v-model="formData.password"
                   :rules="data.requiredRules"
@@ -183,9 +185,9 @@
     </template>
     <template v-slot:footer>
       <ModalFooter>
-        <v-btn color="red darken-1" text @click="closeDialog">Funga</v-btn>
+        <v-btn color="red darken-1" text @click="closeDialog">Close</v-btn>
         <v-btn color="blue darken-1" text @click="save" :disabled="!data.valid">
-          {{ "Hifadhi" }}
+          {{ "Save" }}
         </v-btn>
       </ModalFooter>
     </template>

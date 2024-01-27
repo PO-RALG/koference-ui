@@ -10,13 +10,17 @@
     <td v-if="!item.category">{{ "Not categorized" }}</td>
     <!-- <td>{{ item.description }}</td> -->
     <td>{{ item.status }}</td>
+    <td v-if="item.senderfn && item.senderln">{{ item.senderfn }}{{ " " }}{{ item.senderln }}</td>
+    <td v-else>{{ "Anonymous"}}</td>
+
+
     <td>{{ item.days_passed }}</td>
     <td>
       <div
         v-if="item.days_passed > 2 && item.status != 'Imejibiwa'"
-        class="warningx"
+        class="warning-dot"
       >
-        Out of time
+        
       </div>
     </td>
     <!-- Add other table columns as needed -->
@@ -72,11 +76,22 @@ td {
   }
 }
 
-.warningx {
-  animation: blink 1s infinite; /* Adjust the animation duration as needed */
-  background-color: #ff0000; /* Background color for the warning */
-  color: #fff; /* Text color for the warning */
-  padding: 1px; /* Adjust padding as needed */
-  width: 28%;
+.warning-dot {
+  width: 10px; /* Adjust the width of the dot as needed */
+  height: 10px; /* Adjust the height of the dot as needed */
+  background-color: #ff0000; /* Red color for the dot */
+  border-radius: 50%; /* Makes the dot circular */
+  display: inline-block; /* Display as an inline block */
+  animation: blink 1s infinite; /* Blinking animation */
 }
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 0; /* Dot is invisible at the start and end of the animation */
+  }
+  50% {
+    opacity: 1; /* Dot is visible in the middle of the animation */
+  }
+}
+
 </style>

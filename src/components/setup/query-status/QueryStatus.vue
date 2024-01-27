@@ -93,6 +93,14 @@
                     required
                   ></v-text-field>
                 </v-col>
+                <v-col cols="12" md="12" class="mb-n8">
+                  <v-text-field
+                    v-model="data.formData.code"
+                    outlined
+                    label="Code"
+                    required
+                  ></v-text-field>
+                </v-col>
               </v-row>
             </v-container>
           </v-form>

@@ -3,7 +3,7 @@
     color=""
     class="sidebar-toolbar d-flex flex-row justify-space-between"
   >
-    <h3 class="admin-title">GRM</h3>
+    <h3 class="admin-title">COFFERENCE</h3>
     <v-icon
       large
       @click.stop="$emit('onSidebarClose')"

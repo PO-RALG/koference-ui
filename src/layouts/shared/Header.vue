@@ -1,14 +1,7 @@
 <template>
-  <v-app-bar
-    :clipped-left="$vuetify.breakpoint.lgAndUp"
-    app
-    color="#1476d7"
-    dark
-  >
+  <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="#CFD8DC">
     <v-app-bar-nav-icon @click.stop="toggleSidebar"></v-app-bar-nav-icon>
-    <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
-      <span class="hidden-sm-and-down">GRM</span>
-    </v-toolbar-title>
+    <v-toolbar-title style="width: 300px" class="ml-0 pl-4"> </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-menu
       class="top-menu"
@@ -19,7 +12,7 @@
       max-width="350"
       offset-y
     >
-      <template v-slot:activator="{ on, attrs }">
+      <!-- <template v-slot:activator="{ on, attrs }">
         <v-btn
           @click="toggleMenu"
           color="transparent"
@@ -37,7 +30,7 @@
             <v-icon medium>mdi-bell-ring-outline</v-icon>
           </v-badge>
         </v-btn>
-      </template>
+      </template> -->
       <v-card>
         <v-list>
           <v-list-item>
@@ -51,7 +44,7 @@
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title>{{ fullName }}</v-list-item-title>
-              <v-list-item-subtitle>{{ roleName }}</v-list-item-subtitle>
+              <!-- <v-list-item-subtitle>{{ roleName }}</v-list-item-subtitle> -->
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -195,13 +188,13 @@ export default defineComponent({
       return `${props.user.first_name} ${props.user.last_name}`;
     });
 
-    const roleName = computed(() => {
-      if (props.user.roles) {
-        return props.user.roles[0].name;
-      } else {
-        return "NO ROLE";
-      }
-    });
+    // const roleName = computed(() => {
+    //   if (props.user.roles) {
+    //     return props.user.roles[0].name;
+    //   } else {
+    //     return "NO ROLE";
+    //   }
+    // });
 
     const changePassword = () => {
       const msg = { message: "Change Your Password" };
@@ -216,7 +209,7 @@ export default defineComponent({
       toggleMenu,
       toggleUserMenu,
       fullName,
-      roleName,
+      // roleName,
       changePassword,
     };
   },

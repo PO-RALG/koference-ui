@@ -12,11 +12,11 @@
           <v-col cols="8" class="text-left pl-0 mt-n2">
             <div class="description">
               <h3 class="name black--text">{{ fullName }}</h3>
-              <div class="description-title" v-if="user.roles">
+              <!-- <div class="description-title" v-if="user.roles">
                 <a href="#" class="black--text"
                   >{{ "ROLES:" }} [{{ roleName }}]</a
                 >
-              </div>
+              </div> -->
               <div class="location pt-2">
                 <a href="#">{{ location }}</a>
               </div>
@@ -47,13 +47,13 @@ export default defineComponent({
       return `${props.user.first_name} ${props.user.last_name}`;
     });
 
-    const roleName = computed(() => {
-      if (props.user.roles) {
-        return props.user.roles[0].name;
-      } else {
-        return "NO ROLE";
-      }
-    });
+    // const roleName = computed(() => {
+    //   if (props.user.roles) {
+    //     return props.user.roles[0].name;
+    //   } else {
+    //     return "NO ROLE";
+    //   }
+    // });
 
     const location = computed(() => {
       if (props.user.facility) {
@@ -71,7 +71,7 @@ export default defineComponent({
 
     return {
       location,
-      roleName,
+      // roleName,
       fullName,
     };
   },

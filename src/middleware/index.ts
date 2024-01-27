@@ -3,7 +3,7 @@ import axios from "axios";
 import VueJwtDecode from "vue-jwt-decode";
 import store from "@/store";
 
-const DEFAULT_TITLE = "GRM";
+const DEFAULT_TITLE = "Cofference Portal";
 
 const getCurrentUser = () => {
   return store.getters["Auth/getCurrentUser"];
@@ -14,9 +14,12 @@ const getLoginStatus = async (): Promise<any> => {
   return loginStatus ? loginStatus.isLoggedIn : false;
 };
 
-const setTitle = async (to, _, next) => {
+const setTitle = async (to, from, next) => {
   Vue.nextTick(() => {
-    document.title = `${to.meta.title} - GRM System (GRM)` || DEFAULT_TITLE;
+    document.title =
+      to.meta && to.meta.title
+        ? `${to.meta.title} - Cofference Portal`
+        : DEFAULT_TITLE;
   });
   next();
 };

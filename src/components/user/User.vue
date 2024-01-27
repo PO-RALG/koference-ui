@@ -1,5 +1,5 @@
 <template>
-  <div class="academic-year">
+  <div class="user">
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
@@ -14,11 +14,7 @@
     </v-card-actions>
 
     <v-card>
-      <v-data-table
-        :headers="data.headers"
-        :items="users"
-        class="elevation-1"
-      >
+      <v-data-table :headers="data.headers" :items="users" class="elevation-1">
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
@@ -39,18 +35,23 @@
           <span>{{ item.displayRoles }}</span>
         </template>
         <template v-slot:[`item.activations`]="{ item }">
-          <v-switch
-            :input-value="item.active"
-            @click.native.stop
-            v-model="item.active"
-            @change="openActivationDialog(item)"
-            :disabled="item.id === data.currentUser.id"
-            value
-          >
-          </v-switch>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-switch
+                v-bind="attrs"
+                v-on="on"
+                :input-value="item.active"
+                @click.native.stop
+                v-model="item.active"
+                @change="openActivationDialog(item)"
+                :disabled="item.id === data.currentUser.id"
+              ></v-switch>
+            </template>
+            <span>Role and Menu Management</span>
+          </v-tooltip>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip top>
+          <!-- <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
                 v-bind="attrs"
@@ -63,30 +64,44 @@
               </v-icon>
             </template>
             <span>Reset Password</span>
+          </v-tooltip> -->
+
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                :disabled="item.id === data.currentUser.id"
+                class="mr-2"
+                @click="openDialog(item)"
+              >
+                mdi-pencil-box-outline
+              </v-icon>
+            </template>
+            <span>Upate</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+                @click="openDialogMapRoles(item)"
+              >
+                mdi-account-lock
+              </v-icon>
+            </template>
+            <span>Role and Menu Management</span>
           </v-tooltip>
 
-          <v-icon
-            :disabled="item.id === data.currentUser.id"
-            class="mr-2"
-            @click="openDialog(item)"
-          >
-            mdi-pencil-box-outline
-          </v-icon>
-          <v-icon
-            
-            class="mr-2"
-            @click="openDialogMapRoles(item)"
-          >
-            mdi-account-lock
-          </v-icon>
-          <v-icon
+          <!-- <v-icon
             @click="openConfirmDialog(item)"
             :disabled="
               cant('delete', 'User') || item.id === data.currentUser.id
             "
           >
             mdi-trash-can-outline
-          </v-icon>
+          </v-icon> -->
         </template>
         <!-- <template v-slot:footer>
           <Paginate

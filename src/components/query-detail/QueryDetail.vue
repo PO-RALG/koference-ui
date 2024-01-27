@@ -57,6 +57,24 @@
                 </template>
               </v-select>
             </v-col>
+            <v-col cols="12" md="12" class="mt-n3">
+              <v-select
+                :items="queryPrioorities.items"
+                prepend-inner-icon="mdi-filter"
+                label="Select query Priority"
+                outlined
+                v-model="formData.queryPriorityId"
+                :item-text="'name'"
+                item-value="id"
+              >
+                <template v-slot:selection="{ item }">
+                  {{ item.name }}
+                </template>
+                <template v-slot:item="{ item }">
+                  {{ item.name }} 
+                </template>
+              </v-select>
+            </v-col>
           </ModalBody>
         </template>
         <template v-slot:footer>
@@ -64,7 +82,7 @@
             <v-btn color="green darken-1" text @click="cancelConfirmDialog"
               >Cancel</v-btn
             >
-            <v-btn color="red darken-1" @click="Save" text>Yes</v-btn>
+            <v-btn color="red darken-1" @click="Save" text>Submit</v-btn>
           </ModalFooter>
         </template>
       </Modal>
@@ -78,7 +96,7 @@
                     class="sub-header py-2 d-flex flex-row justify-content-between"
                   >
                     <span class="time-age">
-                      Age:{{ receivedData.days_passed }}{{ " Days" }}
+                      Age:{{ receivedData?.days_passed }}{{ " Days" }}
                       <!----></span
                     >
                     <!-- <span
@@ -88,11 +106,7 @@
                     >
                       &nbsp;&nbsp; Time until resolved: (0d, 3h, 18m) </span
                     > -->
-                    <!----><mat-divider
-                      role="separator"
-                      class="mat-divider mat-divider-horizontal"
-                      aria-orientation="horizontal"
-                    ></mat-divider>
+                    <!---->
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -105,7 +119,7 @@
                   <div class="box-detail">
                     <div class="font-weight-bold">Track Number</div>
                     <div class="underline-text">
-                      {{ receivedData.tracknumber }}
+                      {{ receivedData?.tracknumber }}
                     </div>
                   </div>
                 </div>
@@ -144,7 +158,7 @@
                   <div class="box-detail">
                     <div class="font-weight-bold">Issue Category</div>
                     <div class="underline-text">
-                      {{ receivedData.category }}
+                      {{ receivedData?.category }}
                     </div>
                   </div>
                 </div>
@@ -157,22 +171,26 @@
                 <!---->
 
                 <div class="col-md-4 ng-star-inserted" style="">
-                  <div class="box-detail">
+                  <div v-if="receivedData?.priority!=null" class="box-detail">
                     <div class="font-weight-bold">Priortiy</div>
-                    <div class="underline-text">High</div>
+                    <div class="underline-text">{{ receivedData?.priority}}</div>
+                  </div>
+                  <div v-else class="box-detail">
+                    <div class="font-weight-bold">Priortiy</div>
+                    <div>{{ "--------------------"}}</div>
                   </div>
                 </div>
                 <!---->
                 <div class="col-md-4 ng-star-inserted" style="">
                   <div class="box-detail">
                     <div class="font-weight-bold">Assigned To</div>
-                    <div class="underline-text" v-if="receivedData.assignedtof">
-                      {{ receivedData.assignedtof }}
+                    <div class="underline-text" v-if="receivedData?.assignedtof">
+                      {{ receivedData?.assignedtof }}
                       {{ " " }}
-                      {{ receivedData.assignedtol }}
+                      {{ receivedData?.assignedtol }}
                     </div>
                     <div v-else>
-                      {{ "___________" }}
+                      {{ "--------------------"}}
                     </div>
                   </div>
                 </div>
@@ -183,7 +201,7 @@
                     <div>
                       <!-- hello, -->
                       <div class="underline-text">
-                        {{ receivedData.description }}
+                        {{ receivedData?.description }}
                       </div>
                       <div><br /></div>
                       <!-- <div>Best Regards,</div> -->
@@ -192,16 +210,15 @@
                   </div>
                 </div>
                 <!---->
+              
                 <div class="col-md-4 ng-star-inserted" style="">
-                  <div class="box-detail">
-                    <div class="font-weight-bold">Resolved Date</div>
+                  <div  v-if="receivedData?.resolved!=null" class="box-detail">
+                    <div class="font-weight-bold">Closed Date</div>
                     <div>{{ receivedData?.resolved | format() }}</div>
                   </div>
-                </div>
-                <div class="col-md-4 ng-star-inserted" style="">
-                  <div class="box-detail">
+                  <div v-else class="box-detail">
                     <div class="font-weight-bold">Closed Date</div>
-                    <div>{{ "____________" }}</div>
+                    <div>{{ "--------------------"}}</div>
                   </div>
                 </div>
                 <!----><!---->
@@ -212,7 +229,7 @@
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                      v-if="receivedData.status != 'Imejibiwa'"
+                      v-if="receivedData?.status != 'Imejibiwa'"
                       @click="assignUser"
                       v-bind="attrs"
                       v-on="on"
@@ -254,7 +271,7 @@
                   <span class="pl-4">This Query is currently at status</span>
                   <br />
                   <v-btn text class="primaary--text" color="green"
-                    >{{ receivedData.status }}
+                    >{{ receivedData?.status }}
                   </v-btn>
                 </p>
                 <p class="resolved ng-star-inserted" style=""></p>
@@ -296,6 +313,9 @@
 <script>
 import { get, find, saveUserQuety } from "../user/services/user.service";
 import { get as getQueryCategories } from "../setup/query-category/services/query-category.service";
+import { get as getQueryPrioorities } from "../setup/query-priority/services/query-priority.service";
+
+
 
 export default {
   data() {
@@ -307,6 +327,7 @@ export default {
       userList: false,
       title: "Query Details",
       queryCategories: [],
+      queryPrioorities:[],
     };
   },
 
@@ -352,6 +373,10 @@ export default {
   mounted() {
     getQueryCategories({}).then((response) => {
       this.queryCategories = response.data;
+    });
+
+    getQueryPrioorities({}).then((response) => {
+      this.queryPrioorities = response.data;
     });
     this.getCurrentUser();
     // this.usersX = this.getCurrentUser();

@@ -59,14 +59,14 @@ export const useUser = (type?: string): Record<string, unknown> => {
 
     trush_headers: [
       { text: "No", value: "index" },
-      { text: "NIN", value: "nin_number" },
+      // { text: "NIN", value: "nin_number" },
       { text: "Phone Number", value: "phone_number" },
       { text: "Name", align: "start", sortable: false, value: "fullName" },
       { text: "Email", value: "email" },
       { text: "Actions", value: "actions", sortable: false },
     ],
     headers: [
-      { text: "NIN", value: "nin_number" },
+      // { text: "NIN", value: "nin_number" },
       { text: "Phone Number", value: "phone_number" },
       { text: "Name", align: "start", sortable: false, value: "fullName" },
       { text: "Email", value: "email" },
@@ -240,6 +240,7 @@ export const useUser = (type?: string): Record<string, unknown> => {
   };
 
   const initialize = () => {
+    data.show = false;
     get({ per_page: 100 }).then((response: AxiosResponse) => {
       const { from, to, total, current_page, per_page, last_page } =
         response.data;

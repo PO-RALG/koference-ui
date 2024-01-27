@@ -5,7 +5,14 @@
     fluid
     fill-height
   >
-    <el-header style="background-color: #1476d7">
+    <el-header
+      style="
+        background-color: #275d8c;
+        height: 80px;
+        position: relative;
+        width: 100%;
+      "
+    >
       <div class="header-content">
         <el-image :src="data.coat" class="login-logo" fit="cover"></el-image>
         <el-row
@@ -19,7 +26,7 @@
             :span="24"
             style="text-align: center"
           >
-            <span style="font-size: 14px; font-weight: bold; color: #ffffff">
+            <span style="font-size: 18px; font-weight: bold; color: #ffffff">
               MRADI WA BONDE LA MTO MSIMBAZI (MSIMBAZI BASIN PROJECT)
               (GRM-SYSTEM)
             </span>
@@ -39,6 +46,24 @@
         <!-- <v-btn icon @click="toggleDrawer" class="d-md-none white--text">
           <v-icon>mdi-menu</v-icon>
         </v-btn> -->
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <el-button
+              v-bind="attrs"
+              v-on="on"
+              type="text"
+              class="d-none d-md-block white--text"
+            >
+              <i class="el-icon-question"></i> Umesahau
+            </el-button>
+          </template>
+          <v-list>
+            <v-list-item v-for="(item, index) in data.resetOption" :key="index">
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
         <el-button
           type="text"
           @click="openClaimForm"
@@ -131,7 +156,7 @@
             <Modal :modal="data.modal" :width="1000" :fullScreen="true">
               <template v-slot:header>
                 <ModalHeader
-                  :title="`${data.modalTitle} Utumaji`"
+                  :title="`${data.modalTitle} TUMA LALAMIKO`"
                   :icon="'mdi-send'"
                   :is_signup="true"
                   :is_known="data.selectedOption"
@@ -347,7 +372,7 @@
               </template>
             </Modal>
 
-            <Modal :modal="data.modalLogin" :width="840" :fullScreen="false">
+            <Modal :modal="data.modalLogin" :width="440" :fullScreen="false">
               <template v-slot:header>
                 <ModalHeader :title="`${data.modalTitle} Login Form`" />
               </template>
@@ -359,36 +384,12 @@
                       class="mr-0 ml-0 mr-0 ml-0"
                       v-if="data.slides.length > 0"
                     >
-                      <!-- class="d-none d-md-flex d-lg-none d-none d-lg-flex d-xl-none d-none " -->
-                      <v-col
-                        md="6"
-                        cols="12"
-                        sm="12"
-                        class="d-none d-md-flex d-lg-none d-none d-lg-flex"
-                      >
-                        <v-carousel
-                          cycle
-                          hide-delimiters
-                          interval="10000"
-                          height="100%"
-                          light
-                        >
-                          <v-carousel-item
-                            v-for="(item, i) in data.slides"
-                            :key="i"
-                            :src="item.src"
-                          >
-                          </v-carousel-item>
-                        </v-carousel>
-                      </v-col>
-                      <!-- login form start -->
-
-                      <v-col md="6" cols="12" sm="12">
+                      <v-col md="12" cols="12" sm="12">
                         <!-- <v-col cols="12" md="4" sm="12"> -->
                         <v-card-text class>
-                          <v-row class="mb-0 pa-0" justify="center" no-gutters>
+                          <!-- <v-row class="mb-0 pa-0" justify="center" no-gutters>
                             <img :src="data.ffars_logo" class="ffars-logo" />
-                          </v-row>
+                          </v-row> -->
                           <h2
                             class="text-center pa-3 login-header"
                             color="primary"
@@ -480,81 +481,54 @@
                   <div v-if="data.retrivedQuery">
                     <v-card>
                       <v-card-text>
-                        <div _ngcontent-byn-c280="" class="white-box">
-                          <div _ngcontent-byn-c280="" class="row">
-                            <div _ngcontent-byn-c280="" class="col-md-8">
-                              <div
-                                _ngcontent-byn-c280=""
-                                class="row DetailsDiv"
-                              >
-                                <div _ngcontent-byn-c280="" class="col-md-12">
+                        <div class="white-box">
+                          <div class="row">
+                            <div class="col-md-8">
+                              <div class="row DetailsDiv">
+                                <div class="col-md-12">
                                   <div
-                                    _ngcontent-byn-c280=""
                                     class="sub-header py-2 d-flex flex-row justify-content-between"
                                   >
-                                    <span
-                                      _ngcontent-byn-c280=""
-                                      class="time-age"
+                                    <span class="time-age font-weight-bold">
+                                      Age:{{ data.retrivedQuery?.days_passed
+                                      }}{{ " Days" }}
+                                      <!----></span
                                     >
-                                      Age: 0d, 3h, 18m &nbsp;&nbsp;
-                                    </span>
-                                    <mat-divider
-                                      _ngcontent-byn-c280=""
-                                      role="separator"
-                                      class="mat-divider mat-divider-horizontal"
-                                      aria-orientation="horizontal"
-                                    ></mat-divider>
+                                    <!-- <span
+
+                      class="time-till-resolved ng-star-inserted"
+                      style=""
+                    >
+                      &nbsp;&nbsp; Time until resolved: (0d, 3h, 18m) </span
+                    > -->
+                                    <!---->
                                   </div>
                                 </div>
-                                <div _ngcontent-byn-c280="" class="col-md-4">
-                                  <div
-                                    _ngcontent-byn-c280=""
-                                    class="box-detail"
-                                  >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
-                                      Title
-                                    </div>
-                                    <div _ngcontent-byn-c280="">
-                                      GRM CODE REQUEST
+                                <div class="col-md-4">
+                                  <div class="box-detail">
+                                    <div class="font-weight-bold">Title</div>
+                                    <div class="underline-text">
+                                      CLAIM FROM CLIENT
                                     </div>
                                   </div>
                                 </div>
-                                <div _ngcontent-byn-c280="" class="col-md-4">
-                                  <div
-                                    _ngcontent-byn-c280=""
-                                    class="box-detail"
-                                  >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
+                                <div class="col-md-4">
+                                  <div class="box-detail">
+                                    <div class="font-weight-bold">
                                       Track Number
                                     </div>
-                                    <div _ngcontent-byn-c280="">
-                                      {{ data.retrivedQuery.tracknumber }}
+                                    <div class="underline-text">
+                                      {{ data.retrivedQuery?.tracknumber }}
                                     </div>
                                   </div>
                                 </div>
-                                <div
-                                  _ngcontent-byn-c280=""
-                                  class="col-md-4 ng-star-inserted"
-                                  style=""
-                                >
+                                <div class="col-md-4 ng-star-inserted" style="">
                                   <!---->
-                                  <div
-                                    _ngcontent-byn-c280=""
-                                    class="box-detail ng-star-inserted"
-                                  >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
+                                  <div class="box-detail ng-star-inserted">
+                                    <div class="font-weight-bold">
                                       Reported to
                                     </div>
-                                    <div _ngcontent-byn-c280="">
+                                    <div class="underline-text">
                                       Msimbazi Basin
                                     </div>
                                   </div>
@@ -562,138 +536,67 @@
                                 </div>
                                 <!----><!----><!---->
 
-                                <div
-                                  _ngcontent-byn-c280=""
-                                  class="col-md-4 ng-star-inserted"
-                                >
-                                  <div
-                                    _ngcontent-byn-c280=""
-                                    class="box-detail"
-                                  >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
+                                <div class="col-md-4 ng-star-inserted">
+                                  <div class="box-detail">
+                                    <div class="font-weight-bold">
                                       Reported Via
                                     </div>
-                                    <div _ngcontent-byn-c280="">Website</div>
+                                    <div class="underline-text">Website</div>
                                   </div>
                                 </div>
                                 <!----><!---->
-                                <div _ngcontent-byn-c280="" class="col-md-4">
-                                  <div
-                                    _ngcontent-byn-c280=""
-                                    class="box-detail"
-                                  >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
+                                <div class="col-md-4">
+                                  <div class="box-detail">
+                                    <div class="font-weight-bold">
                                       Incidence Origin
                                     </div>
-                                    <div _ngcontent-byn-c280="">EXTERNAL</div>
+                                    <div class="underline-text">EXTERNAL</div>
                                   </div>
                                 </div>
-                                <div _ngcontent-byn-c280="" class="col-md-4">
-                                  <div
-                                    _ngcontent-byn-c280=""
-                                    class="box-detail"
-                                  >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
+                                <div class="col-md-4">
+                                  <div class="box-detail">
+                                    <div class="font-weight-bold">
                                       Submission Date
                                     </div>
-                                    <div _ngcontent-byn-c280="">
-                                      {{ "VVVV" }}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div _ngcontent-byn-c280="" class="col-md-4">
-                                  <div
-                                    _ngcontent-byn-c280=""
-                                    class="box-detail"
-                                  >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
-                                      Issue Category
-                                    </div>
-                                    <div _ngcontent-byn-c280="">
+                                    <div class="underline-text">
                                       {{
-                                        data.retrivedQuery &&
-                                        data.retrivedQuery.queryCategory &&
-                                        data.retrivedQuery.queryCategory?.name
+                                        data.retrivedQuery?.created | format()
                                       }}
                                     </div>
                                   </div>
                                 </div>
-                                <div
-                                  _ngcontent-byn-c280=""
-                                  class="col-md-4 ng-star-inserted"
-                                  style=""
-                                >
-                                  <div
-                                    _ngcontent-byn-c280=""
-                                    class="box-detail"
-                                  >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
+                                <div class="col-md-4">
+                                  <div class="box-detail">
+                                    <div class="font-weight-bold">
+                                      Issue Category
+                                    </div>
+                                    <div class="underline-text">
+                                      {{ data.retrivedQuery?.category }}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-4 ng-star-inserted" style="">
+                                  <div class="box-detail">
+                                    <div class="font-weight-bold">
                                       Issue Title
                                     </div>
-                                    <div _ngcontent-byn-c280="">
+                                    <div class="underline-text">
                                       Query Submition
                                     </div>
                                   </div>
                                 </div>
                                 <!---->
 
-                                <div
-                                  _ngcontent-byn-c280=""
-                                  class="col-md-4 ng-star-inserted"
-                                  style=""
-                                >
-                                  <div
-                                    _ngcontent-byn-c280=""
-                                    class="box-detail"
-                                  >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
-                                      Priortiy
-                                    </div>
-                                    <div _ngcontent-byn-c280="">High</div>
-                                  </div>
-                                </div>
-                                <!---->
-                                <div
-                                  _ngcontent-byn-c280=""
-                                  class="col-md-4 ng-star-inserted"
-                                  style=""
-                                ></div>
                                 <!----><!----><!----><!----><!----><!---->
-                                <div _ngcontent-byn-c280="" class="col-md-12">
-                                  <div
-                                    _ngcontent-byn-c280=""
-                                    class="box-detail"
-                                  >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
+                                <div class="col-md-12">
+                                  <div class="box-detail">
+                                    <div class="font-weight-bold">
                                       Description
                                     </div>
-                                    <div _ngcontent-byn-c280="">
+                                    <div>
                                       <!-- hello, -->
-                                      <div>
-                                        {{
-                                          data.retrivedQuery.feedbackdescription
-                                        }}
+                                      <div class="underline-text">
+                                        {{ data.retrivedQuery?.description }}
                                       </div>
                                       <div><br /></div>
                                       <!-- <div>Best Regards,</div> -->
@@ -702,99 +605,57 @@
                                   </div>
                                 </div>
                                 <!---->
-                                <div
-                                  _ngcontent-byn-c280=""
-                                  class="col-md-4 ng-star-inserted"
-                                  style=""
-                                >
+
+                                <div class="col-md-4 ng-star-inserted" style="">
                                   <div
-                                    _ngcontent-byn-c280=""
+                                    v-if="data.retrivedQuery?.resolved != null"
                                     class="box-detail"
                                   >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
-                                      Resolved Date
-                                    </div>
-                                    <div _ngcontent-byn-c280="">
-                                      Sep 17, 2023 @ 21:21:58
-                                    </div>
-                                  </div>
-                                </div>
-                                <div
-                                  _ngcontent-byn-c280=""
-                                  class="col-md-4 ng-star-inserted"
-                                  style=""
-                                >
-                                  <div
-                                    _ngcontent-byn-c280=""
-                                    class="box-detail"
-                                  >
-                                    <div
-                                      _ngcontent-byn-c280=""
-                                      class="font-weight-bold"
-                                    >
+                                    <div class="font-weight-bold">
                                       Closed Date
                                     </div>
-                                    <div _ngcontent-byn-c280="">
-                                      {{ "____________" }}
+                                    <div>
+                                      {{
+                                        data.retrivedQuery?.resolved | format()
+                                      }}
                                     </div>
+                                  </div>
+                                  <div v-else class="box-detail">
+                                    <div class="font-weight-bold">
+                                      Closed Date
+                                    </div>
+                                    <div>{{ "--------------------" }}</div>
                                   </div>
                                 </div>
                                 <!----><!---->
                               </div>
                             </div>
-                            <div _ngcontent-byn-c280="" class="col-md-4">
+                            <div class="col-md-4">
                               <v-card
-                                _ngcontent-byn-c280=""
                                 class="mat-card mat-focus-indicator shadow-sm mat-elevation-z3"
-                                ><p
-                                  _ngcontent-byn-c280=""
-                                  class="ng-star-inserted"
-                                  style=""
-                                >
+                                ><p class="ng-star-inserted" style="">
                                   <!----><span
-                                    _ngcontent-byn-c280=""
                                     class="ng-star-inserted font-weight-bold pl-4"
                                     >PROGRESS STATUS </span
                                   ><!---->
                                 </p>
                                 <!---->
-                                <p
-                                  _ngcontent-byn-c280=""
-                                  class="resolved ng-star-inserted"
-                                  style=""
-                                >
+                                <p class="resolved ng-star-inserted" style="">
                                   <span class="pl-4"
-                                    >Hatua lilipofikia shauri</span
+                                    >This Query is currently at status</span
                                   >
-                                  <br _ngcontent-byn-c280="" />
+                                  <br />
                                   <v-btn
                                     text
                                     class="primaary--text"
                                     color="green"
-                                    >{{
-                                      data.retrivedQuery &&
-                                      data.retrivedQuery.queryStatus &&
-                                      data.retrivedQuery.queryStatus?.name
-                                    }}
+                                    >{{ data.retrivedQuery?.status }}
                                   </v-btn>
                                 </p>
                                 <p
-                                  _ngcontent-byn-c280=""
                                   class="resolved ng-star-inserted"
                                   style=""
                                 ></p>
-                                <div
-                                  v-if="
-                                    data.retrivedQuery &&
-                                    data.retrivedQuery?.feedbackdescription
-                                  "
-                                  class="ribbon"
-                                >
-                                  <span>CLOSED</span>
-                                </div>
                                 <!----><!----><!----><!----><!----><!----><!----></v-card
                               >
                             </div>
@@ -851,181 +712,75 @@
               </template>
             </Modal>
             <div class="web-container mt-20 pt-10">
-              <app-features-and-services>
-                <v-card
-                  color="#E3F2FD"
-                  class="p-10 lg:p-20 !bg-primary/10 rounded-lg"
+              <!-- mnokote -->
+              <v-card height="fit" class="elevation-0 pa-n16">
+                <v-row
+                  dense
+                  class="mr-0 ml-0 mr-0 ml-0"
+                  v-if="data.slides.length > 0"
                 >
-                  <web-section-header>
-                    <div class="text-center">
-                      <h1 class="f-heading">Features And Services</h1>
-                      <div class="h-[2px] m-auto !bg-primary w-[100px]"></div>
-                    </div>
-                  </web-section-header>
-                  <v-row
-                    class="space-y-10 md:space-y-0 md:grid md:grid-cols-2 mt-10 gap-10 lg:gap-20"
+                  <!-- class="d-none d-md-flex d-lg-none d-none d-lg-flex d-xl-none d-none " -->
+                  <v-col
+                    md="6"
+                    cols="12"
+                    sm="12"
+                    class="d-none d-md-flex d-lg-none d-none d-lg-flex"
                   >
-                    <v-col>
-                      <v-row class="flex space-x-0">
-                        <v-col class="space-y-3">
-                          <v-col
-                            class="aspect-square h-10 !bg-primary rounded-md text-white grid place-content-center"
-                          >
-                            <v-icon x-large color="rgb(59 130 246 / 0.5)"
-                              >mdi-email</v-icon
-                            >
-                          </v-col>
-                          <h2
-                            class="!text-primary !text-xl font-bold !text-2xl mb-1"
-                          >
-                            Subscription
-                          </h2>
-                          <p>
-                            GRM allows subscription by the public for obtaining
-                            query status information through email and SMS.
-                          </p>
-                        </v-col>
-                      </v-row>
-                    </v-col>
+                    <v-carousel
+                      cycle
+                      hide-delimiters
+                      interval="10000"
+                      height="100%"
+                      light
+                    >
+                      <v-carousel-item
+                        v-for="(item, i) in data.slides"
+                        :key="i"
+                        :src="item.src"
+                      >
+                      </v-carousel-item>
+                    </v-carousel>
+                  </v-col>
+                  <!-- login form start -->
 
-                    <v-col>
-                      <v-row>
-                        <v-col class="space-y-0">
-                          <v-col class="">
-                            <v-icon color="rgb(59 130 246 / 0.5)" x-large
-                              >mdi-cellphone</v-icon
-                            >
-                          </v-col>
-                          <h2
-                            class="!text-primary !text-xl font-bold !text-2xl mb-1"
-                          >
-                            Mobile Application
-                          </h2>
-                          <p>
-                            GRM mobile application facilitates e-registration of
-                            clients and e-submission of their queries through
-                            mobile phones or tablets.
-                          </p>
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                    <v-col>
-                      <v-row>
-                        <v-col class="space-y-0">
-                          <v-col class="">
-                            <v-icon color="rgb(59 130 246 / 0.5)" x-large
-                              >mdi-monitor-dashboard</v-icon
-                            >
-                          </v-col>
-                          <h2
-                            class="!text-primary !text-xl font-bold !text-2xl mb-1"
-                          >
-                            Reports && Visualization
-                          </h2>
-                          <p>
-                            GRM application facilitates data analysis by
-                            providing various reports and visualizations to help
-                            you make informed decisions and gain valuable
-                            insights into your business.
-                          </p>
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </app-features-and-services>
+                  <v-col md="6" cols="12" sm="12">
+                    <!-- <v-col cols="12" md="4" sm="12"> -->
+                    <v-card-text class>
+                      <v-card
+                        @click="openClaimForm"
+                        class="card blue lighten-5"
+                      >
+                        <v-card-title class="d-flex justify-center align-center"
+                          >WASILISHA LALAMIKO</v-card-title
+                        >
+                        <img
+                          @click="openClaimForm"
+                          :src="data.send"
+                          alt="Clickable Image"
+                          class="clickable-image ffars-logo2"
+                        />
+                      </v-card>
+                      <div class="pa-3"></div>
+                      <v-card @click="searchQuery" class="card teal lighten-5">
+                        <v-card-title class="d-flex justify-center align-center"
+                          >FUATILIA LALAMIKO</v-card-title
+                        >
+                        <div class="d-flex justify-center align-center">
+                          <img
+                            @click="searchQuery"
+                            :src="data.follow"
+                            alt="Clickable Image"
+                            class="clickable-image ffars-logo2"
+                          />
+                        </div>
+                      </v-card>
+                    </v-card-text>
+                  </v-col>
+                  <!-- login form end -->
+                </v-row>
+              </v-card>
             </div>
 
-            <web-footer class="">
-              <div class="bg-gray-100 !text-xs">
-                <div class="web-container mt-20 pt-10">
-                  <v-container>
-                    <v-row class="grid xl:grid-cols-12 gap-2 2xl:gap-10">
-                      <v-col cols="12" class="pr-9 !font-light white--text">
-                        <p>
-                          The Msimbazi River Basin is an economically,
-                          geographically, and environmentally significant
-                          region, home to about 1.6 million people and critical
-                          transportation infrastructure that connects the
-                          Central Business District of Tanzania's most populous
-                          city, Dar es Salaam, with the rest of the city. But
-                          flooding has become increasingly severe over the past
-                          decade, with major flood events experienced in seven
-                          out of the last 10 years. These events are expected to
-                          increase with urbanization and climate change. The
-                          Government of Tanzania, with a $200 million credit
-                          from the World Bank Group’s International Development
-                          Association (IDA), established the Msimbazi Basin
-                          Development Project (2022-2028) to strengthen flood
-                          resilience and integrate urban development efforts in
-                          this economically important and flood-prone area of
-                          Dar es Salaam. The project is anticipated to benefit
-                          from $60 million worth of credit from the Spanish
-                          Agency for International Development Cooperation and a
-                          grant from the Netherlands Ministry of Foreign Affairs
-                          through Invest.
-                        </p>
-                        <p>
-                          GRM System of Msimbazi Project. This system has been
-                          developed, hosted, and operated by the Government of
-                          the United Republic of Tanzania in 2023 for
-                          facilitation of queries functions by means of
-                          information and communication technology.
-                        </p>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </div>
-                <div
-                  class="py-3 border-t border-t-gray-300 mt-5 flex items-center"
-                >
-                  <div class="web-container flex items-center justify-between">
-                    <div class="flex space-x-3">
-                      <a
-                        href="http://www.facebook.com/PPRA_Tanzania-2588600117819083"
-                        target="_blank"
-                        title="PPRA On Facebook"
-                      >
-                        <v-img
-                          loading="lazy"
-                          src="/assets/images/facebook.png"
-                        ></v-img>
-                      </a>
-                      <a
-                        href="http://www.twitter.com/PpraTanzania"
-                        target="_blank"
-                        title="PPRA On Twitter"
-                      >
-                        <v-img
-                          loading="lazy"
-                          src="/assets/images/twitter.png"
-                        ></v-img>
-                      </a>
-                      <a
-                        href="http://www.instagram.com/ppra_tanzania"
-                        target="_blank"
-                        title="PPRA On Instagram"
-                      >
-                        <v-img
-                          loading="lazy"
-                          src="/assets/images/instagram.png"
-                        ></v-img>
-                      </a>
-                      <a
-                        href="https://www.youtube.com/@ppratanzania668"
-                        target="_blank"
-                        title="PPRA On Youtube"
-                      >
-                        <v-img
-                          loading="lazy"
-                          src="/assets/images/youtube.png"
-                        ></v-img>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </web-footer>
             <v-footer app>
               <!-- Adjust the background color and text color -->
               <v-sheet color="primary" dark class="d-none d-md-flex">
@@ -1159,6 +914,18 @@ export default Vue.extend({
         { title: "Fuatilia", icon: "mdi-magnify", method: "searchQuery" },
         { title: "Ingia(Login)", icon: "mdi-login", method: "openLogin" },
       ],
+      resetOption: [
+        {
+          title: "Namba ya utambuzi",
+          icon: "mdi-magnify",
+          method: "searchQuery",
+        },
+        {
+          title: "Namba ya ufuatiliaji",
+          icon: "mdi-send",
+          method: "openClaimForm",
+        },
+      ],
       drawer: false, // Initial state of the navigation drawer
       filePreviewmodal: false,
       isClaim: false,
@@ -1180,9 +947,11 @@ export default Vue.extend({
       loading: false,
       logo: "/brand.png",
       ffars_logo: "/ffars_logo.png",
+      send: "/claim.jpg",
+      follow: "/follow.png",
       coat: "/coat_of_arms.svg.png",
       colors: ["primary", "secondary", "yellow darken-2", "red", "orange"],
-      slides: [{ src: "/V.jpg" }],
+      slides: [{ src: "/X.jpg" }, { src: "/2.jpg" }, { src: "/1.jpg" }],
       username: "",
       queryCategories: [],
       documentTypes: [],
@@ -1555,7 +1324,7 @@ footer {
 .landing-page-background {
   /* Set your background image here */
   /* background-image: url("./V.jpg"); */
-  background-color: #41546b;
+  background-color: #bbbbbb;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -1610,6 +1379,10 @@ footer {
 .ffars-logo {
   height: 60%;
   width: 80%;
+}
+.ffars-logo2 {
+  height: 20%;
+  width: 20%;
 }
 .login-header {
   font-weight: bold;
@@ -1703,5 +1476,8 @@ a {
 /* Show the backdrop when the drawer is open */
 .v-navigation-drawer[value="true"] + .backdrop {
   display: block;
+}
+.card {
+  cursor: pointer;
 }
 </style>

@@ -49,7 +49,7 @@ const deleteUser = async (id: number | string) => {
 
 const toggleActive = async (payload: any) => {
   console.log("payload", payload);
-  return await axios.post(`${API}/${payload.id}/change-status`);
+  return await axios.patch(`${API}/${payload.id}/change-status`);
 };
 
 const resetPassword = async (payload: any) => {

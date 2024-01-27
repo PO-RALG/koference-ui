@@ -1,12 +1,32 @@
 <template>
   <div class="">
-    <v-card-actions class="pa-0">
+    <v-card-actions class="pa-3">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <!-- <v-btn large color="teal" class="white--text" @click="openDialog">
+      <v-btn
+        v-show="!data.hideOpened"
+        large
+        color="primary"
+        class="white--text"
+        @click="reloadClosedCase"
+      >
+        <v-icon>mdi-reload</v-icon>
+        Load Closed
+      </v-btn>
+      <v-btn
+        v-show="data.hideOpened"
+        large
+        color="secondary"
+        class="white--text"
+        @click="reloadData"
+      >
+        <v-icon>mdi-reload</v-icon>
+        Load Opened
+      </v-btn>
+      <v-btn large color="teal" class="white--text" @click="openDialog">
         <v-icon>mdi-plus</v-icon>
         Add New
-      </v-btn> -->
+      </v-btn>
     </v-card-actions>
     <v-data-table
       :headers="data.headers"
@@ -18,15 +38,33 @@
     >
       <template v-slot:top>
         <v-card-title>
+          <h3 v-if="!data.hideOpened">{{ "Opened Grievance" }}</h3>
+          <h3 v-else>{{ "Closed Grievance" }}</h3>
           <v-spacer></v-spacer>
-          <v-col cols="6" sm="12" md="4" class="pa-0">
+          <v-col v-show="!data.hideOpened" cols="6" sm="12" md="4" class="pa-0">
             <v-text-field
+              v-model="data.searchQuery"
+              append-icon="mdi-magnify"
+              placeholder="Enter tracknumber,PAP first name or last name "
+              clearable
+              @click:append="filterQuery(data.searchQuery)"
+              @click:clear="clearSearch"
               outlined
               label="Search"
-              @keyup="filterDocument()"
               :items="data.itemsToFilter"
-              v-model="data.searchTerm"
+            ></v-text-field>
+          </v-col>
+          <v-col v-show="data.hideOpened" cols="6" sm="12" md="4" class="pa-0">
+            <v-text-field
+              v-model="data.searchQuery"
+              append-icon="mdi-magnify"
+              placeholder="Enter tracknumber,PAP first name or last name "
               clearable
+              @click:append="filterQueryClosed(data.searchQuery)"
+              @click:clear="reloadClosedCase"
+              outlined
+              label="Search"
+              :items="data.itemsToFilter"
             ></v-text-field>
           </v-col>
         </v-card-title>
@@ -46,6 +84,103 @@
         <custom-table-row :item="props.item" @row-clicked="handleRowClick" />
       </template>
     </v-data-table>
+
+    <Modal :modal="data.modal" :width="1000" :fullScreen="true">
+      <template v-slot:header>
+        <ModalHeader
+          :title="`TUMA LALAMIKO`"
+          :icon="'mdi-send'"
+          :is_signup="true"
+          :is_known="data.selectedOption"
+          :is_claiming="true"
+        />
+      </template>
+      <template v-slot:body>
+        <v-container class="d-flex justify-center align-center"> </v-container>
+        <v-container class="d-flex justify-center align-center">
+          <v-col cols="12" md="7" class="mt-n3">
+            <v-text-field
+              v-model="data.searchUser"
+              append-icon="mdi-magnify"
+              label="Weka namba ya simu"
+              placeholder="Weka namba ya simu(Phone number)"
+              solo-inverted
+              clearable
+              @click:append="trackUser(data.searchUser)"
+              :disabled="data.retrivedUserToBind"
+            ></v-text-field>
+          </v-col>
+        </v-container>
+        <v-container
+          v-if="data.retrivedUserToBind"
+          class="d-flex justify-center align-center"
+        >
+          Umetambulika kwa majina:
+          <span class="font-weight-bold text-uppercase">
+            {{ data?.retrivedUserToBind?.first_name }} {{ " " }}
+            {{ data?.retrivedUserToBind?.last_name }}</span
+          >
+        </v-container>
+        <ModalBody v-if="data.formData">
+          <v-form ref="form" enctype="multipart/form-data">
+            <v-container>
+              <v-row>
+                <v-col cols="12" md="12" class="mb-n8">
+                  <v-col cols="12" md="12" class="mb-n8">
+                    <v-textarea
+                      outlined
+                      name="input-7-4"
+                      label="Andika Maelezo Hapa Chini"
+                      v-model="data.formData.description"
+                    ></v-textarea>
+                  </v-col>
+
+                  <!-- start -->
+                  <v-row>
+                    <v-card-text>
+                      <v-row>
+                        <v-col
+                          v-for="item in data.documentTypes"
+                          :key="item.id"
+                          cols="12"
+                          sm="6"
+                          md="3"
+                        >
+                          <label for="file" class="label">
+                            <small class="t-color">
+                              {{ item.name }}
+                            </small>
+                          </label>
+                          <v-file-input
+                            @change="saveFile($event, item)"
+                            v-model="item.file"
+                            color=""
+                            placeholder="chagua faili"
+                            filled
+                            outlined
+                            :show-size="1000"
+                          >
+                          </v-file-input>
+                        </v-col>
+                      </v-row>
+                    </v-card-text>
+                  </v-row>
+                  <v-btn
+                    :disabled="!data.formData.description"
+                    @click="submitFomrm"
+                    color="green lighten-2"
+                    large
+                    class="white--text"
+                    >{{ "Wasilisha  lalamiko" }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </ModalBody>
+        <ModalFooter> <v-spacer></v-spacer> </ModalFooter>
+      </template>
+    </Modal>
 
     <Modal :modal="data.deletemodal" :width="320">
       <template v-slot:header>
@@ -80,7 +215,9 @@ export default defineComponent({
   setup() {
     const {
       data,
+      submitFomrm,
       openDialog,
+      reloadClosedCase,
       getData,
       cancelDialog,
       getDocumentCategory,
@@ -96,14 +233,21 @@ export default defineComponent({
       createDocument,
       selectedFile,
       downloadFile,
-      filterDocument,
+      filterQuery,
+      filterQueryClosed,
       deleteDialog,
       handleRowClick,
+      clearSearch,
+      saveFile,
+      trackUser,
     } = useQuery();
 
     return {
       data,
+      trackUser,
+      submitFomrm,
       openDialog,
+      reloadClosedCase,
       getData,
       cancelDialog,
       getDocumentCategory,
@@ -119,9 +263,12 @@ export default defineComponent({
       createDocument,
       selectedFile,
       downloadFile,
-      filterDocument,
+      filterQuery,
+      filterQueryClosed,
       deleteDialog,
       handleRowClick,
+      clearSearch,
+      saveFile,
     };
   },
 });

@@ -203,7 +203,7 @@
                 <div _ngcontent-byn-c280="" class="col-md-4">
                   <div _ngcontent-byn-c280="" class="box-detail">
                     <div _ngcontent-byn-c280="" class="font-weight-bold">
-                      Incidence Origin
+                      Incidence Origin    
                     </div>
                     <div _ngcontent-byn-c280="">EXTERNAL</div>
                   </div>

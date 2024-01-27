@@ -1,294 +1,259 @@
 <template>
-  <div>
-    <v-card elevation="1" class="mt-10 pt-5 pl-5 pr-5 mb-0 top-card">
-      <v-container>
-        <v-row>
-          <v-col
-            cols="12"
-            md="6"
-            :style="$vuetify.breakpoint.lgAndUp ? ' flex: 1 0 20%;' : ''"
-            sm="12"
-            class="border-right"
-          >
-            <MoneyCard
-              :title="'Total Queries'"
-              :amount="data.summary.total_query_count"
-              :title_summary="'List of all submited queries'"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-            md="6"
-            :style="$vuetify.breakpoint.lgAndUp ? ' flex: 1 0 20%;' : ''"
-            sm="12"
-            class="border-right"
-          >
-            <MoneyCard
-              :title="'Pending Queries'"
-              :amount="data.summary.pending_query_count"
-              :title_summary="'List of all queries that has been not assigned to attendant'"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-            md="6"
-            :style="$vuetify.breakpoint.lgAndUp ? ' flex: 1 0 20%;' : ''"
-            sm="12"
-            class="border-right"
-          >
-            <MoneyCard
-              :title="'Replied Queries'"
-              :amount="data.summary.replied_queries"
-              :title_summary="'List of all queries that has been attended'"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-            md="6"
-            :style="$vuetify.breakpoint.lgAndUp ? ' flex: 1 0 20%;' : ''"
-            sm="12"
-            class="border-right"
-          >
-            <MoneyCard
-              :title="'Under processing Queries'"
-              :amount="data.summary.underprocessing_queries"
-              :title_summary="'List of all queries that has been assigned to attendant but not replied'"
-            />
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card>
+  <v-card flat>
+    <v-container>
+      <v-card-actions class="pa-0">
+        <h2>{{ "Profile Details" }}</h2>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" text large @click="openDialog">
+          <v-icon>mdi-plus</v-icon>
+          Payment Cofirmation
+        </v-btn>
+      </v-card-actions>
+      <v-card max-width="100%">
+        <v-container>
+          <v-row justify="start">
+            <v-col cols="12" sm="8" md="6">
+              <v-card class="elevation-10">
+                <!-- Business Card Header -->
+                <v-card-title class="text-h6 text-center mb-4">
+                  Business Card
+                </v-card-title>
 
-    <v-card
-      elevation="0"
-      class="top-card mt-5"
-      style="border-bottom: 1px solid #ccc"
-    >
-      <v-container>
-        <v-row>
-          <v-col cols="12" md="3" sm="12" class="border-right">
-            <BarChart2
-              :chartData="data.currentSource"
-              :height="500"
-              :width="400"
-            />
-          </v-col>
-          <v-col cols="12" md="2" sm="12" class="border-right">
-            <PieChart
-              :chartData="data.reporterBySource"
-              :height="500"
-              :width="400"
-            />
-          </v-col>
-          <v-col cols="12" md="3" sm="12" class="border-right">
-            <BarChart
-              :chartData="data.reporterTopFiveRepoeter"
-              :height="500"
-              :width="400"
-            />
-          </v-col>
-          <v-col cols="12" md="3" sm="12" class="border-right">
-            <PieChart
-              :chartData="data.reporterByGender"
-              :height="500"
-              :width="400"
-            />
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card>
-  </div>
+                <!-- Business Card Content -->
+                <v-card-text>
+                  <!-- Company Logo -->
+                  <v-img
+                    :src="userx"
+                    alt="User Photo"
+                    max-width="10%"
+                    height=""
+                    class="align-start elevation-10"
+                  ></v-img>
+
+                  <!-- Company Information -->
+                  <div class="text-center">
+                    <h2 class="text-h5">{{ companyName }}</h2>
+                    <p>{{ companyAddress }}</p>
+                    <p>{{ companyPhone }}</p>
+                    <p>{{ companyEmail }}</p>
+                    <p>{{ companyWebsite }}</p>
+                  </div>
+                </v-card-text>
+
+                <!-- Business Card Footer (Image) -->
+                <v-card-actions class="justify-center">
+                  <v-img
+                    src="/business-card-footer-image.png"
+                    alt="Business Card Footer Image"
+                    max-width="100%"
+                  ></v-img>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+        <!-- <v-card-title class="text-h5"
+          >{{ user?.first_name }} {{ " " }}{{ user?.last_name }}{{ "@"
+          }}{{ user?.username }} {{ " - " }}
+          {{ user.user_identification }}</v-card-title
+        >
+
+        <v-list-item>
+          <span>{{ "Sex" }}{{ " : " }} {{ user?.sex }}</span>
+        </v-list-item>
+
+        <v-list-item>
+          <span>{{ "Nationality" }}{{ " : " }} {{ user?.country.name }}</span>
+        </v-list-item> -->
+
+        <v-list-item>
+          <span
+            >{{ "Payment Confirmation Date" }}{{ " : " }}
+            {{ regInfromation?.createdAt | format() }}</span
+          >
+        </v-list-item>
+
+        <v-list-item>
+          <span
+            >Payment Confirmation Status:
+            {{ getStatusText(regInfromation?.status) }}</span
+          >
+        </v-list-item>
+
+        <v-divider class="my-3"></v-divider>
+
+        <v-list>
+          <v-list-item-group>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon color="primary">mdi-email</v-icon>
+              </v-list-item-icon>
+              <span>{{ user?.email }}</span>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon color="primary">mdi-phone</v-icon>
+              </v-list-item-icon>
+              <span>{{ user?.phone_number }}</span>
+            </v-list-item>
+
+            <v-list-item v-if="regInfromation">
+              <v-list-item-icon>
+                <v-icon color="primary">mdi-attachment</v-icon>
+              </v-list-item-icon>
+              <a
+                :href="getFullFilePath(regInfromation?.path_file)"
+                target="_blank"
+              >
+                <span>{{ "Download Uploaded Receipt" }}</span>
+              </a>
+            </v-list-item>
+
+            <!-- Add more details as needed -->
+          </v-list-item-group>
+        </v-list>
+      </v-card>
+    </v-container>
+    <Modal :modal="openDialogForm" :width="600">
+      <template v-slot:header>
+        <ModalHeader :title="`Confirm Payment Document`" />
+      </template>
+      <template v-slot:body>
+        <ModalBody v-if="formData2">
+          <v-form>
+            <v-container>
+              <v-row>
+                <v-col cols="12" sm="12" md="12">
+                  <label for="file" class="label">
+                    <small class="t-color">
+                      {{ "Attachment " }}
+                    </small>
+                  </label>
+                  <v-file-input
+                    @change="saveFile($event)"
+                    color=""
+                    placeholder="Attach Payment Receipt"
+                    filled
+                    outlined
+                    :show-size="1000"
+                    accept="application/pdf"
+                  >
+                  </v-file-input>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </ModalBody>
+      </template>
+      <template v-slot:footer>
+        <ModalFooter>
+          <v-btn color="red darken-1" text @click="cancelDialog">Cancel</v-btn>
+          <v-btn color="green darken-1" text @click="save">{{ "Save" }} </v-btn>
+        </ModalFooter>
+      </template>
+    </Modal>
+  </v-card>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, onMounted, computed } from "vue";
-
-import {
-  getByCategory,
-  getByNature,
-  queryTopFive,
-  queryByGender,
-  querySummary,
-} from "@/components/dashboard/services";
-import BarChart from "@/components/dashboard/components/charts/BarChart.vue";
-import BarChart2 from "@/components/dashboard/components/charts/BarChart2.vue";
-import PieChart from "@/components/dashboard/components/charts/PieChart.vue";
-
-interface Level {
-  id: number;
-  code: string;
-  name: string;
-  position: number;
-}
-
-interface ChartOptions {
-  label: string;
-  backgroundColor: Array<string>;
-  borderColor: Array<string>;
-  pointBorderColor: string;
-  borderWidth: number;
-  data: Array<string>;
-}
-
-interface ChartData {
-  labels: Array<string>;
-  datasets: Array<ChartOptions>;
-}
-
-export default defineComponent({
-  components: {
-    BarChart,
-    BarChart2,
-    PieChart,
-  },
-
-  setup() {
-    let currentSource: ChartData;
-    let reporterByGender: ChartData;
-    let loadDashboardsByGender: ChartData;
-    let reporterTopFiveRepoeter: ChartData;
-    let reporterBySource: ChartData;
-    const graphs = [1, 2, 3];
-
-    const data = reactive({
-      valid: false,
-      graphs,
-      loadDashboardsByGender,
-      reporterTopFiveRepoeter,
-      reporterBySource,
-      currentSource,
-      reporterByGender,
-      summary: {
-        total_query_count: "",
-        pending_query_count: "",
-        replied_queries: "",
-        underprocessing_queries: "",
-      },
-    });
-
-    onMounted(() => {
-      loadDashboards();
-    });
-
-    const mapCurrentQueries = (results: Array<CurrentSource>): ChartData => {
-      const labels = results.map((result) => result.category);
-      const data = results.map((result) => result.record_count);
-
-      const dataOptions: ChartData = {
-        labels,
-        datasets: [
-          {
-            label: "Reported queries",
-            borderWidth: 1,
-            backgroundColor: ["#AED581", "#81C784", "#CFD8DC"],
-            borderColor: ["#00D8FF"],
-            pointBorderColor: "",
-            data: [...data],
-          },
-        ],
-      };
-      return dataOptions;
-    };
-
-    const mapCurrentNature = (results: Array<CurrentSource>): ChartData => {
-      const labels = results.map((result) => result.category);
-      const data = results.map((result) => result.record_count);
-
-      const dataOptions: ChartData = {
-        labels,
-        datasets: [
-          {
-            label: "Number query from user nature",
-            borderWidth: 1,
-            backgroundColor: ["#B3E5FC", "#B2DFDB", "#DD1B16"],
-            borderColor: ["#00D8FF"],
-            pointBorderColor: "",
-            data: [...data],
-          },
-        ],
-      };
-      return dataOptions;
-    };
-
-    const mapTopFive = (results: Array<CurrentSource>): ChartData => {
-      const labels = results.map((result) => result.category);
-      const data = results.map((result) => result.record_count);
-
-      const dataOptions: any = {
-        labels,
-        datasets: [
-          {
-            label: "Query reported",
-            borderWidth: 1,
-            backgroundColor: ["#4DB6AC"],
-            borderColor: ["#00D8FF"],
-            pointBorderColor: "",
-            data: [...data],
-          },
-        ],
-      };
-      return dataOptions;
-    };
-
-    const mapTopQueryByGender = (results: Array<CurrentSource>): ChartData => {
-      const labels = results.map((result) => result.category);
-      const data = results.map((result) => result.record_count);
-
-      const dataOptions: ChartData = {
-        labels,
-        datasets: [
-          {
-            label: "Number query from user nature",
-            borderWidth: 1,
-            backgroundColor: ["#EEEEEE", "#BDBDBD"],
-            borderColor: ["#00D8FF"],
-            pointBorderColor: "",
-            data: [...data],
-          },
-        ],
-      };
-      return dataOptions;
-    };
-
-    const loadDashboards = async () => {
-      const summaries = await querySummary({});
-      data.summary = summaries.data[0];
-
-      const currResp = await getByCategory({});
-      const _mappedCurrentSource = mapCurrentQueries(currResp.data);
-      data.currentSource = _mappedCurrentSource;
-
-      const currNature = await getByNature({});
-      const _mappedNature = mapCurrentNature(currNature.data);
-      data.reporterBySource = _mappedNature;
-
-      const currTopFive = await queryTopFive({});
-      const _mappedTopFive = mapTopFive(currTopFive.data);
-      data.reporterTopFiveRepoeter = _mappedTopFive;
-
-      const currQueryByGender = await queryByGender({});
-      const _mappedQueryByGender = mapTopQueryByGender(currQueryByGender.data);
-      data.reporterByGender = _mappedQueryByGender;
-    };
-
+<script>
+import { uploadFile, saveRegistration, getRegInfo } from "./services";
+export default {
+  name: "UserProfile",
+  data() {
     return {
-      data,
+      userx: "/user.jpeg",
+      user: null,
+      openDialogForm: false,
+      formData2: { path_file: "", userId: "" },
+      regInfromation: "",
+
+      companyName: "Your Company Name",
+      companyAddress: "123 Business Street, City",
+      companyPhone: "+1 234 567 890",
+      companyEmail: "info@yourcompany.com",
+      companyWebsite: "www.yourcompany.com",
     };
   },
-});
+  mounted() {
+    // Retrieve user from local storage when the component is mounted
+    this.getUserFromLocalStorage();
+    this.getUserRegistrationInfo();
+  },
+  methods: {
+    getStatusText(status) {
+      console.log("status", status);
+      if (status == 0) {
+        return "Pending";
+      } else if (status == 1) {
+        return "Approved";
+      } else {
+        return ""; // or any other default value you want for null status
+      }
+    },
+
+    getFullFilePath(path) {
+      // Assuming "uploads/path_file" is the prefix
+      return `uploads/${path}`;
+    },
+
+    getUserFromLocalStorage() {
+      // Get the user data from local storage
+      const userJson = localStorage.getItem("GRM_USER");
+
+      // Parse the JSON data
+      if (userJson) {
+        this.user = JSON.parse(userJson);
+      }
+    },
+
+    getUserRegistrationInfo() {
+      const regSearchTerm = this.user.id;
+      getRegInfo({ regSearchTerm }).then((response) => {
+        this.regInfromation = response.data;
+      });
+    },
+    openDialog() {
+      this.openDialogForm = true;
+    },
+    cancelDialog() {
+      this.openDialogForm = false;
+    },
+    save() {
+      console.log("formData", this.formData);
+      this.openDialogForm = false;
+
+      saveRegistration(this.formData2).then((response) => {
+        console.log("response:", response);
+        this.openDialogForm = false;
+        this.formData2 = { path_file: "", userId: "" };
+      });
+    },
+
+    saveFile(file) {
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        uploadFile(formData).then((response) => {
+          console.log("response:", response);
+          const fileInfo = {
+            file_path: response.data.current_name,
+          };
+          console.log("path:", this.formData2);
+          this.formData2.path_file = response.data.current_name;
+          this.formData2.userId = this.user.id;
+          this.formData2.status = true;
+          //remove duplicates but keep the last updated score!
+          // data.formData.files.reverse();
+          // data.formData.files = _.uniqBy(data.formData2, "current_name");
+          // this.loading2 = false;
+        });
+      }
+    },
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-.top-card {
-  border-top: 1px solid #ccc;
-  border-radius: 0;
-  border-right: 1px solid #ccc;
-  border-left: 1px solid #ccc;
-}
-.border-right {
-  border-right: 1px solid #ccc;
-  &:last-child {
-    border: none;
-  }
-}
+<style scoped>
+/* Add your custom styles here to make it visually appealing */
 </style>

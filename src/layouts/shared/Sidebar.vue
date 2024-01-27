@@ -4,7 +4,7 @@
       <v-navigation-drawer
         app
         left
-        width="280px"
+        width="480px"
         :value="Droower"
         @input="Droower = $event"
         absolute
