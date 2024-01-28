@@ -4,7 +4,9 @@
       <div class="pl-10">
         <img class="coat" :src="coat" />
       </div>
-      <h1 class="display-2 color-app pl-10">Conference Portal</h1>
+      <h1 class="color-app pl-10">
+        International Primary Health Care Conference
+      </h1>
 
       <!-- Align buttons to the right -->
       <v-spacer></v-spacer>
@@ -42,7 +44,7 @@ export default {
   methods: {
     goHome() {
       // Use the Vue Router to navigate to the home route
-      this.$router.push({ path: "/" });
+      this.$router.push({ path: "/login" });
     },
     handleButtonClick1() {
       this.$router.push({ path: "/registration-page" });

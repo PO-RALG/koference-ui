@@ -13,7 +13,7 @@
         <v-row>
           <v-col cols="12" md="12">
             <!--            <v-card>-->
-            <v-card flat>
+            <v-card elevetion="1">
               <!-- Form Content -->
               <v-form v-model="valid" @submit.prevent="submitForm">
                 <v-container>

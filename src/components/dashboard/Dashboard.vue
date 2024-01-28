@@ -4,7 +4,7 @@
       <v-card-actions class="pa-0">
         <h2>{{ "Profile Details" }}</h2>
         <v-spacer></v-spacer>
-        <v-btn color="primary" text large @click="openDialog">
+        <v-btn color="primary" large @click="openDialog">
           <v-icon>mdi-plus</v-icon>
           Payment Cofirmation
         </v-btn>
@@ -13,7 +13,7 @@
         <v-container>
           <v-row justify="start">
             <v-col cols="12" sm="8" md="6">
-              <v-card class="elevation-10">
+              <v-card color="grey" class="elevation-10">
                 <!-- Business Card Header -->
                 <v-card-title class="text-h6 text-center mb-4">
                   Business Card
@@ -176,9 +176,12 @@ export default {
     };
   },
   mounted() {
-    // Retrieve user from local storage when the component is mounted
     this.getUserFromLocalStorage();
-    this.getUserRegistrationInfo();
+
+    // Retrieve user from local storage when the component is mounted
+    if (this.user.jisajilis.length > 0) {
+      this.getUserRegistrationInfo();
+    }
   },
   methods: {
     getStatusText(status) {
@@ -224,7 +227,8 @@ export default {
       this.openDialogForm = false;
 
       saveRegistration(this.formData2).then((response) => {
-        console.log("response:", response);
+        // console.log("response:", response);
+        this.getUserRegistrationInfo();
         this.openDialogForm = false;
         this.formData2 = { path_file: "", userId: "" };
       });

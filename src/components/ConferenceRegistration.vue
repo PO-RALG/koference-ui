@@ -58,7 +58,7 @@
         </template>
         <template v-slot:body>
           <ModalBody>
-            <v-form>
+            <v-form v-model="valid" @submit.prevent="submitForm">
               <v-container>
                 <v-row>
                   <v-col cols="12" md="6">
@@ -164,6 +164,7 @@
                       outlined
                       required
                       @input="updateEmail"
+                      ref="email"
                     ></v-text-field>
                   </v-col>
 
@@ -175,6 +176,7 @@
                       @input="formatPhoneNumber"
                       outlined
                       required
+                      ref="phone_number"
                     ></v-text-field>
                   </v-col>
 
@@ -195,6 +197,7 @@
                       outlined
                       required
                       type="password"
+                      ref="password"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -592,28 +595,32 @@ export default {
       this.lastname = value.toUpperCase();
     },
     async postData() {
-      registerUser({
-        country: this.country,
-        category: this.category,
-        sex: this.gender,
-        first_name: this.firstname,
-        middle_name: this.middlename,
-        last_name: this.lastname,
-        countryId: 1,
-        email: this.email,
-        password: this.password,
-        phone_number: this.phoneNumber,
-        username: this.username,
-        description: this.description,
-        salutation: this.salutation,
-        organization: this.organization,
-        // Add more key-value pairs as needed
-      }).then((response) => {
+      try {
+        const response = await registerUser({
+          country: this.country,
+          registationcategory: this.category,
+          sex: this.gender,
+          first_name: this.firstname,
+          middle_name: this.middlename,
+          last_name: this.lastname,
+          email: this.email,
+          password: this.password,
+          phone_number: this.phoneNumber,
+          username: this.username,
+          description: this.description,
+          salutation: this.salutation,
+          organization: this.organization,
+          // Add more key-value pairs as needed
+        });
+
         if (response.status >= 200 && response.status < 300) {
           this.dialogs.dialog1 = false;
           this.resetForm();
         }
-      });
+      } catch (error) {
+        // Handle errors if any
+        console.error("Error posting data:", error);
+      }
     },
     // async postData() {
     //   try {
@@ -707,6 +714,29 @@ export default {
       this.organization = "";
       // Reset validation state if using validation
       this.$refs.submitForm?.resetValidation(); // Replace "form" with the ref attribute of your form element
+      this.clearValidationErrors();
+    },
+
+    clearValidationErrors() {
+      // Iterate over your form fields and reset validation for each field
+      ["email"].forEach((fieldName) => {
+        const field = this.$refs[fieldName];
+        if (field && field.reset) {
+          field.reset(); // Reset the validation for the field
+        }
+      });
+      ["phone_number"].forEach((fieldName) => {
+        const field = this.$refs[fieldName];
+        if (field && field.reset) {
+          field.reset(); // Reset the validation for the field
+        }
+      });
+      ["password"].forEach((fieldName) => {
+        const field = this.$refs[fieldName];
+        if (field && field.reset) {
+          field.reset(); // Reset the validation for the field
+        }
+      });
     },
     clearSelection() {
       this.category = null;

@@ -7,10 +7,10 @@ src/**/dist/
 src/dist/
 
 # local env files
-.env.local
-.env.*.local
-.env
-.env.production
+# .env.local
+# .env.*.local
+# .env
+# .env.production
 
 # Log files
 npm-debug.log*

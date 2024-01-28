@@ -32,10 +32,9 @@ export default {
         { id: 1, src: "download.jpeg" },
         { id: 2, src: "download2.png" },
         { id: 3, src: "download3.jpg" },
-        { id: 4, src: "https://cdn.vuetifyjs.com/images/cards/hotel.jpg" },
-        { id: 5, src: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg" },
-        { id: 6, src: "https://cdn.vuetifyjs.com/images/cards/docks.jpg" },
-        // Add more images as needed
+        { id: 4, src: "download.jpeg" },
+        { id: 5, src: "download2.png" },
+        { id: 6, src: "download3.jpg" }, // Add more images as needed
       ],
     };
   },

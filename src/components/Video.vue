@@ -4,9 +4,9 @@
       <h1>Videos</h1>
       <hr class="centered-line" />
     </span>
-    <v-row>
-      <v-col v-for="(video, index) in videos" :key="video.id" class="first-col">
-        <v-card elevation="0">
+    <v-row class="video-row" justify="center">
+      <v-col v-for="(video, index) in videos" :key="video.id">
+        <v-card width="400" elevation="3" class="video-card center-video">
           <div class="center-video" v-html="getEmbedCode(video.id)"></div>
         </v-card>
       </v-col>
@@ -19,8 +19,10 @@ export default {
   data() {
     return {
       videos: [
-        { id: "dQw4w9WgXcQ" },
-        { id: "VXskQcrNpfA" },
+        { id: "3nmGqcSEYVw" },
+        { id: "bIbEq2LQrAQ" },
+        { id: "4oOonZWxjAs" },
+
         // Add more video IDs as needed
       ],
     };
@@ -30,8 +32,8 @@ export default {
       return `
           <iframe
             id="youtube-player-${videoId}"
-            width="640"
-            height="360"
+            width="440"
+            height="260"
             src="https://www.youtube.com/embed/${videoId}"
             frameborder="0"
             allowfullscreen
@@ -65,5 +67,37 @@ export default {
   width: 10%;
   border: 3px solid grey; /* Adjust thickness as needed */
   margin: 8px auto; /* Adjust as needed */
+}
+</style>
+
+<style>
+.video-card {
+  max-width: 200px;
+}
+
+.center-video {
+  max-width: 100%; /* Ensures the video container does not exceed the card width */
+  margin: auto; /* Center the video horizontally within the card */
+}
+</style>
+<style>
+.video-row {
+  width: 100%;
+}
+
+.video-col {
+  /* margin: 1px; Adjust the margin as needed for spacing between cards */
+}
+
+.video-card {
+  width: 700px;
+}
+
+.center-video {
+  width: 100%; /* Ensures the video container fills the card width */
+  height: 100%; /* Ensures the video container fills the card height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
