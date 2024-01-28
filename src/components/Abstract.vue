@@ -204,7 +204,7 @@
 
 <script>
 import axios from "axios";
-
+import { create } from "./services";
 export default {
   name: "Abstract",
   data() {
@@ -283,28 +283,34 @@ export default {
     },
 
     async submitForm() {
-      try {
-        const response = await axios.post(
-          "http://localhost:3200/api/v1/abstarcts",
-          this.formData
-        );
-
-        // Check if the response status is in the success range (200-299)
+      create(this.formData).then((response) => {
         if (response.status >= 200 && response.status < 300) {
-          // Handle the successful response data as needed
-
-          // If the request is successful, close dialog1
           this.resetFormData();
-        } else {
-          console.error("Unsuccessful response status:", response.status);
-
-          // Handle the response status as needed
         }
-      } catch (error) {
-        console.error("Error sending POST request:", error);
+      });
 
-        // Handle the error as needed
-      }
+      // try {
+      //   const response = await axios.post(
+      //     "http://localhost:3200/api/v1/abstarcts",
+      //     this.formData
+      //   );
+
+      //   // Check if the response status is in the success range (200-299)
+      //   if (response.status >= 200 && response.status < 300) {
+      //     // Handle the successful response data as needed
+
+      //     // If the request is successful, close dialog1
+      //     this.resetFormData();
+      //   } else {
+      //     console.error("Unsuccessful response status:", response.status);
+
+      //     // Handle the response status as needed
+      //   }
+      // } catch (error) {
+      //   console.error("Error sending POST request:", error);
+
+      //   // Handle the error as needed
+      // }
     },
   },
 };

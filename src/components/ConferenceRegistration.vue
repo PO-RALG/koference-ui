@@ -101,6 +101,25 @@
                 </v-row>
                 <!-- Name Fields -->
                 <v-row align="center" justify="center">
+                  <v-col cols="12" md="6">
+                    <v-text-field
+                      outlined
+                      v-model="salutation"
+                      :rules="nameRules"
+                      label="Saltation"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-text-field
+                      outlined
+                      v-model="organization"
+                      :rules="nameRules"
+                      label="Organization"
+                      required
+                      @input="updateOrganization"
+                    ></v-text-field>
+                  </v-col>
                   <v-col cols="12" md="4">
                     <v-text-field
                       outlined
@@ -108,6 +127,7 @@
                       :rules="nameRules"
                       label="First name"
                       required
+                      @input="updateFirstName"
                     ></v-text-field>
                   </v-col>
 
@@ -118,6 +138,7 @@
                       label="Middle name"
                       required
                       outlined
+                      @input="updateMiddleName"
                     ></v-text-field>
                   </v-col>
 
@@ -128,6 +149,7 @@
                       label="Last name"
                       required
                       outlined
+                      @input="updateLastName"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -141,6 +163,7 @@
                       label="E-mail"
                       outlined
                       required
+                      @input="updateEmail"
                     ></v-text-field>
                   </v-col>
 
@@ -438,6 +461,7 @@
 
 <script>
 import axios from "axios";
+import { registerUser } from "./services";
 
 export default {
   data() {
@@ -505,6 +529,8 @@ export default {
       // modalVisible: false,
       country: null,
       category: null,
+      salutation: null,
+      organization: null,
       gender: null,
       selectedGender: null,
       selectedCategoryItem: null,
@@ -550,45 +576,70 @@ export default {
     this.fetchRegistrationCategories();
   },
   methods: {
+    updateOrganization(value) {
+      this.organization = value.toUpperCase();
+    },
+    updateEmail(value) {
+      this.email = value.toLowerCase();
+    },
+    updateMiddleName(value) {
+      this.middlename = value.toUpperCase();
+    },
+    updateFirstName(value) {
+      this.firstname = value.toUpperCase();
+    },
+    updateLastName(value) {
+      this.lastname = value.toUpperCase();
+    },
     async postData() {
-      try {
-        const response = await axios.post(
-          "http://localhost:3200/api/v1/users",
-          {
-            country: this.country,
-            category: this.category,
-            sex: this.gender,
-            first_name: this.firstname,
-            middle_name: this.middlename,
-            last_name: this.lastname,
-            countryId: 1,
-            email: this.email,
-            password: this.password,
-            phone_number: this.phoneNumber,
-            username: this.username,
-            description: this.description,
-            // Add more key-value pairs as needed
-          }
-        );
-
-        // Check if the response status is in the success range (200-299)
+      registerUser({
+        country: this.country,
+        category: this.category,
+        sex: this.gender,
+        first_name: this.firstname,
+        middle_name: this.middlename,
+        last_name: this.lastname,
+        countryId: 1,
+        email: this.email,
+        password: this.password,
+        phone_number: this.phoneNumber,
+        username: this.username,
+        description: this.description,
+        salutation: this.salutation,
+        organization: this.organization,
+        // Add more key-value pairs as needed
+      }).then((response) => {
         if (response.status >= 200 && response.status < 300) {
-          // Handle the successful response data as needed
-
-          // If the request is successful, close dialog1
           this.dialogs.dialog1 = false;
           this.resetForm();
-        } else {
-          console.error("Unsuccessful response status:", response.status);
-
-          // Handle the response status as needed
         }
-      } catch (error) {
-        console.error("Error sending POST request:", error);
-
-        // Handle the error as needed
-      }
+      });
     },
+    // async postData() {
+    //   try {
+    //     const response = await axios.post(
+    //       "http://localhost:3200/api/v1/users",
+
+    //     );
+
+    //     // Check if the response status is in the success range (200-299)
+    //     if (response.status >= 200 && response.status < 300) {
+    //       // Handle the successful response data as needed
+
+    //       // If the request is successful, close dialog1
+    //       this.dialogs.dialog1 = false;
+    //       this.resetForm();
+    //     } else {
+    //       console.error("Unsuccessful response status:", response.status);
+
+    //       // Handle the response status as needed
+    //     }
+    //   } catch (error) {
+    //     console.error("Error sending POST request:", error);
+
+    //     // Handle the error as needed
+    //   }
+    // },
 
     async fetchData() {
       try {
@@ -605,7 +656,7 @@ export default {
           "http://localhost:3200/api/v1/countries"
         );
 
-        this.countries = countries.data; // Update this line
+        this.countries = countries?.data; // Update this line
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -616,7 +667,7 @@ export default {
           "http://localhost:3200/api/v1/registartioncategories"
         );
 
-        this.registrationCategories = registrationCategories.data; // Update this line
+        this.registrationCategories = registrationCategories?.data; // Update this line
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -652,6 +703,8 @@ export default {
       this.phoneNumber = "";
       this.username = "";
       this.description = "";
+      this.salutation = "";
+      this.organization = "";
       // Reset validation state if using validation
       this.$refs.submitForm?.resetValidation(); // Replace "form" with the ref attribute of your form element
     },

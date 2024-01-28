@@ -22,6 +22,12 @@ const createData = async (payload: any) => {
 const openFile = async (payload: any) => {
   return axios.post("/api/v1/filelinks", payload);
 };
+const create = async (payload: any) => {
+  return axios.post("/api/v1/abstarcts", payload);
+};
+const registerUser = async (payload: any) => {
+  return axios.post("/api/v1/users", payload);
+};
 
 const sendFeedbackData = async (payload: any) => {
   return await axios.patch(`/api/v1/queries/` + payload.query.id, payload);
@@ -81,4 +87,6 @@ export {
   createData,
   sendFeedbackData,
   openFile,
+  create,
+  registerUser,
 };
