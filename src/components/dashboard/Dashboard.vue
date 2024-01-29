@@ -31,12 +31,12 @@
                   ></v-img>
                   <v-card-actions class="pt-n8 pb-5 pr-5">
                     <h2 class="text-h5 white--text">
-                      {{ user?.salutation }} {{ "." }} {{ user?.first_name }}
-                      {{ " " }}{{ user?.last_name }}
+                      {{ userb?.salutation }} {{ "" }} {{ userb?.first_name }}
+                      {{ " " }}{{ userb?.last_name }}
                     </h2>
                     <v-spacer></v-spacer>
                     <h2 class="text-h5 grey--text">
-                      {{ "ID" }}{{ " : " }} {{ user.user_identification }}
+                      {{ "ID" }}{{ " : " }} {{ userb?.user_identification }}
                     </h2>
                   </v-card-actions>
 
@@ -49,7 +49,7 @@
                         {{ "Organization" }}{{ " : " }}
                       </span>
                       <span class="white--text">
-                        {{ user?.organization }}
+                        {{ userb?.organization }}
                       </span>
                     </p>
                     <p>
@@ -59,7 +59,7 @@
                         {{ "Nationality" }}{{ " : " }}
                       </span>
                       <span class="white--text">
-                        {{ user?.country.name }}
+                        {{ userb?.country.name }}
                       </span>
                     </p>
                     <p>
@@ -68,7 +68,7 @@
                         {{ "Phone" }}{{ " : " }}
                       </span>
                       <span class="white--text">
-                        {{ user?.phone_number }}
+                        {{ userb?.phone_number }}
                       </span>
                     </p>
                     <p>
@@ -77,7 +77,7 @@
                         {{ "Email" }}{{ " : " }}
                       </span>
                       <span class="white--text">
-                        {{ user?.email }}
+                        {{ userb?.email }}
                       </span>
                     </p>
                   </div>
@@ -95,7 +95,6 @@
             </v-col>
           </v-row>
         </v-container>
-
         <v-list-item>
           <span
             >{{ "Payment Confirmation Date" }}{{ " : " }}
@@ -188,15 +187,10 @@ export default {
     return {
       userx: "/user.jpeg",
       user: null,
+      userb: null,
       openDialogForm: false,
       formData2: { path_file: "", userId: "" },
       regInfromation: "",
-
-      companyName: "Your Company Name",
-      companyAddress: "123 Business Street, City",
-      companyPhone: "+1 234 567 890",
-      companyEmail: "info@yourcompany.com",
-      companyWebsite: "www.yourcompany.com",
     };
   },
   mounted() {
@@ -230,7 +224,9 @@ export default {
 
       // Parse the JSON data
       if (userJson) {
-        this.user = JSON.parse(userJson);
+        console.log("set user");
+
+        this.userb = JSON.parse(userJson);
       }
     },
 
@@ -270,7 +266,7 @@ export default {
           console.log("path:", this.formData2);
           this.formData2.path_file = response.data.current_name;
           this.formData2.userId = this.user.id;
-          this.formData2.status = true;
+          // this.formData2.status = true;
           //remove duplicates but keep the last updated score!
           // data.formData.files.reverse();
           // data.formData.files = _.uniqBy(data.formData2, "current_name");
