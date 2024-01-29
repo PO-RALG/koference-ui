@@ -74,8 +74,16 @@ const getAppName = async () => {
 const getAppRoutes = async () => {
   return axios.get("/api/v1/app-routes");
 };
+const getCountries = async () => {
+  return axios.get("/api/v1/countries");
+};
+const getRegistrationCategories = async () => {
+  return axios.get("/api/v1/registartioncategories");
+};
 
 export {
+  getCountries,
+  getRegistrationCategories,
   authenticate,
   changePassword,
   getAppName,

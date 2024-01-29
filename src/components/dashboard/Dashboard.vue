@@ -219,6 +219,7 @@ export default {
     },
 
     getUserFromLocalStorage() {
+      console.log("set user");
       // Get the user data from local storage
       const userJson = localStorage.getItem("GRM_USER");
 

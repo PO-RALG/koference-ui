@@ -464,7 +464,11 @@
 
 <script>
 import axios from "axios";
-import { registerUser } from "./services";
+import {
+  registerUser,
+  getCountries,
+  getRegistrationCategories,
+} from "./services";
 
 export default {
   data() {
@@ -576,7 +580,7 @@ export default {
     // Call the fetchData method when the component is mounted
     // this.fetchData();
     this.fetchCountries();
-    this.fetchRegistrationCategories();
+    // this.fetchRegistrationCategories();
   },
   methods: {
     updateOrganization(value) {
@@ -622,62 +626,18 @@ export default {
         console.error("Error posting data:", error);
       }
     },
-    // async postData() {
-    //   try {
-    //     const response = await axios.post(
-    //       "http://localhost:3200/api/v1/users",
 
-    //     );
-
-    //     // Check if the response status is in the success range (200-299)
-    //     if (response.status >= 200 && response.status < 300) {
-    //       // Handle the successful response data as needed
-
-    //       // If the request is successful, close dialog1
-    //       this.dialogs.dialog1 = false;
-    //       this.resetForm();
-    //     } else {
-    //       console.error("Unsuccessful response status:", response.status);
-
-    //       // Handle the response status as needed
-    //     }
-    //   } catch (error) {
-    //     console.error("Error sending POST request:", error);
-
-    //     // Handle the error as needed
-    //   }
-    // },
-
-    async fetchData() {
-      try {
-        const response = await axios.get("http://localhost:3000/registration");
-        this.fetchedData = response.data; // Update this line
-        // console.log('MyData:', JSON.parse(JSON.stringify(this.fetchedData)));
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    },
-    async fetchCountries() {
-      try {
-        const countries = await axios.get(
-          "http://localhost:3200/api/v1/countries"
-        );
-
-        this.countries = countries?.data; // Update this line
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    },
-    async fetchRegistrationCategories() {
-      try {
-        const registrationCategories = await axios.get(
-          "http://localhost:3200/api/v1/registartioncategories"
-        );
-
-        this.registrationCategories = registrationCategories?.data; // Update this line
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+    fetchCountries() {
+      getCountries().then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          this.countries = response.data;
+        }
+      });
+      getRegistrationCategories().then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          this.registrationCategories = response.data; // Update this line
+        }
+      });
     },
 
     openDialog(dialogName) {
