@@ -6,7 +6,7 @@
     </span>
     <v-row class="video-row" justify="center">
       <v-col v-for="(video, index) in videos" :key="video.id">
-        <v-card width="400" elevation="3" class="video-card center-video">
+        <v-card width="440" elevation="5" class="video-card center-video bdt">
           <div class="center-video" v-html="getEmbedCode(video.id)"></div>
         </v-card>
       </v-col>
@@ -33,7 +33,7 @@ export default {
           <iframe
             id="youtube-player-${videoId}"
             width="440"
-            height="260"
+            height="200"
             src="https://www.youtube.com/embed/${videoId}"
             frameborder="0"
             allowfullscreen
@@ -47,6 +47,9 @@ export default {
 <style scoped>
 .image-card {
   margin: 2px;
+}
+.bdt {
+  border-top: solid 5px #0867a6;
 }
 
 .color-title {
@@ -86,7 +89,7 @@ export default {
 }
 
 .video-col {
-  /* margin: 1px; Adjust the margin as needed for spacing between cards */
+  /* margin: 1px; */
 }
 
 .video-card {

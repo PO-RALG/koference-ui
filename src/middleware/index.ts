@@ -3,7 +3,7 @@ import axios from "axios";
 import VueJwtDecode from "vue-jwt-decode";
 import store from "@/store";
 
-const DEFAULT_TITLE = "Cofference Portal";
+const DEFAULT_TITLE = "IPHC Conference";
 
 const getCurrentUser = () => {
   return store.getters["Auth/getCurrentUser"];
@@ -18,7 +18,7 @@ const setTitle = async (to, from, next) => {
   Vue.nextTick(() => {
     document.title =
       to.meta && to.meta.title
-        ? `${to.meta.title} - Cofference Portal`
+        ? `${to.meta.title} -IPHC Conference`
         : DEFAULT_TITLE;
   });
   next();

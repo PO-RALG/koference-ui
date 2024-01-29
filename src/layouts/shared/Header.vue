@@ -100,9 +100,9 @@
               <span>Logout</span>
             </v-list-item-title>
           </v-list-item>
-          <v-divider></v-divider>
+          <!-- <v-divider></v-divider> -->
 
-          <v-list-item @click="changePassword">
+          <!-- <v-list-item @click="changePassword">
             <v-list-item-action>
               <v-icon>mdi-lock-outline</v-icon>
             </v-list-item-action>
@@ -119,7 +119,7 @@
             <v-list-item-title class="clickable">
               <span>Update Profile</span>
             </v-list-item-title>
-          </v-list-item>
+          </v-list-item> -->
         </v-list>
       </v-card>
     </v-menu>

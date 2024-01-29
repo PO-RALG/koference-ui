@@ -16,8 +16,13 @@
         md="4"
         lg="2"
       >
-        <v-card class="image-card" elevation="0">
-          <v-img :src="image.src" alt="Image" aspect-ratio="2.5"></v-img>
+        <v-card class="image-card bdt2 bdw" elevation="1">
+          <v-img
+            :src="image.src"
+            alt="Image"
+            :aspect-ratio="2.9"
+            class="contain"
+          ></v-img>
         </v-card>
       </v-col>
     </v-row>
@@ -29,7 +34,7 @@ export default {
   data() {
     return {
       images: [
-        { id: 1, src: "download.jpeg" },
+        { id: 1, src: "images.png" },
         { id: 2, src: "download2.png" },
         { id: 3, src: "download3.jpg" },
         { id: 4, src: "download.jpeg" },
@@ -42,10 +47,20 @@ export default {
 </script>
 
 <style scoped>
-.image-card {
-  margin: 8px;
+.contain {
+  object-fit: contain !important;
 }
 
+.image-card {
+  margin: 8px;
+  width: 450px;
+}
+.bdt2 {
+  border-top: solid 2px #136d3877;
+}
+.bdw {
+  border-bottom: solid 2px #136d3877;
+}
 .color-title {
   color: grey;
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-card flat>
+  <v-card flat class="">
     <v-container>
       <v-card-actions class="pa-0">
         <h2>{{ "Profile Details" }}</h2>
@@ -9,18 +9,18 @@
           Payment Cofirmation
         </v-btn>
       </v-card-actions>
-      <v-card max-width="100%">
+      <v-card max-width="100%" class="">
         <v-container>
           <v-row justify="start">
             <v-col cols="12" sm="8" md="6">
-              <v-card color="grey" class="elevation-10">
+              <v-card color="grey" class="elevation-10 custom-card bdt2">
                 <!-- Business Card Header -->
                 <v-card-title class="text-h6 text-center mb-4">
-                  Business Card
+                  <!-- Business Card -->
                 </v-card-title>
 
                 <!-- Business Card Content -->
-                <v-card-text>
+                <v-card-text class="">
                   <!-- Company Logo -->
                   <v-img
                     :src="userx"
@@ -29,14 +29,57 @@
                     height=""
                     class="align-start elevation-10"
                   ></v-img>
+                  <v-card-actions class="pt-n8 pb-5 pr-5">
+                    <h2 class="text-h5 white--text">
+                      {{ user?.salutation }} {{ "." }} {{ user?.first_name }}
+                      {{ " " }}{{ user?.last_name }}
+                    </h2>
+                    <v-spacer></v-spacer>
+                    <h2 class="text-h5 grey--text">
+                      {{ "ID" }}{{ " : " }} {{ user.user_identification }}
+                    </h2>
+                  </v-card-actions>
 
                   <!-- Company Information -->
-                  <div class="text-center">
-                    <h2 class="text-h5">{{ companyName }}</h2>
-                    <p>{{ companyAddress }}</p>
-                    <p>{{ companyPhone }}</p>
-                    <p>{{ companyEmail }}</p>
-                    <p>{{ companyWebsite }}</p>
+                  <div class="text-start">
+                    <p>
+                      <span class="font-weight-bold grey--text">
+                        <v-icon color="primary">mdi-office-building</v-icon>
+
+                        {{ "Organization" }}{{ " : " }}
+                      </span>
+                      <span class="white--text">
+                        {{ user?.organization }}
+                      </span>
+                    </p>
+                    <p>
+                      <span class="font-weight-bold grey--text">
+                        <v-icon color="primary">mdi-map-marker-outline</v-icon>
+
+                        {{ "Nationality" }}{{ " : " }}
+                      </span>
+                      <span class="white--text">
+                        {{ user?.country.name }}
+                      </span>
+                    </p>
+                    <p>
+                      <span class="font-weight-bold grey--text">
+                        <v-icon color="primary">mdi-phone</v-icon>
+                        {{ "Phone" }}{{ " : " }}
+                      </span>
+                      <span class="white--text">
+                        {{ user?.phone_number }}
+                      </span>
+                    </p>
+                    <p>
+                      <span class="font-weight-bold grey--text">
+                        <v-icon color="primary">mdi-email</v-icon>
+                        {{ "Email" }}{{ " : " }}
+                      </span>
+                      <span class="white--text">
+                        {{ user?.email }}
+                      </span>
+                    </p>
                   </div>
                 </v-card-text>
 
@@ -52,19 +95,6 @@
             </v-col>
           </v-row>
         </v-container>
-        <!-- <v-card-title class="text-h5"
-          >{{ user?.first_name }} {{ " " }}{{ user?.last_name }}{{ "@"
-          }}{{ user?.username }} {{ " - " }}
-          {{ user.user_identification }}</v-card-title
-        >
-
-        <v-list-item>
-          <span>{{ "Sex" }}{{ " : " }} {{ user?.sex }}</span>
-        </v-list-item>
-
-        <v-list-item>
-          <span>{{ "Nationality" }}{{ " : " }} {{ user?.country.name }}</span>
-        </v-list-item> -->
 
         <v-list-item>
           <span
@@ -76,7 +106,15 @@
         <v-list-item>
           <span
             >Payment Confirmation Status:
-            {{ getStatusText(regInfromation?.status) }}</span
+            {{
+              getStatusText(
+                this.user &&
+                  this.user.jisajilis &&
+                  this.user.jisajilis[0].status
+                  ? true
+                  : false
+              )
+            }}</span
           >
         </v-list-item>
 
@@ -84,20 +122,6 @@
 
         <v-list>
           <v-list-item-group>
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon color="primary">mdi-email</v-icon>
-              </v-list-item-icon>
-              <span>{{ user?.email }}</span>
-            </v-list-item>
-
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon color="primary">mdi-phone</v-icon>
-              </v-list-item-icon>
-              <span>{{ user?.phone_number }}</span>
-            </v-list-item>
-
             <v-list-item v-if="regInfromation">
               <v-list-item-icon>
                 <v-icon color="primary">mdi-attachment</v-icon>
@@ -186,9 +210,9 @@ export default {
   methods: {
     getStatusText(status) {
       console.log("status", status);
-      if (status == 0) {
+      if (status == false) {
         return "Pending";
-      } else if (status == 1) {
+      } else if (status == true) {
         return "Approved";
       } else {
         return ""; // or any other default value you want for null status
@@ -259,5 +283,17 @@ export default {
 </script>
 
 <style scoped>
+.custom-card {
+  background-image: url(/bg.jpg) !important;
+  background-size: cover; /* Ensures the image covers the entire card */
+  background-position: center; /* Centers the image within the card */
+  color: white; /* Set the text color to white or another contrasting color */
+}
+.bdt {
+  border-top: solid 5px #0867a6;
+}
+.bdt2 {
+  border-top: solid 5px #0874a6 !important;
+}
 /* Add your custom styles here to make it visually appealing */
 </style>
