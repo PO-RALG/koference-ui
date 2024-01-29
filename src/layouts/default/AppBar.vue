@@ -1,30 +1,113 @@
 <template>
   <div>
     <v-app-bar app height="150" elevation="0" color="#f3f5f5">
-      <div class="pl-10">
+      <div class="pl-10 d-none d-md-flex">
         <img class="coat" :src="coat" />
       </div>
-      <h1 class="color-app pl-10">
-        International Primary Health Care Conference
-      </h1>
+      <div class="pl-10 d-md-none">
+        <img class="coat2" :src="coat" />
+      </div>
+      <!-- <el-col class="d-md-none" :md="12"> IPHCC </el-col> -->
+
+      <h1 class="color-app pl-10 d-md-none">IPHCC</h1>
+      <el-col class="d-none d-md-flex">
+        <h1 class="color-app pl-10">
+          International Primary Health Care Conference
+        </h1>
+      </el-col>
 
       <!-- Align buttons to the right -->
       <v-spacer></v-spacer>
-      <v-btn class="color-app" icon @click="goHome">
-        <v-icon x-large>mdi-home</v-icon>
-      </v-btn>
-      <v-btn class="color-app" text @click="handleButtonClick2"
-        ><h3>About</h3></v-btn
+      <el-button
+        icon
+        @click="toggleDrawer"
+        class="d-md-none"
+        style="color: black"
       >
-      <v-btn class="color-app" text @click="handleButtonClick1"
-        ><h3>Register</h3></v-btn
+        <i class="el-icon-menu"></i>
+      </el-button>
+
+      <div class="d-none d-md-flex">
+        <v-btn class="color-app" icon @click="goHome">
+          <v-icon class="pb-4" x-large>mdi-home</v-icon>
+        </v-btn>
+        <v-btn class="color-app" text @click="handleButtonClick2"
+          ><h3>About</h3></v-btn
+        >
+        <v-btn class="color-app" text @click="handleButtonClick1"
+          ><h3>Register</h3></v-btn
+        >
+        <v-btn class="color-app" text @click="handleButtonAbstract"
+          ><h3>Abstract</h3></v-btn
+        >
+        <v-btn class="color-app" text @click="handleButtonClick3"
+          ><h3>Login</h3></v-btn
+        >
+      </div>
+      <div class="backdrop" @click="closeDrawer" v-if="drawer"></div>
+      <v-navigation-drawer
+        app
+        temporary
+        left
+        width="70%"
+        :value="drawer"
+        @input="drawer = $event"
+        absolute
       >
-      <v-btn class="color-app" text @click="handleButtonAbstract"
-        ><h3>Abstract</h3></v-btn
-      >
-      <v-btn class="color-app" text @click="handleButtonClick3"
-        ><h3>Login</h3></v-btn
-      >
+        <template v-slot:prepend>
+          <v-list-item two-line>
+            <v-list-item-avatar>
+              <img :src="coat" />
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title>IPHC Conference</v-list-item-title>
+              <!-- <v-list-item-subtitle>Tanzania</v-list-item-subtitle> -->
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+
+        <v-divider></v-divider>
+
+        <v-list>
+          <v-list-item
+            v-for="item in items"
+            :key="item.title"
+            @click="handleItemClick(item.method)"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+              <v-list-item-title class="pl-5 pt-1">{{
+                item.title
+              }}</v-list-item-title>
+            </v-list-item-icon>
+
+            <!-- <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content> -->
+          </v-list-item>
+        </v-list>
+        <v-footer app class="mb-10">
+          <v-sheet color="primary" dark>
+            <v-container>
+              <v-row>
+                <v-col cols="12" class="text-right">
+                  <!-- Social media icons with links -->
+                  <v-btn icon href="https://www.facebook.com/your-page">
+                    <v-icon>mdi-facebook</v-icon>
+                  </v-btn>
+                  <v-btn icon href="https://twitter.com/your-page">
+                    <v-icon>mdi-twitter</v-icon>
+                  </v-btn>
+                  <v-btn icon href="https://www.instagram.com/your-page">
+                    <v-icon>mdi-instagram</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-sheet>
+        </v-footer>
+      </v-navigation-drawer>
     </v-app-bar>
 
     <v-container class="mt-12"> </v-container>
@@ -37,11 +120,55 @@ export default {
   name: "App",
   data() {
     return {
+      drawer: false, // Initial state of the navigation drawer
       registrationDialog: false, // Initialize registrationDialog to false
       coat: "/coat_of_arms.svg.png",
+      items: [
+        { title: "Home", icon: "mdi-home", method: "home" },
+        { title: "About", icon: "mdi-information", method: "abput" },
+        {
+          title: "Register",
+          icon: "mdi-registered-trademark",
+          method: "registr",
+        },
+        {
+          title: "Absrtact",
+          icon: "mdi-book-edit-outline",
+          method: "abstarct",
+        },
+        { title: "Login", icon: "mdi-login", method: "login" },
+      ],
     };
   },
   methods: {
+    handleItemClick(item) {
+      if (item === "home") {
+        this.$router.push({ path: "/login" });
+        data.drawer = false;
+      }
+      if (item === "abput") {
+        this.$router.push({ path: "/about-page" });
+        data.drawer = false;
+      }
+      if (item === "registr") {
+        this.$router.push({ path: "/registration-page" });
+        data.drawer = false;
+      }
+      if (item === "abstarct") {
+        this.$router.push({ path: "/abstract-page" });
+        data.drawer = false;
+      }
+      if (item === "login") {
+        this.$router.push({ path: "/authentication" });
+        data.drawer = false;
+      }
+    },
+    closeDrawer() {
+      this.drawer = false;
+    },
+    toggleDrawer() {
+      this.drawer = !this.drawer; // Toggle the state of the navigation drawer
+    },
     goHome() {
       // Use the Vue Router to navigate to the home route
       this.$router.push({ path: "/login" });
@@ -92,5 +219,33 @@ export default {
   height: 100px;
   width: 100px;
   border: 4px solid rgb(242, 248, 248);
+}
+.coat2 {
+  width: 10%;
+  height: 10%;
+  border-radius: 30%;
+  height: 50px;
+  width: 50px;
+  border: 4px solid rgb(242, 248, 248);
+}
+</style>
+<style>
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  display: none;
+}
+
+/* Show the backdrop when the drawer is open */
+.v-navigation-drawer[value="true"] + .backdrop {
+  display: block;
+}
+.card {
+  cursor: pointer;
 }
 </style>

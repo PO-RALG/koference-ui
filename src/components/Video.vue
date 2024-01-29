@@ -6,7 +6,11 @@
     </span>
     <v-row class="video-row" justify="center">
       <v-col v-for="(video, index) in videos" :key="video.id">
-        <v-card width="440" elevation="5" class="video-card center-video">
+        <v-card
+          width="440"
+          elevation="0"
+          class="video-card center-video bg-kala"
+        >
           <div class="center-video" v-html="getEmbedCode(video.id)"></div>
         </v-card>
         <p class="video-caption pt-2 pb-3">
@@ -50,6 +54,9 @@ export default {
 </script>
 
 <style scoped>
+.bg-kala {
+  background-color: rgb(242, 242, 242);
+}
 .image-card {
   margin: 2px;
 }
@@ -95,10 +102,6 @@ export default {
 
 .video-col {
   /* margin: 1px; */
-}
-
-.video-card {
-  width: 700px;
 }
 
 .center-video {
