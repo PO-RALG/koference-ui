@@ -580,7 +580,7 @@ export default {
     // Call the fetchData method when the component is mounted
     // this.fetchData();
     this.fetchCountries();
-    this.fetchRegistrationCategories();
+    // this.fetchRegistrationCategories();
   },
   methods: {
     updateOrganization(value) {
@@ -633,12 +633,9 @@ export default {
           this.countries = response.data;
         }
       });
-    },
-
-    fetchRegistrationCategories() {
       getRegistrationCategories().then((response) => {
         if (response.status >= 200 && response.status < 300) {
-          this.registrationCategories = registrationCategories?.data; // Update this line
+          this.registrationCategories = response.data; // Update this line
         }
       });
     },
