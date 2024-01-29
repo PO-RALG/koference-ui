@@ -16,14 +16,16 @@
         md="4"
         lg="2"
       >
-        <v-card class="image-card bdt2 bdw" elevation="1">
-          <v-img
-            :src="image.src"
-            alt="Image"
-            :aspect-ratio="2.9"
-            class="contain"
-          ></v-img>
-        </v-card>
+        <a :href="image.href" target="_blank" rel="noopener noreferrer">
+          <v-card class="image-card bdt2 bdw" elevation="1">
+            <v-img
+              :src="image.src"
+              alt="Image"
+              :aspect-ratio="2.9"
+              class="contain"
+            ></v-img>
+          </v-card>
+        </a>
       </v-col>
     </v-row>
   </div>
@@ -34,12 +36,12 @@ export default {
   data() {
     return {
       images: [
-        { id: 1, src: "images.png" },
-        { id: 2, src: "download2.png" },
-        { id: 3, src: "download3.jpg" },
-        { id: 4, src: "download.jpeg" },
-        { id: 5, src: "download2.png" },
-        { id: 6, src: "download3.jpg" }, // Add more images as needed
+        { id: 1, src: "images.png", href: "https://www.who.int/" },
+        { id: 2, src: "download2.png", href: "https://www.nmbbank.co.tz/" },
+        { id: 3, src: "download3.jpg", href: "https://www.unicef.org/" },
+        { id: 4, src: "download.jpeg", href: "https://www.moh.go.tz/" },
+        { id: 5, src: "download2.png", href: "https://www.nmbbank.co.tz/" },
+        { id: 6, src: "download3.jpg", href: "https://www.unicef.org/" },
       ],
     };
   },

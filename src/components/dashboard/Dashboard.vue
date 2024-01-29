@@ -197,7 +197,7 @@ export default {
     this.getUserFromLocalStorage();
 
     // Retrieve user from local storage when the component is mounted
-    if (this.user.jisajilis.length > 0) {
+    if (this.userb.jisajilis.length > 0) {
       this.getUserRegistrationInfo();
     }
   },
@@ -231,7 +231,7 @@ export default {
     },
 
     getUserRegistrationInfo() {
-      const regSearchTerm = this.user.id;
+      const regSearchTerm = this.userb.id;
       getRegInfo({ regSearchTerm }).then((response) => {
         this.regInfromation = response.data;
       });
@@ -265,8 +265,8 @@ export default {
           };
           console.log("path:", this.formData2);
           this.formData2.path_file = response.data.current_name;
-          this.formData2.userId = this.user.id;
-          // this.formData2.status = true;
+          this.formData2.userId = this.userb.id;
+          this.formData2.status = true;
           //remove duplicates but keep the last updated score!
           // data.formData.files.reverse();
           // data.formData.files = _.uniqBy(data.formData2, "current_name");
