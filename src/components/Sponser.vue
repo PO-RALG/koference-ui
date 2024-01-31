@@ -58,10 +58,10 @@ export default {
   width: 450px;
 }
 .bdt2 {
-  border-top: solid 2px #136d3877;
+  border-top: solid 2px #0c95eb77;
 }
 .bdw {
-  border-bottom: solid 2px #136d3877;
+  border-bottom: solid 2px #0c95eb77;
 }
 .color-title {
   color: grey;

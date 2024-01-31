@@ -46,14 +46,34 @@
         </v-col>
         <v-col cols="6" class="text-right">
           <!-- Social media icons with links -->
-          <v-btn icon href="https://www.facebook.com/your-page">
-            <v-icon>mdi-facebook</v-icon>
+          <v-btn icon>
+            <a
+              href="https://www.facebook.com/TAMISEMI/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <v-icon color="white">mdi-facebook</v-icon>
+            </a>
           </v-btn>
-          <v-btn icon href="https://twitter.com/your-page">
-            <v-icon>mdi-twitter</v-icon>
+
+          <v-btn icon>
+            <a
+              href="https://twitter.com/or_tamisemi?lang=en"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <v-icon color="white">mdi-twitter</v-icon>
+            </a>
           </v-btn>
-          <v-btn icon href="https://www.instagram.com/your-page">
-            <v-icon>mdi-instagram</v-icon>
+
+          <v-btn icon>
+            <a
+              href="https://www.instagram.com/ortamisemi/?hl=en"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <v-icon color="white">mdi-instagram</v-icon>
+            </a>
           </v-btn>
         </v-col>
       </v-row>

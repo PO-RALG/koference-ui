@@ -6,27 +6,26 @@
       <v-divider class="mb-5"></v-divider>
     </v-col>
     <v-card>
-      <v-row class="text-center">
-        <v-col>
-          <v-card-text class="">
-            <v-row style="margin-left: 45%"
-              ><h4>Registration Categories</h4>
-            </v-row>
+      <v-row>
+        <v-card-text class="">
+          <v-row justify="center">
+            <h4>Registration Group</h4>
+          </v-row>
+          <v-row justify="center">
             <v-radio-group
               @change="openDialog('dialog1')"
-              style="margin-left: 40%"
               row
+              class="text-center"
+              v-model="group"
             >
               <v-radio label="Individual" value="Individual"></v-radio>
               <v-radio label="Booth" value="Booth"></v-radio>
               <v-radio label="Forum" value="Forum"></v-radio>
             </v-radio-group>
-          </v-card-text>
-        </v-col>
+          </v-row>
+        </v-card-text>
       </v-row>
-      <!-- Horizontal line (hr) -->
-      <hr />
-      <div style="background-color: rgb(242, 242, 242); ruby-position: under">
+      <!-- <div style="background-color: rgb(242, 242, 242); ruby-position: under">
         <v-container>
           <v-data-table :items="tableData" :headers="tableHeaders">
             <template v-slot:item="{ item }">
@@ -48,10 +47,7 @@
             </template>
           </v-data-table>
         </v-container>
-      </div>
-      <!-- Horizontal line (hr) -->
-      <hr />
-      <!--      <h4>HELLO</h4>-->
+      </div> -->
       <Modal :modal="dialogs.dialog1" :width="1200">
         <template v-slot:header>
           <ModalHeader :title="`Conference Registration Form`" />
@@ -427,38 +423,6 @@
         </v-card>
       </v-dialog>
     </v-card>
-    <div>
-      <table>
-        <thead>
-          <tr style="text-align: left">
-            <th>S/No</th>
-            <th>First Name</th>
-            <th>Middle Name</th>
-            <th>Last Name</th>
-            <th>Country</th>
-            <th>Category</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <!--            <th>Description</th>-->
-            <!-- Add more headers as needed -->
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in fetchedData" :key="index">
-            <td>{{ index + 1 }}</td>
-            <td>{{ item.firstname }}</td>
-            <td>{{ item.middlename }}</td>
-            <td>{{ item.lastname }}</td>
-            <td>{{ item.country }}</td>
-            <td>{{ item.category }}</td>
-            <td>{{ item.email }}</td>
-            <td>{{ item.phoneNumber }}</td>
-            <!--            <td>{{ item.description }}</td>-->
-            <!-- Display more properties as needed -->
-          </tr>
-        </tbody>
-      </table>
-    </div>
   </v-container>
 </template>
 
@@ -537,6 +501,7 @@ export default {
       country: null,
       category: null,
       salutation: null,
+      group: null,
       organization: null,
       gender: null,
       selectedGender: null,
@@ -611,6 +576,7 @@ export default {
           password: this.password,
           phone_number: this.phoneNumber,
           username: this.username,
+          group: this.group,
           description: this.description,
           salutation: this.salutation,
           organization: this.organization,
@@ -671,6 +637,7 @@ export default {
       this.username = "";
       this.description = "";
       this.salutation = "";
+      this.group = "";
       this.organization = "";
       // Reset validation state if using validation
       this.$refs.submitForm?.resetValidation(); // Replace "form" with the ref attribute of your form element
