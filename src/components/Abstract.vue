@@ -13,7 +13,7 @@
         <v-row>
           <v-col cols="12" md="12">
             <!--            <v-card>-->
-            <v-card color="#f3f5f5" elevetion="1">
+            <v-card color="#f3f5f5" elevation="1">
               <!-- Form Content -->
               <v-form v-model="valid" @submit.prevent="submitForm">
                 <v-container>
@@ -109,7 +109,16 @@
                         v-model="formData.objective"
                         label="Objective/Aims"
                         placeholder="Enter your Objective/Aims here..."
+                        :rules="[maxRule]"
                       ></v-text-field>
+                      <div class="word-count">{{ wordCount }} words</div>
+                      <!-- <v-alert
+                        v-if="wordCount > maxWordLimit"
+                        type="error"
+                        dense
+                      >
+                        Maximum word limit exceeded ({{ maxWordLimit }} words).
+                      </v-alert> -->
                     </v-col>
                   </v-row>
 
@@ -129,7 +138,7 @@
                       <v-textarea
                         outlined
                         v-model="formData.results"
-                        label="Results/Progress"
+                        label="Results/Discussions"
                         placeholder="Enter your Results/Progress here, maximum 130 words..."
                       ></v-textarea>
                     </v-col>
@@ -204,30 +213,24 @@
 
 <script>
 import axios from "axios";
-import { create } from "./services";
+import { create } from "./services"; // Fix the import statement
+
 export default {
   name: "Abstract",
   data() {
     return {
+      maxWordLimit: 2, // Set your desired word limit
       formData: {
         email: "",
         title: "",
+        objective: "",
 
         // Other form fields...
       },
+
       currentYear: new Date().getFullYear(),
       valid: true,
-      passwordRules: [
-        (v) => !!v || "Password is required",
-        (v) => (v && v.length >= 8) || "Password must be at least 8 characters",
-        (v) => /\d/.test(v) || "Password must contain at least one digit",
-        (v) =>
-          /[A-Z]/.test(v) ||
-          "Password must contain at least one uppercase letter",
-        (v) =>
-          /[a-z]/.test(v) ||
-          "Password must contain at least one lowercase letter",
-      ],
+
       hasMinLength: false,
       hasUpperCase: false,
       hasLowerCase: false,
@@ -245,8 +248,33 @@ export default {
       nameRules: [(v) => !!v || "This field is required"],
     };
   },
-
+  computed: {
+    wordCount() {
+      // Remove extra whitespaces and split the text into words
+      const words = this.formData?.objective.trim().split(/\s+/);
+      return words.length;
+    },
+    isFieldDisabled() {
+      return this.wordCount > this.maxWordLimit;
+    },
+  },
+  validations: {
+    formData: {
+      objective: {
+        maxLength: (value) => {
+          return value.split(/\s+/).length <= this.maxWordLimit;
+        },
+      },
+    },
+  },
   methods: {
+    maxRule(value) {
+      return (
+        value.split(/\s+/).length <= this.maxWordLimit ||
+        "Maximum word limit exceeded."
+      );
+    },
+
     updateEmail(value) {
       this.formData.email = value.toLowerCase();
     },
@@ -267,6 +295,7 @@ export default {
       this.formData = {
         email: "",
         title: "",
+        objective: "",
         // Other form fields...
       };
       this.$refs.submitForm?.resetValidation(); // Replace "form" with the ref attribute of your form element
@@ -288,29 +317,6 @@ export default {
           this.resetFormData();
         }
       });
-
-      // try {
-      //   const response = await axios.post(
-      //     "http://localhost:3200/api/v1/abstarcts",
-      //     this.formData
-      //   );
-
-      //   // Check if the response status is in the success range (200-299)
-      //   if (response.status >= 200 && response.status < 300) {
-      //     // Handle the successful response data as needed
-
-      //     // If the request is successful, close dialog1
-      //     this.resetFormData();
-      //   } else {
-      //     console.error("Unsuccessful response status:", response.status);
-
-      //     // Handle the response status as needed
-      //   }
-      // } catch (error) {
-      //   console.error("Error sending POST request:", error);
-
-      //   // Handle the error as needed
-      // }
     },
   },
 };

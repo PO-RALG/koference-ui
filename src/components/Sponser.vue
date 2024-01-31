@@ -3,11 +3,13 @@
 <template>
   <div>
     <span class="pt-12 pb-12 color-title">
-      <h1>Sponsors</h1>
+      <v-card-title class="text-center justify-center py-6">
+        <h1 class="font-weight-bold text-5 basil--text">Sponsors</h1>
+      </v-card-title>
       <hr class="centered-line" />
     </span>
 
-    <v-row>
+    <v-row justify="center" align="center">
       <v-col
         v-for="image in images"
         :key="image.id"
@@ -17,13 +19,8 @@
         lg="2"
       >
         <a :href="image.href" target="_blank" rel="noopener noreferrer">
-          <v-card class="image-card bdt2 bdw" elevation="1">
-            <v-img
-              :src="image.src"
-              alt="Image"
-              :aspect-ratio="2.9"
-              class="contain"
-            ></v-img>
+          <v-card class="image-card" flat elevation="">
+            <v-img :src="image.src" alt="Image" :aspect-ratio="1.2"></v-img>
           </v-card>
         </a>
       </v-col>
@@ -36,12 +33,10 @@ export default {
   data() {
     return {
       images: [
-        { id: 1, src: "images.png", href: "https://www.who.int/" },
-        { id: 2, src: "download2.png", href: "https://www.nmbbank.co.tz/" },
-        { id: 3, src: "download3.jpg", href: "https://www.unicef.org/" },
-        { id: 4, src: "download.jpeg", href: "https://www.moh.go.tz/" },
-        { id: 5, src: "download2.png", href: "https://www.nmbbank.co.tz/" },
-        { id: 6, src: "download3.jpg", href: "https://www.unicef.org/" },
+        { id: 1, src: "unicef.png", href: "https://www.who.int/" },
+        { id: 2, src: "africa.png", href: "https://www.nmbbank.co.tz/" },
+        { id: 3, src: "who.png", href: "https://www.unicef.org/" },
+        { id: 4, src: "usaid.png", href: "https://www.moh.go.tz/" },
       ],
     };
   },
@@ -76,5 +71,11 @@ export default {
   width: 10%;
   border: 3px solid grey; /* Adjust thickness as needed */
   margin: 8px auto; /* Adjust as needed */
+}
+.basil {
+  background-color: #fffbe6 !important;
+}
+.basil--text {
+  color: #356859 !important;
 }
 </style>

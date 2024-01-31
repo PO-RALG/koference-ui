@@ -10,47 +10,86 @@
         <!-- Sample about content -->
         <v-row>
           <v-row justify="center">
-            <v-col cols="12" md="4">
-              <v-card height="330">
-                <h3>Our Mission</h3>
-                <v-card-text>
-                  <p>
-                    • To provide scientific proven evidence, innovations and
-                    best practices to support evidence-based decision making to
-                    policy makers and implementers using available
-                    multidisciplinary local and international experts in PHC.
-                  </p>
-                </v-card-text>
+            <v-col cols="12" md="12">
+              <v-card height="200" class="mb-5">
+                <v-container>
+                  <v-row justify="center">
+                    <v-col cols="12" sm="10" md="8">
+                      <v-card-title class="headline">Our Mission</v-card-title>
+                      <v-card-text>
+                        <ul>
+                          <h2>
+                            <li>
+                              <v-icon color="primary">mdi-check</v-icon>
+                              To provide scientific proven evidence, innovations
+                              and best practices to support evidence-based
+                              decision making to policy makers and implementers
+                              using available multidisciplinary local and
+                              international experts in PHC.
+                            </li>
+                          </h2>
+                        </ul>
+                      </v-card-text>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-card>
             </v-col>
 
-            <v-col cols="12" md="4">
-              <v-card height="330">
-                <h3>Our Vision</h3>
-
-                <v-card-text>
-                  <p>
-                    • To be an exemplary international conference in sharing
-                    high-quality best practices, innovations and scientific
-                    evidence in PHC.
-                  </p>
-                </v-card-text>
+            <v-col cols="12" md="12">
+              <v-card height="200" class="mb-5">
+                <v-container>
+                  <v-row justify="center">
+                    <v-col cols="12" sm="10" md="8">
+                      <v-card-title class="headline">Our Vision</v-card-title>
+                      <v-card-text>
+                        <ul>
+                          <h2>
+                            <li>
+                              <v-icon color="primary">mdi-check</v-icon>
+                              To be an exemplary international conference in
+                              sharing high-quality best practices, innovations
+                              and scientific evidence in PHC.
+                            </li>
+                          </h2>
+                        </ul>
+                      </v-card-text>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-card>
             </v-col>
 
-            <v-col cols="12" md="4">
-              <v-card height="330" class="mb-5">
-                <h3>Our Values</h3>
-
-                <v-card-text>
-                  <p>• Integrity and Loyalty</p>
-                  <p>• Accountability and Transparency</p>
-                  <p>• Unity and Team spirit</p>
-                  <p>• Timely and Quality services</p>
-                  <p>• Confidentiality and Professionalism</p>
-                  <p>• Accessibility and Responsiveness</p>
-                  <p>• Openness</p>
-                </v-card-text>
+            <v-col cols="12" md="12">
+              <v-card height="250" class="mb-5">
+                <v-container>
+                  <v-row justify="center">
+                    <v-col cols="12" sm="10" md="8">
+                      <v-card-title class="headline">Our Values</v-card-title>
+                      <v-card-text>
+                        <ul>
+                          <h2>
+                            <li>
+                              <v-icon color="primary">mdi-check</v-icon>
+                              To provide scientifically proven evidence,
+                              innovations, and best practices.
+                            </li>
+                            <li>
+                              <v-icon color="primary">mdi-check</v-icon>
+                              Support evidence-based decision-making for policy
+                              makers and implementers.
+                            </li>
+                            <li>
+                              <v-icon color="primary">mdi-check</v-icon>
+                              Utilize multidisciplinary local and international
+                              experts in Primary Healthcare (PHC).
+                            </li>
+                          </h2>
+                        </ul>
+                      </v-card-text>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-card>
             </v-col>
           </v-row>
@@ -76,7 +115,33 @@ export default {
   },
 };
 </script>
+<style scoped>
+.mission-card {
+  /* Add any additional styling for the card */
+  padding: 20px;
+}
 
+.headline {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+v-icon {
+  margin-right: 8px;
+}
+</style>
 <style>
 /* Add your custom styles here */
 .color-title {
@@ -86,5 +151,12 @@ export default {
   width: 25%;
   border: 3px solid grey; /* Adjust thickness as needed */
   margin: 8px auto; /* Adjust as needed */
+}
+
+.basil {
+  background-color: #fffbe6 !important;
+}
+.basil--text {
+  color: #356859 !important;
 }
 </style>

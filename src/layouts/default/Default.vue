@@ -6,6 +6,8 @@
     <v-container class="mt-1">
       <Slider class="mb-1" />
       <Video class="mb-1 mt-12" />
+      <!-- <Events class="mb-1 pt-12" /> -->
+
       <Sponser class="mb-1 mt-12" />
 
       <Footer class="mb-1 pt-12" />
@@ -18,5 +20,6 @@ import DefaultBar from "./AppBar.vue";
 import Slider from "../../components/Slider.vue";
 import Sponser from "../../components/Sponser.vue";
 import Footer from "../../components/Footer.vue";
+import Events from "../../components/Events.vue";
 import Video from "../../components/Video.vue";
 </script>

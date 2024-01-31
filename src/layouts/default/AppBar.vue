@@ -9,9 +9,9 @@
       </div>
       <!-- <el-col class="d-md-none" :md="12"> IPHCC </el-col> -->
 
-      <h1 class="color-app pl-10 d-md-none">IPHCC</h1>
+      <h1 class="font-weight-bold text-3 basil--text pl-10 d-md-none">IPHCC</h1>
       <el-col class="d-none d-md-flex">
-        <h1 class="color-app pl-10">
+        <h1 class="font-weight-bold text-3 basil--text pl-10">
           International Primary Health Care Conference
         </h1>
       </el-col>
@@ -28,20 +28,34 @@
       </el-button>
 
       <div class="d-none d-md-flex">
-        <v-btn class="color-app" icon @click="goHome">
-          <v-icon class="pb-4" x-large>mdi-home</v-icon>
+        <v-btn class="font-weight-bold text-3 basil--text" icon @click="goHome">
+          <v-icon class="font-weight-bold text-3 basil--text pb-4" x-large
+            >mdi-home</v-icon
+          >
         </v-btn>
-        <v-btn class="color-app" text @click="handleButtonClick2"
-          ><h3>About</h3></v-btn
+        <v-btn
+          class="font-weight-bold text-3 basil--text"
+          text
+          @click="handleButtonClick2"
+          ><h3 class="font-weight-bold text-3 basil--text">About</h3></v-btn
         >
-        <v-btn class="color-app" text @click="handleButtonClick1"
-          ><h3>Register</h3></v-btn
+        <v-btn
+          class="font-weight-bold text-3 basil--text"
+          text
+          @click="handleButtonClick1"
+          ><h3 class="font-weight-bold text-3 basil--text">Register</h3></v-btn
         >
-        <v-btn class="color-app" text @click="handleButtonAbstract"
-          ><h3>Abstract</h3></v-btn
+        <v-btn
+          class="font-weight-bold text-3 basil--text"
+          text
+          @click="handleButtonAbstract"
+          ><h3 class="font-weight-bold text-3 basil--text">Abstract</h3></v-btn
         >
-        <v-btn class="color-app" text @click="handleButtonClick3"
-          ><h3>Login</h3></v-btn
+        <v-btn
+          class="font-weight-bold text-3 basil--text"
+          text
+          @click="handleButtonClick3"
+          ><h3 class="font-weight-bold text-3 basil--text">Login</h3></v-btn
         >
       </div>
       <div class="backdrop" @click="closeDrawer" v-if="drawer"></div>
@@ -193,6 +207,12 @@ export default {
 </script>
 
 <style>
+.basil {
+  background-color: #fffbe6 !important;
+}
+.basil--text {
+  color: #356859 !important;
+}
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
