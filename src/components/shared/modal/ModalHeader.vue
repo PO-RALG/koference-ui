@@ -3,7 +3,7 @@
     :class="
       !showTitleBg && colour == 'red'
         ? 'red white--text pa-4'
-        : ' bg_color grey--text pa-4pa-4'
+        : ' bg_color white--text pa-4pa-4'
     "
   >
     <span class="text-h5">
@@ -92,6 +92,12 @@ export default defineComponent({
 </script>
 <style>
 .bg_color {
-  background: #d1d4d4;
+  background: #356859 !important;
+}
+.basil {
+  background-color: #fffbe6 !important;
+}
+.basil--text {
+  color: #356859 !important;
 }
 </style>

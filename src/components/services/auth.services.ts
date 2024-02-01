@@ -80,6 +80,9 @@ const getCountries = async () => {
 const getRegistrationCategories = async () => {
   return axios.get("/api/v1/registartioncategories");
 };
+const getSubthemes = async () => {
+  return axios.get("/api/v1/subthemes");
+};
 
 export {
   getCountries,
@@ -97,4 +100,5 @@ export {
   openFile,
   create,
   registerUser,
+  getSubthemes,
 };

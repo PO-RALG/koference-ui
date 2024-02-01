@@ -8,15 +8,11 @@
     </span>
     <v-row class="video-row" justify="center">
       <v-col v-for="(video, index) in videos" :key="video.id">
-        <v-card
-          width="440"
-          elevation="0"
-          class="video-card center-video bg-kala"
-        >
+        <v-card width="100%" elevation="0" class="center-video bg-kala">
           <div class="center-video" v-html="getEmbedCode(video.id)"></div>
         </v-card>
-        <p class="video-caption pt-2 pb-3">
-          <span class="primary--text">
+        <p class="video-caption pt-1 pb-0">
+          <span class="grey--text">
             {{ video.caption }}
           </span>
         </p>
@@ -30,10 +26,10 @@ export default {
   data() {
     return {
       videos: [
-        { id: "3nmGqcSEYVw", caption: "Caption for video 1" },
-        { id: "bIbEq2LQrAQ", caption: "Caption for video 2" },
-        { id: "4oOonZWxjAs", caption: "Caption for video 3" },
-
+        {
+          id: "C-NcNTmjFag",
+          caption: "Primary Health Care",
+        },
         // Add more video IDs as needed
       ],
     };

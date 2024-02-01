@@ -5,7 +5,8 @@
     <!-- Add margin and spacing to create space between components -->
     <v-container class="mt-1">
       <Slider class="mb-1" />
-      <Video class="mb-1 mt-12" />
+      <Video class="mag mt-12" />
+      <Theme class="mb-1 pt-12" />
       <!-- <Events class="mb-1 pt-12" /> -->
 
       <Sponser class="mb-1 mt-12" />
@@ -22,4 +23,10 @@ import Sponser from "../../components/Sponser.vue";
 import Footer from "../../components/Footer.vue";
 import Events from "../../components/Events.vue";
 import Video from "../../components/Video.vue";
+import Theme from "../../components/Theme.vue";
 </script>
+<style>
+.mag {
+  margin-bottom: 40px;
+}
+</style>

@@ -33,10 +33,10 @@ export default {
   data() {
     return {
       images: [
-        { id: 1, src: "unicef.png", href: "https://www.who.int/" },
-        { id: 2, src: "africa.png", href: "https://www.nmbbank.co.tz/" },
-        { id: 3, src: "who.png", href: "https://www.unicef.org/" },
-        { id: 4, src: "usaid.png", href: "https://www.moh.go.tz/" },
+        { id: 1, src: "unicef.png", href: "https://www.unicef.org/ " },
+        { id: 2, src: "africa.png", href: "https://africacdc.org/" },
+        { id: 3, src: "who.png", href: "https://www.who.int/" },
+        { id: 4, src: "usaid.png", href: "https://www.usaid.gov/" },
       ],
     };
   },

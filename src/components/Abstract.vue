@@ -18,7 +18,7 @@
               <v-form v-model="valid" @submit.prevent="submitForm">
                 <v-container>
                   <!-- Select Category -->
-                  <v-row align="center" justify="center">
+                  <v-row justify="center">
                     <v-col cols="12" md="6">
                       <v-text-field
                         :value="formData.email"
@@ -42,22 +42,22 @@
                     </v-col>
                   </v-row>
 
-                  <v-row align="center" justify="center">
-                    <v-col cols="12" md="12">
+                  <v-row>
+                    <v-col cols="12">
                       <v-select
                         outlined
                         v-model="formData.subTheme"
-                        :items="[
-                          'Nutrition and NCDs',
-                          'NCD Emergency preparedness',
-                        ]"
+                        :items="subThemes"
+                        item-text="name"
+                        item-value="id"
                         label="Select Conference Sub-Theme"
-                      >
-                      </v-select>
+                        clearable
+                        class="align-left-dropdown"
+                      ></v-select>
                     </v-col>
                   </v-row>
 
-                  <v-row align="center" justify="center">
+                  <v-row justify="center">
                     <v-col cols="12" md="12">
                       <v-text-field
                         v-model="formData.author"
@@ -68,7 +68,7 @@
                       ></v-text-field>
                     </v-col>
                   </v-row>
-                  <v-row align="center" justify="center">
+                  <v-row justify="center">
                     <v-col cols="12" md="6">
                       <v-text-field
                         v-model="formData.affiliation"
@@ -90,28 +90,28 @@
                     </v-col>
                   </v-row>
                   <!-- Name Fields -->
-                  <v-row align="center" justify="center">
+                  <v-row justify="center">
                     <v-col cols="12" md="12">
                       <v-textarea
                         outlined
                         v-model="formData.background"
                         label="Background"
-                        placeholder="Enter your background here, maximum 50 words..."
+                        placeholder="Enter your background here, maximum 200 words..."
+                        :rules="[maxRule]"
+                        :hint="wordCountBackround"
                       ></v-textarea>
                     </v-col>
                   </v-row>
 
                   <!-- Description Field -->
-                  <v-row align="center" justify="center">
+                  <v-row justify="center">
                     <v-col cols="6" md="12">
                       <v-text-field
                         outlined
                         v-model="formData.objective"
                         label="Objective/Aims"
                         placeholder="Enter your Objective/Aims here..."
-                        :rules="[maxRule]"
                       ></v-text-field>
-                      <div class="word-count">{{ wordCount }} words</div>
                       <!-- <v-alert
                         v-if="wordCount > maxWordLimit"
                         type="error"
@@ -122,46 +122,54 @@
                     </v-col>
                   </v-row>
 
-                  <v-row align="center" justify="center">
+                  <v-row justify="center">
                     <v-col cols="12" md="12">
                       <v-textarea
                         outlined
                         v-model="formData.methodology"
                         label="Methodology/Project plan"
-                        placeholder="Enter your Methodology/Project plan here, maximum 75 words..."
+                        placeholder="Enter your Methodology/Project plan here, maximum 200 words..."
+                        :rules="[maxRule]"
+                        :hint="wordCount"
                       ></v-textarea>
                     </v-col>
                   </v-row>
 
-                  <v-row align="center" justify="center">
+                  <v-row justify="center">
                     <v-col cols="12" md="12">
                       <v-textarea
                         outlined
                         v-model="formData.results"
                         label="Results/Discussions"
-                        placeholder="Enter your Results/Progress here, maximum 130 words..."
+                        placeholder="Enter your Results/Progress here,"
+                        :rules="[maxRule]"
+                        :hint="wordCountResults"
                       ></v-textarea>
                     </v-col>
                   </v-row>
 
-                  <v-row align="center" justify="center">
+                  <v-row justify="center">
                     <v-col cols="12" md="12">
                       <v-textarea
                         outlined
                         v-model="formData.conclusion"
                         label="Conclusion/Lessons learned"
-                        placeholder="Enter your Results/Progress here, maximum 15 words..."
+                        placeholder="Enter your Results/Progress here,"
+                        :rules="[maxRule]"
+                        :hint="wordCountConclusion"
                       ></v-textarea>
                     </v-col>
                   </v-row>
 
-                  <v-row align="center" justify="center">
+                  <v-row justify="center">
                     <v-col cols="12" md="12">
                       <v-textarea
                         outlined
                         v-model="formData.recommendations"
                         label="Recommendations"
-                        placeholder="Enter your Recommendations here, maximum 15 words..."
+                        placeholder="Enter your Recommendations here,"
+                        :rules="[maxRule]"
+                        :hint="wordCountRecomendation"
                       ></v-textarea>
                     </v-col>
                   </v-row>
@@ -213,20 +221,26 @@
 
 <script>
 import axios from "axios";
-import { create } from "./services"; // Fix the import statement
-
+import { create, getSubthemes } from "./services"; // Fix the import statement
 export default {
   name: "Abstract",
   data() {
     return {
-      maxWordLimit: 2, // Set your desired word limit
+      maxWordLimit: 200, // Set your desired word limit
+      maxWordLimitBackground: 200, // Set your desired word limit
       formData: {
         email: "",
         title: "",
         objective: "",
+        methodology: "",
+        background: "",
+        results: "",
+        conclusion: "",
+        recommendations: "",
 
         // Other form fields...
       },
+      subThemes: [],
 
       currentYear: new Date().getFullYear(),
       valid: true,
@@ -251,8 +265,29 @@ export default {
   computed: {
     wordCount() {
       // Remove extra whitespaces and split the text into words
-      const words = this.formData?.objective.trim().split(/\s+/);
-      return words.length;
+      const words = this.formData?.methodology.trim().split(/\s+/);
+      return `${words.length} words`;
+      // return words.length;
+    },
+    wordCountBackround() {
+      // Remove extra whitespaces and split the text into words
+      const words = this.formData?.background.trim().split(/\s+/);
+      return `${words.length} words`;
+    },
+    wordCountResults() {
+      // Remove extra whitespaces and split the text into words
+      const words = this.formData?.results.trim().split(/\s+/);
+      return `${words.length} words`;
+    },
+    wordCountConclusion() {
+      // Remove extra whitespaces and split the text into words
+      const words = this.formData?.conclusion.trim().split(/\s+/);
+      return `${words.length} words`;
+    },
+    wordCountRecomendation() {
+      // Remove extra whitespaces and split the text into words
+      const words = this.formData?.recommendations.trim().split(/\s+/);
+      return `${words.length} words`;
     },
     isFieldDisabled() {
       return this.wordCount > this.maxWordLimit;
@@ -267,7 +302,17 @@ export default {
       },
     },
   },
+  created() {
+    this.fetchSubthemes();
+  },
   methods: {
+    fetchSubthemes() {
+      getSubthemes().then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          this.subThemes = response.data; // Update this line
+        }
+      });
+    },
     maxRule(value) {
       return (
         value.split(/\s+/).length <= this.maxWordLimit ||
@@ -296,6 +341,11 @@ export default {
         email: "",
         title: "",
         objective: "",
+        methodology: "",
+        background: "",
+        results: "",
+        conclusion: "",
+        recommendations: "",
         // Other form fields...
       };
       this.$refs.submitForm?.resetValidation(); // Replace "form" with the ref attribute of your form element
@@ -331,5 +381,10 @@ export default {
   width: 25%;
   border: 3px solid grey; /* Adjust thickness as needed */
   margin: 8px auto; /* Adjust as needed */
+}
+</style>
+<style>
+.align-left-dropdown .v-input__slot {
+  text-align: left !important;
 }
 </style>
