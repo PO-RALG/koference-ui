@@ -20,7 +20,13 @@
       >
         <a :href="image.href" target="_blank" rel="noopener noreferrer">
           <v-card class="image-card" flat elevation="">
-            <v-img :src="image.src" alt="Image" :aspect-ratio="1"></v-img>
+            <v-img
+              :src="image.src"
+              alt="Image"
+              width="120"
+              height="120"
+              :aspect-ratio="1"
+            ></v-img>
           </v-card>
         </a>
       </v-col>

@@ -42,13 +42,14 @@ export default {
           tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014 <span class='yellow--text'> VENUE : JAKAYA KIKWETE </span>",
         },
         {
-          src: "8.jpeg",
+          src: "12.jpeg",
           // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
         },
         {
-          src: "9.jpeg",
+          src: "8.jpeg",
           // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
         },
+
         {
           src: "10.jpeg",
           // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
