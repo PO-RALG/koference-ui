@@ -9,9 +9,9 @@
       </div>
       <!-- <el-col class="d-md-none" :md="12"> IPHCC </el-col> -->
 
-      <h1 class="font-weight-bold text-3 basil--text pl-10 d-md-none">IPHCC</h1>
+      <h1 class="font-weight-bold text-1 basil--text pl-10 d-md-none">IPHCC</h1>
       <el-col class="d-none d-md-flex">
-        <h1 class="font-weight-bold text-3 basil--text pl-10">
+        <h1 class="font-weight-bold text-1 basil--text pl-3">
           International Primary Health Care Conference
         </h1>
       </el-col>

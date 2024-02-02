@@ -10,12 +10,12 @@
 
           <!-- Sample about content -->
           <v-row>
-            <v-row justify="center">
+            <v-row justify="start">
               <v-col cols="12" md="12">
                 <v-card color="#f3f5f5" flat height="100%" class="mb-5">
                   <v-container>
-                    <v-row justify="center">
-                      <v-col cols="12" sm="10" md="8">
+                    <v-row justify="start">
+                      <v-col cols="12">
                         <v-card-title class="headline"
                           >Main Theme:</v-card-title
                         >
@@ -35,8 +35,8 @@
                     </v-row>
                   </v-container>
                   <v-container>
-                    <v-row justify="center">
-                      <v-col cols="12" sm="10" md="8">
+                    <v-row justify="start">
+                      <v-col cols="12">
                         <v-card-title class="headline"
                           >Conference Sub-themes</v-card-title
                         >
@@ -44,13 +44,13 @@
                           <ul>
                             <h2>
                               <li>
-                                <!-- <v-icon color="primary">mdi-check</v-icon> -->
                                 I. Social determinants, Social Behavioral Change
                                 and Communication (SBCC) and Community Health
                                 System
                               </li>
                             </h2>
                           </ul>
+
                           <ul>
                             <h2>
                               <li>
@@ -232,7 +232,7 @@ ul {
 
 li {
   display: flex;
-  align-items: center;
+  align-items: start;
   margin-bottom: 8px;
 }
 

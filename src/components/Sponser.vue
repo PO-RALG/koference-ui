@@ -13,14 +13,14 @@
       <v-col
         v-for="image in images"
         :key="image.id"
-        cols="12"
-        sm="6"
-        md="4"
+        cols="2"
+        sm="2"
+        md="2"
         lg="2"
       >
         <a :href="image.href" target="_blank" rel="noopener noreferrer">
           <v-card class="image-card" flat elevation="">
-            <v-img :src="image.src" alt="Image" :aspect-ratio="1.2"></v-img>
+            <v-img :src="image.src" alt="Image" :aspect-ratio="1"></v-img>
           </v-card>
         </a>
       </v-col>
@@ -35,8 +35,15 @@ export default {
       images: [
         { id: 1, src: "unicef.png", href: "https://www.unicef.org/ " },
         { id: 2, src: "africa.png", href: "https://africacdc.org/" },
+        { id: 2, src: "ths.png", href: "https://ths.or.tz/" },
+        {
+          id: 4,
+          src: "pepfar.png",
+          href: "https://www.hiv.gov/federal-response/pepfar-global-aids/pepfar/",
+        },
         { id: 3, src: "who.png", href: "https://www.who.int/" },
         { id: 4, src: "usaid.png", href: "https://www.usaid.gov/" },
+        { id: 2, src: "aaph.jpeg", href: "https://www.aaph.or.tz/" },
       ],
     };
   },
