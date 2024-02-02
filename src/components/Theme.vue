@@ -16,9 +16,14 @@
                   <v-container>
                     <v-row justify="start">
                       <v-col cols="12" sm="10" md="8">
-                        <v-card-title class="headline"
+                        <v-card-title class="d-none d-md-flex headline"
                           >Main Theme:</v-card-title
                         >
+                        <v-card-title
+                          class="d-flex flex-column align-center d-md-none headline"
+                          >Main Theme:</v-card-title
+                        >
+
                         <v-card-text>
                           <ul>
                             <h2>
