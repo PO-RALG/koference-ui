@@ -10,8 +10,24 @@
         class="soften-image"
       >
         <v-row align="end" justify="center" class="caption-container">
-          <div class="caption">{{ item.tag }}</div>
+          <div class="caption2">
+            <span v-html="item.tag"></span>
+
+            <!-- <span class="yellow--text"> VENUE : JAKAYA KIKWETE </span> -->
+          </div>
         </v-row>
+        <!-- <v-row
+          align="end"
+          justify="center"
+          class="caption-container caption-sub d-none d-md-flex"
+        >
+          <div class="caption2">
+            {{
+              "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014:"
+            }}
+            <span class="yellow--text"> VENUE : JAKAYA KIKWETE </span>
+          </div>
+        </v-row> -->
       </v-carousel-item>
     </v-carousel>
   </v-container>
@@ -22,13 +38,30 @@ export default {
     return {
       items: [
         {
-          src: "3b.png",
-          tag: "",
+          src: "mtoto.jpg",
+          tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014 <span class='yellow--text'> VENUE : JAKAYA KIKWETE </span>",
         },
         {
-          src: "0102.jpeg",
-          tag: "The First International Primary Health Care Conference in DODOMA Tanzania 2014",
+          src: "8.jpeg",
+          // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
         },
+        {
+          src: "9.jpeg",
+          // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
+        },
+        {
+          src: "10.jpeg",
+          // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
+        },
+        {
+          src: "11.jpeg",
+          // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
+        },
+
+        // {
+        //   src: "mama.jpg",
+        //   tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
+        // },
       ],
     };
   },
@@ -36,7 +69,7 @@ export default {
 </script>
 <style>
 .soften-image {
-  filter: blur(0px); /* Adjust the blur value as needed */
+  filter: fade(5px); /* Adjust the blur value as needed */
 }
 .caption-container {
   position: absolute;
@@ -44,16 +77,25 @@ export default {
   width: 100%;
   height: 100%;
   text-align: center;
-  background-color: rgba(91, 89, 89, 0.125); /* Adjust the color if needed */
+  background-color: rgba(91, 89, 89, 0.125);
 }
 
 .caption-container .caption {
-  font-size: 24px !important; /* Add !important to ensure it takes precedence */
+  font-size: 35px !important; /* Add !important to ensure it takes precedence */
+  color: white; /* Adjust the color if needed */
+  font-weight: bold; /* Make the caption bold */
+  line-height: 1.2; /* Adjust the line-height value as needed */
+}
+.caption-container .caption2 {
+  font-size: 50px !important; /* Add !important to ensure it takes precedence */
   color: white; /* Adjust the color if needed */
   font-weight: bold; /* Make the caption bold */
 }
 .caption-container {
-  padding-bottom: 20px; /* Adjust the padding as needed */
+  padding-bottom: 30px; /* Adjust the padding as needed */
+}
+.caption-sub {
+  padding-bottom: 10px; /* Adjust the padding as needed */
 }
 
 .fade-transition {
