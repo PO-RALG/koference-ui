@@ -23,8 +23,8 @@
             <v-img
               :src="image.src"
               alt="Image"
-              width="50%"
-              height="50%"
+              width="75%"
+              height="750%"
               :aspect-ratio="1"
             ></v-img>
           </v-card>
