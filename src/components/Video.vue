@@ -4,11 +4,11 @@
       <v-card-title class="text-center justify-center py-6">
         <h1 class="font-weight-bold text-5 basil--text">Videos</h1>
       </v-card-title>
-      <hr class="centered-line" />
+      <!-- <hr class="centered-line" /> -->
     </span>
     <v-row class="video-row" justify="center">
       <v-col v-for="(video, index) in videos" :key="video.id">
-        <v-card width="100%" elevation="0" class="center-video bg-kala">
+        <v-card width="100%" elevation="0" class="center-video">
           <div class="center-video" v-html="getEmbedCode(video.id)"></div>
         </v-card>
         <p class="video-caption pt-1 pb-0">
@@ -30,6 +30,10 @@ export default {
           id: "ZrRS7TxlJwc",
           caption: "Primary Health Care",
         },
+        {
+          id: "_fPohVz6fBA",
+          caption: "Primary Health Care",
+        },
         // Add more video IDs as needed
       ],
     };
@@ -39,8 +43,8 @@ export default {
       return `
           <iframe
             id="youtube-player-${videoId}"
-            width="440"
-            height="200"
+            width="640"
+            height="400"
             src="https://www.youtube.com/embed/${videoId}"
             frameborder="0"
             allowfullscreen

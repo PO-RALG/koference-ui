@@ -2,7 +2,7 @@
   <!-- About page content -->
   <div>
     <h1 class="font-weight-bold text-5 basil--text">Conference Themes</h1>
-    <hr class="centered-line" />
+    <!-- <hr class="centered-line" /> -->
     <v-container class="mt-5">
       <v-row>
         <v-col cols="12">

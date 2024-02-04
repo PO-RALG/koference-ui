@@ -39,7 +39,7 @@ export default {
       items: [
         {
           src: "mtoto.jpg",
-          tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014 <span class='yellow--text'> VENUE : JAKAYA KIKWETE </span>",
+          tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2024. <span class='yellow--text'> <p>GUEST OF HONOR: H.E. Samia Suluhu Hassan, President of the United Republic of Tanzania | VENUE: Jakaya Kikwete</p></span>",
         },
         {
           src: "12.jpeg",
