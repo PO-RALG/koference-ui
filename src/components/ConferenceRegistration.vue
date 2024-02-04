@@ -1,6 +1,10 @@
 <template>
   <v-container class="mt-12">
     <v-col cols="12">
+      <v-alert text outlined color="deep-orange" icon="mdi-cash">
+        {{ "CPS misc  Dep. Exp. Elecronic A/C  9921169777 Bank Name BOT" }}.
+      </v-alert>
+
       <h1 class="text-center mb-5 color-title">Select Category to Register</h1>
       <hr class="centered-line" />
       <v-divider class="mb-5"></v-divider>

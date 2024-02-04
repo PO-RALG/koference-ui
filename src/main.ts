@@ -120,7 +120,11 @@ const successHandler = (response: AxiosResponse) => {
 
 const showLoginDialog = (response: any) => {
   const resp = { message: response.message };
-  store.dispatch("LoginDialog/SHOW", resp);
+  store.dispatch("Auth/LOGOUT");
+
+  // router.push("/login");
+
+  // store.dispatch("LoginDialog/SHOW", resp);
 };
 
 axios.interceptors.request.use(
