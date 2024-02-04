@@ -3,16 +3,16 @@
     <default-bar />
 
     <!-- Add margin and spacing to create space between components -->
-    <v-container class="mt-1">
-      <Slider class="mb-1" />
-      <Video class="mag mt-12" />
-      <Theme class="mb-1 pt-12" />
-      <!-- <Events class="mb-1 pt-12" /> -->
+    <!-- <v-container class="mt-1"> -->
+    <Slider class="mb-1" />
+    <Video class="mag mt-12" />
+    <Theme class="mb-1 pt-12" />
+    <!-- <Events class="mb-1 pt-12" /> -->
 
-      <Sponser class="mb-1 mt-12" />
+    <Sponser class="mb-1 mt-12" />
 
-      <Footer class="mb-1 pt-12" />
-    </v-container>
+    <Footer class="mb-1 pt-12" />
+    <!-- </v-container> -->
   </v-app>
 </template>
 

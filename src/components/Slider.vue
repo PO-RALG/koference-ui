@@ -1,36 +1,73 @@
 <template>
-  <v-container class="mt-10" style="margin-top: 10px">
-    <v-carousel hide-delimiters style="max-height: 600px">
-      <v-carousel-item
-        v-for="(item, i) in items"
-        :key="i"
-        :src="item.src"
-        reverse-transition="fade"
-        transition="fade"
-        class="soften-image"
+  <section class="landing-candidates pt-12">
+    <div class="row no-gutters">
+      <div
+        aria-label="Elfin Force"
+        role="img"
+        class="v-image v-responsive theme--dark"
+        style="min-height: calc(100vh - 64px)"
       >
-        <v-row align="end" justify="center" class="caption-container">
-          <div class="caption2">
-            <span v-html="item.tag"></span>
-
-            <!-- <span class="yellow--text"> VENUE : JAKAYA KIKWETE </span> -->
+        <div class="v-responsive__sizer" style="padding-bottom: 51.2674%"></div>
+        <div class="v-image__image v-image__image--cover">
+          <img
+            src="7.jpeg"
+            alt="Background Image"
+            style="width: 100%; height: 100%; object-fit: cover"
+          />
+          <div class="overlay"></div>
+        </div>
+        <div class="v-responsive__content" style="width: 1578px">
+          <div class="container fill-height">
+            <div class="row mx-auto">
+              <div class="white--text col-lg-8 col-12">
+                <div class="v-card v-sheet theme--dark rounded-0">
+                  <div class="container py-4">
+                    <div class="row no-gutters">
+                      <div class="offset-lg-1 col col-11 offset-1">
+                        <h1
+                          class="font-weight-black text-shadow text-h4 text-sm-h2 text-lg-h1"
+                        >
+                          <span class="green--text"
+                            >IPHC CONFERENCE IN DODOMA TANZANIA 2024:</span
+                          ><br />VENUE : JAKAYA KIKWETE
+                        </h1>
+                      </div>
+                    </div>
+                    <div class="row no-gutters">
+                      <div class="offset-lg-1 col col-10 offset-1">
+                        <div class="container text-shadow text-body-1 cols">
+                          <strong>Elfin Force</strong> is a service for the
+                          <span class="green--text">anonymous job search</span>
+                          for IT related specialists. This service is designed
+                          to resolve candidates anxiety and doubts regarding
+                          employers and make easier hiring process for both
+                          sides: job seekers and employer.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row no-gutters">
+                    <div class="text-right col">
+                      <v-btn
+                        @click="goHome"
+                        class="pa-6 text-transform-none font-weight-bold v-btn v-btn--is-elevated v-btn--has-bg v-btn--router v-btn--tile theme--dark v-size--default success"
+                        ><span class="v-btn__content">
+                          Register Now
+                          <i
+                            aria-hidden="true"
+                            class="v-icon notranslate mdi mdi-arrow-right-thin theme--dark"
+                          ></i></span
+                      ></v-btn>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </v-row>
-        <!-- <v-row
-          align="end"
-          justify="center"
-          class="caption-container caption-sub d-none d-md-flex"
-        >
-          <div class="caption2">
-            {{
-              "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014:"
-            }}
-            <span class="yellow--text"> VENUE : JAKAYA KIKWETE </span>
-          </div>
-        </v-row> -->
-      </v-carousel-item>
-    </v-carousel>
-  </v-container>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 <script>
 export default {
@@ -39,7 +76,7 @@ export default {
       items: [
         {
           src: "mtoto.jpg",
-          tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2024. <span class='yellow--text'> <p>GUEST OF HONOR: H.E. Samia Suluhu Hassan, President of the United Republic of Tanzania | VENUE: Jakaya Kikwete</p></span>",
+          // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2024. <span class='yellow--text'> <p>GUEST OF HONOR: H.E. Samia Suluhu Hassan, President of the United Republic of Tanzania | VENUE: Jakaya Kikwete</p></span>",
         },
         {
           src: "12.jpeg",
@@ -58,17 +95,23 @@ export default {
           src: "11.jpeg",
           // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
         },
-
-        // {
-        //   src: "mama.jpg",
-        //   tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
-        // },
       ],
     };
   },
+  methods: {
+    goHome() {
+      // Use the Vue Router to navigate to the home route
+      this.$router.push({ path: "/registration-page" });
+    },
+  },
 };
 </script>
-<style>
+<style scoped>
+.centered-line {
+  width: 100%;
+  border: 3px #356859; /* Adjust thickness as needed */
+  margin: 8px auto; /* Adjust as needed */
+}
 .soften-image {
   filter: fade(5px); /* Adjust the blur value as needed */
 }
@@ -101,5 +144,15 @@ export default {
 
 .fade-transition {
   transition: opacity 0.5s ease-in-out;
+}
+</style>
+<style scoped>
+.overlay {
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.073));
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>

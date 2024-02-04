@@ -11,11 +11,9 @@
         <v-card width="100%" elevation="0" class="center-video">
           <div class="center-video" v-html="getEmbedCode(video.id)"></div>
         </v-card>
-        <p class="video-caption pt-1 pb-0">
-          <span class="grey--text">
-            {{ video.caption }}
-          </span>
-        </p>
+        <span class="grey--text">
+          <!-- {{ video.caption }} -->
+        </span>
       </v-col>
     </v-row>
   </div>
@@ -44,7 +42,7 @@ export default {
           <iframe
             id="youtube-player-${videoId}"
             width="640"
-            height="400"
+            height="330"
             src="https://www.youtube.com/embed/${videoId}"
             frameborder="0"
             allowfullscreen

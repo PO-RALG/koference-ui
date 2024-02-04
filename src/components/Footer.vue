@@ -1,11 +1,11 @@
 <template>
   <v-footer class="bg-kala">
     <!-- Adjust the background color and text color -->
-    <v-sheet color="primary" class="d-none d-md-flex">
+    <v-sheet color="" class="bg-kala">
       <v-container>
         <v-row>
           <v-col>
-            <!-- <v-img src="/assets/logo.png" height="50"></v-img> -->
+            <v-img class="pl-12" src="/aaph.png" height="50"></v-img>
           </v-col>
         </v-row>
       </v-container>
@@ -13,36 +13,73 @@
 
     <!-- Footer content -->
 
-    <v-sheet>
+    <v-sheet class="bg-kala">
       <v-container>
         <v-row>
           <v-col>
-            <p class="text-center">
-              &copy; {{ new Date().getFullYear() }}
-              <small class="">
-                {{ "TAMISEMI" }}
-              </small>
-              <small class="">
-                {{ ". All right reserved." }}
-              </small>
-              <small class="">
-                <strong>{{ " Conference Portal v1.0 ." }}</strong>
-              </small>
-              <small class="">
-                {{
-                  "For any Technical inquiry, please contact your ICT Support Team"
-                }} </small
-              >.
-            </p>
+            <p class="text-center"></p>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-sheet>
+    <v-sheet class="bg-kala">
+      <v-container>
+        <v-row>
+          <v-col>
+            <p class="text-center"></p>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-sheet>
+    <v-sheet class="bg-kala">
+      <v-container>
+        <v-row>
+          <v-col>
+            <p class="text-center"></p>
           </v-col>
         </v-row>
       </v-container>
     </v-sheet>
     <v-spacer></v-spacer>
-    <v-sheet color="" dark class="d-none d-md-flex">
+
+    <v-layout class="text-left white--text font-weight-light mx-auto">
+      <small>
+        <div
+          class="container text-shadow text-body-1 cols d-none d-md-flex headline"
+        >
+          Contact Us.
+        </div>
+        <div class="caption white--text font-weight-bold pt-5">
+          <v-icon color="white" small>mdi-office-building</v-icon>
+          <small
+            >Katibu Mkuu, Ofisi ya Rais Tawala za Mikoa na Serikali za
+            Mitaa</small
+          >
+          <br />
+          <v-icon color="white" small>mdi-map-marker</v-icon>
+          <small> S.L.P: 1923 Dodoma - Tanzania </small>,
+          <br />
+
+          <v-icon color="white" small>mdi-phone</v-icon>
+          <strong> <small>Simu: +255 262 321 234 </small> </strong>,
+          <br />
+
+          <v-icon color="white" small>mdi-email</v-icon>
+          <strong> <small>Barua Pepe: ps@tamisemi.go.tz </small> </strong>,
+          <br />
+
+          <v-icon color="white" small>mdi-web-box</v-icon>
+          <strong>
+            <small>tamisemi.go.tz</small>
+          </strong>
+        </div>
+      </small>
+    </v-layout>
+
+    <v-sheet color="grey" dark class="d-none d-md-flex">
       <v-row>
         <v-col cols="6">
-          <!-- <v-img src="/assets/logo.png" height="50"></v-img> -->
+          <v-img src="/assets/afya.jpeg" height="50"></v-img>
         </v-col>
         <v-col cols="6" class="text-right">
           <!-- Social media icons with links -->
@@ -78,11 +115,33 @@
         </v-col>
       </v-row>
     </v-sheet>
+
+    <br />
+    <v-container class="bg-kala pt-10">
+      <v-layout class="text-left white--text font-weight-light mx-auto">
+        <v-divider color="white" class="mb-5"></v-divider>
+      </v-layout>
+      <span color="#052f69">
+        <v-row>
+          <v-col>
+            <p class="text-center white--text">
+              &copy; {{ new Date().getFullYear() }}
+              <small class="">
+                {{ "TAMISEMI" }}
+              </small>
+              <small class="">
+                {{ ". All right reserved." }}
+              </small>
+            </p>
+          </v-col>
+        </v-row>
+      </span>
+    </v-container>
   </v-footer>
 </template>
 
 <style scoped>
 .bg-kala {
-  background-color: rgb(242, 242, 242);
+  background-color: #052f69;
 }
 </style>

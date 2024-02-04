@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar app height="150" elevation="0" color="#f3f5f5">
+    <v-app-bar fixed height="130px" elevation="0" color="#052f69">
       <div class="pl-10 d-none d-md-flex">
         <img class="coat" :src="coat" />
       </div>
@@ -15,7 +15,6 @@
           International Primary Health Care Conference
         </h1>
       </el-col>
-
       <!-- Align buttons to the right -->
       <v-spacer></v-spacer>
       <el-button
@@ -27,12 +26,10 @@
         <i class="el-icon-menu"></i>
       </el-button>
 
-      <div class="d-none d-md-flex">
-        <v-btn class="font-weight-bold text-3 basil--text" icon @click="goHome">
-          <v-icon class="font-weight-bold text-3 basil--text pb-4" x-large
-            >mdi-home</v-icon
-          >
-        </v-btn>
+      <div class="d-none d-md-flex margin-right">
+        <v-btn class="font-weight-bold text-3 basil--text" text @click="goHome"
+          ><h3 class="font-weight-bold text-3 basil--text">Home</h3></v-btn
+        >
         <v-btn
           class="font-weight-bold text-3 basil--text"
           text
@@ -144,8 +141,9 @@
       </v-navigation-drawer>
     </v-app-bar>
 
-    <v-container class="mt-12"> </v-container>
-    <router-view></router-view>
+    <v-container class="mt-top">
+      <router-view></router-view>
+    </v-container>
   </div>
 </template>
 
@@ -226,12 +224,16 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.mt-top {
+  margin-top: 60px;
+}
+
 .basil {
   background-color: #fffbe6 !important;
 }
 .basil--text {
-  color: #356859 !important;
+  color: #f3f5f5 !important;
 }
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
@@ -253,12 +255,10 @@ export default {
 }
 
 .coat {
-  width: 35%;
-  height: 25%;
-  border-radius: 30%;
-  height: 100px;
-  width: 100px;
-  border: 4px solid rgb(242, 248, 248);
+  /* border-radius: 30%; */
+  height: 70px;
+  width: 70px;
+  /* border: 4px solid rgb(242, 248, 248); */
 }
 .coat2 {
   width: 10%;
