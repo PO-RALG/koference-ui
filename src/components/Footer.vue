@@ -39,7 +39,7 @@
       </v-container>
     </v-sheet>
     <v-spacer></v-spacer>
-    <v-sheet color="primary" dark class="d-none d-md-flex">
+    <v-sheet color="" dark class="d-none d-md-flex">
       <v-row>
         <v-col cols="6">
           <!-- <v-img src="/assets/logo.png" height="50"></v-img> -->
