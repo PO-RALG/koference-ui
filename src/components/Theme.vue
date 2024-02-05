@@ -79,11 +79,7 @@
                     <li>Health Care Financing.</li>
                   </ul>
                 </div>
-                <div class="container">
-                  <ul>
-                    <li>Data use, Innovation, Technology and Research.</li>
-                  </ul>
-                </div>
+
                 <div class="container">
                   <ul>
                     <li>Health Workforce.</li>
@@ -102,7 +98,7 @@
                 <div class="container">
                   <ul>
                     <li>
-                      Reproductive, maternal, new borne, adolescent and child
+                      Reproductive, maternal, newborn, child and adolescent
                       health.
                     </li>
                   </ul>
@@ -134,7 +130,7 @@
                 </div>
                 <div class="container">
                   <ul>
-                    <li>Communities engagement.</li>
+                    <li>Community engagement.</li>
                   </ul>
                 </div>
                 <div class="container">
