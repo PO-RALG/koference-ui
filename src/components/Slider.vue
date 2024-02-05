@@ -10,7 +10,7 @@
         <div class="v-responsive__sizer" style="padding-bottom: 51.2674%"></div>
         <div class="v-image__image v-image__image--cover">
           <img
-            src="7.jpeg"
+            src="/president.jpeg"
             alt="Background Image"
             style="width: 100%; height: 100%; object-fit: cover"
           />
