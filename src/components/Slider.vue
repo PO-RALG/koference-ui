@@ -37,16 +37,23 @@
                     <div class="row no-gutters">
                       <div class="offset-lg-1 col col-10 offset-1">
                         <div class="container text-shadow text-body-1 cols">
-                          <strong> Guest of Honor: </strong>
+                          <strong>Guest of Honor:</strong>
                           <span class="green--text">
                             H.E. Dr. Samia Suluhu Hassan, The President of the
-                            United Republic of Tanzania
+                            United Republic of Tanzania.
                           </span>
                           <br />
-                          <strong> Venue:: </strong>
+                          <strong> Venue: </strong>
                           <span class="green--text">
-                            Jakaya Mrisho Kikwete Convention, Dodoma City
-                            Council
+                            Jakaya Mrisho Kikwete Convention Centre, Dodoma City
+                            Council.
+                          </span>
+                          <br />
+                          <strong> Main Theme:</strong>
+                          <span class="green--text">
+                            Primary Health Care (PHC) as a vehicle for the
+                            journey to achieve Universal Health Coverage (UHC)
+                            in Tanzania.
                           </span>
                         </div>
                       </div>

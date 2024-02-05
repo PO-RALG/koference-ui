@@ -1,349 +1,107 @@
 <template>
   <!-- About page content -->
   <div>
-    <h1 class="text-center font-weight-bold text-5 basil--text">
-      Conference Themes
-    </h1>
-    <!-- <hr class="centered-line" /> -->
-    <v-container class="mt-5">
-      <v-row>
-        <v-col cols="12">
-          <section
-            class="elementor-section elementor-top-section elementor-element elementor-element-d36a436 elementor-section-boxed elementor-section-height-default elementor-section-height-default tf-sticky-section tf-sticky-no"
-            data-id="d36a436"
-            data-element_type="section"
-            data-settings='{"tf_sticky":"no"}'
-          >
-            <div class="elementor-background-overlay"></div>
-            <div class="elementor-container elementor-column-gap-default">
-              <div
-                class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-215b7be"
-                data-id="215b7be"
-                data-element_type="column"
-              >
-                <div class="elementor-widget-wrap elementor-element-populated">
-                  <div
-                    class="elementor-element elementor-element-559cc8b elementor-widget elementor-widget-spacer"
-                    data-id="559cc8b"
-                    data-element_type="widget"
-                    data-widget_type="spacer.default"
-                  >
-                    <div class="elementor-widget-container">
-                      <div class="elementor-spacer">
-                        <div class="elementor-spacer-inner"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <section
-                    class="elementor-section elementor-inner-section elementor-element elementor-element-e5297f5 elementor-section-boxed elementor-section-height-default elementor-section-height-default tf-sticky-section tf-sticky-no"
-                    data-id="e5297f5"
-                    data-element_type="section"
-                    data-settings='{"tf_sticky":"no"}'
-                  >
-                    <div
-                      class="elementor-container elementor-column-gap-default"
-                    >
-                      <div
-                        class="elementor-column elementor-col-50 elementor-inner-column elementor-element elementor-element-c2d1fd8"
-                        data-id="c2d1fd8"
-                        data-element_type="column"
-                      >
-                        <div
-                          class="elementor-widget-wrap elementor-element-populated"
-                        >
-                          <div
-                            class="elementor-element elementor-element-87f172f elementor-widget elementor-widget-heading"
-                            data-id="87f172f"
-                            data-element_type="widget"
-                            data-widget_type="heading.default"
-                          >
-                            <div class="elementor-widget-container">
-                              <h2
-                                class="elementor-heading-title elementor-size-default"
-                              >
-                                Conference Main Themes.
-                              </h2>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </section>
-                  <div
-                    class="elementor-element elementor-element-de36516 elementor-widget elementor-widget-spacer"
-                    data-id="de36516"
-                    data-element_type="widget"
-                    data-widget_type="spacer.default"
-                  >
-                    <div class="elementor-widget-container">
-                      <div class="elementor-spacer">
-                        <div class="elementor-spacer-inner"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <section
-                    class="elementor-section elementor-inner-section elementor-element elementor-element-ff24718 elementor-section-boxed elementor-section-height-default elementor-section-height-default tf-sticky-section tf-sticky-no"
-                    data-id="ff24718"
-                    data-element_type="section"
-                    data-settings='{"tf_sticky":"no"}'
-                  >
-                    <div
-                      class="elementor-container elementor-column-gap-default"
-                    >
-                      <div
-                        class="elementor-column elementor-col-33 elementor-inner-column elementor-element elementor-element-9677356 animated fadeInLeft"
-                        data-id="9677356"
-                        data-element_type="column"
-                        data-settings='{"background_background":"classic","animation":"fadeInLeft"}'
-                      >
-                        <div
-                          class="elementor-widget-wrap elementor-element-populated"
-                        >
-                          <div
-                            class="elementor-element elementor-element-1166fe6 elementor-view-default elementor-position-top elementor-mobile-position-top elementor-widget elementor-widget-icon-box"
-                            data-id="1166fe6"
-                            data-element_type="widget"
-                            data-widget_type="icon-box.default"
-                          >
-                            <div class="elementor-widget-container">
-                              <div class="elementor-icon-box-wrapper">
-                                <div class="elementor-icon-box-icon">
-                                  <span
-                                    class="elementor-icon elementor-animation-"
-                                  >
-                                    <i
-                                      aria-hidden="true"
-                                      class="fas fa-check-circle"
-                                    ></i>
-                                  </span>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    Primary Health Care (PHC) as a vehicle for
-                                    the journey to achieve Universal Health
-                                    Coverage (UHC) in Tanzania
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="elementor-column elementor-col-33 elementor-inner-column elementor-element elementor-element-adc5cb4 animated fadeInUp"
-                        data-id="adc5cb4"
-                        data-element_type="column"
-                        data-settings='{"background_background":"classic","animation":"fadeInUp"}'
-                      >
-                        <div
-                          class="elementor-widget-wrap elementor-element-populated"
-                        >
-                          <div
-                            class="elementor-element elementor-element-41748ad elementor-view-default elementor-position-top elementor-mobile-position-top elementor-widget elementor-widget-icon-box"
-                            data-id="41748ad"
-                            data-element_type="widget"
-                            data-widget_type="icon-box.default"
-                          >
-                            <div class="elementor-widget-container">
-                              <div class="elementor-icon-box-wrapper">
-                                <div class="elementor-icon-box-icon">
-                                  <span
-                                    class="elementor-icon elementor-animation-"
-                                  >
-                                    <i
-                                      aria-hidden="true"
-                                      class="fas fa-hands-helping"
-                                    ></i>
-                                  </span>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <section
-                                    class="elementor-section elementor-inner-section elementor-element elementor-element-e5297f5 elementor-section-boxed elementor-section-height-default elementor-section-height-default tf-sticky-section tf-sticky-no"
-                                    data-id="e5297f5"
-                                    data-element_type="section"
-                                    data-settings='{"tf_sticky":"no"}'
-                                  >
-                                    <div
-                                      class="elementor-container elementor-column-gap-default"
-                                    >
-                                      <div
-                                        class="elementor-column elementor-col-50 elementor-inner-column elementor-element elementor-element-c2d1fd8"
-                                        data-id="c2d1fd8"
-                                        data-element_type="column"
-                                      >
-                                        <div
-                                          class="elementor-widget-wrap elementor-element-populated"
-                                        >
-                                          <div
-                                            class="elementor-element elementor-element-87f172f elementor-widget elementor-widget-heading"
-                                            data-id="87f172f"
-                                            data-element_type="widget"
-                                            data-widget_type="heading.default"
-                                          >
-                                            <div
-                                              class="elementor-widget-container"
-                                            >
-                                              <h2
-                                                class="elementor-heading-title elementor-size-default"
-                                              >
-                                                Conference Sub-themes.
-                                              </h2>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </section>
-                                  <p class="elementor-icon-box-description">
-                                    1. Social determinants, Social Behavioral
-                                    Change and Communication (SBCC) and
-                                    Community Health System.
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="elementor-column elementor-col-33 elementor-inner-column elementor-element elementor-element-a914286 animated fadeInRight"
-                        data-id="a914286"
-                        data-element_type="column"
-                        data-settings='{"background_background":"classic","animation":"fadeInRight"}'
-                      >
-                        <div
-                          class="elementor-widget-wrap elementor-element-populated"
-                        >
-                          <div
-                            class="elementor-element elementor-element-313c620 elementor-view-default elementor-position-top elementor-mobile-position-top elementor-widget elementor-widget-icon-box"
-                            data-id="313c620"
-                            data-element_type="widget"
-                            data-widget_type="icon-box.default"
-                          >
-                            <div class="elementor-widget-container">
-                              <div class="elementor-icon-box-wrapper">
-                                <div class="elementor-icon-box-icon">
-                                  <span
-                                    class="elementor-icon elementor-animation-"
-                                  >
-                                    <i
-                                      aria-hidden="true"
-                                      class="fas fa-network-wired"
-                                    ></i>
-                                  </span>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    2. Health Care Financing.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    3. Data use, Innovation, Technology and
-                                    Research.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    4. Health Workforce.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    5. Leadership and Governance.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    6. Health Commodities.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    7. Reproductive, maternal, new borne,
-                                    adolescent and child health.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    8. Emerging and re-emerging diseases.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    9. Communicable diseases.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    10. Non-Communicable diseases. .
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    11. Neglected Tropical diseases.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    12. Data use, Innovation, Technology and
-                                    Research.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    13 Oral Health. Research.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    14. Eye care.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    15. Nutrition services.
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    16. Social Welfare Services (Gender Based
-                                    Violence, Violence Against Children, Social
-                                    protection, Aging population).
-                                  </p>
-                                </div>
-                                <div class="elementor-icon-box-content">
-                                  <p class="elementor-icon-box-description">
-                                    17. Service delivery.
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </section>
-
-                  <div
-                    class="elementor-element elementor-element-cdc8111 elementor-widget elementor-widget-spacer"
-                    data-id="cdc8111"
-                    data-element_type="widget"
-                    data-widget_type="spacer.default"
-                  >
-                    <div class="elementor-widget-container">
-                      <div class="elementor-spacer">
-                        <div class="elementor-spacer-inner"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+    <!-- <hr class="centered-line2" /> -->
+    <div class="row align-start justify-center">
+      <div class="col-lg-5 col-12">
+        <div class="row">
+          <div class="text-right col-xl-3 col-4">
+            <img
+              alt="Elfin Force"
+              loading="lazy"
+              src="/man-enterprise.svg"
+              width="150"
+              height="351"
+            />
+          </div>
+          <div class="text-left col-xl-8 col-7 offset-1">
+            <div class="row">
+              <div class="col">
+                <h2 class="text-h4 text-uppercase font-weight-bold basil--text">
+                  Main Theme
+                </h2>
               </div>
             </div>
-          </section>
-        </v-col>
-      </v-row>
-    </v-container>
+            <div class="row">
+              <div class="text-body-1 man-text-block col col-9">
+                <div class="container">
+                  Primary Health Care <span class="green--text">(PHC)</span> as
+                  a vehicle for the journey to achieve Universal Health Coverage
+                  <span class="green--text">(UHC)</span> in Tanzania
+                </div>
+                <div class="py-3"></div>
+                <!-- <a
+                  href="/register/company"
+                  class="white--text text-transform-none pa-6 v-btn v-btn--is-elevated v-btn--has-bg v-btn--router v-btn--tile theme--dark v-size--default success"
+                  ><span class="v-btn__content">
+                    I want to recruit
+                    <i
+                      aria-hidden="true"
+                      class="v-icon notranslate mdi mdi-arrow-right-thin theme--dark"
+                    ></i></span
+                ></a> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 offset-lg-1 col-12">
+        <div class="row">
+          <div class="text-right col-xl-3 col-4">
+            <img
+              alt="Elfin Force"
+              loading="lazy"
+              src="/man-talent.svg"
+              width="123"
+              height="351"
+            />
+          </div>
+          <div class="text-left col-xl-8 col-7 offset-1">
+            <div class="row">
+              <div class="col">
+                <h2 class="text-h4 text-uppercase font-weight-bold basil--text">
+                  Sub Themes
+                </h2>
+              </div>
+            </div>
+            <div class="row">
+              <div class="text-body-1 man-text-block col col-9">
+                <div class="container">
+                  Social determinants, Social Behavioral Change and
+                  Communication (SBCC) and Community Health System.
+                </div>
+                <div class="container">Health Care Financing.</div>
+                <div class="container">
+                  Data use, Innovation, Technology and Research.
+                </div>
+                <div class="container">Health Workforce.</div>
+                <div class="container">Leadership and Governance.</div>
+                <div class="container">Health Commodities.</div>
+                <div class="container">
+                  Reproductive, maternal, new borne, adolescent and child
+                  health.
+                </div>
+                <div class="container">Emerging and re-emerging diseases.</div>
+                <div class="container">Communicable diseases.</div>
+                <div class="container">Non-Communicable diseases.</div>
+                <div class="container">Neglected Tropical diseases.</div>
+                <div class="container">
+                  Data use, Innovation, Technology and Research.
+                </div>
+                <div class="container">Eye care.</div>
+                <div class="container">Nutrition services.</div>
+                <div class="container">
+                  Social Welfare Services (Gender Based Violence, Violence
+                  Against Children, Social protection, Aging population).
+                </div>
+                <div class="container">Service delivery.</div>
+                <div class="py-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

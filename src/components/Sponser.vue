@@ -1,10 +1,11 @@
 <template>
   <div>
+    <hr class="centered-line2" />
+
     <span class="pt-12 pb-12 color-title">
       <v-card-title class="text-center justify-center py-6">
         <h1 class="font-weight-bold text-5 basil--text">Sponsors</h1>
       </v-card-title>
-      <!-- <hr class="centered-line" /> -->
     </span>
     <div class="elementor-shape elementor-shape-top" data-negative="true">
       <v-row justify="center" align="center">
@@ -77,5 +78,10 @@ export default {
 .image-card {
   /* Add any specific styles for the cards */
   margin: 10px; /* Example margin for spacing between cards */
+}
+.centered-line2 {
+  width: 90%;
+  border: 3px solid rgb(26, 86, 182); /* Adjust thickness as needed */
+  margin: 8px auto; /* Adjust as needed */
 }
 </style>
