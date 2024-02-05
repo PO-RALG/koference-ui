@@ -1,23 +1,17 @@
 <template>
   <v-footer class="bg-kala">
-    <!-- Adjust the background color and text color -->
-    <v-sheet color="" class="bg-kala">
-      <v-container>
-        <v-row>
-          <v-col>
-            <v-img class="pl-12" src="/aaph.png" height="50"></v-img>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-sheet>
-
-    <!-- Footer content -->
-
     <v-sheet class="bg-kala">
       <v-container>
         <v-row>
           <v-col>
-            <p class="text-center"></p>
+            <p class="text-center">
+              <v-img
+                class="pl-12"
+                src="/coat_of_arms.svg.png"
+                width="20px"
+                height="50px"
+              ></v-img>
+            </p>
           </v-col>
         </v-row>
       </v-container>

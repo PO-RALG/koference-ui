@@ -1,10 +1,6 @@
 <template>
   <v-container class="mt-12">
     <v-col cols="12">
-      <v-alert text outlined color="deep-orange" icon="mdi-cash">
-        {{ "CPS misc  Dep. Exp. Elecronic A/C  9921169777 Bank Name BOT" }}.
-      </v-alert>
-
       <h1 class="text-center mb-5 color-title">Select Category to Register</h1>
       <hr class="centered-line" />
       <v-divider class="mb-5"></v-divider>
@@ -27,6 +23,14 @@
               <v-radio label="Forum" value="Forum"></v-radio>
             </v-radio-group>
           </v-row>
+          <v-alert text outlined color="deep-orange" icon="mdi-information">
+            {{
+              "All payment for the conference should be made to the following Bank details, and an appropriate receipt uploaded while log in your registration account:"
+            }}.
+            <span class="font-weight-bold black--text"
+              >CPS misc Dep. Exp. Elecronic A/C 9921169777 Bank name BOT</span
+            >
+          </v-alert>
         </v-card-text>
       </v-row>
       <!-- <div style="background-color: rgb(242, 242, 242); ruby-position: under">
@@ -104,9 +108,9 @@
                   <v-col cols="12" md="6">
                     <v-text-field
                       outlined
-                      v-model="salutation"
+                      v-model="Salutation"
                       :rules="nameRules"
-                      label="Saltation"
+                      label="Salutation (e.g Mr/Mrs/Dr./Prof etc)"
                       required
                     ></v-text-field>
                   </v-col>
@@ -537,10 +541,7 @@ export default {
       ],
       phoneNumber: "",
       username: "",
-      phoneRules: [
-        (v) => !!v || "Phone number is required",
-        (v) => /^\d{10}$/.test(v) || "Phone number must be 10 digits",
-      ],
+      phoneRules: [(v) => !!v || "Phone number is required"],
       description: "",
       nameRules: [],
     };

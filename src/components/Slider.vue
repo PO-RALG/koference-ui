@@ -28,20 +28,26 @@
                           class="font-weight-black text-shadow text-h4 text-sm-h2 text-lg-h1"
                         >
                           <span class="green--text"
-                            >IPHC CONFERENCE IN DODOMA TANZANIA 2024:</span
-                          ><br />VENUE : JAKAYA KIKWETE
+                            >1st International Primary Health Care Conference in
+                            Tanzania Date: 25-27/03/2024</span
+                          ><br />
                         </h1>
                       </div>
                     </div>
                     <div class="row no-gutters">
                       <div class="offset-lg-1 col col-10 offset-1">
                         <div class="container text-shadow text-body-1 cols">
-                          <strong>Elfin Force</strong> is a service for the
-                          <span class="green--text">anonymous job search</span>
-                          for IT related specialists. This service is designed
-                          to resolve candidates anxiety and doubts regarding
-                          employers and make easier hiring process for both
-                          sides: job seekers and employer.
+                          <strong> Guest of Honor: </strong>
+                          <span class="green--text">
+                            H.E. Dr. Samia Suluhu Hassan, The President of the
+                            United Republic of Tanzania
+                          </span>
+                          <br />
+                          <strong> Venue:: </strong>
+                          <span class="green--text">
+                            Jakaya Mrisho Kikwete Convention, Dodoma City
+                            Council
+                          </span>
                         </div>
                       </div>
                     </div>

@@ -92,7 +92,7 @@ export default defineComponent({
 </script>
 <style>
 .bg_color {
-  background: #356859 !important;
+  background: #052f69 !important;
 }
 .basil {
   background-color: #fffbe6 !important;
