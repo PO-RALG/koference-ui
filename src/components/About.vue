@@ -24,12 +24,9 @@
                             <h2>
                               <li>
                                 <v-icon color="primary">mdi-check</v-icon>
-                                To provide scientific proven evidence,
-                                innovations and best practices to support
-                                evidence-based decision making to policy makers
-                                and implementers using available
-                                multidisciplinary local and international
-                                experts in PHC.
+                                To be an exemplary international conference in
+                                sharing high-quality best practices, innovations
+                                and scientific evidence in PHC
                               </li>
                             </h2>
                           </ul>
@@ -51,9 +48,12 @@
                             <h2>
                               <li>
                                 <v-icon color="primary">mdi-check</v-icon>
-                                To be an exemplary international conference in
-                                sharing high-quality best practices, innovations
-                                and scientific evidence in PHC.
+                                To provide scientific proven evidence,
+                                innovations and best practices to support
+                                evidence-based decision making to policy makers
+                                and implementers using available
+                                multidisciplinary local and international
+                                experts in PHC
                               </li>
                             </h2>
                           </ul>
@@ -75,19 +75,31 @@
                             <h2>
                               <li>
                                 <v-icon color="primary">mdi-check</v-icon>
-                                To provide scientifically proven evidence,
-                                innovations, and best practices.
+                                Integrity and Loyalty
                               </li>
                               <li>
                                 <v-icon color="primary">mdi-check</v-icon>
-                                Support evidence-based decision-making for
-                                policy makers and implementers.
+                                Accountability and Transparency
                               </li>
                               <li>
                                 <v-icon color="primary">mdi-check</v-icon>
-                                Utilize multidisciplinary local and
-                                international experts in Primary Healthcare
-                                (PHC).
+                                Unity and Team spirit
+                              </li>
+                              <li>
+                                <v-icon color="primary">mdi-check</v-icon>
+                                Timely and Quality services
+                              </li>
+                              <li>
+                                <v-icon color="primary">mdi-check</v-icon>
+                                Confidentiality and Professionalism
+                              </li>
+                              <li>
+                                <v-icon color="primary">mdi-check</v-icon>
+                                Accessibility and Responsiveness
+                              </li>
+                              <li>
+                                <v-icon color="primary">mdi-check</v-icon>
+                                Openness
                               </li>
                             </h2>
                           </ul>

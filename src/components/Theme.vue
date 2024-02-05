@@ -67,34 +67,94 @@
             <div class="row">
               <div class="text-body-1 man-text-block col col-9">
                 <div class="container">
-                  Social determinants, Social Behavioral Change and
-                  Communication (SBCC) and Community Health System.
+                  <ul>
+                    <li>
+                      Social determinants, Social Behavioral Change and
+                      Communication (SBCC) and Community Health System.
+                    </li>
+                  </ul>
                 </div>
-                <div class="container">Health Care Financing.</div>
                 <div class="container">
-                  Data use, Innovation, Technology and Research.
+                  <ul>
+                    <li>Health Care Financing.</li>
+                  </ul>
                 </div>
-                <div class="container">Health Workforce.</div>
-                <div class="container">Leadership and Governance.</div>
-                <div class="container">Health Commodities.</div>
                 <div class="container">
-                  Reproductive, maternal, new borne, adolescent and child
-                  health.
+                  <ul>
+                    <li>Data use, Innovation, Technology and Research.</li>
+                  </ul>
                 </div>
-                <div class="container">Emerging and re-emerging diseases.</div>
-                <div class="container">Communicable diseases.</div>
-                <div class="container">Non-Communicable diseases.</div>
-                <div class="container">Neglected Tropical diseases.</div>
                 <div class="container">
-                  Data use, Innovation, Technology and Research.
+                  <ul>
+                    <li>Health Workforce.</li>
+                  </ul>
                 </div>
-                <div class="container">Communities engagement.</div>
-                <div class="container">Nutrition services.</div>
                 <div class="container">
-                  Social Welfare Services (Gender Based Violence, Violence
-                  Against Children, Social protection, Aging population).
+                  <ul>
+                    <li>Leadership and Governance.</li>
+                  </ul>
                 </div>
-                <div class="container">Service delivery.</div>
+                <div class="container">
+                  <ul>
+                    <li>Health Commodities.</li>
+                  </ul>
+                </div>
+                <div class="container">
+                  <ul>
+                    <li>
+                      Reproductive, maternal, new borne, adolescent and child
+                      health.
+                    </li>
+                  </ul>
+                </div>
+                <div class="container">
+                  <ul>
+                    <li>Emerging and re-emerging diseases.</li>
+                  </ul>
+                </div>
+                <div class="container">
+                  <ul>
+                    <li>Communicable diseases.</li>
+                  </ul>
+                </div>
+                <div class="container">
+                  <ul>
+                    <li>Non-Communicable diseases.</li>
+                  </ul>
+                </div>
+                <div class="container">
+                  <ul>
+                    <li>Neglected Tropical diseases.</li>
+                  </ul>
+                </div>
+                <div class="container">
+                  <ul>
+                    <li>Data use, Innovation, Technology and Research.</li>
+                  </ul>
+                </div>
+                <div class="container">
+                  <ul>
+                    <li>Communities engagement.</li>
+                  </ul>
+                </div>
+                <div class="container">
+                  <ul>
+                    <li>Nutrition services.</li>
+                  </ul>
+                </div>
+                <div class="container">
+                  <ul>
+                    <li>
+                      Social Welfare Services (Gender Based Violence, Violence
+                      Against Children, Social protection, Aging population).
+                    </li>
+                  </ul>
+                </div>
+                <div class="container">
+                  <ul>
+                    <li>Service delivery.</li>
+                  </ul>
+                </div>
                 <div class="py-3"></div>
               </div>
             </div>
@@ -133,8 +193,8 @@ export default {
   margin-bottom: 16px;
 }
 
-ul {
-  list-style-type: none;
+/* ul {
+  list-style-type: circle;
   padding: 0;
 }
 
@@ -142,7 +202,7 @@ li {
   display: flex;
   align-items: start;
   margin-bottom: 8px;
-}
+} */
 
 v-icon {
   margin-right: 8px;
