@@ -27,7 +27,7 @@
             {{
               "All payment for the conference should be made to the following Bank details, and an appropriate receipt uploaded while log in your registration account:"
             }}.
-            <span class="font-weight-bold black--text"
+            <span class="font-weight-bold green--text"
               >CPS misc Dep. Exp. Elecronic A/C 9921169777 Bank name BOT</span
             >
           </v-alert>
@@ -58,15 +58,26 @@
       </div> -->
       <Modal :modal="dialogs.dialog1" :width="1200">
         <template v-slot:header>
-          <ModalHeader :title="`Conference Registration Form`" />
+          <ModalHeader
+            @closeDialog="closeDialog('dialog1')"
+            :title="`Conference Registration Form`"
+          />
         </template>
         <template v-slot:body>
           <ModalBody>
+            <v-col cols="12" md="6">
+              <v-sheet>
+                <p class="text-uppercase">
+                  <strong>SELECTED GROUP:</strong> {{ group }}
+                </p>
+              </v-sheet>
+            </v-col>
             <v-form v-model="valid" @submit.prevent="submitForm">
               <v-container>
                 <v-row>
                   <v-col cols="12" md="6">
                     <v-select
+                      v-if="group === 'Individual'"
                       outlined
                       v-model="category"
                       :items="registrationCategories"
@@ -76,10 +87,22 @@
                       clearable
                     >
                     </v-select>
+                    <!-- <v-text-field
+                      v-else
+                      outlined
+                      v-model="organization"
+                      :rules="nameRules"
+                      label="Organization"
+                      required
+                      @input="updateOrganization"
+                    ></v-text-field> -->
                   </v-col>
 
                   <!-- item-title="name"-->
-                  <v-col cols="12" md="6">
+                  <v-col
+                    :cols="group === 'Individual' ? 6 : 12"
+                    :md="group === 'Individual' ? 6 : 12"
+                  >
                     <v-autocomplete
                       outlined
                       v-model="country"
@@ -108,7 +131,7 @@
                   <v-col cols="12" md="6">
                     <v-text-field
                       outlined
-                      v-model="Salutation"
+                      v-model="salutation"
                       :rules="nameRules"
                       label="Salutation (e.g Mr/Mrs/Dr./Prof etc)"
                       required
@@ -208,7 +231,7 @@
 
                 <!-- Description Field -->
                 <v-row align="center" justify="center">
-                  <v-col cols="6" md="12">
+                  <v-col cols="12" md="12">
                     <v-textarea
                       outlined
                       v-model="description"
@@ -223,7 +246,6 @@
         </template>
         <template v-slot:footer>
           <ModalFooter>
-            <v-btn color="error" @click="closeDialog('dialog1')">Cancel</v-btn>
             <v-btn color="info" @click="resetForm">Reset</v-btn>
             <v-btn type="submit" color="primary" @click="postData"
               >Submit</v-btn
@@ -619,6 +641,8 @@ export default {
 
     closeDialog(dialogName) {
       this.dialogs[dialogName] = false;
+      this.group = "";
+      this.resetForm();
     },
 
     performAction(dialogName) {

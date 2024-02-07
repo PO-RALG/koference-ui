@@ -70,11 +70,11 @@ const requestHandler = async (requestConfig: AxiosRequestConfig) => {
 };
 
 const errorHandler = (error: any) => {
-  console.log("erorrrrrrrrr", error.data.errorDetails.message);
+  // console.log("erorrrrrrrrr", error.data.errorDetails.message);
   store.dispatch("Loader/DONE");
   const payload: SnackBarPayload = {
     error: error.data.errorDetails.message,
-    title: capitalize("Somrthing wrong"),
+    title: capitalize("Something wrong"),
     color: "warning",
     icon: "mdi-alert-box",
     class: "info--text",

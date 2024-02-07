@@ -105,7 +105,7 @@
 
                   <!-- Description Field -->
                   <v-row justify="center">
-                    <v-col cols="6" md="12">
+                    <v-col cols="12" md="12">
                       <v-text-field
                         outlined
                         v-model="formData.objective"

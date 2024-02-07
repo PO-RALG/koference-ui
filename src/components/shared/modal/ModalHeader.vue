@@ -11,6 +11,7 @@
     >
 
     <v-spacer></v-spacer>
+    <!-- <v-icon large color="white">mdi-close</v-icon> -->
     <v-btn
       v-if="is_signup && is_known === 'known'"
       @click="openSignUp"
@@ -29,10 +30,10 @@
     >
       Jisajili
     </v-btn>
-    <span v-if="is_claiming">
-      <v-btn small @click="closeDialogx" color="white" class="white--text" text>
-        <v-icon large>mdi-close</v-icon>
-      </v-btn>
+    <span>
+      <v-icon @click="closeDialogx" large color="white" style="cursor: pointer"
+        >mdi-close</v-icon
+      >
     </span>
   </v-card-title>
 </template>
