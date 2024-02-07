@@ -100,7 +100,7 @@
 
                   <!-- item-title="name"-->
                   <v-col
-                    :cols="group === 'Individual' ? 6 : 12"
+                    :cols="group === 'Individual' ? 12 : 12"
                     :md="group === 'Individual' ? 6 : 12"
                   >
                     <v-autocomplete
@@ -129,13 +129,28 @@
                 <!-- Name Fields -->
                 <v-row align="center" justify="center">
                   <v-col cols="12" md="6">
-                    <v-text-field
+                    <v-select
+                      clearable
                       outlined
                       v-model="salutation"
-                      :rules="nameRules"
-                      label="Salutation (e.g Mr/Mrs/Dr./Prof etc)"
-                      required
-                    ></v-text-field>
+                      :items="[
+                        'Mr.',
+                        'Mr.',
+                        'Dr.',
+                        'Prof.',
+                        'Ms',
+                        'Miss',
+                        'Rev.',
+                        'Hon',
+                        'Capt',
+                        'Sir',
+                        'Lord',
+                        'Lady.',
+                        'Esq.',
+                      ]"
+                      label=" Select Salutation (e.g Mr/Mr/Dr./Prof etc)"
+                    >
+                    </v-select>
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
