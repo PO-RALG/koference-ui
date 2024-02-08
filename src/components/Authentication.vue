@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container class="mt-10">
+    <v-container class="mb-1 pt-12">
       <v-row justify="center">
         <v-col cols="12" sm="8" md="6">
           <v-card>
@@ -31,16 +31,68 @@
                   class="mr-3 ml-3"
                 ></v-text-field>
                 <v-card-actions class="mr-1 ml-0 mt-n4">
-                  <v-btn color="#19577b" flat class="white--text">
-                    <v-icon left>mdi-ask</v-icon>FORGOT YOUR PASSWORD
+                  <v-btn
+                    @click="openDialog"
+                    color="warning"
+                    text
+                    class="white--text"
+                  >
+                    <v-icon left>mdi-ask</v-icon>FORGOT PASSWORD ?
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-btn color="#19577b" flat class="white--text" type="submit">
+                  <v-btn color="green" text class="white--text" type="submit">
                     <v-icon left>mdi-login</v-icon>LOGIN
                   </v-btn>
                 </v-card-actions>
               </v-form>
             </v-card-text>
+
+            <Modal :modal="data.openDialogForm" :width="600">
+              <template v-slot:header>
+                <ModalHeader
+                  @closeDialog="closeDialog()"
+                  :title="`Restore Password`"
+                />
+              </template>
+              <template v-slot:body>
+                <ModalBody>
+                  <v-form>
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="12" md="12">
+                          <v-text-field
+                            prepend-inner-icon="mdi-account-box"
+                            label="username"
+                            v-model="data.formData2.usernameRestore"
+                            required
+                            outlined
+                            class="mr-3 ml-3"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="12" md="12">
+                          <v-text-field
+                            prepend-inner-icon="mdi-account-box"
+                            label="Valid email"
+                            v-model="data.formData2.email"
+                            required
+                            outlined
+                            :rules="data.emailRules"
+                            class="mr-3 ml-3"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-form>
+                </ModalBody>
+              </template>
+              <template v-slot:footer>
+                <ModalFooter>
+                  <v-btn color="green" text class="white--text" @click="save">
+                    <v-icon left>mdi-restore</v-icon>Restore
+                  </v-btn>
+                </ModalFooter>
+              </template>
+            </Modal>
           </v-card>
         </v-col>
       </v-row>
@@ -51,7 +103,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { reactive, onMounted } from "vue";
-import { authenticate, setUser } from "./services";
+import { authenticate, setUser, restoreRegistration } from "./services";
 import { AxiosResponse } from "axios";
 import router from "@/router";
 
@@ -67,6 +119,15 @@ export default Vue.extend({
     const query = props.query;
 
     let data = reactive({
+      emailRules: [
+        (v) => !!v || "Email is required",
+        (v) => /.+@.+\..+/.test(v) || "Email must be valid",
+      ],
+      formData2: {
+        usernameRestore: "",
+        email: "",
+      },
+      usernameRestore: "",
       username: "",
       password: "",
       items: [
@@ -89,6 +150,7 @@ export default Vue.extend({
       drawer: false, // Initial state of the navigation drawer
       filePreviewmodal: false,
       isClaim: false,
+      openDialogForm: false,
       toopen: "",
       retrivedUserToBind: null,
       searchUser: "",
@@ -115,12 +177,7 @@ export default Vue.extend({
 
       queryCategories: [],
       documentTypes: [],
-      emailRules: [
-        (v: any) => !!v || "username is required",
-        (v: any) =>
-          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-          "E-mail must be a valid username",
-      ],
+
       passwordRules: [(v: any) => !!v || "Password is required"],
       formData: {
         id: "",
@@ -135,7 +192,12 @@ export default Vue.extend({
       retrivedUser: "",
     });
 
-    onMounted(() => {});
+    onMounted(() => {
+      Vue.nextTick(() => {
+        // This will be executed after the DOM has been updated
+        window.scrollTo(0, 0); // Scroll to the top
+      });
+    });
 
     const loginUser = () => {
       const payload = {
@@ -156,10 +218,26 @@ export default Vue.extend({
         }
       });
     };
+    const openDialog = () => {
+      data.openDialogForm = true;
+    };
+    const closeDialog = () => {
+      data.openDialogForm = false;
+    };
+    const save = () => {
+      console.log("formData", data.formData2);
+      // this.openDialogForm = false;
+      restoreRegistration(data.formData2).then((response) => {
+        console.log("response:", response);
+      });
+    };
 
     return {
       data,
       loginUser,
+      openDialog,
+      closeDialog,
+      save,
     };
   },
 });

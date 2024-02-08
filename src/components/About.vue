@@ -118,6 +118,8 @@
 </template>
 
 <script>
+import Vue from "vue";
+
 export default {
   name: "App",
   methods: {
@@ -130,6 +132,12 @@ export default {
     handleButtonClick1() {
       // Handle the first button click
     },
+  },
+  created() {
+    Vue.nextTick(() => {
+      // This will be executed after the DOM has been updated
+      window.scrollTo(0, 0); // Scroll to the top
+    });
   },
 };
 </script>

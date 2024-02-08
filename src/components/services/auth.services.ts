@@ -28,6 +28,9 @@ const create = async (payload: any) => {
 const registerUser = async (payload: any) => {
   return axios.post("/api/v1/users", payload);
 };
+const restoreRegistration = async (payload: any) => {
+  return axios.post("/api/v1/users/restore-password", payload);
+};
 const updateUser = async (payload: any) => {
   return await axios.patch(`/api/v1/users/` + payload.id, payload);
 };
@@ -37,7 +40,7 @@ const sendFeedbackData = async (payload: any) => {
 };
 
 const setUser = async (payload: any) => {
-  console.log("userxxxx", payload.data);
+  // console.log("userxxxx", payload.data);
   // rename menu to menu_groups and menu's menu to children
   const data = payload.data;
   const sorted = _.sortBy(data, "description");
@@ -57,7 +60,7 @@ const setUser = async (payload: any) => {
   payload.data.menu_groups = newMenuGroup;
   // delete menu
 
-  console.log("payloadpppppp", payload);
+  // console.log("payloadpppppp", payload);
 
   const user = JSON.stringify(payload.data);
   store.dispatch("Auth/LOGIN", user);
@@ -106,4 +109,5 @@ export {
   registerUser,
   updateUser,
   getSubthemes,
+  restoreRegistration,
 };

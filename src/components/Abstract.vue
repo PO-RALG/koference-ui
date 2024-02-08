@@ -221,6 +221,8 @@
 
 <script>
 import axios from "axios";
+import Vue from "vue";
+
 import { create, getSubthemes } from "./services"; // Fix the import statement
 export default {
   name: "Abstract",
@@ -304,6 +306,10 @@ export default {
   },
   created() {
     this.fetchSubthemes();
+    Vue.nextTick(() => {
+      // This will be executed after the DOM has been updated
+      window.scrollTo(0, 0); // Scroll to the top
+    });
   },
   methods: {
     fetchSubthemes() {

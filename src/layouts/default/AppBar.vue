@@ -226,7 +226,7 @@ export default {
 
 <style scoped>
 .mt-top {
-  margin-top: 60px;
+  margin-top: 80px;
 }
 
 .basil {

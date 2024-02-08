@@ -472,6 +472,8 @@
 </template>
 
 <script>
+import Vue from "vue";
+
 import axios from "axios";
 import {
   registerUser,
@@ -583,11 +585,13 @@ export default {
       nameRules: [],
     };
   },
+
   created() {
-    // Call the fetchData method when the component is mounted
-    // this.fetchData();
+    Vue.nextTick(() => {
+      // This will be executed after the DOM has been updated
+      window.scrollTo(0, 0); // Scroll to the top
+    });
     this.fetchCountries();
-    // this.fetchRegistrationCategories();
   },
   methods: {
     updateOrganization(value) {
