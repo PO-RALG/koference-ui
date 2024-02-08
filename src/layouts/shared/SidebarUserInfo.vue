@@ -7,7 +7,7 @@
       <v-row>
         <v-layout justify-center align-center>
           <v-col cols="4" class="text-left ml-5">
-            <img class="user-avatar" :src="logoUrl" />
+            <img class="user-avatar" :src="userx" />
           </v-col>
           <v-col cols="8" class="text-left pl-0 mt-n2">
             <div class="description">
@@ -41,6 +41,11 @@ export default defineComponent({
       type: String,
       default: "",
     },
+  },
+  data() {
+    return {
+      userx: "/user.jpeg",
+    };
   },
   setup(props) {
     const fullName = computed(() => {

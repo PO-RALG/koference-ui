@@ -31,6 +31,9 @@
                   class="mr-3 ml-3"
                 ></v-text-field>
                 <v-card-actions class="mr-1 ml-0 mt-n4">
+                  <v-btn color="#19577b" flat class="white--text">
+                    <v-icon left>mdi-ask</v-icon>FORGOT YOUR PASSWORD
+                  </v-btn>
                   <v-spacer></v-spacer>
                   <v-btn color="#19577b" flat class="white--text" type="submit">
                     <v-icon left>mdi-login</v-icon>LOGIN

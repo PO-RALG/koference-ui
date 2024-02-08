@@ -28,10 +28,14 @@ const create = async (payload: any) => {
 const registerUser = async (payload: any) => {
   return axios.post("/api/v1/users", payload);
 };
+const updateUser = async (payload: any) => {
+  return await axios.patch(`/api/v1/users/` + payload.id, payload);
+};
 
 const sendFeedbackData = async (payload: any) => {
   return await axios.patch(`/api/v1/queries/` + payload.query.id, payload);
 };
+
 const setUser = async (payload: any) => {
   console.log("userxxxx", payload.data);
   // rename menu to menu_groups and menu's menu to children
@@ -100,5 +104,6 @@ export {
   openFile,
   create,
   registerUser,
+  updateUser,
   getSubthemes,
 };

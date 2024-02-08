@@ -1,10 +1,14 @@
 <template>
-  <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="#CFD8DC">
-    <v-app-bar-nav-icon @click.stop="toggleSidebar"></v-app-bar-nav-icon>
+  <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="#052f69">
+    <v-app-bar-nav-icon
+      color="white"
+      large
+      @click.stop="toggleSidebar"
+    ></v-app-bar-nav-icon>
     <v-toolbar-title style="width: 300px" class="ml-0 pl-4"> </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-menu
-      class="top-menu"
+      class="top-menu white"
       max-height="420"
       v-model="data.menu"
       :close-on-content-click="true"
