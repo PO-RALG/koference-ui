@@ -5,7 +5,7 @@
       <hr class="centered-line" />
       <v-divider class="mb-5"></v-divider>
     </v-col>
-    <v-card>
+    <v-card flat>
       <v-row>
         <v-card-text class="">
           <v-row justify="center">

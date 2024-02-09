@@ -3,7 +3,9 @@
     <v-container>
       <v-card-actions class="pa-0">
         <h2>{{ "Profile Details" }}</h2>
+
         <v-spacer></v-spacer>
+
         <v-btn
           class="white--text"
           color="green"
@@ -18,7 +20,7 @@
           Payment Cofirmation
         </v-btn>
       </v-card-actions>
-      <v-card max-width="100%" class="">
+      <v-card flat max-width="100%" class="">
         <v-card-actions>
           <span
             >Payment Status:
@@ -33,10 +35,11 @@
             }}</span
           >
         </v-card-actions>
+        <h1><hr class="centered-line2" /></h1>
         <v-container>
           <v-row justify="start">
             <v-col cols="12" sm="9" md="7">
-              <v-card color="grey" class="elevation-10 custom-card bdt2">
+              <v-card color="grey" flat class="elevation-1 custom-card bdt2">
                 <!-- Business Card Header -->
                 <v-card-title class="text-h6 text-center mb-4">
                   <!-- Business Card -->
@@ -587,6 +590,11 @@ export default {
 </script>
 
 <style scoped>
+.centered-line2 {
+  width: 100%;
+  border: 3px solid rgb(26, 86, 182); /* Adjust thickness as needed */
+  margin: 8px auto; /* Adjust as needed */
+}
 .custom-card {
   background-image: url(/bg.jpg) !important;
   background-size: cover; /* Ensures the image covers the entire card */

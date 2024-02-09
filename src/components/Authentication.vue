@@ -1,102 +1,96 @@
 <template>
   <div>
-    <v-container class="mb-1 pt-12">
-      <v-row justify="center">
-        <v-col cols="12" sm="8" md="6">
-          <v-card>
-            <v-card-title class="text-h6">Login</v-card-title>
-            <v-card-text>
-              <v-form
-                ref="form"
-                v-model="$data.valid"
-                @submit.prevent="loginUser"
-              >
-                <v-text-field
-                  prepend-inner-icon="mdi-account-box"
-                  label="username"
-                  v-model="data.username"
-                  required
-                  outlined
-                  class="mr-3 ml-3"
-                ></v-text-field>
+    <v-row class="mb-1 pt-12" justify="center">
+      <v-col cols="12" sm="12" md="8">
+        <v-card flat>
+          <v-card-title class="text-h6">Login</v-card-title>
+          <v-card-text>
+            <v-form
+              ref="form"
+              v-model="$data.valid"
+              @submit.prevent="loginUser"
+            >
+              <v-text-field
+                prepend-inner-icon="mdi-account-box"
+                label="username"
+                v-model="data.username"
+                required
+                outlined
+                class="mr-3 ml-3"
+              ></v-text-field>
 
-                <v-text-field
-                  prepend-inner-icon="mdi-key-variant"
-                  label="Password"
-                  v-model="data.password"
-                  v-bind:rules="data.passwordRules"
-                  v-bind:type="'password'"
-                  required
-                  outlined
-                  class="mr-3 ml-3"
-                ></v-text-field>
-                <v-card-actions class="mr-1 ml-0 mt-n4">
-                  <v-btn
-                    @click="openDialog"
-                    color="warning"
-                    text
-                    class="white--text"
-                  >
-                    <v-icon left>mdi-ask</v-icon>FORGOT PASSWORD ?
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn color="green" text class="white--text" type="submit">
-                    <v-icon left>mdi-login</v-icon>LOGIN
-                  </v-btn>
-                </v-card-actions>
-              </v-form>
-            </v-card-text>
+              <v-text-field
+                prepend-inner-icon="mdi-key-variant"
+                label="Password"
+                v-model="data.password"
+                v-bind:rules="data.passwordRules"
+                v-bind:type="'password'"
+                required
+                outlined
+                class="mr-3 ml-3"
+              ></v-text-field>
+              <v-card-actions class="mr-1 ml-0 mt-n4">
+                <v-btn @click="openDialog" color="warning" class="white--text">
+                  <v-icon left>mdi-ask</v-icon>FORGOT PASSWORD ?
+                </v-btn>
+                <v-spacer></v-spacer>
 
-            <Modal :modal="data.openDialogForm" :width="600">
-              <template v-slot:header>
-                <ModalHeader
-                  @closeDialog="closeDialog()"
-                  :title="`Restore Password`"
-                />
-              </template>
-              <template v-slot:body>
-                <ModalBody>
-                  <v-form>
-                    <v-container>
-                      <v-row>
-                        <v-col cols="12" sm="12" md="12">
-                          <v-text-field
-                            prepend-inner-icon="mdi-account-box"
-                            label="username"
-                            v-model="data.formData2.usernameRestore"
-                            required
-                            outlined
-                            class="mr-3 ml-3"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="12" md="12">
-                          <v-text-field
-                            prepend-inner-icon="mdi-account-box"
-                            label="Valid email"
-                            v-model="data.formData2.email"
-                            required
-                            outlined
-                            :rules="data.emailRules"
-                            class="mr-3 ml-3"
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-form>
-                </ModalBody>
-              </template>
-              <template v-slot:footer>
-                <ModalFooter>
-                  <v-btn color="green" text class="white--text" @click="save">
-                    <v-icon left>mdi-restore</v-icon>Restore
-                  </v-btn>
-                </ModalFooter>
-              </template>
-            </Modal>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+                <v-btn color="green" class="white--text" type="submit">
+                  <v-icon left>mdi-login</v-icon>LOGIN
+                </v-btn>
+              </v-card-actions>
+            </v-form>
+          </v-card-text>
+
+          <Modal :modal="data.openDialogForm" :width="600">
+            <template v-slot:header>
+              <ModalHeader
+                @closeDialog="closeDialog()"
+                :title="`Restore Password`"
+              />
+            </template>
+            <template v-slot:body>
+              <ModalBody>
+                <v-form>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field
+                          prepend-inner-icon="mdi-account-box"
+                          label="username"
+                          v-model="data.formData2.usernameRestore"
+                          required
+                          outlined
+                          class="mr-3 ml-3"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-text-field
+                          prepend-inner-icon="mdi-email"
+                          label="Valid email"
+                          v-model="data.formData2.email"
+                          required
+                          outlined
+                          :rules="data.emailRules"
+                          class="mr-3 ml-3"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+              </ModalBody>
+            </template>
+            <template v-slot:footer>
+              <ModalFooter>
+                <v-btn color="green" text class="white--text" @click="save">
+                  <v-icon left>mdi-restore</v-icon>Restore
+                </v-btn>
+              </ModalFooter>
+            </template>
+          </Modal>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

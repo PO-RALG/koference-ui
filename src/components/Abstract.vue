@@ -13,7 +13,7 @@
         <v-row>
           <v-col cols="12" md="12">
             <!--            <v-card>-->
-            <v-card color="#f3f5f5" elevation="1">
+            <v-card flat color="#f3f5f5" elevation="0">
               <!-- Form Content -->
               <v-form v-model="valid" @submit.prevent="submitForm">
                 <v-container>

@@ -23,13 +23,19 @@
               </div>
             </div>
             <div class="row">
-              <div class="text-body-1 man-text-block col col-9">
+              <div class="text-body-1 man-text-block col col-8">
                 <div class="container">
                   Primary Health Care <span class="green--text">(PHC)</span> as
                   a vehicle for the journey to achieve Universal Health Coverage
                   <span class="green--text">(UHC)</span> in Tanzania
                 </div>
-                <div class="py-3"></div>
+                <div class="py-3">
+                  <v-img
+                    src="/bango.jpeg"
+                    alt="Business Card Footer Image"
+                    max-width="100%"
+                  ></v-img>
+                </div>
                 <!-- <a
                   href="/register/company"
                   class="white--text text-transform-none pa-6 v-btn v-btn--is-elevated v-btn--has-bg v-btn--router v-btn--tile theme--dark v-size--default success"
