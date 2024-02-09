@@ -33,7 +33,7 @@
           </v-alert>
         </v-card-text>
       </v-row>
-      <!-- <div style="background-color: rgb(242, 242, 242); ruby-position: under">
+      <div style="background-color: rgb(242, 242, 242); ruby-position: under">
         <v-container>
           <v-data-table :items="tableData" :headers="tableHeaders">
             <template v-slot:item="{ item }">
@@ -41,7 +41,8 @@
                 <td>{{ item.sno }}</td>
                 <td>{{ item.categoryName }}</td>
                 <td>{{ item.fees }}</td>
-                <td>
+                <td>{{ item.fees2 }}</td>
+                <!-- <td>
                   <v-btn
                     class="ma-1"
                     color="blue-grey darken-3"
@@ -50,12 +51,12 @@
                   >
                     View Details
                   </v-btn>
-                </td>
+                </td> -->
               </tr>
             </template>
           </v-data-table>
         </v-container>
-      </div> -->
+      </div>
       <Modal :modal="dialogs.dialog1" :width="1200">
         <template v-slot:header>
           <ModalHeader
@@ -306,9 +307,6 @@
         <v-card>
           <v-card-title style="background-color: #d1d4d4">
             Package Details
-            <!--            <v-btn icon @click="closeDialog('dialog1')">-->
-            <!--              <v-icon>mdi-close</v-icon>-->
-            <!--            </v-btn>-->
           </v-card-title>
 
           <v-card-text>
@@ -487,46 +485,39 @@ export default {
       tableData: [
         {
           sno: 1,
-          categoryName: "Health Worker",
-          fees: "100,000 TShs.",
+          categoryName: "Student",
+          fees: "Tshs 50,000",
+          fees2: "Tshs 60,000",
           dialogName: "dialog2",
         },
         {
           sno: 2,
-          categoryName: "University Student",
-          fees: "100,000 TShs.",
+          categoryName: "Local Resident",
+          fees: "Tshs 120,000",
+          fees2: "Tshs 200,000",
           dialogName: "dialog3",
         },
         {
           sno: 3,
-          categoryName: "Non student",
-          fees: "150,000 TShs.",
+          categoryName: "International Delegate from East Africa",
+          fees: "55 USD",
+          fees2: "80 USD",
           dialogName: "dialog4",
         },
         {
           sno: 4,
-          categoryName: "Foreigner/international",
-          fees: "£USD 100",
+          categoryName: "Other international delegate",
+          fees: "200 USD",
+          fees2: "250 USD",
           dialogName: "dialog5",
-        },
-        {
-          sno: 5,
-          categoryName: "Booth",
-          fees: "2,000,000 TSh.",
-          dialogName: "dialog6",
-        },
-        {
-          sno: 6,
-          categoryName: "Forum",
-          fees: "10,000,000 TSh.",
-          dialogName: "dialog7",
         },
       ],
       tableHeaders: [
         { text: "S/No", value: "sno" },
         { text: "Category Name", value: "categoryName" },
-        { text: "Fees", value: "fees" },
-        { text: "Actions", value: "actions" },
+        { text: "Early Payment (up to 15th March 2024)", value: "fees" },
+        { text: "Late registration (From 16th March 2024)", value: "fees2" },
+        // { text: "Actions", value: "actions" },
       ],
       fetchedData: null,
       registrationCategories: [],
