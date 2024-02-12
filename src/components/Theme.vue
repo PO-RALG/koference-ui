@@ -9,18 +9,18 @@
             <img
               alt="Elfin Force"
               loading="lazy"
-              src="/man-enterprise.svg"
+              src="/main_theme.jpg"
               width="150"
               height="351"
             />
           </div>
           <div class="text-left col-xl-8 col-7 offset-1">
             <div class="row">
-              <div class="col">
+              <!-- <div class="col">
                 <h2 class="text-h4 text-uppercase font-weight-bold basil--text">
                   Main Theme
                 </h2>
-              </div>
+              </div> -->
             </div>
             <div class="row">
               <div class="text-body-1 man-text-block col col-8">
@@ -57,18 +57,18 @@
             <img
               alt="Elfin Force"
               loading="lazy"
-              src="/man-talent.svg"
+              src="/sub _theme.jpg"
               width="123"
               height="351"
             />
           </div>
           <div class="text-left col-xl-8 col-7 offset-1">
             <div class="row">
-              <div class="col">
+              <!-- <div class="col">
                 <h2 class="text-h4 text-uppercase font-weight-bold basil--text">
                   Sub Themes
                 </h2>
-              </div>
+              </div> -->
             </div>
             <div class="row">
               <div class="text-body-1 man-text-block col col-9">

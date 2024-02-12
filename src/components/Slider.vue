@@ -14,13 +14,16 @@
             alt="Background Image"
             style="width: 100%; height: 100%; object-fit: cover"
           />
-          <div class="overlay"></div>
+          <div class="overlay">mmmmmmmmmmmmmmmmmmmm</div>
         </div>
         <div class="v-responsive__content" style="width: 1578px">
           <div class="container fill-height">
             <div class="row mx-auto">
               <div class="white--text col-lg-8 col-12">
-                <div class="v-card v-sheet theme--dark rounded-0">
+                <div
+                  class="v-card v-sheet theme--dark rounded-0"
+                  style="background-color: rgba(0, 0, 0, 0.6)"
+                >
                   <div class="container py-4">
                     <div class="row no-gutters">
                       <div class="offset-lg-1 col col-11 offset-1">
