@@ -53,15 +53,6 @@
       </div>
       <div class="col-lg-5 offset-lg-1 col-12">
         <div class="row">
-          <div class="text-right col-xl-3 col-4">
-            <img
-              alt="Elfin Force"
-              loading="lazy"
-              src="/sub _theme.jpg"
-              width="123"
-              height="351"
-            />
-          </div>
           <div class="text-left col-xl-8 col-7 offset-1">
             <div class="row">
               <!-- <div class="col">
@@ -160,6 +151,15 @@
                 <div class="py-3"></div>
               </div>
             </div>
+          </div>
+          <div class="text-right col-xl-3 col-4">
+            <img
+              alt="Elfin Force"
+              loading="lazy"
+              src="/sub _theme.jpg"
+              width="149"
+              height="351"
+            />
           </div>
         </div>
       </div>
