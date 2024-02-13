@@ -9,79 +9,80 @@
         style="min-height: calc(100vh - 64px)"
       >
         <div class="v-responsive__sizer" style="padding-bottom: 51.2674%"></div>
-        <div class="v-image__image v-image__image--cover">
-          <img
-            src="/president2.jpeg"
-            alt="Background Image"
-            style="width: 100%; height: 100%; object-fit: cover"
-          />
-          <div class="overlay"></div>
-        </div>
-        <div class="v-responsive__content" style="width: 1578px">
-          <div class="container fill-height">
-            <div class="row mx-auto">
-              <div class="white--text col-lg-8 col-12">
-                <div
-                  class="v-card v-sheet theme--dark rounded-0"
-                  style="background-color: rgba(0, 0, 0, 0.532)"
-                >
-                  <div class="container py-0">
-                    <div class="row no-gutters">
-                      <div class="offset-lg-1 col col-11 offset-1">
-                        <h1
-                          class="font-weight-black text-shadow text-h4 text-sm-h2 text-lg-h1"
-                        >
-                          <span class="green--text"
-                            >1st International Primary Health Care Conference in
-                            Tanzania Date: 25-27/03/2024</span
-                          ><br />
-                        </h1>
-                      </div>
-                    </div>
-                    <div class="row no-gutters">
-                      <div class="offset-lg-1 col col-10 offset-1">
-                        <div class="container text-shadow text-body-1 cols">
-                          <strong>Guest of Honor:</strong>
-                          <span class="green--text">
-                            H.E. Dr. Samia Suluhu Hassan, The President of the
-                            United Republic of Tanzania.
-                          </span>
-                          <br />
-                          <strong> Venue: </strong>
-                          <span class="green--text">
-                            Jakaya Mrisho Kikwete Convention Centre, Dodoma City
-                            Council.
-                          </span>
-                          <br />
-                          <strong> Main Theme:</strong>
-                          <span class="green--text">
-                            Primary Health Care (PHC) as a vehicle for the
-                            journey to achieve Universal Health Coverage (UHC)
-                            in Tanzania.
-                          </span>
+
+        <v-carousel height="100%">
+          <v-carousel-item v-for="(item, i) in items" :key="i" :src="item.src"
+            ><div class="v-image__image v-image__image--cover">
+              <div class="v-responsive__content" style="width: 1578px">
+                <div class="container fill-height">
+                  <div class="row mx-auto">
+                    <div class="white--text col-lg-10 col-12 pt-12">
+                      <div
+                        class="v-card v-sheet theme--dark rounded-0"
+                        style="background-color: rgba(0, 0, 0, 0.532)"
+                      >
+                        <div class="container py-0">
+                          <div class="row no-gutters">
+                            <div class="offset-lg-1 col col-11 offset-1">
+                              <h1
+                                class="font-weight-black text-shadow text-h4 text-sm-h2 text-lg-h1"
+                              >
+                                <span class="green--text"
+                                  >1st International Primary Health Care
+                                  Conference in Tanzania Date:
+                                  25-27/03/2024</span
+                                ><br />
+                              </h1>
+                            </div>
+                          </div>
+                          <div class="row no-gutters">
+                            <div class="offset-lg-1 col col-10 offset-1">
+                              <div
+                                class="container text-shadow text-body-1 cols"
+                              >
+                                <strong>Guest of Honor:</strong>
+                                <span class="green--text">
+                                  H.E. Dr. Samia Suluhu Hassan, The President of
+                                  the United Republic of Tanzania.
+                                </span>
+                                <br />
+                                <strong> Venue: </strong>
+                                <span class="green--text">
+                                  Jakaya Mrisho Kikwete Convention Centre,
+                                  Dodoma City Council.
+                                </span>
+                                <br />
+                                <strong> Main Theme:</strong>
+                                <span class="green--text">
+                                  Primary Health Care (PHC) as a vehicle for the
+                                  journey to achieve Universal Health Coverage
+                                  (UHC) in Tanzania.
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row no-gutters">
+                          <div class="text-right col">
+                            <v-btn
+                              @click="goHome"
+                              class="pa-6 text-transform-none font-weight-bold v-btn v-btn--is-elevated v-btn--has-bg v-btn--router v-btn--tile theme--dark v-size--default success"
+                              ><span class="v-btn__content">
+                                Register Now
+                                <i
+                                  aria-hidden="true"
+                                  class="v-icon notranslate mdi mdi-arrow-right-thin theme--dark"
+                                ></i></span
+                            ></v-btn>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="row no-gutters">
-                    <div class="text-right col">
-                      <v-btn
-                        @click="goHome"
-                        class="pa-6 text-transform-none font-weight-bold v-btn v-btn--is-elevated v-btn--has-bg v-btn--router v-btn--tile theme--dark v-size--default success"
-                        ><span class="v-btn__content">
-                          Register Now
-                          <i
-                            aria-hidden="true"
-                            class="v-icon notranslate mdi mdi-arrow-right-thin theme--dark"
-                          ></i></span
-                      ></v-btn>
-                    </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
+              </div></div
+          ></v-carousel-item>
+        </v-carousel>
       </div>
     </div>
   </section>
@@ -92,26 +93,14 @@ export default {
     return {
       items: [
         {
-          src: "mtoto.jpg",
-          // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2024. <span class='yellow--text'> <p>GUEST OF HONOR: H.E. Samia Suluhu Hassan, President of the United Republic of Tanzania | VENUE: Jakaya Kikwete</p></span>",
+          src: "president2.jpeg",
         },
         {
-          src: "12.jpeg",
-          // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
+          src: "president.jpeg",
         },
-        {
-          src: "8.jpeg",
-          // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
-        },
-
-        {
-          src: "10.jpeg",
-          // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
-        },
-        {
-          src: "11.jpeg",
-          // tag: "THE FIRST INTERNATIONAL PRIMARY HEALTH CARE CONFERENCE IN DODOMA TANZANIA 2014",
-        },
+        // {
+        //   src: "SLIDER2.jpg",
+        // },
       ],
     };
   },

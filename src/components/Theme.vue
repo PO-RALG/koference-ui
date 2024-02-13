@@ -2,19 +2,19 @@
   <!-- About page content -->
   <div>
     <!-- <hr class="centered-line2" /> -->
-    <div class="row align-start justify-center">
+    <div class="row align-start justify-center pl-5">
       <div class="col-lg-5 col-12">
         <div class="row">
-          <div class="text-right col-xl-3 col-4 d-none d-md-flex">
-            <!-- <img
+          <!-- <div class="text-right col-xl-3 col-4 d-none d-md-flex">
+            <img
               alt="Elfin Force"
               loading="lazy"
               src="/main.png"
               width="50"
               height="70"
-            /> -->
-          </div>
-          <div class="text-left col-xl-8 col-7 offset-1">
+            />
+          </div> -->
+          <div class="text-left col-xl-8 col-9 offset-1">
             <div class="row">
               <!-- <div class="col d-md-none"> -->
               <div class="col">
@@ -23,8 +23,8 @@
                 </h2>
               </div>
             </div>
-            <div class="row">
-              <div class="text-body-1 man-text-block col col-12">
+            <div class="row align-center justify-center">
+              <div class="text-body-1 col col-12">
                 <div class="container">
                   Primary Health Care <span class="green--text">(PHC)</span> as
                   a vehicle for the journey to achieve Universal Health Coverage
@@ -37,31 +37,21 @@
                     max-width="60%"
                   ></v-img>
                 </div>
-                <!-- <a
-                  href="/register/company"
-                  class="white--text text-transform-none pa-6 v-btn v-btn--is-elevated v-btn--has-bg v-btn--router v-btn--tile theme--dark v-size--default success"
-                  ><span class="v-btn__content">
-                    I want to recruit
-                    <i
-                      aria-hidden="true"
-                      class="v-icon notranslate mdi mdi-arrow-right-thin theme--dark"
-                    ></i></span
-                ></a> -->
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-5 offset-lg-1 col-12">
+      <div class="col-lg-6 offset-lg-0 col-12">
         <div class="row">
-          <div class="text-right col-xl-3 col-4 d-none d-md-flex">
+          <div class="text-left col-xl-1 col-4 d-none d-md-flex">
             <img
               alt="Elfin Force"
               loading="lazy"
               src="/sub _theme.jpg"
               width="149"
-              height="561"
-              class="pt-10"
+              height="541"
+              class="pt-8"
             />
           </div>
           <div class="text-left col-xl-8 col-7 offset-1">

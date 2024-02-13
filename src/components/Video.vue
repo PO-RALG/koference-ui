@@ -59,11 +59,13 @@ export default {
     getEmbedCode(videoId, thumbnailUrl) {
       return `
         <div class="video-container">
-          <img class="thumbnail-image" src="${thumbnailUrl}" alt="Video Thumbnail" width="540" height="330">
-          <video controls width="540" height="330">
+          <img class="thumbnail-image" src="${thumbnailUrl}" alt="Video Thumbnail" width="500" height="330">
+          <v-col>
+            <video controls width="400" height="250">
             <source src="${videoId}" type="video/mp4">
             Your browser does not support the video tag.
           </video>
+            </v-col>
         </div>
         <style>
           .video-container {
