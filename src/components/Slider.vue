@@ -1,3 +1,4 @@
+<!-- style="background-color: rgba(0, 0, 0, 0.6)" -->
 <template>
   <section class="landing-candidates pt-12">
     <div class="row no-gutters">
@@ -10,11 +11,11 @@
         <div class="v-responsive__sizer" style="padding-bottom: 51.2674%"></div>
         <div class="v-image__image v-image__image--cover">
           <img
-            src="/president.jpeg"
+            src="/president2.jpeg"
             alt="Background Image"
             style="width: 100%; height: 100%; object-fit: cover"
           />
-          <div class="overlay">mmmmmmmmmmmmmmmmmmmm</div>
+          <div class="overlay"></div>
         </div>
         <div class="v-responsive__content" style="width: 1578px">
           <div class="container fill-height">
@@ -22,9 +23,9 @@
               <div class="white--text col-lg-8 col-12">
                 <div
                   class="v-card v-sheet theme--dark rounded-0"
-                  style="background-color: rgba(0, 0, 0, 0.6)"
+                  style="background-color: rgba(0, 0, 0, 0.532)"
                 >
-                  <div class="container py-4">
+                  <div class="container py-0">
                     <div class="row no-gutters">
                       <div class="offset-lg-1 col col-11 offset-1">
                         <h1
@@ -152,7 +153,7 @@ export default {
   font-weight: bold; /* Make the caption bold */
 }
 .caption-container {
-  padding-bottom: 30px; /* Adjust the padding as needed */
+  padding-bottom: 300px; /* Adjust the padding as needed */
 }
 .caption-sub {
   padding-bottom: 10px; /* Adjust the padding as needed */

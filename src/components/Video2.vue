@@ -41,7 +41,7 @@ export default {
       return `
             <iframe
               id="youtube-player-${videoId}"
-              width="640"
+              width="500"
               height="330"
               src="https://www.youtube.com/embed/${videoId}"
               frameborder="0"

@@ -5,25 +5,26 @@
     <div class="row align-start justify-center">
       <div class="col-lg-5 col-12">
         <div class="row">
-          <div class="text-right col-xl-3 col-4">
-            <img
+          <div class="text-right col-xl-3 col-4 d-none d-md-flex">
+            <!-- <img
               alt="Elfin Force"
               loading="lazy"
-              src="/main_theme.jpg"
-              width="150"
-              height="351"
-            />
+              src="/main.png"
+              width="50"
+              height="70"
+            /> -->
           </div>
           <div class="text-left col-xl-8 col-7 offset-1">
             <div class="row">
-              <!-- <div class="col">
+              <!-- <div class="col d-md-none"> -->
+              <div class="col">
                 <h2 class="text-h4 text-uppercase font-weight-bold basil--text">
                   Main Theme
                 </h2>
-              </div> -->
+              </div>
             </div>
             <div class="row">
-              <div class="text-body-1 man-text-block col col-8">
+              <div class="text-body-1 man-text-block col col-12">
                 <div class="container">
                   Primary Health Care <span class="green--text">(PHC)</span> as
                   a vehicle for the journey to achieve Universal Health Coverage
@@ -33,7 +34,7 @@
                   <v-img
                     src="/bango.jpeg"
                     alt="Business Card Footer Image"
-                    max-width="100%"
+                    max-width="60%"
                   ></v-img>
                 </div>
                 <!-- <a
@@ -53,17 +54,28 @@
       </div>
       <div class="col-lg-5 offset-lg-1 col-12">
         <div class="row">
+          <div class="text-right col-xl-3 col-4 d-none d-md-flex">
+            <img
+              alt="Elfin Force"
+              loading="lazy"
+              src="/sub _theme.jpg"
+              width="149"
+              height="561"
+              class="pt-10"
+            />
+          </div>
           <div class="text-left col-xl-8 col-7 offset-1">
             <div class="row">
-              <!-- <div class="col">
+              <div class="col d-md-none">
                 <h2 class="text-h4 text-uppercase font-weight-bold basil--text">
                   Sub Themes
                 </h2>
-              </div> -->
+              </div>
+              <div class="col"></div>
             </div>
             <div class="row">
-              <div class="text-body-1 man-text-block col col-9">
-                <div class="container">
+              <div class="text-body-1 man-text-block col col-12">
+                <div class="">
                   <ul>
                     <li>
                       Social determinants, Social Behavioral Change and
@@ -148,18 +160,9 @@
                     <li>Service delivery.</li>
                   </ul>
                 </div>
-                <div class="py-3"></div>
+                <!-- <div class="py-3"></div> -->
               </div>
             </div>
-          </div>
-          <div class="text-right col-xl-3 col-4">
-            <img
-              alt="Elfin Force"
-              loading="lazy"
-              src="/sub _theme.jpg"
-              width="149"
-              height="351"
-            />
           </div>
         </div>
       </div>

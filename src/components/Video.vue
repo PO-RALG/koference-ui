@@ -9,7 +9,11 @@
       <v-col v-for="(video, index) in videos" :key="video.id">
         <v-card width="100%" elevation="0" class="center-video">
           <div class="video-container">
-            <div class="center-video" v-html="getEmbedCode(video.id)"></div>
+            <div
+              class="center-video"
+              v-html="getEmbedCode(video.id, video.thumbnail)"
+              ref="videoElement"
+            ></div>
             <span class="caption">
               {{ video.caption }}
             </span>
@@ -21,6 +25,8 @@
 </template>
 
 <script>
+import Vue from "vue";
+
 export default {
   data() {
     return {
@@ -28,27 +34,80 @@ export default {
         {
           id: "/afya1.mp4",
           caption: "Primary Health Care",
+          thumbnail: "aa.png", // Add thumbnail URL for each video
+        },
+        {
+          id: "/afya3.mp4",
+          caption: "Primary Health Care",
+          thumbnail: "/c.png", // Add thumbnail URL for each video
         },
         {
           id: "/afya.mp4",
           caption: "Primary Health Care",
+          thumbnail: "a.png", // Add thumbnail URL for each video
         },
-        // Add more video IDs as needed
+        // Add more videos as needed
       ],
     };
   },
+  mounted() {
+    Vue.nextTick(() => {
+      this.attachPlayListeners();
+    });
+  },
   methods: {
-    getEmbedCode(videoId) {
+    getEmbedCode(videoId, thumbnailUrl) {
       return `
-        <video controls width="640" height="330">
-          <source src="${videoId}" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
+        <div class="video-container">
+          <img class="thumbnail-image" src="${thumbnailUrl}" alt="Video Thumbnail" width="540" height="330">
+          <video controls width="540" height="330">
+            <source src="${videoId}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <style>
+          .video-container {
+            position: relative;
+          }
+
+          .thumbnail-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          }
+        </style>
       `;
+    },
+    attachPlayListeners() {
+      const videoElements = this.$refs.videoElement;
+      if (videoElements) {
+        if (!Array.isArray(videoElements)) {
+          videoElements = [videoElements];
+        }
+        videoElements.forEach((videoElement) => {
+          videoElement
+            .querySelector("video")
+            .addEventListener("play", this.hideThumbnail);
+        });
+        videoElements.forEach((videoElement) => {
+          videoElement
+            .querySelector("video")
+            .addEventListener("ended", this.showThumbnail);
+        });
+      }
+    },
+    hideThumbnail(event) {
+      event.target.previousElementSibling.style.display = "none";
+    },
+    showThumbnail(event) {
+      event.target.previousElementSibling.style.display = "block";
     },
   },
 };
 </script>
+
 <style scoped>
 /* Center video and caption horizontally */
 .video-container {
