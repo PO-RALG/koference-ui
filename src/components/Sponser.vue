@@ -3,7 +3,7 @@
     <hr class="centered-line2" />
 
     <span class="pt-12 pb-12 color-title">
-      <v-card-title class="text-center justify-center py-6">
+      <v-card-title class="text-center justify-center">
         <h1 class="font-weight-bold text-5 basil--text">Sponsors</h1>
       </v-card-title>
     </span>
@@ -13,8 +13,8 @@
           v-for="image in images"
           :key="image.id"
           cols="12"
-          sm="6"
-          md="4"
+          sm="1"
+          md="1"
           lg="1"
         >
           <a :href="image.href" target="_blank" rel="noopener noreferrer">
@@ -28,7 +28,7 @@
               <v-img
                 :src="image.src"
                 alt="Image"
-                width="70%"
+                width="60%"
                 height="70%"
                 :aspect-ratio="1"
               ></v-img>
@@ -59,15 +59,16 @@ export default {
         { id: 1, src: "unicef.png", href: "https://www.unicef.org/ " },
         // { id: 5, src: "afya.jpeg", href: "https://www.unicef.org/ " },
         { id: 2, src: "cds.jpeg", href: "https://africacdc.org/" },
-        { id: 6, src: "ths.png", href: "https://ths.or.tz/" },
+
+        { id: 3, src: "who.png", href: "https://www.who.int/" },
+        { id: 4, src: "usaid.png", href: "https://www.usaid.gov/" },
+        { id: 7, src: "aaph.jpeg", href: "https://www.aaph.or.tz/" },
         {
           id: 8,
           src: "pepfa.jpg",
           href: "https://www.hiv.gov/federal-response/pepfar-global-aids/pepfar/",
         },
-        { id: 3, src: "who.png", href: "https://www.who.int/" },
-        { id: 4, src: "usaid.png", href: "https://www.usaid.gov/" },
-        { id: 7, src: "aaph.jpeg", href: "https://www.aaph.or.tz/" },
+        { id: 6, src: "ths.png", href: "https://ths.or.tz/" },
       ],
     };
   },

@@ -10,7 +10,15 @@
       >
         <div class="v-responsive__sizer" style="padding-bottom: 51.2674%"></div>
 
-        <v-carousel height="100%">
+        <v-carousel
+          progress
+          light
+          interval="12000"
+          height="100%"
+          :cycle="true"
+          :hide-delimiter-background="true"
+          :transition="fadeTransition"
+        >
           <v-carousel-item v-for="(item, i) in items" :key="i" :src="item.src"
             ><div class="v-image__image v-image__image--cover">
               <div class="v-responsive__content" style="width: 1578px">
@@ -19,7 +27,7 @@
                     <div class="white--text col-lg-10 col-12 pt-12">
                       <div
                         class="v-card v-sheet theme--dark rounded-0"
-                        style="background-color: rgba(0, 0, 0, 0.532)"
+                        style="background-color: rgba(0, 0, 0, 0.5)"
                       >
                         <div class="container py-0">
                           <div class="row no-gutters">
@@ -71,7 +79,7 @@
                                 Register Now
                                 <i
                                   aria-hidden="true"
-                                  class="v-icon notranslate mdi mdi-arrow-right-thin theme--dark"
+                                  class="v-icon notranslate mdi mdi-arrow-up-thin theme--dark"
                                 ></i></span
                             ></v-btn>
                           </div>
@@ -93,15 +101,14 @@ export default {
     return {
       items: [
         {
-          src: "president2.jpeg",
+          src: "slidera.jpg",
         },
+
         {
-          src: "president.jpeg",
+          src: "president.jpg",
         },
-        // {
-        //   src: "SLIDER2.jpg",
-        // },
       ],
+      fadeTransition: "fade-transition",
     };
   },
   methods: {
@@ -113,6 +120,14 @@ export default {
 };
 </script>
 <style scoped>
+.fade-transition-enter-active,
+.fade-transition-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-transition-enter,
+.fade-transition-leave-to {
+  opacity: 0;
+}
 .centered-line {
   width: 100%;
   border: 3px #356859; /* Adjust thickness as needed */

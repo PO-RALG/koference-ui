@@ -1,6 +1,6 @@
 <template>
   <!-- About page content -->
-  <div>
+  <div class="bg-image">
     <!-- <hr class="centered-line2" /> -->
     <div class="row align-start justify-center pl-5">
       <div class="col-lg-5 col-12">
@@ -25,10 +25,10 @@
             </div>
             <div class="row align-center justify-center">
               <div class="text-body-1 col col-12">
-                <div class="container">
-                  Primary Health Care <span class="green--text">(PHC)</span> as
+                <div class="text-h7">
+                  Primary Health Care <span class="white--text">(PHC)</span> as
                   a vehicle for the journey to achieve Universal Health Coverage
-                  <span class="green--text">(UHC)</span> in Tanzania
+                  <span class="white--text">(UHC)</span> in Tanzania
                 </div>
                 <div class="py-3">
                   <v-img
@@ -64,12 +64,13 @@
               <div class="col"></div>
             </div>
             <div class="row">
-              <div class="text-body-1 man-text-block col col-12">
+              <div class="text-h7 man-text-block col col-12">
                 <div class="">
                   <ul>
                     <li>
                       Social determinants, Social Behavioral Change and
-                      Communication (SBCC) and Community Health System.
+                      Communication <span class="white--text">(SBCC)</span> and
+                      Community Health System.
                     </li>
                   </ul>
                 </div>
@@ -177,6 +178,12 @@ export default {
 };
 </script>
 <style scoped>
+.bg-image {
+  background-image: url("./slider1.jpg");
+  /* background-image: url("path_to_your_image.jpg"); */
+  background-size: cover;
+  background-position: center;
+}
 .mission-card {
   /* Add any additional styling for the card */
   padding: 20px;
@@ -218,7 +225,7 @@ v-icon {
   background-color: #fffbe6 !important;
 }
 .basil--text {
-  color: #356859 !important;
+  color: #d9e5e2 !important;
 }
 </style>
 <style scoped>

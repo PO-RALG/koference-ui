@@ -142,6 +142,12 @@ export default {
 };
 </script>
 <style scoped>
+.bg-image {
+  background-image: url("./slider1.jpg");
+  /* background-image: url("path_to_your_image.jpg"); */
+  background-size: cover;
+  background-position: center;
+}
 .mission-card {
   /* Add any additional styling for the card */
   padding: 20px;

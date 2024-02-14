@@ -7,18 +7,18 @@
     </span>
     <v-row class="video-row" justify="center">
       <v-col v-for="(video, index) in videos" :key="video.id">
-        <v-card width="100%" elevation="0" class="center-video">
-          <div class="video-container">
-            <div
-              class="center-video"
-              v-html="getEmbedCode(video.id, video.thumbnail)"
-              ref="videoElement"
-            ></div>
-            <span class="caption">
-              {{ video.caption }}
-            </span>
-          </div>
-        </v-card>
+        <!-- <v-card width="100%" elevation="0" class="center-video"> -->
+        <div width="100%" class="video-container">
+          <div
+            class="center-video"
+            v-html="getEmbedCode(video.id, video.thumbnail)"
+            ref="videoElement"
+          ></div>
+          <span class="caption">
+            {{ video.caption }}
+          </span>
+        </div>
+        <!-- </v-card> -->
       </v-col>
     </v-row>
   </div>
@@ -111,6 +111,12 @@ export default {
 </script>
 
 <style scoped>
+.bg-image {
+  background-image: url("./slider1.jpg");
+  /* background-image: url("path_to_your_image.jpg"); */
+  background-size: cover;
+  background-position: center;
+}
 /* Center video and caption horizontally */
 .video-container {
   display: flex;
@@ -129,6 +135,6 @@ export default {
   background-color: #fffbe6 !important;
 }
 .basil--text {
-  color: #356859 !important;
+  color: #d9e5e2 !important;
 }
 </style>
