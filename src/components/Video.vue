@@ -135,6 +135,6 @@ export default {
   background-color: #fffbe6 !important;
 }
 .basil--text {
-  color: #d9e5e2 !important;
+  color: #356859 !important;
 }
 </style>

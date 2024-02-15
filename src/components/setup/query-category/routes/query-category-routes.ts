@@ -2,7 +2,7 @@ import { setTitle, validateToken, setHeaders, auth } from "@/middleware";
 
 const queryCategoryRoutes = [
   {
-    path: "/query-category",
+    path: "/abstracts",
     component: () =>
       import(/* webpackChunkName: "QueryCategory" */ "../QueryCategory.vue"),
     meta: {

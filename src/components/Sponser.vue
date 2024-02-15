@@ -14,7 +14,7 @@
           :key="image.id"
           cols="12"
           sm="1"
-          md="1"
+          md="2"
           lg="1"
         >
           <a :href="image.href" target="_blank" rel="noopener noreferrer">
@@ -28,8 +28,8 @@
               <v-img
                 :src="image.src"
                 alt="Image"
-                width="60%"
-                height="70%"
+                width="100%"
+                height="100%"
                 :aspect-ratio="1"
               ></v-img>
             </v-card>
@@ -75,7 +75,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /* Add any additional styles for image-card here */
 .image-card {
   /* Add any specific styles for the cards */
@@ -85,5 +85,11 @@ export default {
   width: 90%;
   border: 3px solid rgb(26, 86, 182); /* Adjust thickness as needed */
   margin: 8px auto; /* Adjust as needed */
+}
+.basil {
+  background-color: #fffbe6 !important;
+}
+.basil--text {
+  color: #356859 !important;
 }
 </style>

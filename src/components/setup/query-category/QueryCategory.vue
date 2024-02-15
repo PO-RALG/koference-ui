@@ -3,20 +3,23 @@
     <v-card-actions class="pa-0">
       <h2>{{ data.title }}</h2>
       <v-spacer></v-spacer>
-      <v-btn large color="teal" class="white--text" @click="openDialog">
+      <!-- <v-btn large color="teal" class="white--text" @click="openDialog">
         <v-icon>mdi-plus</v-icon>
         Add New
-      </v-btn>
+      </v-btn> -->
     </v-card-actions>
     <v-card>
       <v-data-table
         :headers="data.headers"
-        :items="data.items"
+        :items="users"
         :single-expand="true"
         class="elevation-1"
         disable-pagination
         hide-default-footer
       >
+        <template v-slot:[`item.createdAt`]="{ item }">
+          <span>{{ item.createdAt | format() }}</span>
+        </template>
         <template v-slot:top>
           <v-card-title>
             <v-spacer></v-spacer>
@@ -38,6 +41,19 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon
+                @click="printFromServer(item.id)"
+                v-bind="attrs"
+                v-on="on"
+                class="mr-2"
+              >
+                mdi-briefcase-eye
+              </v-icon>
+            </template>
+            <span>Preview</span>
+          </v-tooltip>
+          <!-- <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
                 v-bind="attrs"
                 v-on="on"
                 class="mr-2"
@@ -47,16 +63,16 @@
               </v-icon>
             </template>
             <span>Edit</span>
-          </v-tooltip>
+          </v-tooltip> -->
 
-          <v-tooltip bottom>
+          <!-- <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on" @click="deleteDialog(item.id)"
                 >mdi-trash-can-outline</v-icon
               >
             </template>
             <span>Delete</span>
-          </v-tooltip>
+          </v-tooltip> -->
         </template>
         <template v-slot:footer>
           <Paginate
@@ -154,10 +170,13 @@ export default defineComponent({
       downloadFile,
       filterDocument,
       deleteDialog,
+      users,
+      printFromServer,
     } = useQueryCategory();
 
     return {
       data,
+      users,
       openDialog,
       getData,
       cancelDialog,
@@ -176,6 +195,7 @@ export default defineComponent({
       downloadFile,
       filterDocument,
       deleteDialog,
+      printFromServer,
     };
   },
 });

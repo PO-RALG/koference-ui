@@ -26,15 +26,44 @@
             >Payment Status:
             {{
               getStatusText(
-                this.user &&
-                  this.user.jisajilis &&
-                  this.user.jisajilis[0].status
+                this.userb &&
+                  this.userb.jisajilis &&
+                  this.userb.jisajilis[0].status
                   ? true
                   : false
               )
             }}</span
           >
         </v-card-actions>
+        <!-- <v-card-actions>
+          <span
+            >Abstract Status:
+            {{
+              getStatusText(
+                this.userb &&
+                  this.userb.jisajilis &&
+                  this.userb.jisajilis[0].status
+                  ? true
+                  : false
+              )
+            }}</span
+          >
+        </v-card-actions> -->
+        <v-list-item-group>
+          <v-list-item v-if="regInfromation">
+            <v-list-item-icon>
+              <v-icon color="primary">mdi-attachment</v-icon>
+            </v-list-item-icon>
+            <a
+              :href="getFullFilePath(regInfromation?.path_file)"
+              target="_blank"
+            >
+              <span>{{ "Download Uploaded Receipt" }}</span>
+            </a>
+          </v-list-item>
+
+          <!-- Add more details as needed -->
+        </v-list-item-group>
         <h1><hr class="centered-line2" /></h1>
         <v-container>
           <v-row justify="start">
@@ -133,24 +162,6 @@
         </v-list-item> -->
 
         <v-divider class="my-3"></v-divider>
-
-        <v-list>
-          <v-list-item-group>
-            <v-list-item v-if="regInfromation">
-              <v-list-item-icon>
-                <v-icon color="primary">mdi-attachment</v-icon>
-              </v-list-item-icon>
-              <a
-                :href="getFullFilePath(regInfromation?.path_file)"
-                target="_blank"
-              >
-                <span>{{ "Download Uploaded Receipt" }}</span>
-              </a>
-            </v-list-item>
-
-            <!-- Add more details as needed -->
-          </v-list-item-group>
-        </v-list>
       </v-card>
     </v-container>
     <Modal :modal="dialogs.dialog1" :width="1200">
@@ -466,7 +477,7 @@ export default {
       if (status == false) {
         return "Pending";
       } else if (status == true) {
-        return "Approved";
+        return "Submited";
       } else {
         return ""; // or any other default value you want for null status
       }

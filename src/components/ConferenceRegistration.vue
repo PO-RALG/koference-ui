@@ -27,9 +27,15 @@
             {{
               "All payment for the conference should be made to the following Bank details, and an appropriate receipt uploaded while log in your registration account:"
             }}.
+
             <span class="font-weight-bold green--text"
-              >CPS misc Dep. Exp. Elecronic A/C 9921169777 Bank name BOT</span
+              >CPS misc Dep. Exp. Elecronic A/C 9921169777 Bank name BOT.</span
             >
+            <p>
+              <small class="green--text">
+                NB: Please communicate with organizer first to secure a slot.
+              </small>
+            </p>
           </v-alert>
         </v-card-text>
       </v-row>
@@ -508,6 +514,27 @@ export default {
           sno: 4,
           categoryName: "Other international delegate",
           fees: "200 USD",
+          fees2: "250 USD",
+          dialogName: "dialog5",
+        },
+        {
+          sno: 5,
+          categoryName: "Booth(Category A)",
+          fees: "800 USD",
+          fees2: "800 USD",
+          dialogName: "dialog5",
+        },
+        {
+          sno: 6,
+          categoryName: "Booth(Category B)",
+          fees: "500 USD",
+          fees2: "500 USD",
+          dialogName: "dialog5",
+        },
+        {
+          sno: 7,
+          categoryName: "Booth(Category C)",
+          fees: "250 USD",
           fees2: "250 USD",
           dialogName: "dialog5",
         },

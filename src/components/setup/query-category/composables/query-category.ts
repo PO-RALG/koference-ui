@@ -1,4 +1,4 @@
-import { reactive, onMounted } from "vue";
+import { reactive, computed, onMounted } from "vue";
 import { AxiosResponse } from "axios";
 
 import { QueryCategory } from "../types/QueryCategory";
@@ -9,6 +9,7 @@ import {
   destroy,
   searchCategories,
 } from "../services/query-category.service";
+import { printReportJasper } from "../../../../components/report/services/report.services";
 
 export const useQueryCategory = (): any => {
   const dataItems: Array<QueryCategory> = [];
@@ -16,15 +17,28 @@ export const useQueryCategory = (): any => {
 
   const data = reactive({
     file: "",
-    title: "Query Categories",
+    title: "Abstracts",
     modalTitle: "",
     headers: [
-      { text: "Name", align: "start", sortable: false, value: "name" },
       {
-        text: "Description",
+        text: "Submitted by",
         align: "start",
         sortable: false,
-        value: "description",
+        value: "fullName",
+      },
+      { text: "Author", align: "start", sortable: false, value: "author" },
+      { text: "Date", align: "start", sortable: false, value: "createdAt" },
+      {
+        text: "Sub Theme",
+        align: "start",
+        sortable: false,
+        value: "subTheme.name",
+      },
+      {
+        text: "Title",
+        align: "start",
+        sortable: false,
+        value: "title",
       },
 
       { text: "Actions", value: "actions", sortable: false },
@@ -46,8 +60,15 @@ export const useQueryCategory = (): any => {
     initialize();
   });
 
+  const printFromServer = (abstractId) => {
+    const params = {
+      abstract_id: abstractId,
+    };
+    printReportJasper("abstract", params);
+  };
+
   const initialize = () => {
-    get({ per_page: 10 }).then((response: AxiosResponse) => {
+    get().then((response: AxiosResponse) => {
       console.log("res", response.data);
       const { from, to, total, current_page, per_page, last_page } =
         response.data;
@@ -55,6 +76,14 @@ export const useQueryCategory = (): any => {
       data.items = response.data;
       data.itemsToFilter = response.data;
     });
+    // get({ per_page: 10 }).then((response: AxiosResponse) => {
+    //   console.log("res", response.data);
+    //   const { from, to, total, current_page, per_page, last_page } =
+    //     response.data;
+    //   data.response = { from, to, total, current_page, per_page, last_page };
+    //   data.items = response.data;
+    //   data.itemsToFilter = response.data;
+    // });
   };
 
   const searchCategory = (item: string) => {
@@ -152,6 +181,23 @@ export const useQueryCategory = (): any => {
     data.itemtodelete = deleteId;
     // console.log("delete year", data);
   };
+  const users = computed(() => {
+    return data.items
+      .map((item: any) => {
+        if (item.user) {
+          return {
+            ...item,
+
+            fullName: `${item.user.first_name} ${item.user.middle_name}  ${item.user.last_name}`,
+          };
+        }
+        return "";
+      })
+      .filter((x: any) => {
+        return x.user != null;
+      });
+  });
+
   return {
     data,
     openDialog,
@@ -165,5 +211,7 @@ export const useQueryCategory = (): any => {
     searchCategory,
     getData,
     deleteDialog,
+    users,
+    printFromServer,
   };
 };

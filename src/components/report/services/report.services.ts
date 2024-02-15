@@ -34,17 +34,14 @@ const serializeParams = (params: any) => {
 
 const printReportJasper = async (reportID: any, payload?: any) => {
   await axios
-    .get(
-      `/${APINEWREPORT}/reports/${reportID}.${payload.format}?facility_id=${payload.facility_id}`,
-      {
-        params: payload,
-        responseType: "arraybuffer",
-        auth: {
-          username: REPORTSERVERUSER,
-          password: REPORTSERVERPASSWORD,
-        },
-      }
-    )
+    .get(`/${APINEWREPORT}/reports/conference/${reportID}.pdf`, {
+      params: payload,
+      responseType: "arraybuffer",
+      auth: {
+        username: REPORTSERVERUSER,
+        password: REPORTSERVERPASSWORD,
+      },
+    })
     .then((response: any) => {
       console.log("file", response.data);
       const file = new Blob([response.data], {
@@ -59,7 +56,7 @@ const printReportJasperExcell = async (reportID: any, payload?: any) => {
   if (payload) {
     await axios
       .get(
-        `/${APINEWREPORT}/reports/${reportID}.${payload.format}?facility_id=${payload.facility_id}`,
+        `/${APINEWREPORT}/reports/conference/${reportID}.${payload.format}?facility_id=${payload.facility_id}`,
         {
           params: payload,
           responseType: "arraybuffer",

@@ -55,6 +55,24 @@ const setUser = async (payload: any) => {
       code: "10024",
       created_by: null,
     },
+    {
+      id: 1,
+      name: "Abstracts",
+      state: "abstracts",
+      url: "/",
+      icon: "mdi-book",
+      code: "10025",
+      created_by: null,
+    },
+    {
+      id: 2,
+      name: "Users",
+      state: "manage-users",
+      url: "/",
+      icon: "mdi-account-group",
+      code: "10026",
+      created_by: null,
+    },
   ];
 
   payload.data.menu_groups = newMenuGroup;

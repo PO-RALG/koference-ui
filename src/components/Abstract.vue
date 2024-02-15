@@ -3,11 +3,14 @@
   <v-container class="mt-10">
     <v-row>
       <v-col cols="12">
-        <h1 class="text-center mb-5 color-title">
+        <h1 class="text-center mb-0 color-title">
           Abstract submission {{ currentYear }}
         </h1>
+        <h3 class="text-center">
+          <span class="warning--text">Final date: 10/03/2024</span>
+        </h3>
         <hr class="centered-line" />
-        <v-divider class="mb-5"></v-divider>
+        <v-divider class="mb-2"></v-divider>
 
         <!-- Sample about content -->
         <v-row>

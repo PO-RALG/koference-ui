@@ -1,17 +1,20 @@
 import axios from "axios";
 
-const get = async (payload: any) => {
-  return await axios.get("/api/v1/query-categories", { params: payload });
+const get = async () => {
+  return await axios.get("/api/v1/abstarcts");
 };
+// const get = async (payload: any) => {
+//   return await axios.get("/api/v1/abstarcts", { params: payload });
+// };
 const search = async (payload: any) => {
-  return await axios.get(`/api/v1/query-categories/`, {
+  return await axios.get(`/api/v1/abstarcts/`, {
     params: {
       search: JSON.stringify(payload),
     },
   });
 };
 const searchCategories = async (payload: any) => {
-  return await axios.get(`/api/v1/document-categories/`, {
+  return await axios.get(`/api/v1/docabstracts/`, {
     params: {
       search: JSON.stringify(payload),
     },
@@ -19,19 +22,19 @@ const searchCategories = async (payload: any) => {
 };
 
 const find = async (id: string | number) => {
-  return await axios.get(`/api/v1/query-categories/${id}`);
+  return await axios.get(`/api/v1/abstarcts/${id}`);
 };
 
 const create = async (payload: any) => {
-  return await axios.post(`/api/v1/query-categories`, payload);
+  return await axios.post(`/api/v1/abstarcts`, payload);
 };
 
 const update = async (payload: any) => {
-  return await axios.patch(`/api/v1/query-categories/` + payload.id, payload);
+  return await axios.patch(`/api/v1/abstarcts/` + payload.id, payload);
 };
 const destroy = async (payload: any) => {
   console.log("payload", payload);
-  return await axios.delete(`/api/v1/query-categories/` + payload);
+  return await axios.delete(`/api/v1/abstarcts/` + payload);
 };
 
 export { get, find, create, update, destroy, search, searchCategories };

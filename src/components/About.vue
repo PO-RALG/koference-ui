@@ -16,14 +16,14 @@
                   <v-container>
                     <v-row justify="center">
                       <v-col cols="12" sm="10" md="8">
-                        <v-card-title class="headline"
-                          >Our Mission</v-card-title
-                        >
+                        <v-card-title class="headline">Our Vision</v-card-title>
                         <v-card-text>
                           <ul>
                             <h2>
                               <li>
-                                <v-icon color="primary">mdi-check</v-icon>
+                                <v-icon class="pr-5" color="primary"
+                                  >mdi-check</v-icon
+                                >
                                 To be an exemplary international conference in
                                 sharing high-quality best practices, innovations
                                 and scientific evidence in PHC
@@ -32,73 +32,73 @@
                           </ul>
                         </v-card-text>
                       </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card>
-              </v-col>
-
-              <v-col cols="12" md="12">
-                <v-card color="#f3f5f5" flat height="100%" class="mb-5">
-                  <v-container>
-                    <v-row justify="center">
                       <v-col cols="12" sm="10" md="8">
-                        <v-card-title class="headline">Our Vision</v-card-title>
+                        <v-card-title class="headline"
+                          >Our Mission</v-card-title
+                        >
                         <v-card-text>
                           <ul>
                             <h2>
                               <li>
-                                <v-icon color="primary">mdi-check</v-icon>
+                                <v-icon class="pr-5" color="primary"
+                                  >mdi-check</v-icon
+                                >
                                 To provide scientific proven evidence,
                                 innovations and best practices to support
                                 evidence-based decision making to policy makers
                                 and implementers using available
                                 multidisciplinary local and international
-                                experts in PHC
+                                experts in PHC.
                               </li>
                             </h2>
                           </ul>
                         </v-card-text>
                       </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card>
-              </v-col>
-
-              <v-col cols="12" md="12">
-                <v-card color="#f3f5f5" flat height="100%" class="mb-5">
-                  <v-container>
-                    <v-row justify="center">
                       <v-col cols="12" sm="10" md="8">
                         <v-card-title class="headline">Our Values</v-card-title>
                         <v-card-text>
                           <ul>
                             <h2>
                               <li>
-                                <v-icon color="primary">mdi-check</v-icon>
+                                <v-icon class="pr-5" color="primary"
+                                  >mdi-check</v-icon
+                                >
                                 Integrity and Loyalty
                               </li>
                               <li>
-                                <v-icon color="primary">mdi-check</v-icon>
+                                <v-icon class="pr-5" color="primary"
+                                  >mdi-check</v-icon
+                                >
                                 Accountability and Transparency
                               </li>
                               <li>
-                                <v-icon color="primary">mdi-check</v-icon>
+                                <v-icon class="pr-5" color="primary"
+                                  >mdi-check</v-icon
+                                >
                                 Unity and Team spirit
                               </li>
                               <li>
-                                <v-icon color="primary">mdi-check</v-icon>
+                                <v-icon class="pr-5" color="primary"
+                                  >mdi-check</v-icon
+                                >
                                 Timely and Quality services
                               </li>
                               <li>
-                                <v-icon color="primary">mdi-check</v-icon>
+                                <v-icon class="pr-5" color="primary"
+                                  >mdi-check</v-icon
+                                >
                                 Confidentiality and Professionalism
                               </li>
                               <li>
-                                <v-icon color="primary">mdi-check</v-icon>
+                                <v-icon class="pr-5" color="primary"
+                                  >mdi-check</v-icon
+                                >
                                 Accessibility and Responsiveness
                               </li>
                               <li>
-                                <v-icon color="primary">mdi-check</v-icon>
+                                <v-icon class="pr-5" color="primary"
+                                  >mdi-check</v-icon
+                                >
                                 Openness
                               </li>
                             </h2>
