@@ -1,0 +1,40 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: "16"
+  SERVER_HOST: "172.16.18.148"
+  SERVER_USERNAME: "${{ secrets.SERVER_USERNAME }}"
+  SERVER_PORT: "${{ secrets.SERVER_PORT }}"
+  SERVER_KEY: "${{ secrets.SK }}"
+
+before_script:
+  - apt-get update -yq && apt-get install -yq ssh-client
+
+build:
+  stage: build
+  image: node:${NODE_VERSION}
+  script:
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+
+# Define a job template for the deploy job
+.deploy_template:
+  stage: deploy
+  image: alpine
+  before_script:
+    - apk add --no-cache openssh
+    - echo "$SERVER_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh-keyscan -H "$SERVER_HOST" >> ~/.ssh/known_hosts
+  script:
+    - scp -r -P $SERVER_PORT dist/* $SERVER_USERNAME@$SERVER_HOST:/var/www/html/dist/
+
+# Define specific jobs for each branch
+deploy_gallery_c:
+  extends: .deploy_template
+  only:
+    - gallery_c

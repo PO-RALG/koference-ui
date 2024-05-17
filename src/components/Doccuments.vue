@@ -116,7 +116,6 @@ export default {
     };
   },
   created() {
-    this.fetchSubthemes();
     Vue.nextTick(() => {
       // This will be executed after the DOM has been updated
       window.scrollTo(0, 0); // Scroll to the top
